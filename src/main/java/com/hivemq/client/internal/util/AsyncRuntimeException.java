@@ -20,6 +20,8 @@ package com.hivemq.client.internal.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 /**
  * @author Silvio Giebl
  */
@@ -27,38 +29,45 @@ public abstract class AsyncRuntimeException extends RuntimeException {
 
     public static @NotNull RuntimeException fillInStackTrace(final @NotNull RuntimeException e) {
         if (e instanceof AsyncRuntimeException) {
-            e.fillInStackTrace();
+            final AsyncRuntimeException copy = ((AsyncRuntimeException) e).copy();
+            final StackTraceElement[] stackTrace = copy.getStackTrace();
+            // remove the copy and fillInStackTrace method calls from the trace
+            int remove = 0;
+            while (remove < stackTrace.length) {
+                final StackTraceElement stackTraceElement = stackTrace[remove];
+                remove++;
+                if (stackTraceElement.getClassName().equals(AsyncRuntimeException.class.getCanonicalName()) &&
+                        stackTraceElement.getMethodName().equals("fillInStackTrace")) {
+                    break;
+                }
+            }
+            copy.setStackTrace(Arrays.copyOfRange(stackTrace, remove, stackTrace.length));
+            return copy;
         }
         return e;
     }
 
-    private final boolean afterSuper;
-
-    protected AsyncRuntimeException() {
-        super();
-        afterSuper = true;
-    }
-
     protected AsyncRuntimeException(final @Nullable String message) {
         super(message, null);
-        afterSuper = true;
     }
 
     protected AsyncRuntimeException(final @Nullable String message, final @Nullable Throwable cause) {
         super(message, cause);
-        afterSuper = true;
     }
 
     protected AsyncRuntimeException(final @Nullable Throwable cause) {
         super(cause);
-        afterSuper = true;
+    }
+
+    protected AsyncRuntimeException(final @NotNull AsyncRuntimeException e) {
+        super(e.getMessage(), e.getCause());
+        super.fillInStackTrace();
     }
 
     @Override
     public synchronized @NotNull Throwable fillInStackTrace() {
-        if (afterSuper) {
-            return super.fillInStackTrace();
-        }
         return this;
     }
+
+    protected abstract @NotNull AsyncRuntimeException copy();
 }

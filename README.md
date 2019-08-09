@@ -4,6 +4,7 @@
 
 [![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
+[![JitPack](https://jitpack.io/v/hivemq/hivemq-mqtt-client.svg)](https://jitpack.io/#hivemq/hivemq-mqtt-client)
 
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
@@ -46,7 +47,7 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.1.1'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.1.2'
 }
 ```
 
@@ -68,7 +69,7 @@ NOTE: You have to set the compiler version to `1.8` or higher.
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
     </dependencies>
     ...
@@ -85,7 +86,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.1.1'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.1.2'
 }
 ```
 
@@ -98,7 +99,7 @@ dependencies {
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
     </dependencies>
     ...

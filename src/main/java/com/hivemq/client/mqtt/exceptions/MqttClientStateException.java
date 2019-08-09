@@ -32,4 +32,13 @@ public class MqttClientStateException extends AsyncRuntimeException {
     public MqttClientStateException(final @NotNull String message) {
         super(message);
     }
+
+    private MqttClientStateException(final @NotNull MqttClientStateException e) {
+        super(e);
+    }
+
+    @Override
+    protected @NotNull MqttClientStateException copy() {
+        return new MqttClientStateException(this);
+    }
 }

@@ -36,6 +36,16 @@ public class Mqtt3ConnAckException extends Mqtt3MessageException {
         this.connAck = connAck;
     }
 
+    private Mqtt3ConnAckException(final @NotNull Mqtt3ConnAckException e) {
+        super(e);
+        connAck = e.connAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt3ConnAckException copy() {
+        return new Mqtt3ConnAckException(this);
+    }
+
     @Override
     public @NotNull Mqtt3ConnAck getMqttMessage() {
         return connAck;

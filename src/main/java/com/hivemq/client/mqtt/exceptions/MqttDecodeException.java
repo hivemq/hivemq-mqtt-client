@@ -31,4 +31,13 @@ public class MqttDecodeException extends AsyncRuntimeException {
     public MqttDecodeException(final @NotNull String message) {
         super(message);
     }
+
+    private MqttDecodeException(final @NotNull MqttDecodeException e) {
+        super(e);
+    }
+
+    @Override
+    protected @NotNull MqttDecodeException copy() {
+        return new MqttDecodeException(this);
+    }
 }

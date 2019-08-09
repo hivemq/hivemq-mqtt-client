@@ -33,6 +33,16 @@ public class Mqtt5UnsubAckException extends Mqtt5MessageException {
         this.unsubAck = unsubAck;
     }
 
+    private Mqtt5UnsubAckException(final @NotNull Mqtt5UnsubAckException e) {
+        super(e);
+        unsubAck = e.unsubAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt5UnsubAckException copy() {
+        return new Mqtt5UnsubAckException(this);
+    }
+
     @Override
     public @NotNull Mqtt5UnsubAck getMqttMessage() {
         return unsubAck;

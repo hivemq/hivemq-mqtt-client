@@ -32,6 +32,15 @@ public class Mqtt3DisconnectException extends Mqtt3MessageException {
         super(message, cause);
     }
 
+    private Mqtt3DisconnectException(final @NotNull Mqtt3DisconnectException e) {
+        super(e);
+    }
+
+    @Override
+    protected @NotNull Mqtt3DisconnectException copy() {
+        return new Mqtt3DisconnectException(this);
+    }
+
     @Override
     public @NotNull Mqtt3Disconnect getMqttMessage() {
         return Mqtt3DisconnectView.INSTANCE;

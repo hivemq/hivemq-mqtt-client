@@ -33,6 +33,16 @@ public class Mqtt5ConnAckException extends Mqtt5MessageException {
         this.connAck = connAck;
     }
 
+    private Mqtt5ConnAckException(final @NotNull Mqtt5ConnAckException e) {
+        super(e);
+        connAck = e.connAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt5ConnAckException copy() {
+        return new Mqtt5ConnAckException(this);
+    }
+
     @Override
     public @NotNull Mqtt5ConnAck getMqttMessage() {
         return connAck;

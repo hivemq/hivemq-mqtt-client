@@ -33,6 +33,16 @@ public class Mqtt5PubRecException extends Mqtt5MessageException {
         this.pubRec = pubRec;
     }
 
+    private Mqtt5PubRecException(final @NotNull Mqtt5PubRecException e) {
+        super(e);
+        pubRec = e.pubRec;
+    }
+
+    @Override
+    protected @NotNull Mqtt5PubRecException copy() {
+        return new Mqtt5PubRecException(this);
+    }
+
     @Override
     public @NotNull Mqtt5PubRec getMqttMessage() {
         return pubRec;

@@ -33,6 +33,16 @@ public class Mqtt5AuthException extends Mqtt5MessageException {
         this.auth = auth;
     }
 
+    private Mqtt5AuthException(final @NotNull Mqtt5AuthException e) {
+        super(e);
+        auth = e.auth;
+    }
+
+    @Override
+    protected @NotNull Mqtt5AuthException copy() {
+        return new Mqtt5AuthException(this);
+    }
+
     @Override
     public @NotNull Mqtt5Auth getMqttMessage() {
         return auth;

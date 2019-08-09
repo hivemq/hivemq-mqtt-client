@@ -33,6 +33,16 @@ public class Mqtt5PubAckException extends Mqtt5MessageException {
         this.pubAck = pubAck;
     }
 
+    private Mqtt5PubAckException(final @NotNull Mqtt5PubAckException e) {
+        super(e);
+        pubAck = e.pubAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt5PubAckException copy() {
+        return new Mqtt5PubAckException(this);
+    }
+
     @Override
     public @NotNull Mqtt5PubAck getMqttMessage() {
         return pubAck;

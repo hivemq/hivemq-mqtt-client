@@ -38,6 +38,16 @@ public class Mqtt5DisconnectException extends Mqtt5MessageException {
         this.disconnect = disconnect;
     }
 
+    private Mqtt5DisconnectException(final @NotNull Mqtt5DisconnectException e) {
+        super(e);
+        disconnect = e.disconnect;
+    }
+
+    @Override
+    protected @NotNull Mqtt5DisconnectException copy() {
+        return new Mqtt5DisconnectException(this);
+    }
+
     @Override
     public @NotNull Mqtt5Disconnect getMqttMessage() {
         return disconnect;

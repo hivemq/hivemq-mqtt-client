@@ -35,5 +35,9 @@ public abstract class Mqtt5MessageException extends AsyncRuntimeException {
         super(cause.getMessage(), cause);
     }
 
+    Mqtt5MessageException(final @NotNull Mqtt5MessageException e) {
+        super(e);
+    }
+
     public abstract @NotNull Mqtt5Message getMqttMessage();
 }

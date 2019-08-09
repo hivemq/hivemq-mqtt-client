@@ -32,6 +32,15 @@ public class Mqtt3PubAckException extends Mqtt3MessageException {
         super(message, cause);
     }
 
+    private Mqtt3PubAckException(final @NotNull Mqtt3PubAckException e) {
+        super(e);
+    }
+
+    @Override
+    protected @NotNull Mqtt3PubAckException copy() {
+        return new Mqtt3PubAckException(this);
+    }
+
     @Override
     public @NotNull Mqtt3PubAck getMqttMessage() {
         return Mqtt3PubAckView.INSTANCE;

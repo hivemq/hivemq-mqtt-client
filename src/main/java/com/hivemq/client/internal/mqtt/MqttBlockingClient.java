@@ -168,7 +168,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         private final @NotNull AtomicReference<@Nullable Subscription> subscription = new AtomicReference<>();
         private final @NotNull LinkedList<Entry> entries = new LinkedList<>();
         private @Nullable Mqtt5Publish queuedPublish;
-        private boolean cancelled;
+        private @Nullable Throwable error;
 
         MqttPublishes(final @NotNull Flowable<Mqtt5Publish> publishes) {
             publishes.subscribe(this);
@@ -192,7 +192,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         @Override
         public void onNext(final @NotNull Mqtt5Publish publish) {
             synchronized (entries) {
-                if (cancelled) {
+                if (error != null) {
                     return;
                 }
                 Entry entry;
@@ -216,9 +216,10 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         @Override
         public void onError(final @NotNull Throwable t) {
             synchronized (entries) {
-                if (cancelled) {
+                if (error != null) {
                     return;
                 }
+                error = t;
                 Entry entry;
                 while ((entry = entries.poll()) != null) {
                     entry.result.set(t);
@@ -231,8 +232,8 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         public @NotNull Mqtt5Publish receive() throws InterruptedException {
             final Entry entry;
             synchronized (entries) {
-                if (cancelled) {
-                    throw new CancellationException();
+                if (error != null) {
+                    throw handleError(error);
                 }
                 final Mqtt5Publish publish = receiveNowUnsafe();
                 if (publish != null) {
@@ -253,10 +254,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
                 return (Mqtt5Publish) result;
             }
             if (result instanceof Throwable) {
-                if (result instanceof RuntimeException) {
-                    throw AsyncRuntimeException.fillInStackTrace((RuntimeException) result);
-                }
-                throw new RuntimeException((Throwable) result);
+                throw handleError((Throwable) result);
             }
             if (interruptedException != null) {
                 throw interruptedException;
@@ -275,8 +273,8 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
             final Entry entry;
             synchronized (entries) {
-                if (cancelled) {
-                    throw new CancellationException();
+                if (error != null) {
+                    throw handleError(error);
                 }
                 final Mqtt5Publish publish = receiveNowUnsafe();
                 if (publish != null) {
@@ -297,10 +295,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
                 return Optional.of((Mqtt5Publish) result);
             }
             if (result instanceof Throwable) {
-                if (result instanceof RuntimeException) {
-                    throw AsyncRuntimeException.fillInStackTrace((RuntimeException) result);
-                }
-                throw new RuntimeException((Throwable) result);
+                throw handleError((Throwable) result);
             }
             if (interruptedException != null) {
                 throw interruptedException;
@@ -312,8 +307,8 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         public @NotNull Optional<Mqtt5Publish> receiveNow() {
             final Mqtt5Publish publish;
             synchronized (entries) {
-                if (cancelled) {
-                    throw new CancellationException();
+                if (error != null) {
+                    throw handleError(error);
                 }
                 publish = receiveNowUnsafe();
             }
@@ -337,16 +332,23 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
                 subscription.cancel();
             }
             synchronized (entries) {
-                if (cancelled) {
+                if (error != null) {
                     return;
                 }
-                cancelled = true;
+                error = new CancellationException();
                 Entry entry;
                 while ((entry = entries.poll()) != null) {
-                    entry.result.set(new CancellationException());
+                    entry.result.set(error);
                     entry.latch.countDown();
                 }
             }
+        }
+
+        private @NotNull RuntimeException handleError(final @NotNull Throwable t) {
+            if (t instanceof RuntimeException) {
+                return AsyncRuntimeException.fillInStackTrace((RuntimeException) t);
+            }
+            throw new RuntimeException(t);
         }
 
         private static class Entry {

@@ -33,6 +33,16 @@ public class Mqtt5SubAckException extends Mqtt5MessageException {
         this.subAck = subAck;
     }
 
+    private Mqtt5SubAckException(final @NotNull Mqtt5SubAckException e) {
+        super(e);
+        subAck = e.subAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt5SubAckException copy() {
+        return new Mqtt5SubAckException(this);
+    }
+
     @Override
     public @NotNull Mqtt5SubAck getMqttMessage() {
         return subAck;

@@ -35,4 +35,13 @@ public class ConnectionFailedException extends AsyncRuntimeException {
     public ConnectionFailedException(final @NotNull Throwable cause) {
         super(cause);
     }
+
+    private ConnectionFailedException(final @NotNull ConnectionFailedException e) {
+        super(e);
+    }
+
+    @Override
+    protected @NotNull ConnectionFailedException copy() {
+        return new ConnectionFailedException(this);
+    }
 }

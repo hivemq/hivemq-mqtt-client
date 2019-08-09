@@ -32,6 +32,15 @@ public class Mqtt3PubRecException extends Mqtt3MessageException {
         super(message, cause);
     }
 
+    private Mqtt3PubRecException(final @NotNull Mqtt3PubRecException e) {
+        super(e);
+    }
+
+    @Override
+    protected @NotNull Mqtt3PubRecException copy() {
+        return new Mqtt3PubRecException(this);
+    }
+
     @Override
     public @NotNull Mqtt3PubRec getMqttMessage() {
         return Mqtt3PubRecView.INSTANCE;

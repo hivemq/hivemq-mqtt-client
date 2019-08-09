@@ -35,4 +35,13 @@ public class ConnectionClosedException extends AsyncRuntimeException {
     public ConnectionClosedException(final @NotNull Throwable cause) {
         super(cause);
     }
+
+    private ConnectionClosedException(final @NotNull ConnectionClosedException e) {
+        super(e);
+    }
+
+    @Override
+    protected @NotNull ConnectionClosedException copy() {
+        return new ConnectionClosedException(this);
+    }
 }
