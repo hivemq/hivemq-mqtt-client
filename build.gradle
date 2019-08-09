@@ -57,6 +57,7 @@ allprojects {
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'com.github.hierynomus.license'
+    apply plugin: 'biz.aQute.bnd.builder'
 }
 
 allprojects {
