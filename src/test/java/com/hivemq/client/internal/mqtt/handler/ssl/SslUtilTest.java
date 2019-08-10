@@ -19,6 +19,9 @@ package com.hivemq.client.internal.mqtt.handler.ssl;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImplBuilder;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.ssl.JdkSslClientContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -161,10 +164,11 @@ public class SslUtilTest {
     }
 
     private List<String> getEnabledCipherSuites() throws Exception {
-        final SSLContext context = SSLContext.getInstance("TLS");
-        context.init(null, null, null);
-        final SSLEngine sslEngine = context.createSSLEngine();
-        return Arrays.asList(sslEngine.getEnabledCipherSuites());
+        return Arrays.asList(SslContextBuilder.forClient()
+                .sslProvider(SslProvider.JDK)
+                .build()
+                .newEngine(new EmbeddedChannel().alloc())
+                .getEnabledCipherSuites());
     }
 
     private List<String> getEnabledProtocols() throws Exception {
