@@ -11,4 +11,4 @@ The documentation uses [Jekyll](https://jekyllrb.com/) as a static site generato
 ## Build
 
 1. `bundler exec jekyll serve` (add `--incremental` for incremental and shorter builds)
-1. Open your browser at `localhost:4000`
+1. Open your browser at http://localhost:4000/
