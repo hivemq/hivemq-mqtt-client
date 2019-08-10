@@ -33,19 +33,20 @@ public final class SslUtil {
 
     private static final @NotNull String SSL_HANDLER_NAME = "ssl";
 
-    public static void initChannel(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)
-            throws SSLException {
+    public static void initChannel(
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
+            final @NotNull String host, final int port) throws SSLException {
 
-        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig));
+        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig, host, port));
     }
 
     private static @NotNull SslHandler createSslHandler(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-        return createSslContext(sslConfig).newHandler(channel.alloc());
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
+            final @NotNull String host, final int port) throws SSLException {
+        return createSslContext(sslConfig).newHandler(channel.alloc(), host, port);
     }
 
-    static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig)
-            throws SSLException {
+    static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
                 .sslProvider(SslProvider.JDK)
