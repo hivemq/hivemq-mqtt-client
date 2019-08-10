@@ -41,25 +41,10 @@ public final class SslUtil {
 
     private static @NotNull SslHandler createSslHandler(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-
-        final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
-        final SslHandler sslHandler = new SslHandler(sslEngine);
-
-        sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
-        return sslHandler;
+        return createSslContext(sslConfig).newHandler(channel.alloc());
     }
 
-    static @NotNull SSLEngine createSslEngine(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-
-        final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
-
-        sslEngine.setUseClientMode(true);
-
-        return sslEngine;
-    }
-
-    private static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig)
+    static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig)
             throws SSLException {
 
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
@@ -74,7 +59,17 @@ public final class SslUtil {
 
         sslContextBuilder.ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
 
-        return sslContextBuilder.build();
+        return new DelegatingSslContext(sslContextBuilder.build()) {
+            @Override
+            protected void initEngine(@NotNull final SSLEngine engine) {
+                engine.setUseClientMode(true);
+            }
+
+            @Override
+            protected void initHandler(@NotNull final SslHandler handler) {
+                handler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
+            }
+        };
     }
 
     private SslUtil() {}
