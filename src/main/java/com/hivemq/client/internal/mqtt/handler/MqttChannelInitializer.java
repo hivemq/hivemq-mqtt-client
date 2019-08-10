@@ -119,7 +119,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     private void initSsl(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)
             throws SSLException {
 
-        SslUtil.initChannel(channel, sslConfig);
+        SslUtil.initChannel(channel, sslConfig, clientConfig.getServerHost(), clientConfig.getServerPort());
     }
 
     @Override
