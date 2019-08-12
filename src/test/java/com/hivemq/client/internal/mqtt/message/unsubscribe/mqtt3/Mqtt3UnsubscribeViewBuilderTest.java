@@ -21,7 +21,6 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.junit.jupiter.api.Test;
-import util.implementations.CustomMqttTopicFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Michael Walter
@@ -50,7 +50,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
     @Test
     void addTopicFilter_error_when_topic_object_is_implemented() {
         assertThrows(IllegalArgumentException.class,
-                () -> Mqtt3Unsubscribe.builder().addTopicFilter(new CustomMqttTopicFilter()));
+                () -> Mqtt3Unsubscribe.builder().addTopicFilter(mock(MqttTopicFilter.class)));
     }
 
     @Test
@@ -325,7 +325,11 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter()
-                .addLevel("first").addLevel("second").multiLevelWildcard().applyTopicFilter().addTopicFilters(topics)
+                .addLevel("first")
+                .addLevel("second")
+                .multiLevelWildcard()
+                .applyTopicFilter()
+                .addTopicFilters(topics)
                 .build();
 
         final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
@@ -366,7 +370,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
     void addTopicFilters_error_when_topic_object_is_implemented() {
 
         final ImmutableList<MqttTopicFilter> topicFilters =
-                ImmutableList.of(MqttTopicFilter.of("test"), new CustomMqttTopicFilter());
+                ImmutableList.of(MqttTopicFilter.of("test"), mock(MqttTopicFilter.class));
 
         assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(topicFilters));
     }

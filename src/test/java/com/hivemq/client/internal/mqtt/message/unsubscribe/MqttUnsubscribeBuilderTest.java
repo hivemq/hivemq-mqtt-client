@@ -21,7 +21,6 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.junit.jupiter.api.Test;
-import util.implementations.CustomMqttTopicFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Michael Walter
@@ -50,7 +50,7 @@ class MqttUnsubscribeBuilderTest {
     @Test
     void addTopicFilter_error_when_topic_object_is_implemented() {
         assertThrows(IllegalArgumentException.class,
-                () -> Mqtt5Unsubscribe.builder().addTopicFilter(new CustomMqttTopicFilter()));
+                () -> Mqtt5Unsubscribe.builder().addTopicFilter(mock(MqttTopicFilter.class)));
     }
 
     @Test
@@ -325,7 +325,11 @@ class MqttUnsubscribeBuilderTest {
 
         final Mqtt5Unsubscribe subscribe = Mqtt5Unsubscribe.builder()
                 .topicFilter()
-                .addLevel("first").addLevel("second").multiLevelWildcard().applyTopicFilter().addTopicFilters(topics)
+                .addLevel("first")
+                .addLevel("second")
+                .multiLevelWildcard()
+                .applyTopicFilter()
+                .addTopicFilters(topics)
                 .build();
 
         final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
@@ -366,7 +370,7 @@ class MqttUnsubscribeBuilderTest {
     void addTopicFilters_error_when_topic_object_is_implemented() {
 
         final ImmutableList<MqttTopicFilter> topicFilters =
-                ImmutableList.of(MqttTopicFilter.of("test"), new CustomMqttTopicFilter());
+                ImmutableList.of(MqttTopicFilter.of("test"), mock(MqttTopicFilter.class));
 
         assertThrows(IllegalArgumentException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilters(topicFilters));
     }
