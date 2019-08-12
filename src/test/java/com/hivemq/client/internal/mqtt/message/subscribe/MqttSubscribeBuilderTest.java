@@ -25,12 +25,12 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import util.implementations.CustomMqtt5Subscription;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Michael Walter
@@ -46,7 +46,7 @@ class MqttSubscribeBuilderTest {
     void addSubscription_error_when_subscription_is_implemented() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> Mqtt5Subscribe.builder().addSubscription(new CustomMqtt5Subscription()));
+                () -> Mqtt5Subscribe.builder().addSubscription(mock(Mqtt5Subscription.class)));
     }
 
     @Test
@@ -176,7 +176,7 @@ class MqttSubscribeBuilderTest {
 
         final List<Mqtt5Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);
-        subscriptions.add(new CustomMqtt5Subscription());
+        subscriptions.add(mock(Mqtt5Subscription.class));
 
         final Mqtt5SubscribeBuilder.Complete builder = Mqtt5Subscribe.builder().topicFilter("first");
         assertThrows(IllegalArgumentException.class, () -> builder.addSubscriptions(subscriptions));

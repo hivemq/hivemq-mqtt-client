@@ -24,12 +24,12 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import util.implementations.CustomMqtt3Subscription;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Michael Walter
@@ -45,7 +45,7 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscription_error_when_subscription_is_implemented() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> Mqtt3Subscribe.builder().addSubscription(new CustomMqtt3Subscription()));
+                () -> Mqtt3Subscribe.builder().addSubscription(mock(Mqtt3Subscription.class)));
     }
 
     @Test
@@ -164,7 +164,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
         final List<Mqtt3Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);
-        subscriptions.add(new CustomMqtt3Subscription());
+        subscriptions.add(mock(Mqtt3Subscription.class));
 
         final Mqtt3SubscribeBuilder.Complete builder = Mqtt3Subscribe.builder().topicFilter("first");
         assertThrows(IllegalArgumentException.class, () -> builder.addSubscriptions(subscriptions));

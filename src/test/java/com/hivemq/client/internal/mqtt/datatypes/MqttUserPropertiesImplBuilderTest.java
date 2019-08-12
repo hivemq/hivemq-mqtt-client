@@ -23,12 +23,12 @@ import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import util.implementations.CustomUserProperty;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Michael Walter
@@ -49,7 +49,7 @@ class MqttUserPropertiesImplBuilderTest {
 
         final List<Mqtt5UserProperty> userProperties = new ArrayList<>();
         userProperties.add(userProperty);
-        userProperties.add(new CustomUserProperty());
+        userProperties.add(mock(Mqtt5UserProperty.class));
 
         final Mqtt5UserPropertiesBuilder userPropertiesBuilder = Mqtt5UserProperties.builder();
 
