@@ -63,7 +63,6 @@ public final class SslUtil {
         return new DelegatingSslContext(sslContextBuilder.build()) {
             @Override
             protected void initEngine(@NotNull final SSLEngine engine) {
-                engine.setUseClientMode(true);
             }
 
             @Override
