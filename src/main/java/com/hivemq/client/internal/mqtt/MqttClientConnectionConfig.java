@@ -49,7 +49,7 @@ public class MqttClientConnectionConfig
 
     private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final short keepAlive;
-    private final int sessionExpiryInterval;
+    private volatile int sessionExpiryInterval;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private final short receiveMaximum;
     private final int maximumPacketSize;
@@ -140,6 +140,10 @@ public class MqttClientConnectionConfig
     @Override
     public long getSessionExpiryInterval() {
         return sessionExpiryInterval & UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
+    }
+
+    public void setSessionExpiryInterval(final long sessionExpiryInterval) {
+        this.sessionExpiryInterval = (int) sessionExpiryInterval;
     }
 
     @Override
