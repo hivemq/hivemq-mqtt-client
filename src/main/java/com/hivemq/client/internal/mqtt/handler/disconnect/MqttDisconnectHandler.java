@@ -36,8 +36,6 @@ import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
@@ -134,6 +132,49 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         super.onDisconnectEvent(disconnectEvent);
         once = false;
 
+        if (disconnectEvent.getSource() == MqttDisconnectSource.SERVER) {
+            disconnected(ctx, disconnectEvent);
+            ctx.channel().close();
+            return;
+        }
+
+        final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
+        if (disconnect != null) {
+
+            final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+            if (connectionConfig != null) {
+                final long sessionExpiryInterval = disconnect.getRawSessionExpiryInterval();
+                if (sessionExpiryInterval != MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
+                    connectionConfig.setSessionExpiryInterval(sessionExpiryInterval);
+                }
+            }
+
+            if (disconnectEvent instanceof MqttDisconnectEvent.ByUser) {
+                final CompletableFlow flow = ((MqttDisconnectEvent.ByUser) disconnectEvent).getFlow();
+                ctx.writeAndFlush(disconnect).addListener(f -> ctx.channel().close().addListener(cf -> {
+                    disconnected(ctx, disconnectEvent);
+                    if (f.isSuccess()) {
+                        flow.onComplete();
+                    } else {
+                        flow.onError(new ConnectionClosedException(f.cause()));
+                    }
+                }));
+
+            } else if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {
+                ctx.writeAndFlush(disconnect)
+                        .addListener(f -> ctx.channel().close().addListener(cf -> disconnected(ctx, disconnectEvent)));
+
+            } else {
+                ctx.channel().close().addListener(cf -> disconnected(ctx, disconnectEvent));
+            }
+        } else {
+            ctx.channel().close().addListener(cf -> disconnected(ctx, disconnectEvent));
+        }
+    }
+
+    private void disconnected(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
         final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
         if (connectionConfig != null) {
             session.expire(disconnectEvent.getCause(), connectionConfig, ctx.channel().eventLoop());
@@ -141,31 +182,6 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             reconnect(disconnectEvent, connectionConfig, ctx.channel().eventLoop());
 
             clientConfig.setConnectionConfig(null);
-        }
-
-        if (disconnectEvent.getSource() == MqttDisconnectSource.SERVER) {
-            ctx.channel().close();
-        } else {
-            final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
-            if (disconnect != null) {
-                if (disconnectEvent instanceof MqttDisconnectEvent.ByUser) {
-                    final CompletableFlow flow = ((MqttDisconnectEvent.ByUser) disconnectEvent).getFlow();
-                    ctx.writeAndFlush(disconnect).addListener((ChannelFuture future) -> {
-                        future.channel().close();
-                        if (future.isSuccess()) {
-                            flow.onComplete();
-                        } else {
-                            flow.onError(new ConnectionClosedException(future.cause()));
-                        }
-                    });
-                } else if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {
-                    ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
-                } else {
-                    ctx.channel().close();
-                }
-            } else {
-                ctx.channel().close();
-            }
         }
     }
 
