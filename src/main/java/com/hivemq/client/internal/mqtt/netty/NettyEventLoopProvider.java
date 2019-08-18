@@ -24,6 +24,8 @@ import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImpl;
 import io.netty.channel.ChannelFactory;
 import io.netty.channel.EventLoop;
 import io.netty.channel.MultithreadEventLoopGroup;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.ThreadPerTaskExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,15 +58,28 @@ public class NettyEventLoopProvider {
     public synchronized @NotNull EventLoop acquireEventLoop(final @Nullable Executor executor, final int threadCount) {
         Entry entry = entries.get(executor);
         if (entry == null) {
-            entry = new Entry(eventLoopGroupFactory.apply(threadCount, executor));
+            final MultithreadEventLoopGroup eventLoopGroup;
+            if (executor == null) {
+                eventLoopGroup = eventLoopGroupFactory.apply(threadCount,
+                        new ThreadPerTaskExecutor(new DefaultThreadFactory("com.hivemq.client.mqtt")));
+
+            } else if (executor instanceof MultithreadEventLoopGroup) {
+                eventLoopGroup = (MultithreadEventLoopGroup) executor;
+                if ((threadCount != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
+                        (eventLoopGroup.executorCount() != threadCount)) {
+                    LOGGER.warn("Tried to use a different amount of Netty threads for the provided event loop. " +
+                            "Using {} threads instead of {}", eventLoopGroup.executorCount(), threadCount);
+                }
+            } else {
+                eventLoopGroup = eventLoopGroupFactory.apply(threadCount, executor);
+            }
+            entry = new Entry(eventLoopGroup);
             entries.put(executor, entry);
         } else {
-            final int previousThreadCount = entry.eventLoopGroup.executorCount();
             if ((threadCount != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
-                    (previousThreadCount != threadCount)) {
-                LOGGER.warn(
-                        "Tried to use a different amount of Netty threads for the same executor. Using {} threads instead of {}",
-                        previousThreadCount, threadCount);
+                    (entry.eventLoopGroup.executorCount() != threadCount)) {
+                LOGGER.warn("Tried to use a different amount of Netty threads for the same executor. " +
+                        "Using {} threads instead of {}", entry.eventLoopGroup.executorCount(), threadCount);
             }
             entry.referenceCount++;
         }
@@ -74,7 +89,9 @@ public class NettyEventLoopProvider {
     public synchronized void releaseEventLoop(final @Nullable Executor executor) {
         final Entry entry = entries.get(executor);
         if (--entry.referenceCount == 0) {
-            entry.eventLoopGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS);
+            if (!(executor instanceof MultithreadEventLoopGroup)) {
+                entry.eventLoopGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS);
+            }
             entries.remove(executor);
         }
     }
