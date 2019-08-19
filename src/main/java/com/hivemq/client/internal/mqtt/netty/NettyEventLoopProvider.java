@@ -21,9 +21,15 @@ import com.hivemq.client.internal.annotations.ThreadSafe;
 import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImpl;
+import com.hivemq.client.internal.util.ClassUtil;
 import io.netty.channel.ChannelFactory;
 import io.netty.channel.EventLoop;
 import io.netty.channel.MultithreadEventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.ThreadPerTaskExecutor;
 import org.jetbrains.annotations.NotNull;
@@ -43,11 +49,36 @@ public class NettyEventLoopProvider {
 
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(NettyEventLoopProvider.class);
 
+    public static final @NotNull NettyEventLoopProvider INSTANCE;
+
+    static {
+        if (ClassUtil.isAvailable("io.netty.channel.epoll.Epoll")) {
+            INSTANCE = EpollHolder.eventLoopProvider();
+        } else {
+            INSTANCE = nioEventLoopProvider();
+        }
+    }
+
+    private static NettyEventLoopProvider nioEventLoopProvider() {
+        return new NettyEventLoopProvider(NioEventLoopGroup::new, NioSocketChannel::new);
+    }
+
+    private static class EpollHolder {
+
+        private static NettyEventLoopProvider eventLoopProvider() {
+            if (Epoll.isAvailable()) {
+                return new NettyEventLoopProvider(EpollEventLoopGroup::new, EpollSocketChannel::new);
+            } else {
+                return nioEventLoopProvider();
+            }
+        }
+    }
+
     private final @NotNull Map<@Nullable Executor, @NotNull Entry> entries = new HashMap<>();
     private final @NotNull BiFunction<Integer, Executor, MultithreadEventLoopGroup> eventLoopGroupFactory;
     private final @NotNull ChannelFactory<?> channelFactory;
 
-    NettyEventLoopProvider(
+    private NettyEventLoopProvider(
             final @NotNull BiFunction<Integer, Executor, MultithreadEventLoopGroup> eventLoopGroupFactory,
             final @NotNull ChannelFactory<?> channelFactory) {
 

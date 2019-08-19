@@ -15,28 +15,22 @@
  *
  */
 
-package com.hivemq.client.internal.logging;
+package com.hivemq.client.internal.util;
 
-import com.hivemq.client.internal.util.ClassUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public final class InternalLoggerFactory {
+public final class ClassUtil {
 
-    private static final boolean SLF4J_AVAILABLE;
-
-    static {
-        SLF4J_AVAILABLE = ClassUtil.isAvailable("org.slf4j.Logger");
-    }
-
-    public static @NotNull InternalLogger getLogger(final @NotNull Class<?> clazz) {
-        if (SLF4J_AVAILABLE) {
-            return new InternalSlf4jLogger(clazz);
+    public static boolean isAvailable(final @NotNull String className) {
+        try {
+            return Class.forName(className) != null;
+        } catch (final ClassNotFoundException e) {
+            return false;
         }
-        return new InternalNoopLogger(clazz);
     }
 
-    private InternalLoggerFactory() {}
+    private ClassUtil() {}
 }

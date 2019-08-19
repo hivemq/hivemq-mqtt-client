@@ -17,8 +17,6 @@
 
 package com.hivemq.client.internal.mqtt.ioc;
 
-import com.hivemq.client.internal.mqtt.netty.NettyEventLoopProvider;
-import com.hivemq.client.internal.mqtt.netty.NettyModule;
 import dagger.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,13 +27,11 @@ import javax.inject.Singleton;
  *
  * @author Silvio Giebl
  */
-@Component(modules = {NettyModule.class})
+@Component
 @Singleton
 public interface SingletonComponent {
 
     @NotNull SingletonComponent INSTANCE = DaggerSingletonComponent.create();
 
     @NotNull ClientComponent.Builder clientComponentBuilder();
-
-    @NotNull NettyEventLoopProvider nettyEventLoopProvider();
 }

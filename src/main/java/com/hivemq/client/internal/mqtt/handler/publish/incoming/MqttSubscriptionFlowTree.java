@@ -119,7 +119,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         private int multiLevelSubscriptions;
         private boolean hasSingleLevelSubscription;
 
-        private TopicTreeNode(
+        TopicTreeNode(
                 final @NotNull ByteArray parentLevel, final @Nullable MqttTopicLevel level,
                 final @Nullable TopicTreeEntry entry) {
 
