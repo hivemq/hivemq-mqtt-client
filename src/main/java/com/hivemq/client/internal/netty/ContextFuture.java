@@ -15,26 +15,21 @@
  *
  */
 
-package com.hivemq.client.internal.util.netty;
+package com.hivemq.client.internal.netty;
 
-import io.netty.channel.Channel;
-import io.netty.channel.DefaultChannelPromise;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelPromise;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public class DefaultContextPromise<C> extends DefaultChannelPromise implements ContextFuture.Promise<C> {
+public interface ContextFuture<C> extends ChannelFuture {
 
-    private final @NotNull C context;
+    @NotNull C getContext();
 
-    public DefaultContextPromise(final @NotNull Channel channel, final @NotNull C context) {
-        super(channel);
-        this.context = context;
-    }
+    interface Promise<C> extends ChannelPromise, ContextFuture<C> {}
 
-    @Override
-    public @NotNull C getContext() {
-        return context;
-    }
+    interface Listener<C> extends GenericFutureListener<ContextFuture<? extends C>> {}
 }

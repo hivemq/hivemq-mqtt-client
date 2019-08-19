@@ -15,7 +15,7 @@
  *
  */
 
-package com.hivemq.client.internal.util.netty;
+package com.hivemq.client.internal.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandler;

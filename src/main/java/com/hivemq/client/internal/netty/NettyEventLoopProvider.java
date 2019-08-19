@@ -15,7 +15,7 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt.netty;
+package com.hivemq.client.internal.netty;
 
 import com.hivemq.client.internal.annotations.ThreadSafe;
 import com.hivemq.client.internal.logging.InternalLogger;

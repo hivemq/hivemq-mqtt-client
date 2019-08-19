@@ -23,7 +23,7 @@ import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client.internal.mqtt.message.ping.MqttPingReq;
 import com.hivemq.client.internal.mqtt.message.ping.MqttPingResp;
-import com.hivemq.client.internal.util.netty.DefaultChannelOutboundHandler;
+import com.hivemq.client.internal.netty.DefaultChannelOutboundHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

@@ -23,7 +23,7 @@ import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.ioc.SingletonComponent;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
-import com.hivemq.client.internal.mqtt.netty.NettyEventLoopProvider;
+import com.hivemq.client.internal.netty.NettyEventLoopProvider;
 import com.hivemq.client.internal.util.ExecutorUtil;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientState;
