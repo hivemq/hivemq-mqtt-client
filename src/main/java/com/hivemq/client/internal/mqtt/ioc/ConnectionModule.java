@@ -22,7 +22,7 @@ import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttConnectAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.netty.NettyEventLoopProvider;
+import com.hivemq.client.internal.netty.NettyEventLoopProvider;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
