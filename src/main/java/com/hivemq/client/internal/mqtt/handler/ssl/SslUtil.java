@@ -43,24 +43,22 @@ public final class SslUtil {
     private static @NotNull SslHandler createSslHandler(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
             final @NotNull String host, final int port) throws SSLException {
+
         return createSslContext(sslConfig).newHandler(channel.alloc(), host, port);
     }
 
     static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
-        final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
-                .sslProvider(SslProvider.JDK)
-                .trustManager(sslConfig.getRawTrustManagerFactory())
-                .keyManager(sslConfig.getRawKeyManagerFactory());
-
         final ImmutableList<String> protocols = sslConfig.getRawProtocols();
-        //noinspection ToArrayCallWithZeroLengthArrayArgument
-        final String[] protocolArray = (protocols == null) ? null : protocols.toArray(new String[protocols.size()]);
-        sslContextBuilder.protocols(protocolArray);
 
-        sslContextBuilder.ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
+        final SslContext sslContext = SslContextBuilder.forClient()
+                .trustManager(sslConfig.getRawTrustManagerFactory())
+                .keyManager(sslConfig.getRawKeyManagerFactory())
+                .protocols((protocols == null) ? null : protocols.toArray(new String[0]))
+                .ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE)
+                .build();
 
-        return new DelegatingSslContext(sslContextBuilder.build()) {
+        return new DelegatingSslContext(sslContext) {
             @Override
             protected void initEngine(@NotNull final SSLEngine engine) {
             }
