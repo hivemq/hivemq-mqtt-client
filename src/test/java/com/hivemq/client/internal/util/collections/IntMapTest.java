@@ -339,6 +339,11 @@ class IntMapTest {
         }
 
         @Override
+        public int hashCode() {
+            return 31 * id + value.hashCode();
+        }
+
+        @Override
         public @NotNull String toString() {
             return "Entry{" + "id=" + id + ", value='" + value + '\'' + '}';
         }
