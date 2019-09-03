@@ -17,12 +17,14 @@
 
 package com.hivemq.client.internal.util.collections;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,206 +33,314 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class IntMapTest {
 
-    @ParameterizedTest
-    @ValueSource(ints = {12, 1 << 10, 1 << 16, 1 << 28})
-    void put_present(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        map.put(10, "test10");
-        map.put(10, "test10_2");
-        assertEquals("test10_2", map.get(10));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {12, 1 << 10, 1 << 16, 1 << 28})
-    void get_present(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        map.put(9, "test9");
-        map.put(10, "test10");
-        assertEquals("test10", map.get(10));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {12, 1 << 10, 1 << 16, 1 << 28})
-    void get_not_present(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        map.put(9, "test9");
-        assertNull(map.get(10));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {12, 1 << 10, 1 << 16, 1 << 28})
-    void remove_present(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        map.put(9, "test9");
-        map.put(10, "test10");
-        map.remove(10);
-        assertEquals("test9", map.get(9));
-        assertNull(map.get(10));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {12, 1 << 10, 1 << 16, 1 << 28})
-    void remove_not_present(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        map.put(9, "test9");
-        map.remove(10);
-        assertEquals("test9", map.get(9));
-        assertNull(map.get(10));
+    @Test
+    void put_not_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.put(new Entry(2, "test2")));
+        assertNull(map.put(new Entry(3, "test3")));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(new Entry(3, "test3"), map.get(3));
+        assertEquals(2, map.size());
     }
 
     @Test
-    void put_get_max_size() {
-        final IntMap<String> map = IntMap.range(0, Integer.MAX_VALUE);
-        map.put(Integer.MAX_VALUE, "max_value");
-        assertEquals("max_value", map.get(Integer.MAX_VALUE));
+    void put_not_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.put(new Entry(2, "test2")));
+        assertNull(map.put(new Entry(2 + 16, "test18")));
+        assertNull(map.put(new Entry(2 + 32, "test34")));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(new Entry(2 + 16, "test18"), map.get(2 + 16));
+        assertEquals(new Entry(2 + 32, "test34"), map.get(2 + 32));
+        assertEquals(3, map.size());
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
-    void put_boundaries(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.put(-1, "test-1"));
-        map.put(0, "test0");
-        map.put(size, "test" + size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.put(size + 1, "test" + (size + 1)));
+    @Test
+    void put_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.put(new Entry(10, "test1")));
+        assertEquals(new Entry(10, "test1"), map.put(new Entry(10, "test2")));
+        assertEquals(new Entry(10, "test2"), map.get(10));
+        assertEquals(1, map.size());
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
-    void put_boundaries_minKey(final int size) {
-        final IntMap<String> map = IntMap.range(3, 3 + size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.put(2, "test2"));
-        map.put(3, "test3");
-        map.put(3 + size, "test" + (3 + size));
-        assertThrows(IndexOutOfBoundsException.class, () -> map.put(3 + size + 1, "test" + (3 + size + 1)));
+    @Test
+    void put_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.put(new Entry(10, "test1")));
+        assertNull(map.put(new Entry(10 + 16, "test2")));
+        assertNull(map.put(new Entry(10 + 32, "test3")));
+        assertEquals(new Entry(10 + 32, "test3"), map.put(new Entry(10 + 32, "test4")));
+        assertEquals(new Entry(10 + 16, "test2"), map.put(new Entry(10 + 16, "test5")));
+        assertEquals(new Entry(10, "test1"), map.put(new Entry(10, "test6")));
+        assertEquals(new Entry(10, "test6"), map.get(10));
+        assertEquals(new Entry(10 + 16, "test5"), map.get(10 + 16));
+        assertEquals(new Entry(10 + 32, "test4"), map.get(10 + 32));
+        assertEquals(3, map.size());
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
-    void get_boundaries(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.get(-1));
-        map.get(0);
-        map.get(size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.get(size + 1));
+    @Test
+    void putIfAbsent_not_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.putIfAbsent(new Entry(2, "test2")));
+        assertNull(map.putIfAbsent(new Entry(3, "test3")));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(new Entry(3, "test3"), map.get(3));
+        assertEquals(2, map.size());
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
-    void get_boundaries_minKey(final int size) {
-        final IntMap<String> map = IntMap.range(3, 3 + size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.get(2));
-        map.get(3);
-        map.get(3 + size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.get(3 + size + 1));
+    @Test
+    void putIfAbsent_not_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.putIfAbsent(new Entry(2, "test2")));
+        assertNull(map.putIfAbsent(new Entry(2 + 16, "test18")));
+        assertNull(map.putIfAbsent(new Entry(2 + 32, "test34")));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(new Entry(2 + 16, "test18"), map.get(2 + 16));
+        assertEquals(new Entry(2 + 32, "test34"), map.get(2 + 32));
+        assertEquals(3, map.size());
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
-    void remove_boundaries(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(-1));
-        map.remove(0);
-        map.remove(size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(size + 1));
+    @Test
+    void putIfAbsent_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.putIfAbsent(new Entry(10, "test1")));
+        assertEquals(new Entry(10, "test1"), map.putIfAbsent(new Entry(10, "test2")));
+        assertEquals(new Entry(10, "test1"), map.get(10));
+        assertEquals(1, map.size());
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
-    void remove_boundaries_minKey(final int size) {
-        final IntMap<String> map = IntMap.range(3, 3 + size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(2));
-        map.remove(3);
-        map.remove(3 + size);
-        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(3 + size + 1));
+    @Test
+    void putIfAbsent_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        assertNull(map.putIfAbsent(new Entry(10, "test1")));
+        assertNull(map.putIfAbsent(new Entry(10 + 16, "test2")));
+        assertNull(map.putIfAbsent(new Entry(10 + 32, "test3")));
+        assertEquals(new Entry(10 + 32, "test3"), map.putIfAbsent(new Entry(10 + 32, "test4")));
+        assertEquals(new Entry(10 + 16, "test2"), map.putIfAbsent(new Entry(10 + 16, "test5")));
+        assertEquals(new Entry(10, "test1"), map.putIfAbsent(new Entry(10, "test6")));
+        assertEquals(new Entry(10, "test1"), map.get(10));
+        assertEquals(new Entry(10 + 16, "test2"), map.get(10 + 16));
+        assertEquals(new Entry(10 + 32, "test3"), map.get(10 + 32));
+        assertEquals(3, map.size());
     }
 
-    @ParameterizedTest
-    @CsvSource({"16, 4", "65536, 32", "65536, 64"})
-    void put_remove_sequential(final int size, final int chunk) {
-        final IntMap<String> map = IntMap.range(0, size - 1);
-        for (int i = 0; i < chunk * 2; i++) {
-            map.put(i, "test" + i);
-        }
-        for (int i = 0; i < chunk; i++) {
-            assertEquals("test" + i, map.remove(i));
-        }
-        for (int i = chunk * 2; i < size; i += chunk) {
-            for (int j = 0; j < chunk; j++) {
-                map.put(i + j, "test" + (i + j));
-            }
-            for (int j = -chunk; j < 0; j++) {
-                assertEquals("test" + (i + j), map.remove(i + j));
-            }
-        }
-        for (int i = size - chunk; i < size; i++) {
-            assertEquals("test" + i, map.remove(i));
-        }
+    @Test
+    void get_not_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        assertNull(map.get(3));
+    }
+
+    @Test
+    void get_not_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        assertNull(map.get(2 + 48));
+        map.put(new Entry(2 + 16, "test18"));
+        assertNull(map.get(2 + 48));
+        map.put(new Entry(2 + 32, "test34"));
+        assertNull(map.get(2 + 48));
+    }
+
+    @Test
+    void get_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+    }
+
+    @Test
+    void get_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        map.put(new Entry(2 + 16, "test18"));
+        map.put(new Entry(2 + 32, "test34"));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(new Entry(2 + 16, "test18"), map.get(2 + 16));
+        assertEquals(new Entry(2 + 32, "test34"), map.get(2 + 32));
+    }
+
+    @Test
+    void remove_not_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        assertNull(map.remove(3));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(1, map.size());
+    }
+
+    @Test
+    void remove_not_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        assertNull(map.remove(2 + 48));
+        map.put(new Entry(2 + 16, "test18"));
+        assertNull(map.remove(2 + 48));
+        map.put(new Entry(2 + 32, "test34"));
+        assertNull(map.remove(2 + 48));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(new Entry(2 + 16, "test18"), map.get(2 + 16));
+        assertEquals(new Entry(2 + 32, "test34"), map.get(2 + 32));
+        assertEquals(3, map.size());
+    }
+
+    @Test
+    void remove_present() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        map.put(new Entry(3, "test3"));
+        assertEquals(new Entry(3, "test3"), map.remove(3));
+        assertEquals(new Entry(2, "test2"), map.get(2));
+        assertEquals(1, map.size());
+    }
+
+    @Test
+    void remove_present_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        map.put(new Entry(2, "test2"));
+        map.put(new Entry(2 + 16, "test18"));
+        map.put(new Entry(2 + 32, "test34"));
+        assertEquals(new Entry(2, "test2"), map.remove(2));
+        assertEquals(new Entry(2 + 16, "test18"), map.get(2 + 16));
+        assertEquals(new Entry(2 + 32, "test34"), map.get(2 + 32));
+        assertEquals(2, map.size());
     }
 
     @Test
     void size() {
-        final IntMap<String> map = IntMap.range(0, 256);
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
         final int[] keys = {0, 1, 3, 10, 100, 101, 102, 256};
         for (final int key : keys) {
-            map.put(key, "test" + key);
+            map.put(new Entry(key, "test" + key));
         }
         assertEquals(keys.length, map.size());
-    }
-
-    @CsvSource({"0, 10", "1, 10", "5, 1000"})
-    @ParameterizedTest
-    void getMinKey_getMaxKey(final int minKey, final int maxKey) {
-        final IntMap<String> map = IntMap.range(minKey, maxKey);
-        assertEquals(minKey, map.getMinKey());
-        assertEquals(maxKey, map.getMaxKey());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {16, 256})
     void clear(final int size) {
-        final IntMap<String> map = IntMap.range(0, size);
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
         for (int i = 0; i < size; i += 3) {
-            map.put(i, "test" + i);
+            map.put(new Entry(i, "test" + i));
         }
         map.clear();
         assertEquals(0, map.size());
-        for (int i = 0; i < size; i += 3) {
+        for (int i = 0; i < size; i++) {
             assertNull(map.get(i));
         }
     }
 
-    @CsvSource({"false", "true"})
-    @ParameterizedTest
-    void forEach(final boolean cancel) {
-        final IntMap<String> map = IntMap.range(0, 256);
+    @Test
+    void forEach() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
         final int[] keys = {0, 1, 3, 10, 100, 101, 102, 256};
+        final HashSet<Entry> set = new HashSet<>();
         for (final int key : keys) {
-            map.put(key, "test" + key);
+            final Entry entry = new Entry(key, "test" + key);
+            map.put(entry);
+            set.add(entry);
         }
-        final AtomicInteger i = new AtomicInteger();
-        map.forEach((key, value) -> {
-            final int k = keys[i.getAndIncrement()];
-            assertEquals(k, key);
-            assertEquals("test" + k, value);
-            return (!cancel) || (k != 100);
+        map.forEach(entry -> {
+            assertEquals(new Entry(entry.id, "test" + entry.id), entry);
+            set.remove(entry);
         });
-        assertEquals(cancel ? 5 : 8, i.get());
+        assertTrue(set.isEmpty());
     }
 
-    @ValueSource(ints = {11, 255, 256, 257, 1000})
+    @Test
+    void forEach_hash_collision() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final int[] keys = {0, 16, 1, 1 + 16, 1 + 32};
+        final HashSet<Entry> set = new HashSet<>();
+        for (final int key : keys) {
+            final Entry entry = new Entry(key, "test" + key);
+            map.put(entry);
+            set.add(entry);
+        }
+        map.forEach(entry -> {
+            assertEquals(new Entry(entry.id, "test" + entry.id), entry);
+            set.remove(entry);
+        });
+        assertTrue(set.isEmpty());
+    }
+
     @ParameterizedTest
-    void resize(final int newMaxKey) {
-        final IntMap<String> map = IntMap.range(10, 256);
-        for (int i = map.getMinKey(); i < map.getMaxKey(); i++) {
-            map.put(i, "test" + i);
+    @CsvSource({"16, 4", "65536, 32", "65536, 64"})
+    void put_remove_sequential(final int size, final int chunk) {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        for (int i = 0; i < chunk * 2; i++) {
+            map.put(new Entry(i, "test" + i));
         }
-        final IntMap<String> newMap = IntMap.resize(map, newMaxKey);
-        assertEquals(10, newMap.getMinKey());
-        assertEquals(newMaxKey, newMap.getMaxKey());
-        for (int i = newMap.getMinKey(); i < Math.min(map.getMaxKey(), newMap.getMaxKey()); i++) {
-            assertEquals("test" + i, newMap.get(i));
+        for (int i = 0; i < chunk; i++) {
+            assertEquals(new Entry(i, "test" + i), map.get(i));
+            assertEquals(new Entry(i, "test" + i), map.remove(i));
         }
+        for (int i = chunk * 2; i < size; i += chunk) {
+            for (int j = 0; j < chunk; j++) {
+                map.put(new Entry(i + j, "test" + (i + j)));
+            }
+            for (int j = -chunk; j < 0; j++) {
+                assertEquals(new Entry(i + j, "test" + (i + j)), map.get(i + j));
+                assertEquals(new Entry(i + j, "test" + (i + j)), map.remove(i + j));
+            }
+        }
+        for (int i = size - chunk; i < size; i++) {
+            assertEquals(new Entry(i, "test" + i), map.get(i));
+            assertEquals(new Entry(i, "test" + i), map.remove(i));
+        }
+        assertEquals(0, map.size());
     }
 
+    @Test
+    void put_remove_sparse() {
+        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        boolean reverse = false;
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                int index = i + j * 16;
+                if (reverse) {
+                    index = i + (9 - j) * 16;
+                }
+                assertNull(map.put(new Entry(index, "test" + index)));
+            }
+            reverse = !reverse;
+        }
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                final int index = i + j * 16;
+                assertEquals(new Entry(index, "test" + index), map.get(index));
+                assertEquals(new Entry(index, "test" + index), map.remove(index));
+            }
+        }
+        assertEquals(0, map.size());
+    }
+
+    private static class Entry {
+
+        final int id;
+        final @NotNull String value;
+
+        private Entry(final int id, final @NotNull String value) {
+            this.id = id;
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(final @Nullable Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Entry)) {
+                return false;
+            }
+            final Entry entry = (Entry) o;
+            return (id == entry.id) && value.equals(entry.value);
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return "Entry{" + "id=" + id + ", value='" + value + '\'' + '}';
+        }
+    }
 }

@@ -18,7 +18,6 @@
 package com.hivemq.client.internal.mqtt.codec.decoder;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
-import com.hivemq.client.internal.util.collections.IntMap;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class MqttDecoderContext {
 
     private final int maximumPacketSize;
-    private final @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
+    private final @Nullable MqttTopicImpl @Nullable [] topicAliasMapping;
     private final boolean problemInformationRequested;
     private final boolean responseInformationRequested;
     private final boolean validatePayloadFormat;
@@ -42,7 +41,7 @@ public class MqttDecoderContext {
             final boolean directBufferCorrelationData) {
 
         this.maximumPacketSize = maximumPacketSize;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
+        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicImpl[topicAliasMaximum];
         this.problemInformationRequested = problemInformationRequested;
         this.responseInformationRequested = responseInformationRequested;
         this.validatePayloadFormat = validatePayloadFormat;
@@ -55,7 +54,7 @@ public class MqttDecoderContext {
         return maximumPacketSize;
     }
 
-    public @Nullable IntMap<MqttTopicImpl> getTopicAliasMapping() {
+    public @Nullable MqttTopicImpl @Nullable [] getTopicAliasMapping() {
         return topicAliasMapping;
     }
 

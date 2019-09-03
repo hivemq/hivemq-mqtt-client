@@ -22,389 +22,400 @@ import com.hivemq.client.internal.util.Pow2Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
+
 /**
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public abstract class IntMap<E> {
+public class IntMap<E> {
 
-    private static final int ONE_LEVEL_CAPACITY_BITS = 7;
-    private static final int TWO_LEVEL_CAPACITY_BITS = 12;
-    private static final int THREE_LEVEL_CAPACITY_BITS = 18;
+    private static final int MAX_CAPACITY = 1 << 30;
+    private static final int DEFAULT_MIN_CAPACITY = 1 << 4;
+    private static final float DEFAULT_NODE_THRESHOLD_FACTOR = 0.2f;
 
-    public static @NotNull <E> IntMap<E> range(final int minKey, final int maxKey) {
-        final int capacity = maxKey - minKey + 1;
-        final int capacityBits = Pow2Util.roundToPowerOf2Bits(capacity);
-        return create(capacity, capacityBits, minKey, maxKey);
+    private @Nullable Object @NotNull [] table;
+    private final @NotNull ToIntFunction<? super E> keyFunction;
+    private final int minCapacity;
+    private final float nodeThresholdFactor;
+    private int size;
+    private int nodeCount;
+    private int nodeThreshold;
+
+    public IntMap(final @NotNull ToIntFunction<? super E> keyFunction) {
+        this(keyFunction, DEFAULT_MIN_CAPACITY, DEFAULT_NODE_THRESHOLD_FACTOR);
     }
 
-    public static @NotNull <E> IntMap<E> resize(final @NotNull IntMap<E> oldMap, final int newMaxKey) {
-        final int oldMaxKey = oldMap.getMaxKey();
-        if (oldMaxKey == newMaxKey) {
-            return oldMap;
-        }
-        final int minKey = oldMap.getMinKey();
-        final int newCapacity = newMaxKey - minKey + 1;
-        final int newCapacityBits = Pow2Util.roundToPowerOf2Bits(newCapacity);
-        if ((newCapacityBits > ONE_LEVEL_CAPACITY_BITS) && (oldMap instanceof IntMapCheck)) {
-            final int oldCapacity = oldMaxKey - minKey + 1;
-            final int oldCapacityBits = Pow2Util.roundToPowerOf2Bits(oldCapacity);
-            if (oldCapacityBits == newCapacityBits) {
-                return new IntMapCheck<>(((IntMapCheck<E>) oldMap).delegate, minKey, newMaxKey);
-            }
-        }
-        final IntMap<E> newMap = create(newCapacity, newCapacityBits, minKey, newMaxKey);
-        oldMap.forEach((key, value) -> {
-            if (key > newMaxKey) {
-                return false;
-            }
-            newMap.put(key, value);
-            return true;
-        });
-        return newMap;
+    public IntMap(final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity) {
+        this(keyFunction, minCapacity, DEFAULT_NODE_THRESHOLD_FACTOR);
     }
 
-    private static @NotNull <E> IntMap<E> create(
-            final int capacity, final int capacityBits, final int minKey, final int maxKey) {
-
-        final IntMap<E> intMap;
-        if (capacityBits <= ONE_LEVEL_CAPACITY_BITS) {
-            intMap = new IntMapArray<>(capacity);
-        } else if (capacityBits <= TWO_LEVEL_CAPACITY_BITS) {
-            intMap = new IntMapAllocator<E>(capacityBits, 2).alloc();
-        } else if (capacityBits <= THREE_LEVEL_CAPACITY_BITS) {
-            intMap = new IntMapAllocator<E>(capacityBits, 3).alloc();
-        } else {
-            intMap = new IntMapAllocator<E>(capacityBits, 4).alloc();
-        }
-        return new IntMapCheck<>(intMap, minKey, maxKey);
+    public IntMap(final @NotNull ToIntFunction<? super E> keyFunction, final float nodeThresholdFactor) {
+        this(keyFunction, DEFAULT_MIN_CAPACITY, nodeThresholdFactor);
     }
 
-    public abstract @Nullable E put(int key, @NotNull E value);
+    public IntMap(
+            final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity,
+            final float nodeThresholdFactor) {
 
-    public abstract @Nullable E get(int key);
-
-    public abstract @Nullable E remove(int key);
-
-    public abstract int size();
-
-    public abstract int getMinKey();
-
-    public abstract int getMaxKey();
-
-    public abstract void clear();
-
-    public void forEach(final @NotNull IntMapConsumer<E> consumer) {
-        forEach(consumer, 0);
+        final int minCapacityPow2 = 1 << Pow2Util.roundToPowerOf2Bits(minCapacity);
+        table = new Object[minCapacityPow2];
+        this.keyFunction = keyFunction;
+        this.minCapacity = minCapacityPow2;
+        this.nodeThresholdFactor = nodeThresholdFactor;
+        calcThresholds(minCapacityPow2);
     }
 
-    abstract boolean forEach(@NotNull IntMapConsumer<E> consumer, int baseIndex);
-
-    public interface IntMapConsumer<E> {
-
-        boolean accept(int key, @NotNull E value);
+    public int size() {
+        return size;
     }
 
-    public static class IntMapCheck<E> extends IntMap<E> {
-
-        private final @NotNull IntMap<E> delegate;
-        private final int minKey;
-        private final int maxKey;
-
-        IntMapCheck(final @NotNull IntMap<E> delegate, final int minKey, final int maxKey) {
-            this.delegate = delegate;
-            this.minKey = minKey;
-            this.maxKey = maxKey;
-        }
-
-        @Override
-        public @Nullable E put(final int key, final @NotNull E value) {
-            return delegate.put(checkKey(key), value);
-        }
-
-        @Override
-        public @Nullable E get(final int key) {
-            return delegate.get(checkKey(key));
-        }
-
-        @Override
-        public @Nullable E remove(final int key) {
-            return delegate.remove(checkKey(key));
-        }
-
-        @Override
-        public int size() {
-            return delegate.size();
-        }
-
-        @Override
-        public int getMinKey() {
-            return minKey;
-        }
-
-        @Override
-        public int getMaxKey() {
-            return maxKey;
-        }
-
-        @Override
-        public void clear() {
-            delegate.clear();
-        }
-
-        @Override
-        public void forEach(final @NotNull IntMapConsumer<E> consumer) {
-            delegate.forEach(consumer, minKey);
-        }
-
-        @Override
-        boolean forEach(final @NotNull IntMapConsumer<E> consumer, final int baseIndex) {
-            return delegate.forEach(consumer, minKey);
-        }
-
-        private int checkKey(final int key) {
-            if (key > maxKey || key < minKey) {
-                throw new IndexOutOfBoundsException();
-            }
-            return key - minKey;
-        }
+    public @Nullable E put(final @NotNull E entry) {
+        return put(entry, true);
     }
 
-    public static class IntMapArray<E> extends IntMap<E> {
+    public @Nullable E putIfAbsent(final @NotNull E entry) {
+        return put(entry, false);
+    }
 
-        private final @Nullable E @NotNull [] values;
-        private int size;
-
-        @SuppressWarnings("unchecked")
-        IntMapArray(final int size) {
-            this.values = (E[]) new Object[size];
+    private @Nullable E put(final @NotNull E entry, final boolean overwrite) {
+        final Object[] table = this.table;
+        final int key = keyFunction.applyAsInt(entry);
+        final int index = key & (table.length - 1);
+        final Object o = table[index];
+        if (o == null) {
+            table[index] = entry;
+            added();
+            return null;
         }
-
-        @Override
-        public @Nullable E put(final int key, final @NotNull E value) {
-            final E previousValue = values[key];
-            values[key] = value;
-            if (previousValue == null) {
-                size++;
-            }
-            return previousValue;
-        }
-
-        @Override
-        public @Nullable E get(final int key) {
-            return values[key];
-        }
-
-        @Override
-        public @Nullable E remove(final int key) {
-            final E previousValue = values[key];
-            values[key] = null;
-            if (previousValue != null) {
-                size--;
-            }
-            return previousValue;
-        }
-
-        @Override
-        public int size() {
-            return size;
-        }
-
-        @Override
-        public int getMinKey() {
-            return 0;
-        }
-
-        @Override
-        public int getMaxKey() {
-            return values.length - 1;
-        }
-
-        @Override
-        public void clear() {
-            int emitted = 0;
-            for (int index = 0; index < values.length; index++) {
-                final E value = values[index];
-                if (value != null) {
-                    values[index] = null;
-                    emitted++;
-                    if (emitted == size) {
-                        break;
+        if (o.getClass() == Node.class) {
+            Node node = (Node) o;
+            while (true) {
+                if (node.key == key) {
+                    final Object nodeValue = node.value;
+                    if (overwrite) {
+                        node.value = entry;
                     }
+                    return cast(nodeValue);
+                }
+                final Object next = node.next;
+                if (next.getClass() == Node.class) {
+                    node = (Node) next;
+                } else {
+                    final E e = cast(next);
+                    final int nextKey = keyFunction.applyAsInt(e);
+                    if (nextKey == key) {
+                        if (overwrite) {
+                            node.next = entry;
+                        }
+                        return e;
+                    }
+                    node.next = new Node(nextKey, next, entry);
+                    added();
+                    addedNode();
+                    return null;
                 }
             }
-            size = 0;
         }
-
-        @Override
-        boolean forEach(final @NotNull IntMapConsumer<E> consumer, final int baseIndex) {
-            int emitted = 0;
-            for (int index = 0; index < values.length; index++) {
-                final E value = values[index];
-                if (value != null) {
-                    if (!consumer.accept(baseIndex + index, value)) {
-                        return false;
-                    }
-                    emitted++;
-                    if (emitted == size) {
-                        break;
-                    }
-                }
+        final E e = cast(o);
+        final int oKey = keyFunction.applyAsInt(e);
+        if (oKey == key) {
+            if (overwrite) {
+                table[index] = entry;
             }
-            return true;
+            return e;
         }
+        table[index] = new Node(oKey, o, entry);
+        added();
+        addedNode();
+        return null;
     }
 
-    private static class IntMapAllocator<E> {
+    public @Nullable E get(final int key) {
+        final Object[] table = this.table;
+        final int index = key & (table.length - 1);
+        final Object o = table[index];
+        if (o == null) {
+            return null;
+        }
+        if (o.getClass() == Node.class) {
+            Node node = (Node) o;
+            while (true) {
+                if (node.key == key) {
+                    return cast(node.value);
+                }
+                final Object next = node.next;
+                if (next.getClass() == Node.class) {
+                    node = (Node) next;
+                } else {
+                    final E e = cast(next);
+                    if (keyFunction.applyAsInt(e) == key) {
+                        return e;
+                    }
+                    return null;
+                }
+            }
+        }
+        final E e = cast(o);
+        if (keyFunction.applyAsInt(e) == key) {
+            return e;
+        }
+        return null;
+    }
 
-        private final int shift;
-        private final int mask;
-        private final int indexCapacity;
-        private final @Nullable IntMapAllocator<E> next;
-        private @Nullable IntMap<E> free;
+    public @Nullable E remove(final int key) {
+        final Object[] table = this.table;
+        final int index = key & (table.length - 1);
+        final Object o = table[index];
+        if (o == null) {
+            return null;
+        }
+        if (o.getClass() == Node.class) {
+            Node node = (Node) o;
+            if (node.key == key) {
+                table[index] = node.next;
+                removedNode();
+                removed();
+                return cast(node.value);
+            }
+            Object next = node.next;
+            if (next.getClass() != Node.class) {
+                final E e = cast(next);
+                if (keyFunction.applyAsInt(e) == key) {
+                    table[index] = node.value;
+                    removedNode();
+                    removed();
+                    return e;
+                }
+                return null;
+            }
+            Node prevNode;
+            while (true) {
+                prevNode = node;
+                node = (Node) next;
+                if (node.key == key) {
+                    prevNode.next = node.next;
+                    removedNode();
+                    removed();
+                    return cast(node.value);
+                }
+                next = node.next;
+                if (next.getClass() != Node.class) {
+                    final E e = cast(next);
+                    if (keyFunction.applyAsInt(e) == key) {
+                        prevNode.next = node.value;
+                        removedNode();
+                        removed();
+                        return e;
+                    }
+                    return null;
+                }
+            }
+        }
+        final E e = cast(o);
+        if (keyFunction.applyAsInt(e) == key) {
+            table[index] = null;
+            removed();
+            return e;
+        }
+        return null;
+    }
 
-        IntMapAllocator(final int capacityBits, final int split) {
-            if (split == 1) {
-                shift = -1;
-                mask = -1;
-                indexCapacity = 1 << capacityBits;
-                next = null;
+    public void clear() {
+        if (size > 0) {
+            if (table.length == minCapacity) {
+                Arrays.fill(table, null);
             } else {
-                final int indexBits = capacityBits / split;
-                shift = capacityBits - indexBits;
-                mask = (1 << shift) - 1;
-                indexCapacity = 1 << indexBits;
-                next = new IntMapAllocator<>(capacityBits - indexBits, split - 1);
-            }
-        }
-
-        @NotNull IntMap<E> alloc() {
-            if (free != null) {
-                final IntMap<E> allocated = free;
-                free = null;
-                return allocated;
-            }
-            if (next == null) {
-                return new IntMapArray<>(indexCapacity);
-            }
-            return new IntMapLevel<>(shift, mask, indexCapacity, next);
-        }
-
-        void free(final @NotNull IntMap<E> intMap) {
-            free = intMap;
-        }
-
-    }
-
-    public static class IntMapLevel<E> extends IntMap<E> {
-
-        private final int shift;
-        private final int mask;
-        private final @Nullable IntMap<E> @NotNull [] subLevels;
-        private final @NotNull IntMapAllocator<E> allocator;
-        private int size;
-
-        @SuppressWarnings("unchecked")
-        IntMapLevel(
-                final int shift, final int mask, final int indexCapacity, final @NotNull IntMapAllocator<E> allocator) {
-
-            this.shift = shift;
-            this.mask = mask;
-            subLevels = (IntMap<E>[]) new IntMap[indexCapacity];
-            this.allocator = allocator;
-        }
-
-        @Override
-        public @Nullable E put(final int key, final @NotNull E value) {
-            final int index = key >> shift;
-            IntMap<E> subLevel = subLevels[index];
-            if (subLevel == null) {
-                subLevel = allocator.alloc();
-                subLevels[index] = subLevel;
-            }
-            final E put = subLevel.put(key & mask, value);
-            if (put == null) {
-                size++;
-            }
-            return put;
-        }
-
-        @Override
-        public @Nullable E get(final int key) {
-            final IntMap<E> subLevel = subLevels[key >> shift];
-            if (subLevel == null) {
-                return null;
-            }
-            return subLevel.get(key & mask);
-        }
-
-        @Override
-        public @Nullable E remove(final int key) {
-            final int index = key >> shift;
-            final IntMap<E> subLevel = subLevels[index];
-            if (subLevel == null) {
-                return null;
-            }
-            final E value = subLevel.remove(key & mask);
-            if (value != null) {
-                size--;
-                if (subLevel.size() == 0) {
-                    allocator.free(subLevel);
-                    subLevels[index] = null;
-                }
-            }
-            return value;
-        }
-
-        @Override
-        public int size() {
-            return size;
-        }
-
-        @Override
-        public int getMinKey() {
-            return 0;
-        }
-
-        @Override
-        public int getMaxKey() {
-            return (subLevels.length - 1) << shift;
-        }
-
-        @Override
-        public void clear() {
-            int cleared = 0;
-            for (int i = 0; i < subLevels.length; i++) {
-                final IntMap<E> subLevel = subLevels[i];
-                if (subLevel != null) {
-                    cleared += subLevel.size();
-                    subLevel.clear();
-                    subLevels[i] = null;
-                    if (cleared == size) {
-                        break;
-                    }
-                }
+                table = new Object[minCapacity];
             }
             size = 0;
-        }
-
-        @Override
-        boolean forEach(final @NotNull IntMapConsumer<E> consumer, int baseIndex) {
-            int emitted = 0;
-            for (final IntMap<E> subLevel : subLevels) {
-                if (subLevel != null) {
-                    if (!subLevel.forEach(consumer, baseIndex)) {
-                        return false;
-                    }
-                    emitted += subLevel.size();
-                    if (emitted == size) {
-                        break;
-                    }
-                }
-                baseIndex += mask + 1;
-            }
-            return true;
+            nodeCount = 0;
+            calcThresholds(minCapacity);
         }
     }
 
+    public void forEach(final @NotNull Consumer<? super E> consumer) {
+        for (final Object o : table) {
+            if (o != null) {
+                if (o.getClass() == Node.class) {
+                    Node node = (Node) o;
+                    while (true) {
+                        consumer.accept(cast(node.value));
+                        final Object next = node.next;
+                        if (next.getClass() == Node.class) {
+                            node = (Node) next;
+                        } else {
+                            consumer.accept(cast(next));
+                            break;
+                        }
+                    }
+                } else {
+                    consumer.accept(cast(o));
+                }
+            }
+        }
+    }
+
+    private void added() {
+        size++;
+    }
+
+    private void addedNode() {
+        if ((++nodeCount > nodeThreshold) && (table.length < MAX_CAPACITY)) {
+            final Object[] oldTable = table;
+            final int oldCapacity = oldTable.length;
+            final int newCapacity = oldCapacity << 1;
+            final int newMask = newCapacity - 1;
+            final Object[] newTable = new Object[newCapacity];
+            int newNodeCount = 0;
+
+            for (int oldIndex = 0; oldIndex < oldCapacity; oldIndex++) {
+                final Object o = oldTable[oldIndex];
+                if (o != null) {
+                    if (o.getClass() == Node.class) {
+                        Node node = (Node) o;
+                        Node low = null, prevLow = null;
+                        Node high = null, prevHigh = null;
+                        final int highIndex = oldIndex + oldCapacity;
+                        while (true) {
+                            if ((node.key & newMask) == oldIndex) {
+                                if (low == null) {
+                                    low = node;
+                                    newTable[oldIndex] = node;
+                                } else {
+                                    prevLow = low;
+                                    low = node;
+                                    prevLow.next = low;
+                                }
+                            } else {
+                                if (high == null) {
+                                    high = node;
+                                    newTable[highIndex] = node;
+                                } else {
+                                    prevHigh = high;
+                                    high = node;
+                                    prevHigh.next = high;
+                                }
+                            }
+                            newNodeCount++;
+                            final Object next = node.next;
+                            if (next.getClass() == Node.class) {
+                                node = (Node) next;
+                            } else {
+                                final E e = cast(next);
+                                if ((keyFunction.applyAsInt(e) & newMask) == oldIndex) {
+                                    if (low == null) {
+                                        newTable[oldIndex] = e;
+                                    } else {
+                                        low.next = e;
+                                    }
+                                    if (high != null) {
+                                        if (prevHigh == null) {
+                                            newTable[highIndex] = high.value;
+                                        } else {
+                                            prevHigh.next = high.value;
+                                        }
+                                        newNodeCount--;
+                                    }
+                                } else {
+                                    if (high == null) {
+                                        newTable[highIndex] = e;
+                                    } else {
+                                        high.next = e;
+                                    }
+                                    if (low != null) {
+                                        if (prevLow == null) {
+                                            newTable[oldIndex] = low.value;
+                                        } else {
+                                            prevLow.next = low.value;
+                                        }
+                                        newNodeCount--;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        final int key = keyFunction.applyAsInt(cast(o));
+                        final int newIndex = key & (newCapacity - 1);
+                        newTable[newIndex] = o;
+                    }
+                }
+            }
+
+            table = newTable;
+            nodeCount = newNodeCount;
+            calcThresholds(newCapacity);
+        }
+    }
+
+    private void removedNode() {
+        nodeCount--;
+    }
+
+    private void removed() {
+        if ((--size < nodeThreshold) && (table.length > minCapacity)) {
+            final Object[] oldTable = table;
+            final int oldCapacity = oldTable.length;
+            final int newCapacity = oldCapacity >> 1;
+            final Object[] newTable = new Object[newCapacity];
+            int newNodeCount = nodeCount;
+
+            System.arraycopy(oldTable, 0, newTable, 0, newCapacity);
+            for (int oldIndex = newCapacity; oldIndex < oldCapacity; oldIndex++) {
+                final int newIndex = oldIndex - newCapacity;
+                final Object old = oldTable[oldIndex];
+                if (old != null) {
+                    final Object o = newTable[newIndex];
+                    if (o == null) {
+                        newTable[newIndex] = old;
+                    } else if (o.getClass() == Node.class) {
+                        Node node = (Node) o;
+                        Object next;
+                        while (true) {
+                            next = node.next;
+                            if (next.getClass() == Node.class) {
+                                node = (Node) next;
+                            } else {
+                                break;
+                            }
+                        }
+                        node.next = new Node(keyFunction.applyAsInt(cast(next)), next, old);
+                        newNodeCount++;
+                    } else {
+                        newTable[newIndex] = new Node(keyFunction.applyAsInt(cast(o)), o, old);
+                        newNodeCount++;
+                    }
+                }
+            }
+
+            table = newTable;
+            nodeCount = newNodeCount;
+            calcThresholds(newCapacity);
+        }
+    }
+
+    private void calcThresholds(final int capacity) {
+        nodeThreshold = (int) (capacity * nodeThresholdFactor);
+    }
+
+    private @NotNull E cast(final @NotNull Object o) {
+        //noinspection unchecked
+        return (E) o;
+    }
+
+    private static class Node {
+
+        int key;
+        @NotNull Object value;
+        @NotNull Object next;
+
+        Node(final int key, final @NotNull Object value, final @NotNull Object next) {
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
+    }
 }
