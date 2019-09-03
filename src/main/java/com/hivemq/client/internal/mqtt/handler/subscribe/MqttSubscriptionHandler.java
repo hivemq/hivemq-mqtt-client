@@ -54,6 +54,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.ToIntFunction;
 
 /**
  * @author Silvio Giebl
@@ -62,15 +63,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements Runnable {
 
     public static final @NotNull String NAME = "subscription";
-    public static final int MAX_SUB_PENDING = 10; // TODO configurable
     private static final @NotNull InternalLogger LOGGER =
             InternalLoggerFactory.getLogger(MqttSubscriptionHandler.class);
+    private static final @NotNull ToIntFunction<MqttSubOrUnsubWithFlow.Stateful> ID_FUNCTION =
+            x -> x.getMessage().getPacketIdentifier();
+    public static final int MAX_SUB_PENDING = 10; // TODO configurable
 
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
     private final @NotNull ConcurrentLinkedQueue<MqttSubOrUnsubWithFlow> queued = new ConcurrentLinkedQueue<>();
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pending;
+    private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pending = new IntMap<>(ID_FUNCTION);
     private @Nullable MqttSubOrUnsubWithFlow.Stateful firstPending, lastPending, resendPending, currentPending;
     private final @NotNull Ranges packetIdentifiers;
     private @Nullable Ranges subscriptionIdentifiers;
@@ -81,7 +84,6 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
         final int maxPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
         final int minPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MAX_SUB_PENDING + 1;
-        pending = IntMap.range(minPacketIdentifier, maxPacketIdentifier);
         packetIdentifiers = new Ranges(minPacketIdentifier, maxPacketIdentifier);
     }
 
@@ -202,7 +204,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     private void addPending(final @NotNull MqttSubOrUnsubWithFlow.Stateful newPending) {
-        pending.put(newPending.getMessage().getPacketIdentifier(), newPending);
+        pending.put(newPending);
         final MqttSubOrUnsubWithFlow.Stateful lastPending = this.lastPending;
         if (lastPending == null) {
             firstPending = this.lastPending = newPending;
