@@ -17,17 +17,16 @@
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
+import com.hivemq.client.internal.util.collections.NodeList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
  */
-abstract class MqttPubOrRelWithFlow {
+abstract class MqttPubOrRelWithFlow extends NodeList.Node<MqttPubOrRelWithFlow> {
 
     private final @NotNull MqttAckFlow ackFlow;
     int packetIdentifier;
-    @Nullable MqttPubOrRelWithFlow next, prev;
 
     MqttPubOrRelWithFlow(final @NotNull MqttAckFlow ackFlow) {
         this.ackFlow = ackFlow;
