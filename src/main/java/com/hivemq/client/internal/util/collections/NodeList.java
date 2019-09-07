@@ -41,6 +41,7 @@ public class NodeList<N extends NodeList.Node<N>> {
     }
 
     private @Nullable N first, last;
+    private int size;
 
     public void add(final @NotNull N node) {
         assert node.prev == null;
@@ -54,11 +55,13 @@ public class NodeList<N extends NodeList.Node<N>> {
             node.prev = last;
             this.last = node;
         }
+        size++;
     }
 
     public void remove(final @NotNull N node) {
         assert (node.prev != null) || (node == first);
         assert (node.next != null) || (node == last);
+        assert size > 0;
 
         final N prev = node.prev;
         final N next = node.next;
@@ -72,6 +75,7 @@ public class NodeList<N extends NodeList.Node<N>> {
         } else {
             next.prev = prev;
         }
+        size--;
     }
 
     public void replace(final @NotNull N oldNode, final @NotNull N newNode) {
@@ -79,6 +83,7 @@ public class NodeList<N extends NodeList.Node<N>> {
         assert (oldNode.next != null) || (oldNode == last);
         assert newNode.prev == null;
         assert newNode.next == null;
+        assert size > 0;
 
         final N prev = oldNode.prev;
         final N next = oldNode.next;
@@ -98,6 +103,10 @@ public class NodeList<N extends NodeList.Node<N>> {
 
     public boolean isEmpty() {
         return first == null;
+    }
+
+    public int size() {
+        return size;
     }
 
     public void clear() {
