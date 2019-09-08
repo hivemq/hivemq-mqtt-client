@@ -112,6 +112,7 @@ public class NodeList<N extends NodeList.Node<N>> {
     public void clear() {
         first = null;
         last = null;
+        size = 0;
     }
 
     public @Nullable N getFirst() {
