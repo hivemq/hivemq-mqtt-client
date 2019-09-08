@@ -17,12 +17,10 @@
 
 package com.hivemq.client.internal.util.collections;
 
+import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,8 +32,8 @@ class HandleListTest {
     @Test
     void handle_getElement() {
         final HandleList<String> list = new HandleList<>();
-        final HandleList.Handle<String> test1 = list.add("test1");
-        final HandleList.Handle<String> test2 = list.add("test2");
+        final Handle<String> test1 = list.add("test1");
+        final Handle<String> test2 = list.add("test2");
         assertEquals("test1", test1.getElement());
         assertEquals("test2", test2.getElement());
     }
@@ -44,44 +42,28 @@ class HandleListTest {
     void isEmpty_add_remove() {
         final HandleList<String> list = new HandleList<>();
         assertTrue(list.isEmpty());
-        final HandleList.Handle<String> test1 = list.add("test1");
+        final Handle<String> test1 = list.add("test1");
         assertFalse(list.isEmpty());
-        final HandleList.Handle<String> test2 = list.add("test2");
+        final Handle<String> test2 = list.add("test2");
         assertFalse(list.isEmpty());
-        test1.remove();
+        list.remove(test1);
         assertFalse(list.isEmpty());
-        test2.remove();
+        list.remove(test2);
         assertTrue(list.isEmpty());
     }
 
-    @Test
-    void iterator_same() {
-        final HandleList<String> list = new HandleList<>();
-        final Iterator<String> iterator1 = list.iterator();
-        final Iterator<String> iterator2 = list.iterator();
-        assertSame(iterator1, iterator2);
-    }
-
-    @Test
-    void iterator_empty() {
-        final HandleList<String> list = new HandleList<>();
-        final Iterator<String> iterator = list.iterator();
-        assertFalse(iterator.hasNext());
-        assertThrows(NoSuchElementException.class, iterator::next);
-    }
-
-    @ValueSource(ints = {1, 2, 100})
+    @ValueSource(ints = {0, 1, 2, 100})
     @ParameterizedTest
     void iterator(final int size) {
         final HandleList<String> list = new HandleList<>();
         for (int i = 0; i < size; i++) {
             list.add("test" + i);
         }
-        int counter = size;
-        for (final String s : list) {
-            assertEquals("test" + --counter, s);
+        int counter = 0;
+        for (Handle<String> h = list.getFirst(); h != null; h = h.getNext()) {
+            assertEquals("test" + counter++, h.getElement());
         }
-        assertEquals(0, counter);
+        assertEquals(size, counter);
     }
 
     @ValueSource(ints = {1, 2, 100})
@@ -91,11 +73,12 @@ class HandleListTest {
         for (int i = 0; i < size; i++) {
             list.add("test" + i);
         }
-        final Iterator<String> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            iterator.next();
-            iterator.remove();
+        int counter = 0;
+        for (Handle<String> h = list.getFirst(); h != null; h = h.getNext()) {
+            assertEquals("test" + counter++, h.getElement());
+            list.remove(h);
         }
+        assertEquals(size, counter);
         assertTrue(list.isEmpty());
     }
 

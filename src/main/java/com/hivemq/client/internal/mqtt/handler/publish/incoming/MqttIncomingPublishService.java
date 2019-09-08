@@ -24,10 +24,9 @@ import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.util.collections.HandleList;
+import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.internal.util.collections.NodeList;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Iterator;
 
 /**
  * @author Silvio Giebl
@@ -92,8 +91,8 @@ class MqttIncomingPublishService {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }
         drain();
-        for (final MqttIncomingPublishFlow flow : flows) {
-            if (flow.reference() == 1) {
+        for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
+            if (h.getElement().reference() == 1) {
                 referencedFlowCount++;
             }
         }
@@ -131,12 +130,11 @@ class MqttIncomingPublishService {
 
     @CallByThread("Netty EventLoop")
     private void emit(final @NotNull MqttPublish publish, final @NotNull HandleList<MqttIncomingPublishFlow> flows) {
-        final Iterator<MqttIncomingPublishFlow> flowIt = flows.iterator();
-        while (flowIt.hasNext()) {
-            final MqttIncomingPublishFlow flow = flowIt.next();
+        for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
+            final MqttIncomingPublishFlow flow = h.getElement();
 
             if (flow.isCancelled()) {
-                flowIt.remove();
+                flows.remove(h);
                 if (flow.dereference() == 0) {
                     referencedFlowCount--;
                 }
@@ -144,7 +142,7 @@ class MqttIncomingPublishService {
                 final long requested = flow.requested(runIndex);
                 if (requested > 0) {
                     flow.onNext(publish);
-                    flowIt.remove();
+                    flows.remove(h);
                     if (flow.dereference() == 0) {
                         referencedFlowCount--;
                         flow.checkDone();

@@ -28,6 +28,7 @@ import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscri
 import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.internal.util.collections.HandleList;
+import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
@@ -137,12 +138,12 @@ public class MqttIncomingPublishFlows {
     }
 
     void cancelGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
-        final HandleList.Handle<MqttGlobalIncomingPublishFlow> handle = flow.getHandle();
-        assert handle != null;
-        handle.remove();
         final int filter = flow.getFilter().ordinal();
         final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
         assert globalFlow != null;
+        final Handle<MqttGlobalIncomingPublishFlow> handle = flow.getHandle();
+        assert handle != null;
+        globalFlow.remove(handle);
         if (globalFlow.isEmpty()) {
             globalFlows[filter] = null;
         }
@@ -153,8 +154,8 @@ public class MqttIncomingPublishFlows {
         for (int i = 0; i < globalFlows.length; i++) {
             final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[i];
             if (globalFlow != null) {
-                for (final MqttGlobalIncomingPublishFlow flow : globalFlow) {
-                    flow.onError(cause);
+                for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlow.getFirst(); h != null; h = h.getNext()) {
+                    h.getElement().onError(cause);
                 }
             }
             globalFlows[i] = null;
@@ -163,11 +164,11 @@ public class MqttIncomingPublishFlows {
 
     private static void add(
             final @NotNull HandleList<MqttIncomingPublishFlow> target,
-            final @Nullable HandleList<? extends MqttIncomingPublishFlow> source) {
+            final @Nullable HandleList<MqttGlobalIncomingPublishFlow> source) {
 
         if (source != null) {
-            for (final MqttIncomingPublishFlow flow : source) {
-                target.add(flow);
+            for (Handle<MqttGlobalIncomingPublishFlow> h = source.getFirst(); h != null; h = h.getNext()) {
+                target.add(h.getElement());
             }
         }
     }
