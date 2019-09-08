@@ -19,93 +19,29 @@ package com.hivemq.client.internal.util.collections;
 
 import com.hivemq.client.internal.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public class HandleList<E> extends HandleListNode<E> implements Iterable<E> {
+public class HandleList<E> extends NodeList<HandleList.Handle<E>> {
 
-    private final @NotNull HandleListIterator iterator = new HandleListIterator();
+    public static class Handle<E> extends NodeList.Node<Handle<E>> {
 
-    public @NotNull Handle<E> add(final @NotNull E element) {
-        return next = new Handle<>(element, this, next);
-    }
+        private final @NotNull E element;
 
-    public boolean isEmpty() {
-        return next == null;
-    }
-
-    @Override
-    public @NotNull Iterator<E> iterator() {
-        iterator.clear();
-        return iterator;
-    }
-
-    public static class Handle<E> extends HandleListNode<E> {
-
-        final @NotNull E element;
-        @NotNull HandleListNode prev;
-
-        Handle(final @NotNull E element, final @NotNull HandleListNode prev, final @Nullable Handle<E> next) {
+        Handle(@NotNull final E element) {
             this.element = element;
-            this.prev = prev;
-            this.next = next;
-            if (next != null) {
-                next.prev = this;
-            }
         }
 
         public @NotNull E getElement() {
             return element;
         }
-
-        public void remove() {
-            final Handle<E> next = this.next;
-            prev.next = next;
-            if (next != null) {
-                next.prev = prev;
-            }
-        }
     }
 
-    private class HandleListIterator implements Iterator<E> {
-
-        private @Nullable Handle<E> current;
-        private @Nullable Handle<E> next;
-
-        private void clear() {
-            current = null;
-            next = HandleList.this.next;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return (next != null);
-        }
-
-        @Override
-        public @NotNull E next() {
-            final Handle<E> current = this.next;
-            this.current = current;
-            if (current == null) {
-                throw new NoSuchElementException();
-            }
-            next = current.next;
-            return current.element;
-        }
-
-        @Override
-        public void remove() {
-            if (current == null) {
-                throw new IllegalStateException();
-            }
-            current.remove();
-            current = null;
-        }
+    public @NotNull Handle<E> add(final @NotNull E element) {
+        final Handle<E> handle = new Handle<>(element);
+        add(handle);
+        return handle;
     }
 }

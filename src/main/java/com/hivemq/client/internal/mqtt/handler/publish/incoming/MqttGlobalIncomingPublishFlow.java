@@ -18,7 +18,7 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.util.collections.HandleList;
+import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ import org.reactivestreams.Subscriber;
 class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
 
     private final @NotNull MqttGlobalPublishFilter filter;
-    private @Nullable HandleList.Handle<MqttGlobalIncomingPublishFlow> handle;
+    private @Nullable Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
             final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
@@ -51,11 +51,11 @@ class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
         return filter;
     }
 
-    void setHandle(final @NotNull HandleList.Handle<MqttGlobalIncomingPublishFlow> handle) {
+    void setHandle(final @NotNull Handle<MqttGlobalIncomingPublishFlow> handle) {
         this.handle = handle;
     }
 
-    @Nullable HandleList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
+    @Nullable Handle<MqttGlobalIncomingPublishFlow> getHandle() {
         return handle;
     }
 }
