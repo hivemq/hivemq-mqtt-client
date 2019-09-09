@@ -55,10 +55,19 @@ class MqttIncomingPublishService {
 
     @CallByThread("Netty EventLoop")
     void onPublishQos0(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
-        if (qos0Queue.size() >= receiveMaximum) { // TODO receiveMaximum
+        if (qos0Queue.size() >= (2 * receiveMaximum)) { // TODO receiveMaximum
             LOGGER.warn("QoS 0 publish message dropped.");
             if (QOS_0_DROP_OLDEST) {
-                qos0Queue.poll();
+                qos0It.reset();
+                qos0It.next();
+                //noinspection unchecked
+                final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos0It.next();
+                qos0It.remove();
+                for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
+                    if (h.getElement().dereference() == 1) {
+                        referencedFlowCount--;
+                    }
+                }
             } else {
                 return;
             }
@@ -72,7 +81,7 @@ class MqttIncomingPublishService {
 
     @CallByThread("Netty EventLoop")
     boolean onPublishQos1Or2(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
-        if (qos1Or2Queue.size() >= receiveMaximum) {
+        if (qos1Or2Queue.size() >= (2 * receiveMaximum)) {
             return false; // flow control error
         }
         final HandleList<MqttIncomingPublishFlow> flows = onPublish(publish);
@@ -106,7 +115,6 @@ class MqttIncomingPublishService {
     void drain() {
         runIndex++;
         blockingFlowCount = 0;
-        boolean acknowledge = true;
 
         qos1Or2It.reset();
         while (qos1Or2It.hasNext()) {
@@ -114,14 +122,11 @@ class MqttIncomingPublishService {
             //noinspection unchecked
             final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos1Or2It.next();
             emit(publish.stateless(), flows);
-            if (acknowledge && flows.isEmpty()) {
+            if ((qos1Or2It.getIterated() == 2) && flows.isEmpty()) {
                 qos1Or2It.remove();
                 incomingQosHandler.ack(publish);
-            } else {
-                acknowledge = false;
-                if (blockingFlowCount == referencedFlowCount) {
-                    return;
-                }
+            } else if (blockingFlowCount == referencedFlowCount) {
+                return;
             }
         }
         qos0It.reset();
@@ -130,7 +135,7 @@ class MqttIncomingPublishService {
             //noinspection unchecked
             final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos0It.next();
             emit(publish.stateless(), flows);
-            if (flows.isEmpty()) {
+            if ((qos0It.getIterated() == 2) && flows.isEmpty()) {
                 qos0It.remove();
             } else if (blockingFlowCount == referencedFlowCount) {
                 return;
