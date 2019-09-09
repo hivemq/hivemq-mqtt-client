@@ -21,7 +21,6 @@ import com.hivemq.client.internal.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -32,12 +31,11 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
 
     private final int chunkSize;
     private @Nullable E single;
-    private @Nullable Chunk<E> producerChunk;
-    private @Nullable Chunk<E> consumerChunk;
+    private @Nullable Object @Nullable [] producerChunk;
+    private @Nullable Object @Nullable [] consumerChunk;
     private int producerIndex;
     private int consumerIndex;
     private int size;
-    private final @NotNull ChunkedArrayQueueIterator iterator = new ChunkedArrayQueueIterator();
 
     public ChunkedArrayQueue(final int chunkSize) {
         this.chunkSize = chunkSize;
@@ -59,7 +57,7 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
         }
         if (size == 1) {
             if (producerChunk == null) {
-                producerChunk = consumerChunk = new Chunk<>(chunkSize);
+                producerChunk = consumerChunk = new Object[chunkSize];
             }
             final E single = this.single;
             if (single != null) {
@@ -72,21 +70,24 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
     }
 
     private void offerQueue(final @NotNull E e) {
-        Chunk<E> producerChunk = this.producerChunk;
+        Object[] producerChunk = this.producerChunk;
         assert producerChunk != null;
         int producerIndex = this.producerIndex;
         if ((producerIndex == chunkSize) ||
-                ((producerChunk == consumerChunk) && (producerChunk.values[producerIndex] != null))) {
+                ((producerChunk == consumerChunk) && (producerChunk[producerIndex] != null))) {
             if (size >= chunkSize) {
-                final Chunk<E> chunk = new Chunk<>(chunkSize);
-                producerChunk.jumpIndex = producerIndex - 1;
-                producerChunk.next = chunk;
+                final Object[] chunk = new Object[chunkSize];
+                final Object o = producerChunk[producerIndex - 1];
+                producerChunk[producerIndex - 1] = chunk;
                 producerChunk = chunk;
+                producerChunk[0] = o;
                 this.producerChunk = chunk;
+                producerIndex = 1;
+            } else {
+                producerIndex = 0;
             }
-            producerIndex = 0;
         }
-        producerChunk.values[producerIndex] = e;
+        producerChunk[producerIndex] = e;
         this.producerIndex = producerIndex + 1;
         size++;
     }
@@ -101,24 +102,29 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
         if (consumerChunk == null) {
             return null;
         }
-        final Chunk<E> consumerChunk = this.consumerChunk;
+        final Object[] consumerChunk = this.consumerChunk;
         int consumerIndex = this.consumerIndex;
-        final E e = consumerChunk.values[consumerIndex];
-        if (e == null) {
+        final Object o = consumerChunk[consumerIndex];
+        if (o == null) {
             return null;
         }
-        consumerChunk.values[consumerIndex] = null;
-        size--;
-        if (consumerIndex == consumerChunk.jumpIndex) {
-            assert consumerChunk.next != null;
-            consumerIndex = 0;
-            this.consumerChunk = consumerChunk.next;
+        consumerChunk[consumerIndex] = null;
+        final E e;
+        if (o.getClass() == Object[].class) {
+            final Object[] nextChunk = (Object[]) o;
+            this.consumerChunk = nextChunk;
+            consumerIndex = 1;
+            //noinspection unchecked
+            e = (E) nextChunk[0];
         } else {
+            //noinspection unchecked
+            e = (E) o;
             consumerIndex++;
             if (consumerIndex == chunkSize) {
                 consumerIndex = 0;
             }
         }
+        size--;
         this.consumerIndex = consumerIndex;
         return e;
     }
@@ -130,7 +136,20 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
         if (consumerChunk == null) {
             return null;
         }
-        return consumerChunk.values[consumerIndex];
+        final Object o = consumerChunk[consumerIndex];
+        if (o == null) {
+            return null;
+        }
+        final E e;
+        if (o.getClass() == Object[].class) {
+            final Object[] nextChunk = (Object[]) o;
+            //noinspection unchecked
+            e = (E) nextChunk[0];
+        } else {
+            //noinspection unchecked
+            e = (E) o;
+        }
+        return e;
     }
 
     public void clear() {
@@ -140,32 +159,21 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
     }
 
     @Override
-    public @NotNull Iterator<E> iterator() {
-        iterator.clear();
-        return iterator;
+    public @NotNull Iterator iterator() {
+        return new Iterator();
     }
 
-    private static class Chunk<E> {
+    public class Iterator implements java.util.Iterator<E> {
 
-        final @Nullable E @NotNull [] values;
-        int jumpIndex = -1;
-        @Nullable Chunk<E> next;
-
-        Chunk(final int chunkSize) {
-            //noinspection unchecked
-            values = (E[]) new Object[chunkSize];
-        }
-    }
-
-    private class ChunkedArrayQueueIterator implements Iterator<E> {
-
-        private @Nullable E iteratorSingle;
-        private @Nullable Chunk<E> iteratorChunk;
+        private @Nullable Object @Nullable [] iteratorChunk;
         private int iteratorIndex;
         private int iterated;
 
-        void clear() {
-            iteratorSingle = single;
+        Iterator() {
+            reset();
+        }
+
+        public void reset() {
             iteratorChunk = consumerChunk;
             iteratorIndex = consumerIndex;
             iterated = 0;
@@ -178,23 +186,31 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
 
         @Override
         public @NotNull E next() {
-            final E iteratorSingle = this.iteratorSingle;
+            final E iteratorSingle = single;
             if (iteratorSingle != null) {
+                if (iterated > 0) {
+                    throw new NoSuchElementException();
+                }
                 iterated = 1;
-                this.iteratorSingle = null;
                 return iteratorSingle;
             }
             if (iteratorChunk == null) {
                 throw new NoSuchElementException();
             }
-            final E e = iteratorChunk.values[iteratorIndex];
-            if (e == null) {
+            final Object o = iteratorChunk[iteratorIndex];
+            if (o == null) {
                 throw new NoSuchElementException();
             }
-            if (iteratorIndex == iteratorChunk.jumpIndex) {
-                iteratorIndex = 0;
-                iteratorChunk = iteratorChunk.next;
+            final E e;
+            if (o.getClass() == Object[].class) {
+                final Object[] nextChunk = (Object[]) o;
+                this.iteratorChunk = nextChunk;
+                iteratorIndex = 1;
+                //noinspection unchecked
+                e = (E) nextChunk[0];
             } else {
+                //noinspection unchecked
+                e = (E) o;
                 iteratorIndex++;
                 if (iteratorIndex == chunkSize) {
                     iteratorIndex = 0;
@@ -206,11 +222,10 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
 
         @Override
         public void remove() {
-            if (iterated != 1) {
-                throw new IllegalStateException();
+            for (int i = 0; i < iterated; i++) {
+                poll();
             }
             iterated = 0;
-            poll();
         }
     }
 }

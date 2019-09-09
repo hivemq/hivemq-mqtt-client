@@ -23,9 +23,9 @@ import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
+import com.hivemq.client.internal.util.collections.ChunkedArrayQueue;
 import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
-import com.hivemq.client.internal.util.collections.NodeList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -40,8 +40,10 @@ class MqttIncomingPublishService {
 
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
 
-    private final @NotNull NodeList<QueueEntry> qos0Queue = new NodeList<>();
-    private final @NotNull NodeList<QueueEntry> qos1Or2Queue = new NodeList<>();
+    private final @NotNull ChunkedArrayQueue<Object> qos0Queue = new ChunkedArrayQueue<>(32);
+    private final @NotNull ChunkedArrayQueue<Object>.Iterator qos0It = qos0Queue.iterator();
+    private final @NotNull ChunkedArrayQueue<Object> qos1Or2Queue = new ChunkedArrayQueue<>(32);
+    private final @NotNull ChunkedArrayQueue<Object>.Iterator qos1Or2It = qos1Or2Queue.iterator();
 
     private int referencedFlowCount;
     private int runIndex;
@@ -56,16 +58,15 @@ class MqttIncomingPublishService {
         if (qos0Queue.size() >= receiveMaximum) { // TODO receiveMaximum
             LOGGER.warn("QoS 0 publish message dropped.");
             if (QOS_0_DROP_OLDEST) {
-                final QueueEntry first = qos0Queue.getFirst();
-                assert first != null;
-                qos0Queue.remove(first);
+                qos0Queue.poll();
             } else {
                 return;
             }
         }
         final HandleList<MqttIncomingPublishFlow> flows = onPublish(publish);
         if (!flows.isEmpty()) {
-            qos0Queue.add(new QueueEntry(publish, flows));
+            qos0Queue.offer(publish);
+            qos0Queue.offer(flows);
         }
     }
 
@@ -78,7 +79,8 @@ class MqttIncomingPublishService {
         if (qos1Or2Queue.isEmpty() && flows.isEmpty()) {
             incomingQosHandler.ack(publish);
         } else {
-            qos1Or2Queue.add(new QueueEntry(publish, flows));
+            qos1Or2Queue.offer(publish);
+            qos1Or2Queue.offer(flows);
         }
         return true;
     }
@@ -104,24 +106,32 @@ class MqttIncomingPublishService {
     void drain() {
         runIndex++;
         blockingFlowCount = 0;
+        boolean acknowledge = true;
 
-        for (QueueEntry entry = qos1Or2Queue.getFirst(); entry != null; entry = entry.getNext()) {
-            final MqttStatefulPublish publish = entry.publish;
-            final HandleList<MqttIncomingPublishFlow> flows = entry.flows;
+        qos1Or2It.reset();
+        while (qos1Or2It.hasNext()) {
+            final MqttStatefulPublish publish = (MqttStatefulPublish) qos1Or2It.next();
+            //noinspection unchecked
+            final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos1Or2It.next();
             emit(publish.stateless(), flows);
-            if (flows.isEmpty() && (entry == qos1Or2Queue.getFirst())) {
-                qos1Or2Queue.remove(entry);
+            if (acknowledge && flows.isEmpty()) {
+                qos1Or2It.remove();
                 incomingQosHandler.ack(publish);
-            } else if (blockingFlowCount == referencedFlowCount) {
-                return;
+            } else {
+                acknowledge = false;
+                if (blockingFlowCount == referencedFlowCount) {
+                    return;
+                }
             }
         }
-        for (QueueEntry entry = qos0Queue.getFirst(); entry != null; entry = entry.getNext()) {
-            final MqttStatefulPublish publish = entry.publish;
-            final HandleList<MqttIncomingPublishFlow> flows = entry.flows;
+        qos0It.reset();
+        while (qos0It.hasNext()) {
+            final MqttStatefulPublish publish = (MqttStatefulPublish) qos0It.next();
+            //noinspection unchecked
+            final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos0It.next();
             emit(publish.stateless(), flows);
             if (flows.isEmpty()) {
-                qos0Queue.remove(entry);
+                qos0It.remove();
             } else if (blockingFlowCount == referencedFlowCount) {
                 return;
             }
@@ -154,19 +164,6 @@ class MqttIncomingPublishService {
                     }
                 }
             }
-        }
-    }
-
-    private static class QueueEntry extends NodeList.Node<QueueEntry> {
-
-        final @NotNull MqttStatefulPublish publish;
-        final @NotNull HandleList<MqttIncomingPublishFlow> flows;
-
-        QueueEntry(
-                final @NotNull MqttStatefulPublish publish, final @NotNull HandleList<MqttIncomingPublishFlow> flows) {
-
-            this.publish = publish;
-            this.flows = flows;
         }
     }
 }
