@@ -227,5 +227,9 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
             }
             iterated = 0;
         }
+
+        public int getIterated() {
+            return iterated;
+        }
     }
 }
