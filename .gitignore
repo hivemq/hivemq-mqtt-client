@@ -9,4 +9,5 @@ build/
 
 .DS_Store
 .java-version
+credentials.gradle
 bintray.gradle

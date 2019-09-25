@@ -1,36 +1,30 @@
 /*
-Bintray credentials can be stored in a local file named bintray.gradle, which will be ignored by git, in the following
+Credentials can be stored in a local file named credentials.gradle, which will be ignored by git, in the following
 format:
 
 ext {
-    bintray_username = '<username>'
-    bintray_apiKey = '<api key>'
+    bintray_username = '...'
+    bintray_apiKey = '...'
+    github_token = '...'
 }
 */
-if (file("${rootDir}/gradle/bintray.gradle").exists()) {
-    apply from: "${rootDir}/gradle/bintray.gradle"
+if (file("${rootDir}/gradle/credentials.gradle").exists()) {
+    apply from: "${rootDir}/gradle/credentials.gradle"
 }
 
 /*
 Alternatively they can be specified via environment variables:
-
 e.g. via shell script, then either source that script in your shell or call gradle from the script:
 
 #!/bin/sh
-export bintray_username="<username>"
-export bintray_apiKey="<api key>"
+export bintray_username="..."
+export bintray_apiKey="..."
+export github_token="..."
 
-Safe Configuration for Travis CI:
-Credentials in Travis must be stored in the repository settings (https://travis-ci.org/hivemq/hivemq-mqtt-client/settings)
+Secure configuration for Travis CI:
+Credentials must be stored in the Travis repository settings (https://travis-ci.org/hivemq/hivemq-mqtt-client/settings).
 The environment variables are encrypted by Travis and get decrypted before each build.
-They are available to all builds but not for pull requests from forks.
-To restrict the availability to the branches master and develop (only where they are needed for publishing releases and
-snapshots) you have to define the environment variables in the following way (utilizing the fact that Travis does not
-escape the values):
-
-name:  bintray_credentials
-value: dummy; if ( ( test "$TRAVIS_BRANCH" = "master" || test "$TRAVIS_BRANCH" = "develop" ) &&
-       "$TRAVIS_EVENT_TYPE" != "pull_request" ); then export bintray_username=...; export bintray_apiKey=...; fi
+Availability must be restricted to the master branch (only needed for publishing releases).
 */
 ['bintray_username', 'bintray_apiKey', 'github_token'].each { propName ->
     if (!project.hasProperty(propName)) {
