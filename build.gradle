@@ -120,7 +120,7 @@ dependencies {
 
 allprojects {
     license {
-        header file("${rootDir}/HEADER")
+        header file("${project.rootDir}/HEADER")
     }
 }
 
@@ -188,5 +188,5 @@ allprojects {
     }
 }
 
-apply from: "${rootDir}/gradle/publishing.gradle"
-apply from: "${rootDir}/gradle/japicc.gradle"
+apply from: "${project.rootDir}/gradle/publishing.gradle"
+apply from: "${project.rootDir}/gradle/japicc.gradle"

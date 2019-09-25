@@ -2,8 +2,6 @@ task japicc {
     group 'verification'
     description 'Checks for binary and source incompatibility.'
 
-    dependsOn jar, shadowJar
-
     def japiccVersion = '2.4'
     def workingDir = new File(project.buildDir, 'japicc')
     def executable = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '/japi-compliance-checker.pl')
@@ -21,7 +19,7 @@ task japicc {
     def shadedReport = new File(new File(new File(reportDir, shadedName), versions), 'compat_report.html')
 
     inputs.files jar, shadowJar
-    outputs.files files(report, shadedReport)
+    outputs.files report, shadedReport
 
     doFirst {
         description 'Check if last semantic version is available'
@@ -159,7 +157,7 @@ task japicc {
                        '-skip-internal-packages', 'com.hivemq.client.internal',
                        '-non-impl', nonImplFile.getPath(),
                        '-check-annotations', '-s',
-                       lastJar.getPath(), jar.archivePath.getPath()]
+                       lastJar.getPath(), jar.archiveFile.get().getAsFile().getPath()]
 
         def process = new ProcessBuilder(command).directory(workingDir).start()
         def returnCode = process.waitFor()
@@ -177,7 +175,7 @@ task japicc {
                        '-skip-internal-packages', 'com.hivemq.shaded',
                        '-non-impl', nonImplFile.getPath(),
                        '-check-annotations', '-s',
-                       lastShadedJar.getPath(), shadowJar.archivePath.getPath()]
+                       lastShadedJar.getPath(), shadowJar.archiveFile.get().getAsFile().getPath()]
 
         def process = new ProcessBuilder(command).directory(workingDir).start()
         def returnCode = process.waitFor()
