@@ -8,8 +8,8 @@ ext {
     github_token = '...'
 }
 */
-if (file("${rootDir}/gradle/credentials.gradle").exists()) {
-    apply from: "${rootDir}/gradle/credentials.gradle"
+if (file("${project.rootDir}/gradle/credentials.gradle").exists()) {
+    apply from: "${project.rootDir}/gradle/credentials.gradle"
 }
 
 /*
