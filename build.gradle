@@ -12,10 +12,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.4' apply false
     id 'com.github.hierynomus.license' version '0.14.0' apply false
     id 'biz.aQute.bnd.builder' version '4.2.0' apply false
-    id 'idea'
-    id 'eclipse'
-    id 'net.ltgt.apt-idea' version '0.15'
-    id 'net.ltgt.apt-eclipse' version '0.15'
     id 'com.github.breadmoirai.github-release' version '2.2.9'
 }
 
