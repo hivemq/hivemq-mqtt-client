@@ -16,6 +16,7 @@ plugins {
     id 'eclipse'
     id 'net.ltgt.apt-idea' version '0.15'
     id 'net.ltgt.apt-eclipse' version '0.15'
+    id 'com.github.breadmoirai.github-release' version '2.2.9'
 }
 
 allprojects {

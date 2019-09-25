@@ -32,7 +32,7 @@ name:  bintray_credentials
 value: dummy; if ( ( test "$TRAVIS_BRANCH" = "master" || test "$TRAVIS_BRANCH" = "develop" ) &&
        "$TRAVIS_EVENT_TYPE" != "pull_request" ); then export bintray_username=...; export bintray_apiKey=...; fi
 */
-['bintray_username', 'bintray_apiKey'].each { propName ->
+['bintray_username', 'bintray_apiKey', 'github_token'].each { propName ->
     if (!project.hasProperty(propName)) {
         project.ext.setProperty(propName, "${System.getenv()[propName]}")
     }
@@ -98,8 +98,8 @@ publishing {
 }
 
 bintray {
-    user = bintray_username
-    key = bintray_apiKey
+    user = project.bintray_username
+    key = project.bintray_apiKey
     publications = ['normal', 'shaded']
     publish = true
     pkg {
@@ -123,4 +123,13 @@ bintray {
             }*/
         }
     }
+}
+
+githubRelease {
+    token project.github_token
+    owner project.githubOrg
+    repo project.githubRepo
+    targetCommitish 'master'
+    tagName "v${project.version}"
+    releaseName project.version
 }
