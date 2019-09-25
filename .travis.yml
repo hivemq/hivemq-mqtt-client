@@ -2,19 +2,20 @@ dist: trusty
 
 language: java
 
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+
 stages:
   - test
   - name: release
     if: branch = master && type != pull_request
 
+install: skip
+script: ./gradlew check javadoc
+
 jobs:
   include:
-    - stage: test
-      install: skip
-      script: ./gradlew check javadoc
-      jdk:
-        - oraclejdk8
-        - oraclejdk9
     - stage: release
       install: skip
       script: ./gradlew bintrayUpload githubRelease
