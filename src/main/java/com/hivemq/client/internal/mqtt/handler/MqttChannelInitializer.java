@@ -40,8 +40,7 @@ import io.netty.channel.ChannelInitializer;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
-import javax.net.ssl.SSLException;
-import java.net.URISyntaxException;
+import java.net.InetSocketAddress;
 
 /**
  * Initializes:
@@ -91,11 +90,12 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
         if (sslConfig != null) {
-            initSsl(channel, sslConfig);
+            final InetSocketAddress serverAddress = transportConfig.getServerAddress();
+            SslUtil.initChannel(channel, sslConfig, serverAddress.getHostString(), serverAddress.getPort());
         }
         final MqttWebSocketConfigImpl webSocketConfig = transportConfig.getRawWebSocketConfig();
         if (webSocketConfig != null) {
-            initWebSocketMqtt(channel, webSocketConfig);
+            webSocketInitializer.get().initChannel(channel, webSocketConfig);
         } else {
             initMqtt(channel);
         }
@@ -107,19 +107,6 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
                 .addLast(MqttAuthHandler.NAME, authHandler)
                 .addLast(MqttConnectHandler.NAME, connectHandler)
                 .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
-    }
-
-    private void initWebSocketMqtt(
-            final @NotNull Channel channel, final @NotNull MqttWebSocketConfigImpl webSocketConfig)
-            throws URISyntaxException {
-
-        webSocketInitializer.get().initChannel(channel, webSocketConfig);
-    }
-
-    private void initSsl(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)
-            throws SSLException {
-
-        SslUtil.initChannel(channel, sslConfig, clientConfig.getServerHost(), clientConfig.getServerPort());
     }
 
     @Override
