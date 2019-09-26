@@ -92,7 +92,7 @@ dependencies {
 }
 
 
-/* ******************** test and checks ******************** */
+/* ******************** test ******************** */
 
 allprojects {
     dependencies {
@@ -124,24 +124,6 @@ dependencies {
     testImplementation group: 'com.google.guava', name: 'guava', version: '24.1-jre'
     testRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
 }
-
-allprojects {
-    apply plugin: 'com.github.hierynomus.license'
-
-    license {
-        header file("${project.rootDir}/HEADER")
-    }
-}
-
-allprojects {
-    apply plugin: 'pmd'
-
-    pmd {
-        toolVersion '5.7.0'
-    }
-}
-
-apply from: "${project.rootDir}/gradle/japicc.gradle"
 
 
 /* ******************** jars ******************** */
@@ -312,3 +294,24 @@ githubRelease {
     tagName "v${project.version}"
     releaseName project.version
 }
+
+
+/* ******************** checks ******************** */
+
+allprojects {
+    apply plugin: 'com.github.hierynomus.license'
+
+    license {
+        header file("${project.rootDir}/HEADER")
+    }
+}
+
+allprojects {
+    apply plugin: 'pmd'
+
+    pmd {
+        toolVersion '5.7.0'
+    }
+}
+
+apply from: "${project.rootDir}/gradle/japicc.gradle"
