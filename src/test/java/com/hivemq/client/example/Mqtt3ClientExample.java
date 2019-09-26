@@ -30,7 +30,6 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
-import com.hivemq.client.util.KeyStoreUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -39,51 +38,17 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A simple test app. Can be run via gradle:
- * <p>
- * Publisher:
- * <p>
- * ./gradlew -PmainClass=com.hivemq.client.example.Mqtt3ClientExample \ -Dserver=test.mosquitto.org \ -Dport=8883 \
- * -Dssl=true \ -Dcommand=publish \ -Dtopic=a/b \ -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks
- * \ -Dkeystorepass=testkeystore \ -Dprivatekeypass=testkeystore \ -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks
- * \ -Dtruststorepass=testcas \ execute
- * <p>
- * Subscriber:
- * <p>
- * ./gradlew -PmainClass=com.hivemq.client.example.Mqtt3ClientExample \ -Dserver=test.mosquitto.org \ -Dport=8883 \
- * -Dssl=true \ -Dcommand=subscribe \ -Dtopic=a/b \ -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks
- * \ -Dkeystorepass=testkeystore \ -Dprivatekeypass=testkeystore \ -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks
- * \ -Dtruststorepass=testcas \ execute
- *
  * @author Silvio Giebl
  * @author David Katz
  * @author Christian Hoff
  */
 @SuppressWarnings("NullabilityAnnotations")
 class Mqtt3ClientExample {
-
-    private static final String TOPIC = "topic";
-    private static final String QOS = "qos";
-    private static final String COMMAND = "command";
-    private static final String SUBSCRIBE = "subscribe";
-    private static final String PUBLISH = "publish";
-    private static final String KEYSTORE_PATH = "keystore";
-    private static final String KEYSTORE_PASS = "keystorepass";
-    private static final String PRIVATE_KEY_PASS = "privatekeypass";
-    private static final String TRUSTSTORE_PATH = "truststore";
-    private static final String TRUSTSTORE_PASS = "truststorepass";
-    private static final String SERVER = "server";
-    private static final String PORT = "port";
-    private static final String USES_SSL = "ssl";
-    private static final String COUNT = "count";
-    private static final String SERVER_PATH = "serverpath";
 
     private final TrustManagerFactory trustManagerFactory;
     private final KeyManagerFactory keyManagerFactory;
@@ -210,40 +175,6 @@ class Mqtt3ClientExample {
         }
 
         return mqttClientBuilder.useMqttVersion3().buildRx();
-    }
-
-    private static String getProperty(final String key, final String defaultValue) {
-        return System.getProperty(key) != null ? System.getProperty(key) : defaultValue;
-    }
-
-    public static void main(final String[] args) throws IOException {
-        final String command = getProperty(COMMAND, SUBSCRIBE);
-        final int count = Integer.valueOf(getProperty(COUNT, "100"));
-        final String topic = getProperty(TOPIC, "a/b");
-        final MqttQos qos = MqttQos.fromCode(Integer.parseInt(getProperty(QOS, "1")));
-
-        final String server = getProperty(SERVER, "test.mosquitto.org");
-        final int port = Integer.valueOf(getProperty(PORT, "1883"));
-        final boolean usesSsl = Boolean.valueOf(getProperty(USES_SSL, "false"));
-        final String trustStorePath = getProperty(TRUSTSTORE_PATH, null);
-        final String trustStorePass = getProperty(TRUSTSTORE_PASS, "");
-        final String keyStorePath = getProperty(KEYSTORE_PATH, null);
-        final String keyStorePass = getProperty(KEYSTORE_PASS, "");
-        final String privateKeyPass = getProperty(PRIVATE_KEY_PASS, "");
-        final String serverPath = getProperty(SERVER_PATH, "mqtt");
-
-        final Mqtt3ClientExample instance = new Mqtt3ClientExample(server, port, usesSsl,
-                KeyStoreUtil.trustManagerFromKeystore(new File(trustStorePath), trustStorePass),
-                KeyStoreUtil.keyManagerFromKeystore(new File(keyStorePath), keyStorePass, privateKeyPass), serverPath);
-
-        switch (command) {
-            case SUBSCRIBE:
-                instance.subscribeTo(topic, qos, count, new CountDownLatch(1)).subscribe();
-                break;
-            case PUBLISH:
-                instance.publish(topic, qos, count).subscribe();
-                break;
-        }
     }
 
     int getReceivedCount() {

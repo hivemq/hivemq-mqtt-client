@@ -29,7 +29,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -45,7 +45,11 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
         }}, false);
     }
 
-    @CsvFileSource(resources = "/testParams/mqtt3/Connect.csv")
+    @CsvSource({
+            "client42, true, 10, , , , , ,", //
+            "client42, true, 10, userName, password, , , ,",
+            "client42, true, 10, userName, password, willMessage, my/will/topic, 1, true"
+    })
     @ParameterizedTest(name = "Connect(\"{0}\", {1}, {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\")")
     void matchesPaho(
             final @NotNull String clientId, final boolean cleanSession, final int keepAliveInterval,
