@@ -8,11 +8,11 @@ buildscript {
 }
 
 plugins {
-    id 'com.jfrog.bintray' version '1.8.4' apply false
     id 'com.github.johnrengelman.shadow' version '4.0.4' apply false
-    id 'com.github.hierynomus.license' version '0.14.0' apply false
     id 'biz.aQute.bnd.builder' version '4.2.0' apply false
-    id 'com.github.breadmoirai.github-release' version '2.2.9'
+    id 'com.github.hierynomus.license' version '0.14.0' apply false
+    id 'com.jfrog.bintray' version '1.8.4' apply false
+    id 'com.github.breadmoirai.github-release' version '2.2.9' apply false
 }
 
 allprojects {
@@ -22,6 +22,9 @@ allprojects {
         jcenter()
     }
 }
+
+
+/* ******************** metadata ******************** */
 
 allprojects {
     group 'com.hivemq'
@@ -48,16 +51,12 @@ allprojects {
     }
 }
 
-allprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
-    apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'com.github.hierynomus.license'
-    apply plugin: 'biz.aQute.bnd.builder'
-}
+
+/* ******************** java ******************** */
 
 allprojects {
+    apply plugin: 'java'
+
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -65,6 +64,11 @@ allprojects {
         options.encoding = 'UTF-8'
     }
 }
+
+apply plugin: 'java-library'
+
+
+/* ******************** dependencies ******************** */
 
 ext {
     rxJavaVersion = '2.2.5'
@@ -86,6 +90,9 @@ dependencies {
     annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
 }
+
+
+/* ******************** test and checks ******************** */
 
 allprojects {
     dependencies {
@@ -119,6 +126,8 @@ dependencies {
 }
 
 allprojects {
+    apply plugin: 'com.github.hierynomus.license'
+
     license {
         header file("${project.rootDir}/HEADER")
     }
@@ -131,6 +140,13 @@ allprojects {
         toolVersion '5.7.0'
     }
 }
+
+apply from: "${project.rootDir}/gradle/japicc.gradle"
+
+
+/* ******************** jars ******************** */
+
+apply plugin: 'biz.aQute.bnd.builder'
 
 jar {
     bnd('Automatic-Module-Name': project.moduleName,
@@ -145,6 +161,8 @@ jar {
             '-consumer-policy': '${range;[==,=+)}',
             '-removeheaders': 'Private-Package')
 }
+
+apply plugin: 'com.github.johnrengelman.shadow'
 
 shadowJar {
     appendix project.shadedAppendix
@@ -188,5 +206,109 @@ allprojects {
     }
 }
 
+
+/* ******************** publishing ******************** */
+
 apply from: "${project.rootDir}/gradle/publishing.gradle"
-apply from: "${project.rootDir}/gradle/japicc.gradle"
+
+apply plugin: 'maven-publish'
+
+void addPom(MavenPublication publication) {
+    publication.pom {
+        name = project.readableName
+        description = project.description
+        url = project.githubUrl
+        licenses {
+            license {
+                name = project.licenseReadableName
+                url = project.licenseUrl
+            }
+        }
+        developers {
+            developer {
+                id = 'SG'
+                name = 'Silvio Giebl'
+                email = 'silvio.giebl@hivemq.com'
+            }
+        }
+        scm {
+            connection = project.scmConnection
+            developerConnection = project.scmDeveloperConnection
+            url = project.githubUrl
+        }
+        issueManagement {
+            system = 'github'
+            url = project.issuesUrl
+        }
+    }
+}
+
+publishing {
+    publications {
+        normal(MavenPublication) {
+            from components.java
+            artifact javadocJar
+            artifact sourcesJar
+            addPom(it)
+        }
+        shaded(MavenPublication) {
+            artifactId project.name + '-' + project.shadedAppendix
+            artifact shadowJar
+            artifact javadocJar
+            artifact sourcesJar
+            addPom(it)
+            pom.withXml { xml ->
+                def dependenciesNode = xml.asNode().appendNode('dependencies')
+
+                project.configurations.api.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                    dependencyNode.appendNode('scope', 'compile')
+                }
+            }
+        }
+    }
+}
+
+apply plugin: 'com.jfrog.bintray'
+
+bintray {
+    user = project.bintray_username
+    key = project.bintray_apiKey
+    publications = ['normal', 'shaded']
+    publish = true
+    pkg {
+        userOrg = 'hivemq'
+        repo = 'HiveMQ'
+        name = 'hivemq-mqtt-client'
+        desc = project.description
+        websiteUrl = project.githubUrl
+        issueTrackerUrl = project.issuesUrl
+        vcsUrl = project.githubUrl + '.git'
+        licenses = [project.licenseShortName]
+        labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
+        version {
+            released = new Date()
+            gpg {
+                sign = true
+            }
+            /*mavenCentralSync {
+                user = ''
+                password = ''
+            }*/
+        }
+    }
+}
+
+apply plugin: 'com.github.breadmoirai.github-release'
+
+githubRelease {
+    token project.github_token
+    owner project.githubOrg
+    repo project.githubRepo
+    targetCommitish 'master'
+    tagName "v${project.version}"
+    releaseName project.version
+}
