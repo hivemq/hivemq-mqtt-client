@@ -1,11 +1,15 @@
-description 'Adds a Reactor API to the HiveMQ MQTT Client'
+description 'Adds a reactor API to the HiveMQ MQTT Client'
 
 ext {
-    readableName = 'HiveMQ MQTT Client Reactor module'
+    moduleName = 'com.hivemq.client.mqtt.reactor'
+    readableName = 'HiveMQ MQTT Client reactor module'
+    prevVersion = '1.1.3'
 }
 
+apply plugin: 'java-library'
+
 dependencies {
-    implementation rootProject
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.2.10.RELEASE'
+    api rootProject
+    api group: 'io.projectreactor', name: 'reactor-core', version: '3.3.1.RELEASE'
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
 }
