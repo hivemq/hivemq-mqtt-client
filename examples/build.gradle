@@ -1,0 +1,10 @@
+description 'HiveMQ MQTT Client examples'
+
+ext {
+    moduleName = 'com.hivemq.client.mqtt.examples'
+    readableName = 'HiveMQ MQTT Client examples'
+}
+
+dependencies {
+    implementation rootProject
+}
