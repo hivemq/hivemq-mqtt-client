@@ -138,14 +138,20 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             return;
         }
 
-        final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
+        MqttDisconnect disconnect = disconnectEvent.getDisconnect();
         if (disconnect != null) {
 
-            final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
-            if (connectionConfig != null) {
-                final long sessionExpiryInterval = disconnect.getRawSessionExpiryInterval();
-                if (sessionExpiryInterval != MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
-                    connectionConfig.setSessionExpiryInterval(sessionExpiryInterval);
+            final long sessionExpiryInterval = disconnect.getRawSessionExpiryInterval();
+            if (sessionExpiryInterval != MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
+                final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+                if (connectionConfig != null) {
+                    if ((sessionExpiryInterval > 0) && connectionConfig.isCleanStop()) {
+                        LOGGER.warn(
+                                "Session expiry interval must not be set in DISCONNECT if it was set to 0 in CONNECT");
+                        disconnect = disconnect.extend().sessionExpiryInterval(0).build();
+                    } else {
+                        connectionConfig.setSessionExpiryInterval(sessionExpiryInterval);
+                    }
                 }
             }
 
