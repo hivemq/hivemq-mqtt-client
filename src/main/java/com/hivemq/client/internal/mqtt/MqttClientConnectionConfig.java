@@ -148,7 +148,7 @@ public class MqttClientConnectionConfig
     }
 
     public boolean isCleanStart() {
-        return (flags & FLAG_CLEAN_STOP) != 0;
+        return (flags & FLAG_CLEAN_START) != 0;
     }
 
     public boolean isCleanStop() {
