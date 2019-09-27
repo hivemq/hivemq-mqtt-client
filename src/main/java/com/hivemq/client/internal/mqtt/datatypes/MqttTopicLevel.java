@@ -42,9 +42,8 @@ public class MqttTopicLevel extends ByteArray.Range {
 
     public static @NotNull MqttTopicLevel root(final @NotNull MqttTopicFilterImpl topicFilter) {
         final byte[] binary = topicFilter.toBinary();
-        final int start = topicFilter.getFilterByteStart();
-        final int end = nextEnd(binary, start);
-        return new MqttTopicLevel(binary, start, end);
+        final int start = topicFilter.getFilterByteStart() - 1;
+        return new MqttTopicLevel(binary, start, start);
     }
 
     private static int nextEnd(final @NotNull byte[] array, final int start) {
