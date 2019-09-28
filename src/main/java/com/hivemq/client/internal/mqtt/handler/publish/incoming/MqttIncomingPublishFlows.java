@@ -106,17 +106,17 @@ public class MqttIncomingPublishFlows {
     }
 
     @NotNull HandleList<MqttIncomingPublishFlow> findMatching(final @NotNull MqttStatefulPublish publish) {
-        final HandleList<MqttIncomingPublishFlow> matchingFlows = new HandleList<>();
+        final MqttMatchingPublishFlows matchingFlows = new MqttMatchingPublishFlows();
         findMatching(publish, matchingFlows);
         return matchingFlows;
     }
 
     void findMatching(
-            final @NotNull MqttStatefulPublish publish,
-            final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
+            final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
         final MqttTopicImpl topic = publish.stateless().getTopic();
-        if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
+        subscriptionFlows.findMatching(topic, matchingFlows);
+        if (matchingFlows.subscriptionFound) {
             add(matchingFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
         } else {
             add(matchingFlows, globalFlows[MqttGlobalPublishFilter.UNSOLICITED.ordinal()]);

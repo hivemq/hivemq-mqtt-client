@@ -35,15 +35,12 @@ public class MqttTopicLevel extends ByteArray.Range {
             new ByteArray(new byte[]{MqttTopicFilter.SINGLE_LEVEL_WILDCARD});
 
     public static @NotNull MqttTopicLevel root(final @NotNull MqttTopicImpl topic) {
-        final byte[] binary = topic.toBinary();
-        final int end = nextEnd(binary, 0);
-        return new MqttTopicLevel(binary, 0, end);
+        return new MqttTopicLevel(topic.toBinary(), -1, -1);
     }
 
     public static @NotNull MqttTopicLevel root(final @NotNull MqttTopicFilterImpl topicFilter) {
-        final byte[] binary = topicFilter.toBinary();
         final int start = topicFilter.getFilterByteStart() - 1;
-        return new MqttTopicLevel(binary, start, start);
+        return new MqttTopicLevel(topicFilter.toBinary(), start, start);
     }
 
     private static int nextEnd(final @NotNull byte[] array, final int start) {

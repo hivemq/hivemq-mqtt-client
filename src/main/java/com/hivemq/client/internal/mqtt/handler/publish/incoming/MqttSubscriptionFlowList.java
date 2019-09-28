@@ -121,8 +121,8 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
     }
 
     @Override
-    public boolean findMatching(
-            final @NotNull MqttTopicImpl topic, final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
+    public void findMatching(
+            final @NotNull MqttTopicImpl topic, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
         for (final MqttSubscribedPublishFlow flow : flows) {
             for (final MqttTopicFilterImpl topicFilter : flow.getTopicFilters()) {
@@ -133,14 +133,15 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
             }
         }
         if (!matchingFlows.isEmpty()) {
-            return true;
+            matchingFlows.subscriptionFound = true;
+            return;
         }
         for (final MqttTopicFilterImpl subscribedTopicFilter : subscribedTopicFilters.keySet()) {
             if (subscribedTopicFilter.matches(topic)) {
-                return true;
+                matchingFlows.subscriptionFound = true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
