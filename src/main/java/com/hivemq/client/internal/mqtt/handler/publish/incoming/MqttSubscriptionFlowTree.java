@@ -108,10 +108,14 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
     }
 
     @Override
-    public boolean findMatching(
-            final @NotNull MqttTopicImpl topic, final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
+    public void findMatching(
+            final @NotNull MqttTopicImpl topic, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
-        return (rootNode != null) && rootNode.findMatching(MqttTopicLevel.root(topic), matchingFlows);
+        final MqttTopicLevel level = MqttTopicLevel.root(topic);
+        TopicTreeNode node = rootNode;
+        while (node != null) {
+            node = node.findMatching(level.next(), matchingFlows);
+        }
     }
 
     @Override
@@ -300,27 +304,35 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             return false;
         }
 
-        boolean findMatching(
-                final @Nullable MqttTopicLevel level,
-                final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
+        @Nullable TopicTreeNode findMatching(
+                final @Nullable MqttTopicLevel level, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
             if (level == null) {
                 add(matchingFlows, entries);
                 add(matchingFlows, multiLevelEntries);
-                return (subscriptions != 0) || (multiLevelSubscriptions != 0);
+                if ((subscriptions != 0) || (multiLevelSubscriptions != 0)) {
+                    matchingFlows.subscriptionFound = true;
+                }
+                return null;
             }
             add(matchingFlows, multiLevelEntries);
-            boolean subscriptionFound = (multiLevelSubscriptions != 0);
+            if (multiLevelSubscriptions != 0) {
+                matchingFlows.subscriptionFound = true;
+            }
             if (next != null) {
-                if (singleLevel != null) {
-                    subscriptionFound |= singleLevel.findMatching(level.fork().next(), matchingFlows);
-                }
-                final TopicTreeNode node = next.get(level);
-                if (node != null) {
-                    subscriptionFound |= node.findMatching(level.next(), matchingFlows);
+                final TopicTreeNode nextNode = next.get(level);
+                if (nextNode != null) {
+                    if (singleLevel != null) {
+                        TopicTreeNode node = singleLevel;
+                        final MqttTopicLevel levelFork = level.fork();
+                        while (node != null) {
+                            node = node.findMatching(levelFork.next(), matchingFlows);
+                        }
+                    }
+                    return nextNode;
                 }
             }
-            return subscriptionFound;
+            return singleLevel;
         }
 
         private static void add(
@@ -369,12 +381,12 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             return null;
         }
 
-        private void removeNext(final @NotNull TopicTreeNode node) {
-            assert next != null;
+        void removeNext(final @NotNull TopicTreeNode node) {
             assert node.parentLevel != null;
             if (node.parentLevel == MqttTopicLevel.SINGLE_LEVEL_WILDCARD) {
                 singleLevel = null;
             } else {
+                assert next != null;
                 next.remove(node.parentLevel);
                 if (next.isEmpty()) {
                     next = null;

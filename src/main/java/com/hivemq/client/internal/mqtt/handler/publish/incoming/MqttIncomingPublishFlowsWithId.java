@@ -23,7 +23,6 @@ import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -127,8 +126,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     void findMatching(
-            final @NotNull MqttStatefulPublish publish,
-            final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
+            final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
         final ImmutableIntList subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
         if (!subscriptionIdentifiers.isEmpty()) {
@@ -138,6 +136,9 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
                 if (flow != null) {
                     matchingFlows.add(flow);
                 }
+            }
+            if (!matchingFlows.isEmpty()) {
+                matchingFlows.subscriptionFound = true;
             }
         }
         super.findMatching(publish, matchingFlows);
