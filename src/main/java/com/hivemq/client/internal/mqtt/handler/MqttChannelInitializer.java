@@ -40,7 +40,6 @@ import io.netty.channel.ChannelInitializer;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
-import java.net.InetSocketAddress;
 
 /**
  * Initializes:
@@ -90,8 +89,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
         if (sslConfig != null) {
-            final InetSocketAddress serverAddress = transportConfig.getServerAddress();
-            SslUtil.initChannel(channel, sslConfig, serverAddress.getHostString(), serverAddress.getPort());
+            SslUtil.initChannel(channel, sslConfig, transportConfig.getServerAddress());
         }
         final MqttWebSocketConfigImpl webSocketConfig = transportConfig.getRawWebSocketConfig();
         if (webSocketConfig != null) {

@@ -180,7 +180,7 @@ public class SslUtilTest {
         return Arrays.asList(sslEngine.getEnabledProtocols());
     }
 
-    static @NotNull SSLEngine createSslEngine(
+    private static @NotNull SSLEngine createSslEngine(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
         return SslUtil.createSslContext(sslConfig).newEngine(channel.alloc());
