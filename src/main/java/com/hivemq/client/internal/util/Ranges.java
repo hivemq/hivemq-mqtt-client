@@ -34,11 +34,59 @@ public class Ranges {
     }
 
     public int getId() {
-        return rootRange.getId();
+        if (rootRange.start == rootRange.end) {
+            return -1;
+        }
+        final int id = rootRange.start;
+        rootRange.start++;
+        if ((rootRange.start == rootRange.end) && (rootRange.next != null)) {
+            rootRange = rootRange.next;
+        }
+        return id;
     }
 
     public void returnId(final int id) {
-        rootRange = rootRange.returnId(id);
+        Range current = rootRange;
+        if (id < current.start - 1) {
+            rootRange = new Range(id, id + 1, current);
+            return;
+        }
+        Range prev = current;
+        current = returnId(current, id);
+        while (current != null) {
+            if (id < current.start - 1) {
+                prev.next = new Range(id, id + 1, current);
+                return;
+            }
+            prev = current;
+            current = returnId(current, id);
+        }
+    }
+
+    private @Nullable Range returnId(final @NotNull Range range, final int id) {
+        final Range next = range.next;
+        if (id == range.start - 1) {
+            range.start = id;
+            return null;
+        }
+        if (id < range.end) {
+            throw new IllegalStateException("The id was already returned. This must not happen and is a bug.");
+        }
+        if (id == range.end) {
+            if (next == null) {
+                throw new IllegalStateException("The id is greater than maxId. This must not happen and is a bug.");
+            }
+            range.end++;
+            if (range.end == next.start) {
+                range.end = next.end;
+                range.next = next.next;
+            }
+            return null;
+        }
+        if (next == null) {
+            throw new IllegalStateException("The id is greater than maxId. This must not happen and is a bug.");
+        }
+        return next;
     }
 
     public int resize(final int maxId) {
@@ -81,45 +129,6 @@ public class Ranges {
             this.start = start;
             this.end = end;
             this.next = next;
-        }
-
-        int getId() {
-            if (start == end) {
-                return -1;
-            }
-            final int id = this.start;
-            start++;
-            if ((start == end) && (next != null)) {
-                start = next.start;
-                end = next.end;
-                next = next.next;
-            }
-            return id;
-        }
-
-        @NotNull Range returnId(final int id) {
-            Range range = this;
-            if (id < start - 1) {
-                range = new Range(id, id + 1, this);
-            } else if (id == start - 1) {
-                start--;
-            } else if (id < end) {
-                throw new IllegalStateException("The id was already returned. This must not happen and is a bug.");
-            } else if (id == end) {
-                if (next == null) {
-                    throw new IllegalStateException("The id is greater than maxId. This must not happen and is a bug.");
-                }
-                end++;
-                if (end == next.start) {
-                    end = next.end;
-                    next = next.next;
-                }
-            } else if (next != null) {
-                next = next.returnId(id);
-            } else {
-                throw new IllegalStateException("The id is greater than maxId. This must not happen and is a bug.");
-            }
-            return range;
         }
     }
 }
