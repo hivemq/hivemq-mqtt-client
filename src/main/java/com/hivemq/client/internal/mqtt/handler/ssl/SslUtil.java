@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
+import java.net.InetSocketAddress;
 
 /**
  * @author Christoph Schäbel
@@ -35,16 +36,16 @@ public final class SslUtil {
 
     public static void initChannel(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
-            final @NotNull String host, final int port) throws SSLException {
+            final @NotNull InetSocketAddress address) throws SSLException {
 
-        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig, host, port));
+        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig, address));
     }
 
     private static @NotNull SslHandler createSslHandler(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
-            final @NotNull String host, final int port) throws SSLException {
+            final @NotNull InetSocketAddress address) throws SSLException {
 
-        return createSslContext(sslConfig).newHandler(channel.alloc(), host, port);
+        return createSslContext(sslConfig).newHandler(channel.alloc(), address.getHostString(), address.getPort());
     }
 
     static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
