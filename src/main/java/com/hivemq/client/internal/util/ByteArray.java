@@ -35,8 +35,16 @@ public class ByteArray {
         return getEnd() - getStart();
     }
 
+    protected int getStart() {
+        return 0;
+    }
+
+    protected int getEnd() {
+        return array.length;
+    }
+
     @Override
-    public boolean equals(final @Nullable Object o) {
+    public final boolean equals(final @Nullable Object o) {
         if (this == o) {
             return true;
         }
@@ -48,37 +56,7 @@ public class ByteArray {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return ByteArrayUtil.hashCode(array, getStart(), getEnd());
-    }
-
-    protected int getStart() {
-        return 0;
-    }
-
-    protected int getEnd() {
-        return array.length;
-    }
-
-    public static class Range extends ByteArray {
-
-        protected int start;
-        protected int end;
-
-        public Range(final @NotNull byte[] array, final int start, final int end) {
-            super(array);
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-        protected int getStart() {
-            return start;
-        }
-
-        @Override
-        protected int getEnd() {
-            return end;
-        }
     }
 }
