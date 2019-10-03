@@ -52,7 +52,7 @@ abstract class MqttSubscriptionFlowsTest {
 
     private final @NotNull Supplier<MqttSubscriptionFlows> flowsSupplier;
     @SuppressWarnings("NullabilityAnnotations")
-    private MqttSubscriptionFlows flows;
+    MqttSubscriptionFlows flows;
 
     MqttSubscriptionFlowsTest(final @NotNull Supplier<MqttSubscriptionFlows> flowsSupplier) {
         this.flowsSupplier = flowsSupplier;
