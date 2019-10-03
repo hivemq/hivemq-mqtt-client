@@ -23,6 +23,7 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.util.collections.HandleList;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ConvertWith;
@@ -32,8 +33,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Silvio Giebl
@@ -270,6 +270,23 @@ abstract class MqttSubscriptionFlowsTest {
         assertEquals(ImmutableSet.of(flow1), ImmutableSet.copyOf(matching));
     }
 
+    @Test
+    void cancel_partiallyUnsubscribedFlow() {
+        final MqttSubscribedPublishFlow flow = mockSubscriptionFlow("test/topic(2)");
+        flows.subscribe(MqttTopicFilterImpl.of("test/topic"), flow);
+        flows.subscribe(MqttTopicFilterImpl.of("test/topic2"), flow);
+
+        flows.unsubscribe(MqttTopicFilterImpl.of("test/topic"), null);
+        flows.cancel(flow);
+
+        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
+        flows.findMatching(MqttTopicImpl.of("test/topic"), matching);
+        assertFalse(matching.subscriptionFound);
+        flows.findMatching(MqttTopicImpl.of("test/topic2"), matching);
+        assertTrue(matching.subscriptionFound);
+        assertTrue(matching.isEmpty());
+    }
+
     @ParameterizedTest
     @CsvSource({
             "1/a, 1/a, 2/a, 2/a", "1/a, 1/+, 2/a, 2/+", "1/a, 1/#, 2/a, 2/#", "1/a/b, 1/a/b, 2/a/b, 2/a/b",
@@ -362,6 +379,57 @@ abstract class MqttSubscriptionFlowsTest {
         flows.findMatching(MqttTopicImpl.of(topic), matching);
         assertTrue(matching.subscriptionFound);
         assertTrue(matching.isEmpty());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"a/b, a/b/c, +/b/c, +/+/+", "a/b/c/d, a/b/c/d/e, +/b//d/ec, +/+/+/+/+"})
+    void findMatching_matchingMultipleButNotAllLevels(
+            final @NotNull String topic, final @NotNull String filter1, final @NotNull String filter2,
+            final @NotNull String filter3) {
+
+        flows.subscribe(MqttTopicFilterImpl.of(filter1), null);
+        flows.subscribe(MqttTopicFilterImpl.of(filter2), null);
+        flows.subscribe(MqttTopicFilterImpl.of(filter3), null);
+
+        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
+        flows.findMatching(MqttTopicImpl.of(topic), matching);
+        assertFalse(matching.subscriptionFound);
+        assertTrue(matching.isEmpty());
+    }
+
+    @Test
+    void clear() {
+        final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow("test/topic/filter");
+        final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow("test2/topic/filter");
+        final MqttSubscribedPublishFlow flow3 = mockSubscriptionFlow("test/topic2/filter");
+        final MqttSubscribedPublishFlow flow4 = mockSubscriptionFlow("test/topic/filter2");
+        final MqttSubscribedPublishFlow flow5 = mockSubscriptionFlow("+/topic");
+        final MqttSubscribedPublishFlow flow6 = mockSubscriptionFlow("topic/#");
+        flows.subscribe(MqttTopicFilterImpl.of(flow1.toString()), flow1);
+        flows.subscribe(MqttTopicFilterImpl.of(flow2.toString()), flow2);
+        flows.subscribe(MqttTopicFilterImpl.of(flow3.toString()), flow3);
+        flows.subscribe(MqttTopicFilterImpl.of(flow4.toString()), flow4);
+        flows.subscribe(MqttTopicFilterImpl.of(flow5.toString()), flow5);
+        flows.subscribe(MqttTopicFilterImpl.of(flow6.toString()), flow6);
+
+        final Exception cause = new Exception("test");
+        flows.clear(cause);
+        verify(flow1).onError(cause);
+        verify(flow2).onError(cause);
+        verify(flow3).onError(cause);
+        verify(flow4).onError(cause);
+        verify(flow5).onError(cause);
+        verify(flow6).onError(cause);
+
+        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
+        flows.findMatching(MqttTopicImpl.of("test/topic"), matching);
+        flows.findMatching(MqttTopicImpl.of("test/topic/filter"), matching);
+        flows.findMatching(MqttTopicImpl.of("test2/topic/filter"), matching);
+        flows.findMatching(MqttTopicImpl.of("test/topic2/filter"), matching);
+        flows.findMatching(MqttTopicImpl.of("test/topic/filter2"), matching);
+        flows.findMatching(MqttTopicImpl.of("abc/topic"), matching);
+        flows.findMatching(MqttTopicImpl.of("topic/abc"), matching);
+        assertFalse(matching.subscriptionFound);
     }
 
     @NotNull
