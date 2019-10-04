@@ -103,8 +103,9 @@ public class MqttTopicIterator extends MqttTopicLevel {
         final byte[] topicLevelsArray = topicLevels.getArray();
         final int topicLevelsEnd = topicLevels.getEnd();
         final int to = end + topicLevelsArray.length - topicLevelsEnd;
-        if ((to <= allEnd) && ByteArrayUtil.equals(array, end + 1, to, topicLevelsArray, topicLevelsEnd + 1,
-                topicLevelsArray.length)) {
+        if ((to <= allEnd) && ((to == allEnd) || (array[to] == MqttTopic.TOPIC_LEVEL_SEPARATOR)) &&
+                ByteArrayUtil.equals(array, end + 1, to, topicLevelsArray, topicLevelsEnd + 1,
+                        topicLevelsArray.length)) {
             start = end = to;
             return true;
         }
