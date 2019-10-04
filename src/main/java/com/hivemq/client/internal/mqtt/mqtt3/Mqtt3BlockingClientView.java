@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.internal.mqtt.MqttBlockingClient;
+import com.hivemq.client.internal.mqtt.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
@@ -26,7 +27,6 @@ import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
-import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;

@@ -18,9 +18,9 @@
 package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
-import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientDisconnectedContext;
