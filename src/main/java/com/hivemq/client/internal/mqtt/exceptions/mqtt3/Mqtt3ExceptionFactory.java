@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.client.internal.mqtt.mqtt3.exceptions;
+package com.hivemq.client.internal.mqtt.exceptions.mqtt3;
 
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;

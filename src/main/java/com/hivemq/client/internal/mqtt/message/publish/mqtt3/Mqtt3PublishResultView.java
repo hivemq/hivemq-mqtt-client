@@ -17,8 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.message.publish.mqtt3;
 
+import com.hivemq.client.internal.mqtt.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
-import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
