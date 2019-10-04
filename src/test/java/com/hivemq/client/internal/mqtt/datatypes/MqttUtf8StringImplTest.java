@@ -21,19 +21,18 @@ import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
@@ -70,30 +69,34 @@ class MqttUtf8StringImplTest {
     @MethodSource("tooLongStringProvider")
     void from_stringTooLong_throws(final @NotNull String tooLong, final int expectedLength) {
         final IllegalArgumentException exception =
-                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttUtf8StringImpl.of(tooLong));
-        assertTrue("IllegalArgumentException must give hint that string encoded in UTF-8 exceeds binary limit.",
-                exception.getMessage().contains("must not be longer than"));
-        assertTrue("IllegalArgumentException contains actual length.",
-                exception.getMessage().contains(Integer.toString(expectedLength - 2)));
+                assertThrows(IllegalArgumentException.class, () -> MqttUtf8StringImpl.of(tooLong));
+        assertTrue(
+                exception.getMessage().contains("must not be longer than"),
+                "IllegalArgumentException must give hint that string encoded in UTF-8 exceeds binary limit.");
+        assertTrue(
+                exception.getMessage().contains(Integer.toString(expectedLength - 2)),
+                "IllegalArgumentException contains actual length.");
     }
 
     @Test
     void from_stringWithNullCharacter_throws() {
         final IllegalArgumentException exception =
-                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttUtf8StringImpl.of("abc\0def"));
-        assertTrue("IllegalArgumentException must give hint that string contains a forbidden null character.",
-                exception.getMessage().contains("null character (U+0000)"));
+                assertThrows(IllegalArgumentException.class, () -> MqttUtf8StringImpl.of("abc\0def"));
+        assertTrue(
+                exception.getMessage().contains("null character (U+0000)"),
+                "IllegalArgumentException must give hint that string contains a forbidden null character.");
     }
 
-    @Test
-    void from_stringWithUtf16Surrogates_throws() {
+    @ParameterizedTest
+    @CsvSource({"abc, def", "abc, ''", "'' ,def", "'', ''"})
+    void from_stringWithUtf16Surrogates_throws(final @NotNull String prefix, final @NotNull String postfix) {
         for (char c = '\uD800'; c <= '\uDFFF'; c++) {
-            final String stringWithSurrogate = "abc" + c + "def";
-            final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
-                    () -> MqttUtf8StringImpl.of(stringWithSurrogate));
+            final String stringWithSurrogate = prefix + c + postfix;
+            final IllegalArgumentException exception =
+                    assertThrows(IllegalArgumentException.class, () -> MqttUtf8StringImpl.of(stringWithSurrogate));
             assertTrue(
-                    "IllegalArgumentException must give hint that string contains a forbidden UTF-16 surrogate.",
-                    exception.getMessage().contains("UTF-16 surrogate"));
+                    exception.getMessage().contains("UTF-16 surrogate"),
+                    "IllegalArgumentException must give hint that string contains a forbidden UTF-16 surrogate.");
         }
     }
 
@@ -173,6 +176,25 @@ class MqttUtf8StringImplTest {
                 assertTrue(binaryString.containsShouldNotCharacters());
             }
         }
+        for (int c = 0xFDD0; c <= 0xFDEF; c++) {
+            final String nonCharacterString = String.valueOf(Character.toChars(c));
+            final MqttUtf8StringImpl string = MqttUtf8StringImpl.of("abc" + nonCharacterString + "def");
+            assertNotNull(string);
+            assertTrue(string.containsShouldNotCharacters());
+
+            final byte[] nonCharacterBinary = nonCharacterString.getBytes(StandardCharsets.UTF_8);
+            final byte[] binary = new byte[6 + nonCharacterBinary.length];
+            binary[0] = 'a';
+            binary[1] = 'b';
+            binary[2] = 'c';
+            System.arraycopy(nonCharacterBinary, 0, binary, 3, nonCharacterBinary.length);
+            binary[3 + nonCharacterBinary.length] = 'd';
+            binary[3 + nonCharacterBinary.length + 1] = 'e';
+            binary[3 + nonCharacterBinary.length + 2] = 'f';
+            final MqttUtf8StringImpl binaryString = MqttUtf8StringImpl.of(binary);
+            assertNotNull(binaryString);
+            assertTrue(binaryString.containsShouldNotCharacters());
+        }
     }
 
     @Test
@@ -204,7 +226,7 @@ class MqttUtf8StringImplTest {
         final String string = "abcdef";
 
         final ByteBuf byteBuf = Unpooled.buffer();
-        MqttBinaryData.encode(string.getBytes(Charset.forName("UTF-8")), byteBuf);
+        MqttBinaryData.encode(string.getBytes(StandardCharsets.UTF_8), byteBuf);
         final MqttUtf8StringImpl mqtt5UTF8String = MqttUtf8StringImpl.decode(byteBuf);
         byteBuf.release();
 
@@ -270,8 +292,8 @@ class MqttUtf8StringImplTest {
     }
 
     @Test
-    @SuppressWarnings("all")
-    public void equals() {
+    @SuppressWarnings({"SimplifiableJUnitAssertion", "ConstantConditions"})
+    void equals() {
         assertTrue(MqttUtf8StringImpl.of("test").equals(MqttUtf8StringImpl.of("test")));
         assertTrue(MqttUtf8StringImpl.of("test").equals(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})));
         assertTrue(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'}).equals(MqttUtf8StringImpl.of("test")));
@@ -289,8 +311,31 @@ class MqttUtf8StringImplTest {
     }
 
     @Test
-    @SuppressWarnings("all")
-    public void equals_same() {
+    @SuppressWarnings({"ConstantConditions"})
+    void compareTo() {
+        assertEquals(0, MqttUtf8StringImpl.of("test").compareTo(MqttUtf8StringImpl.of("test")));
+        assertEquals(0, MqttUtf8StringImpl.of("test").compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})));
+        assertEquals(0, MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'}).compareTo(MqttUtf8StringImpl.of("test")));
+        assertEquals(0, MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})
+                .compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})));
+
+        assertTrue(MqttUtf8StringImpl.of("test").compareTo(MqttUtf8StringImpl.of("test2")) < 0);
+        assertTrue(MqttUtf8StringImpl.of("test2").compareTo(MqttUtf8StringImpl.of("test")) > 0);
+        assertTrue(MqttUtf8StringImpl.of("test").compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't', '2'})) <
+                0);
+        assertTrue(MqttUtf8StringImpl.of("test2").compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})) > 0);
+        assertTrue(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'}).compareTo(MqttUtf8StringImpl.of("test2")) < 0);
+        assertTrue(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't', '2'}).compareTo(MqttUtf8StringImpl.of("test")) >
+                0);
+        assertTrue(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})
+                .compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't', '2'})) < 0);
+        assertTrue(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't', '2'})
+                .compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})) > 0);
+    }
+
+    @Test
+    @SuppressWarnings({"SimplifiableJUnitAssertion", "ConstantConditions", "EqualsWithItself"})
+    void equals_same() {
         final MqttUtf8StringImpl string = MqttUtf8StringImpl.of("test");
         final MqttUtf8StringImpl binary = MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'});
 
@@ -299,8 +344,18 @@ class MqttUtf8StringImplTest {
     }
 
     @Test
-    @SuppressWarnings("all")
-    public void equals_converted() {
+    @SuppressWarnings({"ConstantConditions", "EqualsWithItself"})
+    void compareTo_same() {
+        final MqttUtf8StringImpl string = MqttUtf8StringImpl.of("test");
+        final MqttUtf8StringImpl binary = MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'});
+
+        assertEquals(0, string.compareTo(string));
+        assertEquals(0, binary.compareTo(binary));
+    }
+
+    @Test
+    @SuppressWarnings({"SimplifiableJUnitAssertion", "ConstantConditions"})
+    void equals_converted() {
         final MqttUtf8StringImpl stringAndBinary = MqttUtf8StringImpl.of("test");
         stringAndBinary.toBinary();
 
@@ -309,6 +364,19 @@ class MqttUtf8StringImplTest {
 
         assertTrue(MqttUtf8StringImpl.of("test").equals(stringAndBinary));
         assertTrue(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'}).equals(stringAndBinary));
+    }
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    void compareTo_converted() {
+        final MqttUtf8StringImpl stringAndBinary = MqttUtf8StringImpl.of("test");
+        stringAndBinary.toBinary();
+
+        assertEquals(0, stringAndBinary.compareTo(MqttUtf8StringImpl.of("test")));
+        assertEquals(0, stringAndBinary.compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})));
+
+        assertEquals(0, MqttUtf8StringImpl.of("test").compareTo(stringAndBinary));
+        assertEquals(0, MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'}).compareTo(stringAndBinary));
     }
 
     @Test
