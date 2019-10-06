@@ -99,13 +99,12 @@ public class MqttTopicIterator extends MqttTopicLevel {
         return new MqttTopicLevels(Arrays.copyOfRange(array, start, allEnd), end - start);
     }
 
-    public boolean forwardIfEqual(final @NotNull MqttTopicLevels topicLevels) {
-        final byte[] topicLevelsArray = topicLevels.getArray();
-        final int topicLevelsEnd = topicLevels.getEnd();
-        final int to = end + topicLevelsArray.length - topicLevelsEnd;
+    public boolean forwardIfEqual(final @NotNull MqttTopicLevels levels) {
+        final byte[] levelsArray = levels.getArray();
+        final int levelsEnd = levels.getEnd();
+        final int to = end + levelsArray.length - levelsEnd;
         if ((to <= allEnd) && ((to == allEnd) || (array[to] == MqttTopic.TOPIC_LEVEL_SEPARATOR)) &&
-                ByteArrayUtil.equals(array, end + 1, to, topicLevelsArray, topicLevelsEnd + 1,
-                        topicLevelsArray.length)) {
+                ByteArrayUtil.equals(array, end + 1, to, levelsArray, levelsEnd + 1, levelsArray.length)) {
             start = end = to;
             return true;
         }
