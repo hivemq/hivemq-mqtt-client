@@ -46,7 +46,6 @@ import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
-import java.util.function.ToIntFunction;
 
 /**
  * @author Silvio Giebl
@@ -56,14 +55,14 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
         implements ContextFuture.Listener<MqttMessage.WithId> {
 
     public static final @NotNull String NAME = "qos.incoming";
-    private static final @NotNull ToIntFunction<MqttMessage.WithId> ID_FUNCTION =
-            MqttMessage.WithId::getPacketIdentifier;
+    private static final @NotNull IntMap.Spec<MqttMessage.WithId> INDEX_SPEC =
+            new IntMap.Spec<>(MqttMessage.WithId::getPacketIdentifier);
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
     private final @NotNull MqttIncomingPublishService incomingPublishService;
 
-    private final @NotNull IntMap<MqttMessage.WithId> messages = new IntMap<>(ID_FUNCTION);
+    private final @NotNull IntMap<MqttMessage.WithId> messages = new IntMap<>(INDEX_SPEC);
     // contains StatefulPublish with AT_LEAST_ONCE/EXACTLY_ONCE, MqttPubAck or MqttPubRec
 
     private int receiveMaximum;

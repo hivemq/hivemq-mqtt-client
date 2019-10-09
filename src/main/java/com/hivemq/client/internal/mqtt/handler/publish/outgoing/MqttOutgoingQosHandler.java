@@ -67,7 +67,6 @@ import org.reactivestreams.Subscription;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.ToIntFunction;
 
 import static com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0;
 
@@ -80,7 +79,8 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     public static final @NotNull String NAME = "qos.outgoing";
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttOutgoingQosHandler.class);
-    private static final @NotNull ToIntFunction<MqttPubOrRelWithFlow> ID_FUNCTION = x -> x.packetIdentifier;
+    private static final @NotNull IntMap.Spec<MqttPubOrRelWithFlow> INDEX_SPEC =
+            new IntMap.Spec<>(x -> x.packetIdentifier);
     private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64; // TODO configurable
     private static final boolean QOS_2_COMPLETE_RESULT = false; // TODO configurable
 
@@ -89,7 +89,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     private final @NotNull SpscUnboundedArrayQueue<MqttPublishWithFlow> queue = new SpscUnboundedArrayQueue<>(32);
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntMap<MqttPubOrRelWithFlow> pendingMap = new IntMap<>(ID_FUNCTION);
+    private final @NotNull IntMap<MqttPubOrRelWithFlow> pendingMap = new IntMap<>(INDEX_SPEC);
     private final @NotNull NodeList<MqttPubOrRelWithFlow> pending = new NodeList<>();
     private final @NotNull Ranges packetIdentifiers = new Ranges(1, 0);
 

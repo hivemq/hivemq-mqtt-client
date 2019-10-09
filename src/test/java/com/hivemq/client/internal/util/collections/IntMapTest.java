@@ -35,7 +35,7 @@ class IntMapTest {
 
     @Test
     void put_not_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.put(new Entry(2, "test2")));
         assertNull(map.put(new Entry(3, "test3")));
         assertEquals(new Entry(2, "test2"), map.get(2));
@@ -45,7 +45,7 @@ class IntMapTest {
 
     @Test
     void put_not_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.put(new Entry(2, "test2")));
         assertNull(map.put(new Entry(2 + 16, "test18")));
         assertNull(map.put(new Entry(2 + 32, "test34")));
@@ -57,7 +57,7 @@ class IntMapTest {
 
     @Test
     void put_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.put(new Entry(10, "test1")));
         assertEquals(new Entry(10, "test1"), map.put(new Entry(10, "test2")));
         assertEquals(new Entry(10, "test2"), map.get(10));
@@ -66,7 +66,7 @@ class IntMapTest {
 
     @Test
     void put_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.put(new Entry(10, "test1")));
         assertNull(map.put(new Entry(10 + 16, "test2")));
         assertNull(map.put(new Entry(10 + 32, "test3")));
@@ -81,7 +81,7 @@ class IntMapTest {
 
     @Test
     void putIfAbsent_not_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.putIfAbsent(new Entry(2, "test2")));
         assertNull(map.putIfAbsent(new Entry(3, "test3")));
         assertEquals(new Entry(2, "test2"), map.get(2));
@@ -91,7 +91,7 @@ class IntMapTest {
 
     @Test
     void putIfAbsent_not_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.putIfAbsent(new Entry(2, "test2")));
         assertNull(map.putIfAbsent(new Entry(2 + 16, "test18")));
         assertNull(map.putIfAbsent(new Entry(2 + 32, "test34")));
@@ -103,7 +103,7 @@ class IntMapTest {
 
     @Test
     void putIfAbsent_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.putIfAbsent(new Entry(10, "test1")));
         assertEquals(new Entry(10, "test1"), map.putIfAbsent(new Entry(10, "test2")));
         assertEquals(new Entry(10, "test1"), map.get(10));
@@ -112,7 +112,7 @@ class IntMapTest {
 
     @Test
     void putIfAbsent_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         assertNull(map.putIfAbsent(new Entry(10, "test1")));
         assertNull(map.putIfAbsent(new Entry(10 + 16, "test2")));
         assertNull(map.putIfAbsent(new Entry(10 + 32, "test3")));
@@ -127,14 +127,14 @@ class IntMapTest {
 
     @Test
     void get_not_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         assertNull(map.get(3));
     }
 
     @Test
     void get_not_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         assertNull(map.get(2 + 48));
         map.put(new Entry(2 + 16, "test18"));
@@ -145,14 +145,14 @@ class IntMapTest {
 
     @Test
     void get_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         assertEquals(new Entry(2, "test2"), map.get(2));
     }
 
     @Test
     void get_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         map.put(new Entry(2 + 16, "test18"));
         map.put(new Entry(2 + 32, "test34"));
@@ -163,7 +163,7 @@ class IntMapTest {
 
     @Test
     void remove_not_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         assertNull(map.remove(3));
         assertEquals(new Entry(2, "test2"), map.get(2));
@@ -172,7 +172,7 @@ class IntMapTest {
 
     @Test
     void remove_not_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         assertNull(map.remove(2 + 48));
         map.put(new Entry(2 + 16, "test18"));
@@ -187,7 +187,7 @@ class IntMapTest {
 
     @Test
     void remove_present() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         map.put(new Entry(3, "test3"));
         assertEquals(new Entry(3, "test3"), map.remove(3));
@@ -197,7 +197,7 @@ class IntMapTest {
 
     @Test
     void remove_present_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         map.put(new Entry(2, "test2"));
         map.put(new Entry(2 + 16, "test18"));
         map.put(new Entry(2 + 32, "test34"));
@@ -209,7 +209,7 @@ class IntMapTest {
 
     @Test
     void size() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         final int[] keys = {0, 1, 3, 10, 100, 101, 102, 256};
         for (final int key : keys) {
             map.put(new Entry(key, "test" + key));
@@ -220,7 +220,7 @@ class IntMapTest {
     @ParameterizedTest
     @ValueSource(ints = {16, 256})
     void clear(final int size) {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         for (int i = 0; i < size; i += 3) {
             map.put(new Entry(i, "test" + i));
         }
@@ -233,7 +233,7 @@ class IntMapTest {
 
     @Test
     void forEach() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         final int[] keys = {0, 1, 3, 10, 100, 101, 102, 256};
         final HashSet<Entry> set = new HashSet<>();
         for (final int key : keys) {
@@ -250,7 +250,7 @@ class IntMapTest {
 
     @Test
     void forEach_hash_collision() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         final int[] keys = {0, 16, 1, 1 + 16, 1 + 32};
         final HashSet<Entry> set = new HashSet<>();
         for (final int key : keys) {
@@ -268,7 +268,7 @@ class IntMapTest {
     @ParameterizedTest
     @CsvSource({"16, 4", "65536, 32", "65536, 64"})
     void put_remove_sequential(final int size, final int chunk) {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         for (int i = 0; i < chunk * 2; i++) {
             map.put(new Entry(i, "test" + i));
         }
@@ -294,7 +294,7 @@ class IntMapTest {
 
     @Test
     void put_remove_sparse() {
-        final IntMap<Entry> map = new IntMap<>(e -> e.id);
+        final IntMap<Entry> map = new IntMap<>(new IntMap.Spec<>(e -> e.id));
         boolean reverse = false;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
