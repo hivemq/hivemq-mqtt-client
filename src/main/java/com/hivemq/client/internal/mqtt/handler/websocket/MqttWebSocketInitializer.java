@@ -73,7 +73,7 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
 
         final URI uri = new URI((clientConfig.getTransportConfig().getRawSslConfig() == null) ? WEBSOCKET_URI_SCHEME :
                 WEBSOCKET_TLS_URI_SCHEME, null, clientConfig.getServerHost(), clientConfig.getServerPort(),
-                "/" + webSocketConfig.getServerPath(), null, null);
+                "/" + webSocketConfig.getServerPath(), webSocketConfig.getQueryString(), null);
 
         handshaker = WebSocketClientHandshakerFactory.newHandshaker(uri, WebSocketVersion.V13,
                 webSocketConfig.getSubprotocol(), true, null, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, true,
