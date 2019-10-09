@@ -35,8 +35,8 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     MqttWebSocketConfigImpl(final @NotNull String serverPath, final @NotNull String queryString, final @NotNull String subprotocol) {
         this.serverPath = serverPath;
-        this.subprotocol = subprotocol;
         this.queryString = queryString;
+        this.subprotocol = subprotocol;
     }
 
     @Override
