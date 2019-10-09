@@ -35,7 +35,7 @@ import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
 import com.hivemq.client.internal.netty.ContextFuture;
 import com.hivemq.client.internal.netty.DefaultContextPromise;
-import com.hivemq.client.internal.util.collections.IntMap;
+import com.hivemq.client.internal.util.collections.IntIndex;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
@@ -55,14 +55,14 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
         implements ContextFuture.Listener<MqttMessage.WithId> {
 
     public static final @NotNull String NAME = "qos.incoming";
-    private static final @NotNull IntMap.Spec<MqttMessage.WithId> INDEX_SPEC =
-            new IntMap.Spec<>(MqttMessage.WithId::getPacketIdentifier);
+    private static final @NotNull IntIndex.Spec<MqttMessage.WithId> INDEX_SPEC =
+            new IntIndex.Spec<>(MqttMessage.WithId::getPacketIdentifier);
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
     private final @NotNull MqttIncomingPublishService incomingPublishService;
 
-    private final @NotNull IntMap<MqttMessage.WithId> messages = new IntMap<>(INDEX_SPEC);
+    private final @NotNull IntIndex<MqttMessage.WithId> messages = new IntIndex<>(INDEX_SPEC);
     // contains StatefulPublish with AT_LEAST_ONCE/EXACTLY_ONCE, MqttPubAck or MqttPubRec
 
     private int receiveMaximum;
