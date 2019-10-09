@@ -76,7 +76,7 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
 
         final URI uri = new URI((clientConfig.getTransportConfig().getRawSslConfig() == null) ? WEBSOCKET_URI_SCHEME :
                 WEBSOCKET_TLS_URI_SCHEME, null, clientConfig.getServerHost(), clientConfig.getServerPort(),
-                "/" + webSocketConfig.getServerPath(), null, null);
+                "/" + webSocketConfig.getServerPath(), webSocketConfig.getQueryString(), null);
 
         final WebSocketClientProtocolHandler webSocketClientProtocolHandler =
                 new WebSocketClientProtocolHandler(uri, WebSocketVersion.V13, webSocketConfig.getSubprotocol(), true,

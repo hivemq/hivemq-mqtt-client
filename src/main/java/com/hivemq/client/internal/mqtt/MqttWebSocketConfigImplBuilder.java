@@ -30,6 +30,7 @@ import java.util.function.Function;
 public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConfigImplBuilder<B>> {
 
     private @NotNull String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
+    private @NotNull String queryString = MqttWebSocketConfigImpl.DEFAULT_QUERY_STRING;
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
 
     MqttWebSocketConfigImplBuilder() {}
@@ -37,6 +38,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     MqttWebSocketConfigImplBuilder(final @Nullable MqttWebSocketConfigImpl webSocketConfig) {
         if (webSocketConfig != null) {
             serverPath = webSocketConfig.getServerPath();
+            queryString = webSocketConfig.getQueryString();
             subprotocol = webSocketConfig.getSubprotocol();
         }
     }
@@ -49,13 +51,18 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
         return self();
     }
 
+    public @NotNull B queryString(final @Nullable String queryString) {
+        this.queryString = Checks.notNull(subprotocol, "QueryString");
+        return self();
+    }
+    
     public @NotNull B subprotocol(final @Nullable String subprotocol) {
         this.subprotocol = Checks.notNull(subprotocol, "Subprotocol");
         return self();
     }
 
     public @NotNull MqttWebSocketConfigImpl build() {
-        return new MqttWebSocketConfigImpl(serverPath, subprotocol);
+        return new MqttWebSocketConfigImpl(serverPath, queryString, subprotocol);
     }
 
     public static class Default extends MqttWebSocketConfigImplBuilder<Default> implements MqttWebSocketConfigBuilder {

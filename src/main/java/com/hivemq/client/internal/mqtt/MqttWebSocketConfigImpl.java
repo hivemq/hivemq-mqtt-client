@@ -27,14 +27,16 @@ import org.jetbrains.annotations.Nullable;
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     static final @NotNull MqttWebSocketConfigImpl DEFAULT =
-            new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_MQTT_SUBPROTOCOL);
+            new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_QUERY_STRING, DEFAULT_MQTT_SUBPROTOCOL);
 
     private final @NotNull String serverPath;
+    private final @NotNull String queryString;
     private final @NotNull String subprotocol;
 
-    MqttWebSocketConfigImpl(final @NotNull String serverPath, final @NotNull String subprotocol) {
+    MqttWebSocketConfigImpl(final @NotNull String serverPath, final @NotNull String queryString, final @NotNull String subprotocol) {
         this.serverPath = serverPath;
         this.subprotocol = subprotocol;
+        this.queryString = queryString;
     }
 
     @Override
@@ -42,6 +44,11 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         return serverPath;
     }
 
+    @Override
+    public @NotNull String getQueryString() {
+        return queryString;
+    }
+    
     @Override
     public @NotNull String getSubprotocol() {
         return subprotocol;
@@ -62,12 +69,13 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         }
         final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
 
-        return serverPath.equals(that.serverPath) && subprotocol.equals(that.subprotocol);
+        return serverPath.equals(that.serverPath) && queryString.equals(that.queryString) && subprotocol.equals(that.subprotocol);
     }
 
     @Override
     public int hashCode() {
         int result = serverPath.hashCode();
+        result = 31 * result + queryString.hashCode();
         result = 31 * result + subprotocol.hashCode();
         return result;
     }
