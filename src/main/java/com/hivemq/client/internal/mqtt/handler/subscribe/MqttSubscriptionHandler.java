@@ -55,7 +55,6 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.ToIntFunction;
 
 /**
  * @author Silvio Giebl
@@ -66,15 +65,15 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public static final @NotNull String NAME = "subscription";
     private static final @NotNull InternalLogger LOGGER =
             InternalLoggerFactory.getLogger(MqttSubscriptionHandler.class);
-    private static final @NotNull ToIntFunction<MqttSubOrUnsubWithFlow.Stateful> ID_FUNCTION =
-            x -> x.getMessage().getPacketIdentifier();
+    private static final @NotNull IntMap.Spec<MqttSubOrUnsubWithFlow.Stateful> INDEX_SPEC =
+            new IntMap.Spec<>(x -> x.getMessage().getPacketIdentifier());
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
 
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
     private final @NotNull ConcurrentLinkedQueue<MqttSubOrUnsubWithFlow> queued = new ConcurrentLinkedQueue<>();
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pendingMap = new IntMap<>(ID_FUNCTION);
+    private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pendingMap = new IntMap<>(INDEX_SPEC);
     private final @NotNull NodeList<MqttSubOrUnsubWithFlow.Stateful> pending = new NodeList<>();
     private final @NotNull Ranges packetIdentifiers;
 

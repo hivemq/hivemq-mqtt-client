@@ -33,38 +33,48 @@ import java.util.function.ToIntFunction;
 public class IntMap<E> {
 
     private static final int MAX_CAPACITY = 1 << 30;
-    private static final int DEFAULT_MIN_CAPACITY = 1 << 4;
-    private static final float DEFAULT_NODE_THRESHOLD_FACTOR = 0.2f;
 
+    public static class Spec<E> {
+
+        private static final int DEFAULT_MIN_CAPACITY = 1 << 4;
+        private static final float DEFAULT_NODE_THRESHOLD_FACTOR = 0.2f;
+
+        final @NotNull ToIntFunction<? super E> keyFunction;
+        final int minCapacity;
+        final float nodeThresholdFactor;
+
+        public Spec(final @NotNull ToIntFunction<? super E> keyFunction) {
+            this(keyFunction, DEFAULT_MIN_CAPACITY, DEFAULT_NODE_THRESHOLD_FACTOR);
+        }
+
+        public Spec(final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity) {
+            this(keyFunction, minCapacity, DEFAULT_NODE_THRESHOLD_FACTOR);
+        }
+
+        public Spec(final @NotNull ToIntFunction<? super E> keyFunction, final float nodeThresholdFactor) {
+            this(keyFunction, DEFAULT_MIN_CAPACITY, nodeThresholdFactor);
+        }
+
+        public Spec(
+                final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity,
+                final float nodeThresholdFactor) {
+
+            this.keyFunction = keyFunction;
+            this.minCapacity = minCapacity;
+            this.nodeThresholdFactor = nodeThresholdFactor;
+        }
+    }
+
+    private final @NotNull Spec<E> spec;
     private @Nullable Object @NotNull [] table;
-    private final @NotNull ToIntFunction<? super E> keyFunction;
-    private final int minCapacity;
-    private final float nodeThresholdFactor;
     private int size;
     private int nodeCount;
     private int nodeThreshold;
 
-    public IntMap(final @NotNull ToIntFunction<? super E> keyFunction) {
-        this(keyFunction, DEFAULT_MIN_CAPACITY, DEFAULT_NODE_THRESHOLD_FACTOR);
-    }
-
-    public IntMap(final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity) {
-        this(keyFunction, minCapacity, DEFAULT_NODE_THRESHOLD_FACTOR);
-    }
-
-    public IntMap(final @NotNull ToIntFunction<? super E> keyFunction, final float nodeThresholdFactor) {
-        this(keyFunction, DEFAULT_MIN_CAPACITY, nodeThresholdFactor);
-    }
-
-    public IntMap(
-            final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity,
-            final float nodeThresholdFactor) {
-
-        final int minCapacityPow2 = 1 << Pow2Util.roundToPowerOf2Bits(minCapacity);
+    public IntMap(final @NotNull Spec<E> spec) {
+        this.spec = spec;
+        final int minCapacityPow2 = 1 << Pow2Util.roundToPowerOf2Bits(spec.minCapacity);
         table = new Object[minCapacityPow2];
-        this.keyFunction = keyFunction;
-        this.minCapacity = minCapacityPow2;
-        this.nodeThresholdFactor = nodeThresholdFactor;
         calcThresholds(minCapacityPow2);
     }
 
@@ -82,7 +92,7 @@ public class IntMap<E> {
 
     private @Nullable E put(final @NotNull E entry, final boolean overwrite) {
         final Object[] table = this.table;
-        final int key = keyFunction.applyAsInt(entry);
+        final int key = spec.keyFunction.applyAsInt(entry);
         final int index = key & (table.length - 1);
         final Object o = table[index];
         if (o == null) {
@@ -105,7 +115,7 @@ public class IntMap<E> {
                     node = (Node) next;
                 } else {
                     final E e = cast(next);
-                    final int nextKey = keyFunction.applyAsInt(e);
+                    final int nextKey = spec.keyFunction.applyAsInt(e);
                     if (nextKey == key) {
                         if (overwrite) {
                             node.next = entry;
@@ -120,7 +130,7 @@ public class IntMap<E> {
             }
         }
         final E e = cast(o);
-        final int oKey = keyFunction.applyAsInt(e);
+        final int oKey = spec.keyFunction.applyAsInt(e);
         if (oKey == key) {
             if (overwrite) {
                 table[index] = entry;
@@ -151,7 +161,7 @@ public class IntMap<E> {
                     node = (Node) next;
                 } else {
                     final E e = cast(next);
-                    if (keyFunction.applyAsInt(e) == key) {
+                    if (spec.keyFunction.applyAsInt(e) == key) {
                         return e;
                     }
                     return null;
@@ -159,7 +169,7 @@ public class IntMap<E> {
             }
         }
         final E e = cast(o);
-        if (keyFunction.applyAsInt(e) == key) {
+        if (spec.keyFunction.applyAsInt(e) == key) {
             return e;
         }
         return null;
@@ -183,7 +193,7 @@ public class IntMap<E> {
             Object next = node.next;
             if (next.getClass() != Node.class) {
                 final E e = cast(next);
-                if (keyFunction.applyAsInt(e) == key) {
+                if (spec.keyFunction.applyAsInt(e) == key) {
                     table[index] = node.value;
                     removedNode();
                     removed();
@@ -204,7 +214,7 @@ public class IntMap<E> {
                 next = node.next;
                 if (next.getClass() != Node.class) {
                     final E e = cast(next);
-                    if (keyFunction.applyAsInt(e) == key) {
+                    if (spec.keyFunction.applyAsInt(e) == key) {
                         prevNode.next = node.value;
                         removedNode();
                         removed();
@@ -215,7 +225,7 @@ public class IntMap<E> {
             }
         }
         final E e = cast(o);
-        if (keyFunction.applyAsInt(e) == key) {
+        if (spec.keyFunction.applyAsInt(e) == key) {
             table[index] = null;
             removed();
             return e;
@@ -225,14 +235,14 @@ public class IntMap<E> {
 
     public void clear() {
         if (size > 0) {
-            if (table.length == minCapacity) {
+            if (table.length == spec.minCapacity) {
                 Arrays.fill(table, null);
             } else {
-                table = new Object[minCapacity];
+                table = new Object[spec.minCapacity];
             }
             size = 0;
             nodeCount = 0;
-            calcThresholds(minCapacity);
+            calcThresholds(spec.minCapacity);
         }
     }
 
@@ -305,7 +315,7 @@ public class IntMap<E> {
                                 node = (Node) next;
                             } else {
                                 final E e = cast(next);
-                                if ((keyFunction.applyAsInt(e) & newMask) == oldIndex) {
+                                if ((spec.keyFunction.applyAsInt(e) & newMask) == oldIndex) {
                                     if (low == null) {
                                         newTable[oldIndex] = e;
                                     } else {
@@ -338,7 +348,7 @@ public class IntMap<E> {
                             }
                         }
                     } else {
-                        final int key = keyFunction.applyAsInt(cast(o));
+                        final int key = spec.keyFunction.applyAsInt(cast(o));
                         final int newIndex = key & (newCapacity - 1);
                         newTable[newIndex] = o;
                     }
@@ -356,7 +366,7 @@ public class IntMap<E> {
     }
 
     private void removed() {
-        if ((--size < nodeThreshold) && (table.length > minCapacity)) {
+        if ((--size < nodeThreshold) && (table.length > spec.minCapacity)) {
             final Object[] oldTable = table;
             final int oldCapacity = oldTable.length;
             final int newCapacity = oldCapacity >> 1;
@@ -382,10 +392,10 @@ public class IntMap<E> {
                                 break;
                             }
                         }
-                        node.next = new Node(keyFunction.applyAsInt(cast(next)), next, old);
+                        node.next = new Node(spec.keyFunction.applyAsInt(cast(next)), next, old);
                         newNodeCount++;
                     } else {
-                        newTable[newIndex] = new Node(keyFunction.applyAsInt(cast(o)), o, old);
+                        newTable[newIndex] = new Node(spec.keyFunction.applyAsInt(cast(o)), o, old);
                         newNodeCount++;
                     }
                 }
@@ -398,7 +408,7 @@ public class IntMap<E> {
     }
 
     private void calcThresholds(final int capacity) {
-        nodeThreshold = (int) (capacity * nodeThresholdFactor);
+        nodeThreshold = (int) (capacity * spec.nodeThresholdFactor);
     }
 
     private @NotNull E cast(final @NotNull Object o) {
