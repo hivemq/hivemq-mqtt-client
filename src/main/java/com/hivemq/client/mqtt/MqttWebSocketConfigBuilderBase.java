@@ -39,6 +39,14 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
     @NotNull B serverPath(@NotNull String serverPath);
 
     /**
+     * Sets the {@link MqttWebSocketConfig#getQueryString() queryString}.
+     *
+     * @param queryString the query string.
+     * @return the builder.
+     */
+    @NotNull B queryString(@NotNull String queryString);
+    
+    /**
      * Sets the {@link MqttWebSocketConfig#getSubprotocol() subprotocol}.
      *
      * @param subprotocol the subprotocol.
