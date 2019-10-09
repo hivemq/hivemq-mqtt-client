@@ -39,7 +39,7 @@ import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3U
 import com.hivemq.client.internal.util.Ranges;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.internal.util.collections.IntMap;
+import com.hivemq.client.internal.util.collections.IntIndex;
 import com.hivemq.client.internal.util.collections.NodeList;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException;
@@ -65,15 +65,15 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public static final @NotNull String NAME = "subscription";
     private static final @NotNull InternalLogger LOGGER =
             InternalLoggerFactory.getLogger(MqttSubscriptionHandler.class);
-    private static final @NotNull IntMap.Spec<MqttSubOrUnsubWithFlow.Stateful> INDEX_SPEC =
-            new IntMap.Spec<>(x -> x.getMessage().getPacketIdentifier());
+    private static final @NotNull IntIndex.Spec<MqttSubOrUnsubWithFlow.Stateful> INDEX_SPEC =
+            new IntIndex.Spec<>(x -> x.getMessage().getPacketIdentifier());
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
 
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
     private final @NotNull ConcurrentLinkedQueue<MqttSubOrUnsubWithFlow> queued = new ConcurrentLinkedQueue<>();
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pendingMap = new IntMap<>(INDEX_SPEC);
+    private final @NotNull IntIndex<MqttSubOrUnsubWithFlow.Stateful> pendingIndex = new IntIndex<>(INDEX_SPEC);
     private final @NotNull NodeList<MqttSubOrUnsubWithFlow.Stateful> pending = new NodeList<>();
     private final @NotNull Ranges packetIdentifiers;
 
@@ -142,7 +142,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         }
         int removedFromQueue = 0;
         while (true) {
-            if (pendingMap.size() == MAX_SUB_PENDING) {
+            if (pendingIndex.size() == MAX_SUB_PENDING) {
                 queuedCounter.getAndAdd(-removedFromQueue);
                 return;
             }
@@ -205,7 +205,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     private void addPending(final @NotNull MqttSubOrUnsubWithFlow.Stateful newPending) {
-        pendingMap.put(newPending);
+        pendingIndex.put(newPending);
         pending.add(newPending);
     }
 
@@ -245,7 +245,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     private void readSubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubAck subAck) {
         final int packetIdentifier = subAck.getPacketIdentifier();
-        final MqttSubOrUnsubWithFlow.Stateful statefulSubOrUnsubWithFlow = pendingMap.remove(packetIdentifier);
+        final MqttSubOrUnsubWithFlow.Stateful statefulSubOrUnsubWithFlow = pendingIndex.remove(packetIdentifier);
 
         if (statefulSubOrUnsubWithFlow == null) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
@@ -293,7 +293,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     private void readUnsubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubAck unsubAck) {
         final int packetIdentifier = unsubAck.getPacketIdentifier();
-        final MqttSubOrUnsubWithFlow.Stateful statefulSubOrUnsubWithFlow = pendingMap.remove(packetIdentifier);
+        final MqttSubOrUnsubWithFlow.Stateful statefulSubOrUnsubWithFlow = pendingIndex.remove(packetIdentifier);
 
         if (statefulSubOrUnsubWithFlow == null) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
@@ -358,7 +358,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         if (!(cause instanceof IOException) && (currentPending != null)) {
-            pendingMap.remove(currentPending.getMessage().getPacketIdentifier());
+            pendingIndex.remove(currentPending.getMessage().getPacketIdentifier());
             currentPending.getFlow().onError(cause);
             completePending(ctx, currentPending);
             currentPending = null;
@@ -378,7 +378,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                 current.getFlow().onError(cause);
             } // else flow.onError is already called via incomingPublishFlows.clear() in IncomingQosHandler
         }
-        pendingMap.clear();
+        pendingIndex.clear();
         pending.clear();
         resendPending = null;
         subscriptionIdentifiers = null;

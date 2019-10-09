@@ -30,7 +30,7 @@ import java.util.function.ToIntFunction;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public class IntMap<E> {
+public class IntIndex<E> {
 
     private static final int MAX_CAPACITY = 1 << 30;
 
@@ -71,7 +71,7 @@ public class IntMap<E> {
     private int nodeCount;
     private int nodeThreshold;
 
-    public IntMap(final @NotNull Spec<E> spec) {
+    public IntIndex(final @NotNull Spec<E> spec) {
         this.spec = spec;
         final int minCapacityPow2 = 1 << Pow2Util.roundToPowerOf2Bits(spec.minCapacity);
         table = new Object[minCapacityPow2];
