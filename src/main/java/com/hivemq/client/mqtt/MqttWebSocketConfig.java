@@ -35,6 +35,10 @@ public interface MqttWebSocketConfig {
      */
     @NotNull String DEFAULT_SERVER_PATH = "";
     /**
+     * The default WebSocket query string.
+     */
+    @NotNull String DEFAULT_QUERY_STRING = "";
+    /**
      * The default WebSocket subprotocol.
      * <p>
      * See the <a href="https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name">WebSocket Subprotocol
@@ -56,6 +60,11 @@ public interface MqttWebSocketConfig {
      */
     @NotNull String getServerPath();
 
+    /**
+     * @return the WebSocket query string.
+     */
+    @NotNull String getQueryString();
+    
     /**
      * @return the WebSocket subprotocol.
      */
