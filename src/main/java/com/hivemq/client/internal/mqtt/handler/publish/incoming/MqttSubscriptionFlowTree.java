@@ -21,12 +21,12 @@ import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.*;
 import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
+import com.hivemq.client.internal.util.collections.Index;
 import com.hivemq.client.internal.util.collections.NodeList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.function.Consumer;
 
 /**
@@ -128,9 +128,12 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
     private static class TopicTreeNode {
 
+        private static final @NotNull Index.Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =
+                new Index.Spec<>(node -> node.topicLevel, 4);
+
         private @Nullable TopicTreeNode parent;
         private @Nullable MqttTopicLevel topicLevel;
-        private @Nullable HashMap<MqttTopicLevel, TopicTreeNode> next;
+        private @Nullable Index<TopicTreeNode, MqttTopicLevel> next;
         private @Nullable TopicTreeNode singleLevel;
         private @Nullable NodeList<TopicTreeEntry> entries;
         private @Nullable NodeList<TopicTreeEntry> multiLevelEntries;
@@ -155,14 +158,14 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 }
                 TopicTreeNode node;
                 if (next == null) {
-                    next = new HashMap<>();
+                    next = new Index<>(INDEX_SPEC);
                     node = null;
                 } else {
                     node = next.get(nextLevel);
                 }
                 if (node == null) {
                     node = new TopicTreeNode(this, nextLevel.trim());
-                    next.put(node.topicLevel, node);
+                    next.put(node);
                     return node;
                 }
                 return getNext(node, topicIterator);
@@ -348,7 +351,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
         @Nullable TopicTreeNode clear(final @NotNull Throwable cause) {
             if (next != null) {
-                return next.values().iterator().next();
+                return next.any();
             }
             if (singleLevel != null) {
                 return singleLevel;
@@ -384,20 +387,19 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 if (topicLevelBefore != topicLevels) {
                     final MqttTopicLevel topicLevelAfter = topicLevels.after(branchIndex);
                     final TopicTreeNode nodeBefore = new TopicTreeNode(this, topicLevelBefore);
-                    node.parent = nodeBefore;
-                    node.topicLevel = topicLevelAfter;
                     if (topicLevelBefore.isSingleLevelWildcard()) {
                         singleLevel = nodeBefore;
                     } else {
                         assert next != null;
-                        next.remove(topicLevels);
-                        next.put(topicLevelBefore, nodeBefore);
+                        next.put(nodeBefore);
                     }
+                    node.parent = nodeBefore;
+                    node.topicLevel = topicLevelAfter;
                     if (topicLevelAfter.isSingleLevelWildcard()) {
                         nodeBefore.singleLevel = node;
                     } else {
-                        nodeBefore.next = new HashMap<>();
-                        nodeBefore.next.put(topicLevelAfter, node);
+                        nodeBefore.next = new Index<>(INDEX_SPEC);
+                        nodeBefore.next.put(node);
                     }
                     return nodeBefore;
                 }
@@ -458,7 +460,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 } else if (hasSingleLevel && !hasNext) {
                     fuse(singleLevel);
                 } else if (!hasSingleLevel && next.size() == 1) {
-                    fuse(next.values().iterator().next());
+                    fuse(next.any());
                 }
             }
         }
@@ -476,8 +478,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 parent.singleLevel = child;
             } else {
                 assert parent.next != null;
-                parent.next.remove(topicLevel);
-                parent.next.put(fusedTopicLevel, child);
+                parent.next.put(child);
             }
         }
 
@@ -488,7 +489,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             } else {
                 assert next != null;
                 next.remove(node.topicLevel);
-                if (next.isEmpty()) {
+                if (next.size() == 0) {
                     next = null;
                 }
             }
