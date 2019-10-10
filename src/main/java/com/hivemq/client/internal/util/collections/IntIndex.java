@@ -37,7 +37,7 @@ public class IntIndex<E> {
     public static class Spec<E> {
 
         private static final int DEFAULT_MIN_CAPACITY = 1 << 4;
-        private static final float DEFAULT_NODE_THRESHOLD_FACTOR = 0.2f;
+        private static final float DEFAULT_NODE_THRESHOLD_FACTOR = 0.25f;
 
         final @NotNull ToIntFunction<? super E> keyFunction;
         final int minCapacity;
