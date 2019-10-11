@@ -33,13 +33,17 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
     private static final byte RETAIN = 8;
     private static final byte OVERWRITE_COST_MIN = 2;
     private static final byte OVERWRITE_COST_MAX = 126;
+    private static final byte OVERWRITE_COST_INC = 2;
     private static final @NotNull Index.Spec<Entry, String> INDEX_SPEC = new Index.Spec<>(entry -> entry.topic);
 
     private final int topicAliasMaximum;
     private final @NotNull Index<Entry, String> map = new Index<>(INDEX_SPEC);
     private @Nullable Entry lowest; // entry with lowest priority
     private long accessCounter; // strictly incremented
-    private int overwriteCost = OVERWRITE_COST_MIN;
+    private byte overwriteTries;
+    private byte overwriteCost = OVERWRITE_COST_MIN;
+    private byte fullOverwriteTries;
+    private byte fullOverwriteCost = OVERWRITE_COST_MIN;
 
     public MqttTopicAliasAutoMapping(final int topicAliasMaximum) {
         this.topicAliasMaximum = topicAliasMaximum;
@@ -57,8 +61,20 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
         final Entry entry = map.get(topicString);
         if (entry != null) { // entry already present
             entry.access(accessCounter);
-            if ((entry.topicAlias != DEFAULT_NO_TOPIC_ALIAS) && (overwriteCost > OVERWRITE_COST_MIN)) {
-                overwriteCost--;
+            if (entry.topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+                if (overwriteCost > OVERWRITE_COST_MIN) {
+                    overwriteCost--;
+                }
+                if (fullOverwriteCost > OVERWRITE_COST_MIN) {
+                    fullOverwriteCost--;
+                }
+                if (entry.lower != null) {
+                    if (entry.lower.topicAlias == DEFAULT_NO_TOPIC_ALIAS) {
+                        overwriteTries = 0;
+                    }
+                } else {
+                    fullOverwriteTries = 0;
+                }
             }
             swapNewer(entry, accessCounter);
             return entry.topicAlias; // topic alias is 0 if entry is part of oversize
@@ -78,6 +94,13 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
             assert lowest != null;
             if (newEntry.priority(accessCounter) <= lowest.priority(accessCounter)) {
                 return DEFAULT_NO_TOPIC_ALIAS;
+            }
+            if (++fullOverwriteTries < fullOverwriteCost) {
+                return DEFAULT_NO_TOPIC_ALIAS;
+            }
+            fullOverwriteTries = 0;
+            if (fullOverwriteCost < OVERWRITE_COST_MAX) {
+                fullOverwriteCost += Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - fullOverwriteCost);
             }
             if (lowest.topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
                 newEntry.setNewTopicAlias(lowest.topicAlias);
@@ -108,12 +131,12 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
                 break;
             }
             if ((entry.topicAlias == DEFAULT_NO_TOPIC_ALIAS) && (higher.topicAlias != DEFAULT_NO_TOPIC_ALIAS)) {
-                if (++higher.overwriteTries < overwriteCost) {
+                if (++overwriteTries < overwriteCost) {
                     break; // do not swap immediately if entry would overwrite the topic alias of the next entry
                 }
-                higher.overwriteTries = 0;
+                overwriteTries = 0;
                 if (overwriteCost < OVERWRITE_COST_MAX) {
-                    overwriteCost++;
+                    overwriteCost += Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - overwriteCost);
                 }
                 entry.setNewTopicAlias(higher.topicAlias);
                 higher.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
@@ -159,7 +182,6 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
         private long access; // stamp when the entry was last accessed
         @Nullable Entry higher; // entry with the next higher priority
         @Nullable Entry lower; // entry with the next lower priority
-        byte overwriteTries;
 
         Entry(final @NotNull String topic, final long accessCounter) {
             this.topic = topic;
@@ -176,7 +198,6 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
             topicAlias &= TOPIC_ALIAS_FLAG; // clear NEW_TOPIC_ALIAS bit
             used = priority(accessCounter) + 1;
             access = accessCounter;
-            overwriteTries = 0;
         }
 
         long priority(final long accessCounter) {
