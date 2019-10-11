@@ -96,12 +96,13 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
     }
 
     private void swapNewer(final @NotNull Entry entry, final long accessCounter) {
+        Entry higher = entry.higher;
+        if (entry.higher == null) {
+            return;
+        }
+        Entry lower = entry.lower;
         final long priority = entry.priority(accessCounter);
         while (true) {
-            final Entry higher = entry.higher;
-            if (higher == null) {
-                break;
-            }
             final long newerPriority = higher.priority(accessCounter);
             if (newerPriority >= priority) {
                 break;
@@ -117,7 +118,9 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
                 entry.setNewTopicAlias(higher.topicAlias);
                 higher.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
             }
-            final Entry lower = entry.lower;
+            final Entry higherHigher = higher.higher;
+            higher.higher = entry;
+            entry.lower = higher;
             if (lower == null) {
                 higher.lower = null;
                 lowest = higher;
@@ -125,15 +128,15 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
                 lower.higher = higher;
                 higher.lower = lower;
             }
-            final Entry higherHigher = higher.higher;
             if (higherHigher == null) {
                 entry.higher = null;
+                break;
             } else {
                 entry.higher = higherHigher;
                 higherHigher.lower = entry;
             }
-            higher.higher = entry;
-            entry.lower = higher;
+            lower = higher;
+            higher = higherHigher;
         }
     }
 
