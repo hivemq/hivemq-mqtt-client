@@ -33,7 +33,9 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     private final @NotNull String queryString;
     private final @NotNull String subprotocol;
 
-    MqttWebSocketConfigImpl(final @NotNull String serverPath, final @NotNull String queryString, final @NotNull String subprotocol) {
+    MqttWebSocketConfigImpl(
+            final @NotNull String serverPath, final @NotNull String queryString, final @NotNull String subprotocol) {
+
         this.serverPath = serverPath;
         this.queryString = queryString;
         this.subprotocol = subprotocol;
@@ -48,7 +50,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     public @NotNull String getQueryString() {
         return queryString;
     }
-    
+
     @Override
     public @NotNull String getSubprotocol() {
         return subprotocol;
@@ -69,7 +71,8 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         }
         final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
 
-        return serverPath.equals(that.serverPath) && queryString.equals(that.queryString) && subprotocol.equals(that.subprotocol);
+        return serverPath.equals(that.serverPath) && queryString.equals(that.queryString) &&
+                subprotocol.equals(that.subprotocol);
     }
 
     @Override

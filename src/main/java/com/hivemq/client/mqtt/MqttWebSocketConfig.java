@@ -64,7 +64,7 @@ public interface MqttWebSocketConfig {
      * @return the WebSocket query string.
      */
     @NotNull String getQueryString();
-    
+
     /**
      * @return the WebSocket subprotocol.
      */

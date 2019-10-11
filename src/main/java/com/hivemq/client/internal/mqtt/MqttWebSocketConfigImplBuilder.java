@@ -55,7 +55,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
         this.queryString = Checks.notNull(queryString, "Query string");
         return self();
     }
-    
+
     public @NotNull B subprotocol(final @Nullable String subprotocol) {
         this.subprotocol = Checks.notNull(subprotocol, "Subprotocol");
         return self();
