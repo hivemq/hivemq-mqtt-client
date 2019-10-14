@@ -6,6 +6,8 @@ task japicc {
     def workingDir = new File(project.buildDir, 'japicc')
     def executable = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '/japi-compliance-checker.pl')
 
+    def mavenRepo = "${project.repositories.mavenCentral().url}"
+
     def lastSemVer = project.prevVersion == null ? lastSemVer() : project.prevVersion
     def shadedName = project.name + '-' + project.shadedAppendix
     def lastJar = new File(workingDir, project.name + '-' + lastSemVer + '.jar')
@@ -130,8 +132,7 @@ task japicc {
             String path = project.group.replace('.', '/')
             path += '/' + project.name + '/' + lastSemVer + '/'
             path += project.name + '-' + lastSemVer + '.jar'
-            new URL('http://central.maven.org/maven2/' + path)
-                    .withInputStream { i -> lastJar.withOutputStream { it << i } }
+            new URL(mavenRepo + path).withInputStream { i -> lastJar.withOutputStream { it << i } }
         }
     }
 
@@ -144,8 +145,7 @@ task japicc {
             String path = project.group.replace('.', '/')
             path += '/' + shadedName + '/' + lastSemVer + '/'
             path += shadedName + '-' + lastSemVer + '.jar'
-            new URL('http://central.maven.org/maven2/' + path)
-                    .withInputStream { i -> lastShadedJar.withOutputStream { it << i } }
+            new URL(mavenRepo + path).withInputStream { i -> lastShadedJar.withOutputStream { it << i } }
         }
     }
 
@@ -185,7 +185,7 @@ task japicc {
     }
 }
 
-tasks.check.dependsOn(japicc)
+project.tasks.check.dependsOn(japicc)
 
 String lastSemVer() {
     String version = project.version
