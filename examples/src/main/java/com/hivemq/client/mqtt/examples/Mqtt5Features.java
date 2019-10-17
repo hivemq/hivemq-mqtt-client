@@ -90,7 +90,7 @@ public class Mqtt5Features {
                 .retain(true)
                 .contentType("text/plain")  // our payload is text
                 .messageExpiryInterval(120) // not so important, expire message after 2min if can not be delivered
-                .userProperties()           // add some user properties to the will message
+                .userProperties()           // add some user properties to the message
                     .add("sender", "demo-sender-1")
                     .add("receiver", "you")
                     .applyUserProperties()
