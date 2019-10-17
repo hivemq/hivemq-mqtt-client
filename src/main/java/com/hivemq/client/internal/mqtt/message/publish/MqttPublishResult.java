@@ -168,7 +168,7 @@ public class MqttPublishResult implements Mqtt5PublishResult {
 
         @Override
         public @NotNull String toString() {
-            return "MqttQos2PublishResult{" + toAttributeString() + '}';
+            return "MqttQos2Result{" + toAttributeString() + '}';
         }
 
         @Override

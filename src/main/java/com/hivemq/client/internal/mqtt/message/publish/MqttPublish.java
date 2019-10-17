@@ -187,7 +187,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
                 ((payloadFormatIndicator == null) ? "" : ", payloadFormatIndicator=" + payloadFormatIndicator) +
                 ((contentType == null) ? "" : ", contentType=" + contentType) +
                 ((responseTopic == null) ? "" : ", responseTopic=" + responseTopic) +
-                ((correlationData == null) ? "" : ", correlationData=" + correlationData) +
+                ((correlationData == null) ? "" : ", correlationData=" + correlationData.remaining() + "byte") +
                 StringUtil.prepend(", ", super.toAttributeString());
     }
 
