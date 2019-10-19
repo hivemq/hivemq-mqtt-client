@@ -116,6 +116,7 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
             consumerIndex = 1;
             //noinspection unchecked
             e = (E) nextChunk[0];
+            nextChunk[0] = null;
         } else {
             //noinspection unchecked
             e = (E) o;
