@@ -22,8 +22,8 @@ import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client.internal.mqtt.message.MqttMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,12 +35,15 @@ import javax.inject.Inject;
  * @author Silvio Giebl
  */
 @ConnectionScope
-public class MqttEncoder extends ChannelOutboundHandlerAdapter {
+public class MqttEncoder extends ChannelDuplexHandler {
 
     public static final @NotNull String NAME = "encoder";
 
     private final @NotNull MqttMessageEncoders encoders;
     private final @NotNull MqttEncoderContext context;
+
+    private boolean inRead = false;
+    private boolean pendingFlush = false;
 
     @Inject
     MqttEncoder(final @NotNull MqttMessageEncoders encoders) {
@@ -67,6 +70,31 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
             ctx.write(out, promise);
         } else {
             ctx.write(msg, promise);
+        }
+    }
+
+    @Override
+    public void flush(final @NotNull ChannelHandlerContext ctx) {
+        if (inRead) {
+            pendingFlush = true;
+        } else {
+            ctx.flush();
+        }
+    }
+
+    @Override
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
+        inRead = true;
+        ctx.fireChannelRead(msg);
+    }
+
+    @Override
+    public void channelReadComplete(final @NotNull ChannelHandlerContext ctx) {
+        ctx.fireChannelReadComplete();
+        inRead = false;
+        if (pendingFlush) {
+            pendingFlush = false;
+            ctx.flush();
         }
     }
 
