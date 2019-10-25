@@ -24,6 +24,8 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Small completely asynchronous example.
+ *
  * @author Silvio Giebl
  */
 public class AsyncDemo {

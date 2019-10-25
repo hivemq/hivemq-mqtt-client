@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class ReconnectStrategy {
 
     public static void main(final String[] args) throws InterruptedException {
+//        defaultReconnect();
 //        customizedReconnect();
         completelyCustom();
     }
@@ -103,7 +104,7 @@ public class ReconnectStrategy {
                     TimeUnit.SECONDS.sleep(1);
                     System.out.println("OAuth server is slow to respond ...");
                 }
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
             }
             return new byte[] {1, 2, 3};
