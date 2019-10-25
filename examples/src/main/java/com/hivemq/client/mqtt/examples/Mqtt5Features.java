@@ -30,7 +30,7 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Shows MQTT 5 features like session expiry, message expiry, user properties, topic aliases, flow control
+ * Shows MQTT 5 features like session expiry, message expiry, user properties, topic aliases, flow control.
  *
  * @author Silvio Giebl
  */

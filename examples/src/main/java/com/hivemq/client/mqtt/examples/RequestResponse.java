@@ -22,11 +22,13 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 
 /**
+ * Shows how to implement a request/response pattern using response topic and correlation data.
+ *
  * @author Silvio Giebl
  */
 public class RequestResponse {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         final Mqtt5Client requester = Mqtt5Client.builder().serverHost("broker.hivemq.com").build();
         final Mqtt5Client responder = Mqtt5Client.builder().serverHost("broker.hivemq.com").build();
 
@@ -38,18 +40,18 @@ public class RequestResponse {
                         .subscribeStreamWith()
                         .topicFilter("request/topic")
                         .applySubscribe()
-                        .map(publish -> Mqtt5Publish.builder()
-                                .topic(publish.getResponseTopic().get())
-                                .qos(publish.getQos())
+                        .map(requestPublish -> Mqtt5Publish.builder()
+                                .topic(requestPublish.getResponseTopic().get())
+                                .qos(requestPublish.getQos())
                                 .payload("response".getBytes())
-                                .correlationData(publish.getCorrelationData().orElse(null))
+                                .correlationData(requestPublish.getCorrelationData().orElse(null))
                                 .build()))
-                .subscribe();
+                .subscribe(); // this call is a reactive streams subscribe call, not an MQTT subscribe
 
         requester.toAsync()
                 .subscribeWith()
                 .topicFilter("response/topic")
-                .callback(publish -> System.out.println("received response"))
+                .callback(responsePublish -> System.out.println("received response"))
                 .send()
                 .thenCompose(subAck -> requester.toAsync()
                         .publishWith()
