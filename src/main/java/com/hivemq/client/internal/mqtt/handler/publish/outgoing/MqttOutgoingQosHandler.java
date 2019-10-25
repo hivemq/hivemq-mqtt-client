@@ -55,6 +55,7 @@ import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2I
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubRecException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
@@ -173,7 +174,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         assert subscription != null;
 
         final int shrinkRequests = this.shrinkRequests;
-        if (this.shrinkRequests == 0) {
+        if (shrinkRequests == 0) {
             subscription.request(n);
         } else if (n > shrinkRequests) {
             this.shrinkRequests = 0;
@@ -194,31 +195,55 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         if (ctx == null) {
             return;
         }
-        for (; resendPending != null; resendPending = resendPending.getNext()) {
-            if (pendingIndex.size() == sendMaximum) {
-                ctx.flush();
-                return;
-            }
-            pendingIndex.put(resendPending);
-            if (resendPending instanceof MqttPublishWithFlow) {
-                final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) this.resendPending;
-                final MqttStatefulPublish publish = publishWithFlow.getPublish()
-                        .createStateful(publishWithFlow.packetIdentifier, true, topicAliasMapping);
-                writeQos1Or2Publish(ctx, publish, publishWithFlow);
-            } else {
-                final MqttPubRelWithFlow pubRelWithFlow = (MqttPubRelWithFlow) this.resendPending;
-                writePubRel(ctx, pubRelWithFlow.getPubRel());
-            }
+        final Channel channel = ctx.channel();
+        final int maxWrites = sendMaximum - pendingIndex.size();
+        int written = 0;
+        for (MqttPubOrRelWithFlow pubOrRelWithFlow = resendPending;
+             (pubOrRelWithFlow != null) && (written < maxWrites) && channel.isWritable();
+             resendPending = pubOrRelWithFlow = pubOrRelWithFlow.getNext()) {
+            resend(ctx, pubOrRelWithFlow);
+            written++;
         }
-        final int working = Math.min(Math.min(queuedCounter.get(), 64), sendMaximum - pendingIndex.size());
-        for (int i = 0; i < working; i++) {
+        int dequeued = 0;
+        while ((written < maxWrites) && channel.isWritable()) {
             final MqttPublishWithFlow publishWithFlow = queue.poll();
-            assert publishWithFlow != null; // ensured by queuedCounter
+            if (publishWithFlow == null) {
+                break;
+            }
             writePublish(ctx, publishWithFlow);
+            written++;
+            dequeued++;
         }
-        ctx.flush();
-        if (queuedCounter.addAndGet(-working) > 0) {
-            ctx.channel().eventLoop().execute(this);
+        if (written > 0) {
+            final boolean wasWritable = channel.isWritable();
+            ctx.flush();
+            if ((dequeued > 0) && (queuedCounter.addAndGet(-dequeued) > 0) && wasWritable) {
+                channel.eventLoop().execute(this);
+            }
+        }
+    }
+
+    @Override
+    public void channelWritabilityChanged(final ChannelHandlerContext ctx) {
+        final Channel channel = ctx.channel();
+        if (channel.isWritable()) {
+            channel.eventLoop().execute(this);
+        }
+        ctx.fireChannelWritabilityChanged();
+    }
+
+    private void resend(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubOrRelWithFlow pubOrRelWithFlow) {
+
+        pendingIndex.put(pubOrRelWithFlow);
+        if (pubOrRelWithFlow instanceof MqttPublishWithFlow) {
+            final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) pubOrRelWithFlow;
+            final MqttStatefulPublish publish = publishWithFlow.getPublish()
+                    .createStateful(publishWithFlow.packetIdentifier, true, topicAliasMapping);
+            writeQos1Or2Publish(ctx, publish, publishWithFlow);
+        } else {
+            final MqttPubRelWithFlow pubRelWithFlow = (MqttPubRelWithFlow) pubOrRelWithFlow;
+            writePubRel(ctx, pubRelWithFlow.getPubRel());
         }
     }
 
@@ -295,7 +320,6 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubAck pubAck) {
-
         final int packetIdentifier = pubAck.getPacketIdentifier();
         final MqttPubOrRelWithFlow removed = pendingIndex.remove(packetIdentifier);
 
@@ -326,7 +350,6 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
-
         final int packetIdentifier = pubRec.getPacketIdentifier();
         final MqttPubOrRelWithFlow got = pendingIndex.get(packetIdentifier);
 
@@ -385,7 +408,6 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubComp(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubComp pubComp) {
-
         final int packetIdentifier = pubComp.getPacketIdentifier();
         final MqttPubOrRelWithFlow removed = pendingIndex.remove(packetIdentifier);
 
