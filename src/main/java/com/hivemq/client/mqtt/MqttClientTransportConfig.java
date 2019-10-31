@@ -48,6 +48,12 @@ public interface MqttClientTransportConfig {
     @NotNull InetSocketAddress getServerAddress();
 
     /**
+     * @return the optional local bind address.
+     * @since 1.2
+     */
+    @NotNull Optional<InetSocketAddress> getLocalAddress();
+
+    /**
      * @return the optional secure transport configuration.
      */
     @NotNull Optional<MqttClientSslConfig> getSslConfig();
