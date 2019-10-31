@@ -38,6 +38,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     private @Nullable InetSocketAddress serverAddress;
     private @NotNull Object serverHost = DEFAULT_SERVER_HOST; // String or InetAddress
     private int serverPort = -1;
+    private @Nullable InetSocketAddress localAddress;
     private @Nullable MqttClientSslConfigImpl sslConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
 
@@ -51,6 +52,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         serverAddress = builder.serverAddress;
         serverHost = builder.serverHost;
         serverPort = builder.serverPort;
+        localAddress = builder.localAddress;
         sslConfig = builder.sslConfig;
         webSocketConfig = builder.webSocketConfig;
     }
@@ -78,8 +80,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return self();
     }
 
-    private void setServerHost(final @NotNull Object serverHost) {
-        this.serverHost = serverHost;
+    private void setServerHost(final @NotNull Object host) {
+        serverHost = host;
         if (serverAddress != null) {
             serverPort = serverAddress.getPort();
             serverAddress = null;
@@ -96,6 +98,69 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
                 serverHost = serverAddress.getHostString();
             }
             serverAddress = null;
+        }
+        return self();
+    }
+
+    public @NotNull B localAddress(final @Nullable InetSocketAddress address) {
+        if (address == null) {
+            localAddress = null;
+        } else {
+            localAddress = checkLocalAddress(address);
+        }
+        return self();
+    }
+
+    public @NotNull B localAddress(final @Nullable String address) {
+        if (address == null) {
+            removeLocalAddress();
+        } else {
+            localAddress = checkLocalAddress(new InetSocketAddress(address, getLocalPort()));
+        }
+        return self();
+    }
+
+    public @NotNull B localAddress(final @Nullable InetAddress address) {
+        if (address == null) {
+            removeLocalAddress();
+        } else {
+            localAddress = new InetSocketAddress(address, getLocalPort());
+        }
+        return self();
+    }
+
+    private @NotNull InetSocketAddress checkLocalAddress(final @NotNull InetSocketAddress address) {
+        if (address.isUnresolved()) {
+            throw new IllegalArgumentException("Local bind address must not be unresolved.");
+        }
+        return address;
+    }
+
+    private void removeLocalAddress() {
+        if ((localAddress != null) && (localAddress.getAddress() != null)) {
+            if (localAddress.getPort() == 0) {
+                localAddress = null;
+            } else {
+                localAddress = new InetSocketAddress(localAddress.getPort());
+            }
+        }
+    }
+
+    private int getLocalPort() {
+        return (localAddress == null) ? 0 : localAddress.getPort();
+    }
+
+    public @NotNull B localPort(final int port) {
+        if (port == 0) {
+            if ((localAddress != null) && (localAddress.getPort() != 0)) {
+                if (localAddress.getAddress() == null) {
+                    localAddress = null;
+                } else {
+                    localAddress = new InetSocketAddress(localAddress.getAddress(), 0);
+                }
+            }
+        } else {
+            localAddress = new InetSocketAddress((localAddress == null) ? null : localAddress.getAddress(), port);
         }
         return self();
     }
@@ -156,7 +221,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     }
 
     @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
-        return new MqttClientTransportConfigImpl(getServerAddress(), sslConfig, webSocketConfig);
+        return new MqttClientTransportConfigImpl(getServerAddress(), localAddress, sslConfig, webSocketConfig);
     }
 
     public static class Default extends MqttClientTransportConfigImplBuilder<Default>

@@ -34,17 +34,20 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
 
     public static final @NotNull MqttClientTransportConfigImpl DEFAULT = new MqttClientTransportConfigImpl(
             InetSocketAddress.createUnresolved(MqttClient.DEFAULT_SERVER_HOST, MqttClient.DEFAULT_SERVER_PORT), null,
-            null);
+            null, null);
 
     private final @NotNull InetSocketAddress serverAddress;
+    private final @Nullable InetSocketAddress localAddress;
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
 
     MqttClientTransportConfigImpl(
-            final @NotNull InetSocketAddress serverAddress, final @Nullable MqttClientSslConfigImpl sslConfig,
+            final @NotNull InetSocketAddress serverAddress, final @Nullable InetSocketAddress localAddress,
+            final @Nullable MqttClientSslConfigImpl sslConfig,
             final @Nullable MqttWebSocketConfigImpl webSocketConfig) {
 
         this.serverAddress = serverAddress;
+        this.localAddress = localAddress;
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
     }
@@ -52,6 +55,15 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     @Override
     public @NotNull InetSocketAddress getServerAddress() {
         return serverAddress;
+    }
+
+    @Override
+    public @NotNull Optional<InetSocketAddress> getLocalAddress() {
+        return Optional.ofNullable(localAddress);
+    }
+
+    public @Nullable InetSocketAddress getRawLocalAddress() {
+        return localAddress;
     }
 
     @Override

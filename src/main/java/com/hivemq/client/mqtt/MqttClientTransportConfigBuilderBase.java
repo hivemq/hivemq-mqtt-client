@@ -71,6 +71,46 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     @NotNull B serverPort(int port);
 
     /**
+     * Sets the optional {@link MqttClientTransportConfig#getLocalAddress() local bind address}.
+     * <p>
+     * The address must be resolved.
+     *
+     * @param address the local bind address.
+     * @return the builder.
+     * @since 1.2
+     */
+    @NotNull B localAddress(@Nullable InetSocketAddress address);
+
+    /**
+     * Sets the optional local bind address.
+     * <p>
+     * The address must be resolvable.
+     *
+     * @param address the local bind address.
+     * @return the builder.
+     * @since 1.2
+     */
+    @NotNull B localAddress(@Nullable String address);
+
+    /**
+     * Sets the optional local bind address.
+     *
+     * @param address the local bind address
+     * @return the builder.
+     * @since 1.2
+     */
+    @NotNull B localAddress(@Nullable InetAddress address);
+
+    /**
+     * Sets the optional local bind port.
+     *
+     * @param port the local bind port.
+     * @return the builder.
+     * @since 1.2
+     */
+    @NotNull B localPort(int port);
+
+    /**
      * Sets the {@link MqttClientTransportConfig#getSslConfig() secure transport configuration} to the default
      * configuration.
      * <p>
