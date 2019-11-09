@@ -1,6 +1,8 @@
-# HiveMQ MQTT Client
+<p align="center">
+  <img src="https://www.hivemq.com/img/svg/hivemq-mqtt-client.svg" width="500">
+</p>
 
-<img src="https://www.hivemq.com/img/svg/hivemq-mqtt-client.svg" width="500">
+# HiveMQ MQTT Client
 
 [![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
@@ -9,9 +11,14 @@
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
 
-## Documentation
-
-A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqtt-client)
+- Documentation: https://hivemq.github.io/hivemq-mqtt-client/
+- Community Forum: https://community.hivemq.com/
+- HiveMQ website: https://www.hivemq.com/
+- Contribution Guidelines: [CONTRIBUTING.md](CONTRIBUTING.md)
+- License: [LICENSE](LICENSE)
+- MQTT Resources
+  - [MQTT Essentials](https://www.hivemq.com/mqtt-essentials/)
+  - [MQTT 5 Essentials](https://www.hivemq.com/mqtt-5/)
 
 ## Features
 
@@ -591,8 +598,8 @@ classes.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+If you want to contribute to HiveMQ MQTT Client, see the [contribution guidelines](CONTRIBUTING.md).
 
 ## License
 
-See [LICENSE](LICENSE)
+HiveMQ MQTT Client is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found [here](LICENSE).
