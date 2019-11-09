@@ -12,11 +12,11 @@ MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client libr
 backpressure support.
 
 - Documentation: https://hivemq.github.io/hivemq-mqtt-client/
-- Community Forum: https://community.hivemq.com/
+- Community forum: https://community.hivemq.com/
 - HiveMQ website: https://www.hivemq.com/
-- Contribution Guidelines: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Contribution guidelines: [CONTRIBUTING.md](CONTRIBUTING.md)
 - License: [LICENSE](LICENSE)
-- MQTT Resources
+- MQTT resources:
   - [MQTT Essentials](https://www.hivemq.com/mqtt-essentials/)
   - [MQTT 5 Essentials](https://www.hivemq.com/mqtt-5/)
 
