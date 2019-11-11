@@ -66,9 +66,9 @@ public abstract class AbstractMqttEncoderTest {
 
     protected void connected(final int maximumPacketSize) {
         encoder.onConnected(
-                new MqttClientConnectionConfig(MqttClientTransportConfigImpl.DEFAULT, 10, 0, false, false, null, 10,
-                        MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0, true, false, 10, maximumPacketSize, 3,
-                        MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
+                new MqttClientConnectionConfig(MqttClientTransportConfigImpl.DEFAULT, 10, true, true, 0, false, false,
+                        null, 10, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0, true, false, 10,
+                        maximumPacketSize, 3, MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
     }
 
     protected void encode(final @NotNull Object message, final @NotNull byte[] expected) {

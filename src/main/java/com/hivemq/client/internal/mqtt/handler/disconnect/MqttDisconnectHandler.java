@@ -36,13 +36,16 @@ import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
+import io.netty.channel.socket.DuplexChannel;
+import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
 import static com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil.fireDisconnectEvent;
 
@@ -58,12 +61,13 @@ import static com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectU
 @ConnectionScope
 public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
-    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttDisconnectHandler.class);
     public static final @NotNull String NAME = "disconnect";
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttDisconnectHandler.class);
+    private static final int DISCONNECT_TIMEOUT = 10; // TODO configurable
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttSession session;
-    private boolean once = true;
+    private @Nullable State state = null;
 
     @Inject
     MqttDisconnectHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session) {
@@ -81,8 +85,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     }
 
     private void readDisconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnect disconnect) {
-        if (once) {
-            once = false;
+        if (state == null) {
+            state = State.CLOSED;
             fireDisconnectEvent(ctx.channel(), new Mqtt5DisconnectException(disconnect, "Server sent DISCONNECT."),
                     MqttDisconnectSource.SERVER);
         }
@@ -91,18 +95,23 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     @Override
     public void channelInactive(final @NotNull ChannelHandlerContext ctx) {
         ctx.fireChannelInactive();
-        if (once) {
-            once = false;
-            fireDisconnectEvent(ctx.channel(),
-                    new ConnectionClosedException("Server closed connection without DISCONNECT."),
+        if (state == null) {
+            state = State.CLOSED;
+            fireDisconnectEvent(ctx.channel(), new ConnectionClosedException("Server closed connection without DISCONNECT."),
                     MqttDisconnectSource.SERVER);
+        } else if (state instanceof DisconnectingState) {
+            final DisconnectingState disconnectingState = (DisconnectingState) state;
+            state = State.CLOSED;
+            disconnectingState.timeoutFuture.cancel(false);
+            disconnected(disconnectingState.channel, disconnectingState.disconnectEvent);
+            disconnectingState.disconnectEvent.getFlow().onComplete();
         }
     }
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        if (once) {
-            once = false;
+        if (state == null) {
+            state = State.CLOSED;
             fireDisconnectEvent(ctx.channel(), new ConnectionClosedException(cause), MqttDisconnectSource.CLIENT);
         } else {
             LOGGER.error("Exception while disconnecting.", cause);
@@ -117,8 +126,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     private void writeDisconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
         final ChannelHandlerContext ctx = this.ctx;
-        if ((ctx != null) && once) {
-            once = false;
+        if ((ctx != null) && (state == null)) {
+            state = State.CLOSED;
             fireDisconnectEvent(ctx.channel(), new MqttDisconnectEvent.ByUser(disconnect, flow));
         } else {
             flow.onError(MqttClientStateExceptions.notConnected());
@@ -132,40 +141,71 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             return;
         }
         super.onDisconnectEvent(disconnectEvent);
-        once = false;
+        state = State.CLOSED;
 
-        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
-        if (connectionConfig != null) {
-            session.expire(disconnectEvent.getCause(), connectionConfig, ctx.channel().eventLoop());
-
-            reconnect(disconnectEvent, connectionConfig, ctx.channel().eventLoop());
-
-            clientConfig.setConnectionConfig(null);
-        }
+        final Channel channel = ctx.channel();
 
         if (disconnectEvent.getSource() == MqttDisconnectSource.SERVER) {
-            ctx.channel().close();
-        } else {
-            final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
-            if (disconnect != null) {
-                if (disconnectEvent instanceof MqttDisconnectEvent.ByUser) {
-                    final CompletableFlow flow = ((MqttDisconnectEvent.ByUser) disconnectEvent).getFlow();
-                    ctx.writeAndFlush(disconnect).addListener((ChannelFuture future) -> {
-                        future.channel().close();
-                        if (future.isSuccess()) {
-                            flow.onComplete();
-                        } else {
-                            flow.onError(new ConnectionClosedException(future.cause()));
-                        }
-                    });
-                } else if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {
-                    ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
-                } else {
-                    ctx.channel().close();
+            disconnected(channel, disconnectEvent);
+            channel.close();
+            return;
+        }
+
+        MqttDisconnect disconnect = disconnectEvent.getDisconnect();
+        if (disconnect != null) {
+
+            final long sessionExpiryInterval = disconnect.getRawSessionExpiryInterval();
+            if (sessionExpiryInterval != MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
+                final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+                if (connectionConfig != null) {
+                    if ((sessionExpiryInterval > 0) && connectionConfig.isCleanStop()) {
+                        LOGGER.warn(
+                                "Session expiry interval must not be set in DISCONNECT if it was set to 0 in CONNECT");
+                        disconnect = disconnect.extend().sessionExpiryInterval(0).build();
+                    } else {
+                        connectionConfig.setSessionExpiryInterval(sessionExpiryInterval);
+                    }
                 }
-            } else {
-                ctx.channel().close();
             }
+
+            if (disconnectEvent instanceof MqttDisconnectEvent.ByUser) {
+                final MqttDisconnectEvent.ByUser disconnectEventByUser = (MqttDisconnectEvent.ByUser) disconnectEvent;
+                ctx.writeAndFlush(disconnect).addListener(f -> {
+                    if (f.isSuccess()) {
+                        ((DuplexChannel) channel).shutdownOutput().addListener(cf -> {
+                            if (cf.isSuccess()) {
+                                state = new DisconnectingState(channel, disconnectEventByUser);
+                            } else {
+                                disconnected(channel, disconnectEvent);
+                                disconnectEventByUser.getFlow().onError(new ConnectionClosedException(cf.cause()));
+                            }
+                        });
+                    } else {
+                        disconnected(channel, disconnectEvent);
+                        disconnectEventByUser.getFlow().onError(new ConnectionClosedException(f.cause()));
+                    }
+                });
+
+            } else if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {
+                ctx.writeAndFlush(disconnect)
+                        .addListener(f -> channel.close().addListener(cf -> disconnected(channel, disconnectEvent)));
+
+            } else {
+                channel.close().addListener(cf -> disconnected(channel, disconnectEvent));
+            }
+        } else {
+            channel.close().addListener(cf -> disconnected(channel, disconnectEvent));
+        }
+    }
+
+    private void disconnected(final @NotNull Channel channel, final @NotNull MqttDisconnectEvent disconnectEvent) {
+        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+        if (connectionConfig != null) {
+            session.expire(disconnectEvent.getCause(), connectionConfig, channel.eventLoop());
+
+            reconnect(disconnectEvent, connectionConfig, channel.eventLoop());
+
+            clientConfig.setConnectionConfig(null);
         }
     }
 
@@ -208,5 +248,28 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     @Override
     public boolean isSharable() {
         return false;
+    }
+
+    private static class State {
+
+        static final @NotNull State CLOSED = new State();
+    }
+
+    private static class DisconnectingState extends State implements Runnable {
+
+        private final @NotNull Channel channel;
+        private final @NotNull MqttDisconnectEvent.ByUser disconnectEvent;
+        private final @NotNull ScheduledFuture<?> timeoutFuture;
+
+        DisconnectingState(final @NotNull Channel channel, final @NotNull MqttDisconnectEvent.ByUser disconnectEvent) {
+            this.channel = channel;
+            this.disconnectEvent = disconnectEvent;
+            timeoutFuture = channel.eventLoop().schedule(this, DISCONNECT_TIMEOUT, TimeUnit.SECONDS);
+        }
+
+        @Override
+        public void run() {
+            channel.close();
+        }
     }
 }

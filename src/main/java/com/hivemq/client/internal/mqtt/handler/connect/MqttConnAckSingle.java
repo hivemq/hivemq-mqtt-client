@@ -87,8 +87,13 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             bootstrap.group(eventLoop).connect(flow.getTransportConfig().getServerAddress()).addListener(future -> {
                 final Throwable cause = future.cause();
                 if (cause != null) {
-                    reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause), connect,
-                            flow, eventLoop);
+                    final ConnectionFailedException e = new ConnectionFailedException(cause);
+                    if (eventLoop.inEventLoop()) {
+                        reconnect(clientConfig, MqttDisconnectSource.CLIENT, e, connect, flow, eventLoop);
+                    } else {
+                        eventLoop.execute(() -> reconnect(clientConfig, MqttDisconnectSource.CLIENT, e, connect, flow,
+                                eventLoop));
+                    }
                 }
             });
         }
