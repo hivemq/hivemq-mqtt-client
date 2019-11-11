@@ -111,7 +111,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         ctx.fireChannelInactive();
         if (state == null) {
             state = State.CLOSED;
-            fireDisconnectEvent(ctx.channel(), new ConnectionClosedException("Server closed connection without DISCONNECT."),
+            fireDisconnectEvent(ctx.channel(),
+                    new ConnectionClosedException("Server closed connection without DISCONNECT."),
                     MqttDisconnectSource.SERVER);
         } else if (state instanceof DisconnectingState) {
             final DisconnectingState disconnectingState = (DisconnectingState) state;
