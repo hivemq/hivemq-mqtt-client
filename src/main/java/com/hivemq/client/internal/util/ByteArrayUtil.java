@@ -28,14 +28,14 @@ public final class ByteArrayUtil {
             final @NotNull byte[] array1, final int start1, final int end1, final @NotNull byte[] array2,
             final int start2, final int end2) {
 
-        if (array1 == array2) {
-            return true;
-        }
-
         final int length1 = end1 - start1;
         final int length2 = end2 - start2;
         if (length1 != length2) {
             return false;
+        }
+
+        if ((array1 == array2) && (start1 == start2)) {
+            return true;
         }
 
         for (int i1 = start1, i2 = start2; i1 < end1; i1++, i2++) {
@@ -60,7 +60,7 @@ public final class ByteArrayUtil {
                 return i;
             }
         }
-        return -1;
+        return array.length;
     }
 
     private ByteArrayUtil() {}

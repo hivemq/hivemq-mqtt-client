@@ -35,8 +35,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.net.InetSocketAddress;
+
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -61,6 +62,10 @@ public class MqttChannelInitializerSslTest {
     private MqttAuthHandler authHandler;
     @Mock
     private Lazy<MqttWebSocketInitializer> webSocketInitializer;
+    @Mock
+    private MqttClientTransportConfigImpl transportConfig;
+    @Mock
+    private MqttClientSslConfigImpl sslConfig;
 
     private Channel channel;
 
@@ -68,15 +73,13 @@ public class MqttChannelInitializerSslTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         channel = new EmbeddedChannel();
+        when(connAckFlow.getTransportConfig()).thenReturn(transportConfig);
+        when(transportConfig.getRawSslConfig()).thenReturn(sslConfig);
+        when(transportConfig.getServerAddress()).thenReturn(InetSocketAddress.createUnresolved("localhost", 1883));
     }
 
     @Test
     public void test_initialize_default_ssldata() throws Exception {
-        final MqttClientTransportConfigImpl transportConfig = mock(MqttClientTransportConfigImpl.class);
-        final MqttClientSslConfigImpl sslConfig = mock(MqttClientSslConfigImpl.class);
-        when(connAckFlow.getTransportConfig()).thenReturn(transportConfig);
-        when(transportConfig.getRawSslConfig()).thenReturn(sslConfig);
-
         final MqttChannelInitializer mqttChannelInitializer =
                 new MqttChannelInitializer(clientData, connect, connAckFlow, encoder, connectHandler, disconnectHandler,
                         authHandler, webSocketInitializer);
@@ -85,5 +88,4 @@ public class MqttChannelInitializerSslTest {
 
         assertNotNull(channel.pipeline().get(SslHandler.class));
     }
-
 }

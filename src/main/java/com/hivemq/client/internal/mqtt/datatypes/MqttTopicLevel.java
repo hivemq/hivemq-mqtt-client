@@ -18,69 +18,46 @@
 package com.hivemq.client.internal.mqtt.datatypes;
 
 import com.hivemq.client.internal.util.ByteArray;
-import com.hivemq.client.internal.util.ByteArrayUtil;
-import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
 /**
+ * Single topic or topic filter level. May be the single level wildcard but must not be the multi level wildcard (the
+ * multi level wildcard does not represent a topic level).
+ *
  * @author Silvio Giebl
  */
-public class MqttTopicLevel extends ByteArray.Range {
+public class MqttTopicLevel extends ByteArray {
 
-    public static final @NotNull ByteArray SINGLE_LEVEL_WILDCARD =
-            new ByteArray(new byte[]{MqttTopicFilter.SINGLE_LEVEL_WILDCARD});
+    private static final @NotNull MqttTopicLevel SINGLE_LEVEL_WILDCARD =
+            new MqttTopicLevel(new byte[]{MqttTopicFilter.SINGLE_LEVEL_WILDCARD});
 
-    public static @NotNull MqttTopicLevel root(final @NotNull MqttTopicImpl topic) {
-        final byte[] binary = topic.toBinary();
-        final int end = nextEnd(binary, 0);
-        return new MqttTopicLevel(binary, 0, end);
-    }
-
-    public static @NotNull MqttTopicLevel root(final @NotNull MqttTopicFilterImpl topicFilter) {
-        final byte[] binary = topicFilter.toBinary();
-        final int start = topicFilter.getFilterByteStart();
-        final int end = nextEnd(binary, start);
-        return new MqttTopicLevel(binary, start, end);
-    }
-
-    private static int nextEnd(final @NotNull byte[] array, final int start) {
-        final int nextSeparator = ByteArrayUtil.indexOf(array, start, (byte) MqttTopic.TOPIC_LEVEL_SEPARATOR);
-        return (nextSeparator == -1) ? array.length : nextSeparator;
-    }
-
-    private MqttTopicLevel(final @NotNull byte[] array, final int start, final int end) {
-        super(array, start, end);
-    }
-
-    public @Nullable MqttTopicLevel next() {
-        if (end == array.length) {
-            return null;
+    static @NotNull MqttTopicLevel of(final @NotNull byte[] array, final int start, final int end) {
+        if (isSingleLevelWildcard(array, start, end)) {
+            return MqttTopicLevel.SINGLE_LEVEL_WILDCARD;
         }
-        start = end + 1;
-        end = nextEnd(array, start);
-        return this;
+        return new MqttTopicLevel(Arrays.copyOfRange(array, start, end));
     }
 
-    public @NotNull ByteArray copy() {
-        if (isSingleLevelWildcard()) {
-            return SINGLE_LEVEL_WILDCARD;
-        }
-        return new ByteArray(Arrays.copyOfRange(array, start, end));
+    private static boolean isSingleLevelWildcard(final @NotNull byte[] array, final int start, final int end) {
+        return ((end - start) == 1) && (array[start] == MqttTopicFilter.SINGLE_LEVEL_WILDCARD);
     }
 
-    public @NotNull MqttTopicLevel fork() {
-        return new MqttTopicLevel(array, start, end);
+    MqttTopicLevel(final @NotNull byte[] array) {
+        super(array);
+    }
+
+    @NotNull byte[] getArray() {
+        return array;
     }
 
     public boolean isSingleLevelWildcard() {
-        return (length() == 1) && (array[start] == MqttTopicFilter.SINGLE_LEVEL_WILDCARD);
+        return isSingleLevelWildcard(array, getStart(), getEnd());
     }
 
-    public boolean isMultiLevelWildcard() {
-        return (length() == 1) && (array[start] == MqttTopicFilter.MULTI_LEVEL_WILDCARD);
+    public @NotNull MqttTopicLevel trim() {
+        return this;
     }
 }

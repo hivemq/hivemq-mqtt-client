@@ -11,13 +11,15 @@ stages:
   - name: release
     if: branch = master && type != pull_request
 
+install: skip
 script: ./gradlew check javadoc
 
 jobs:
   include:
     - stage: release
-      install: true
-      script: ./gradlew bintrayUpload -x test
+      install: skip
+      script: ./gradlew bintrayUpload githubRelease
+      jdk: oraclejdk8
 
 addons:
   apt:

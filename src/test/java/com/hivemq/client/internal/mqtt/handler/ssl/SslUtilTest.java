@@ -16,15 +16,20 @@
 
 package com.hivemq.client.internal.mqtt.handler.ssl;
 
+import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImplBuilder;
 import com.hivemq.client.internal.util.collections.ImmutableList;
+import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +55,7 @@ public class SslUtilTest {
 
         final TrustManagerFactory tmf = null;
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
                 new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).build());
 
         assertNotNull(sslEngine);
@@ -66,7 +71,7 @@ public class SslUtilTest {
 
         final ImmutableList<String> cipherSuite = getFirstSupportedCipherSuite();
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
                 new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
                         .cipherSuites(cipherSuite)
                         .build());
@@ -86,7 +91,7 @@ public class SslUtilTest {
 
         final ImmutableList<String> cipherSuites = getOtherSupportedCipherSuites();
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
                 new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
                         .cipherSuites(cipherSuites)
                         .build());
@@ -109,7 +114,7 @@ public class SslUtilTest {
 
         final ImmutableList<String> protocol = ImmutableList.of("TLSv1");
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
                 new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocol).build());
 
         assertNotNull(sslEngine);
@@ -127,7 +132,7 @@ public class SslUtilTest {
 
         final ImmutableList<String> protocols = ImmutableList.of("TLSv1.1", "TLSv1.2");
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
                 new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocols).build());
 
         assertNotNull(sslEngine);
@@ -161,10 +166,11 @@ public class SslUtilTest {
     }
 
     private List<String> getEnabledCipherSuites() throws Exception {
-        final SSLContext context = SSLContext.getInstance("TLS");
-        context.init(null, null, null);
-        final SSLEngine sslEngine = context.createSSLEngine();
-        return Arrays.asList(sslEngine.getEnabledCipherSuites());
+        return Arrays.asList(SslContextBuilder.forClient()
+                .sslProvider(SslProvider.JDK)
+                .build()
+                .newEngine(new EmbeddedChannel().alloc())
+                .getEnabledCipherSuites());
     }
 
     private List<String> getEnabledProtocols() throws Exception {
@@ -172,5 +178,11 @@ public class SslUtilTest {
         context.init(null, null, null);
         final SSLEngine sslEngine = context.createSSLEngine();
         return Arrays.asList(sslEngine.getEnabledProtocols());
+    }
+
+    private static @NotNull SSLEngine createSslEngine(
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
+
+        return SslUtil.createSslContext(sslConfig).newEngine(channel.alloc());
     }
 }

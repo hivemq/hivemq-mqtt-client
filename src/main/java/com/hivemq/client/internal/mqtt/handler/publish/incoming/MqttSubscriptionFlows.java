@@ -20,7 +20,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
-import com.hivemq.client.internal.util.collections.HandleList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +41,7 @@ public interface MqttSubscriptionFlows {
 
     void cancel(@NotNull MqttSubscribedPublishFlow flow);
 
-    boolean findMatching(@NotNull MqttTopicImpl topic, @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows);
+    void findMatching(@NotNull MqttTopicImpl topic, @NotNull MqttMatchingPublishFlows matchingFlows);
 
     void clear(@NotNull Throwable cause);
 }

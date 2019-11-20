@@ -1,2 +1,4 @@
 rootProject.name = 'hivemq-mqtt-client'
 
+include('examples')
+project(':examples').name = 'hivemq-mqtt-client-examples'

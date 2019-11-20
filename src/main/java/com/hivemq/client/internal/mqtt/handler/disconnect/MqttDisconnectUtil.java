@@ -97,7 +97,6 @@ public final class MqttDisconnectUtil {
     static void fireDisconnectEvent(
             final @NotNull Channel channel, final @NotNull MqttDisconnectEvent disconnectEvent) {
 
-        channel.config().setAutoRead(false);
         channel.pipeline().fireUserEventTriggered(disconnectEvent);
     }
 

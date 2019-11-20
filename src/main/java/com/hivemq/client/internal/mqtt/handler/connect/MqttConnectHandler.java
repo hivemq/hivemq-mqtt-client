@@ -271,6 +271,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         final MqttClientConnectionConfig connectionConfig = new MqttClientConnectionConfig(
                 connAckFlow.getTransportConfig(),
                 keepAlive,
+                connect.isCleanStart(),
+                connect.getSessionExpiryInterval() == 0,
                 sessionExpiryInterval,
                 connect.getRawSimpleAuth() != null,
                 connect.getRawWillPublish() != null,

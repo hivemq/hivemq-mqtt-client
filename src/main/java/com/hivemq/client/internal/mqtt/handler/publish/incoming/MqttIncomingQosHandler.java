@@ -33,10 +33,10 @@ import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubCompBuilde
 import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
 import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
+import com.hivemq.client.internal.netty.ContextFuture;
+import com.hivemq.client.internal.netty.DefaultContextPromise;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.internal.util.collections.IntMap;
-import com.hivemq.client.internal.util.netty.ContextFuture;
-import com.hivemq.client.internal.util.netty.DefaultContextPromise;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;

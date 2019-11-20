@@ -15,26 +15,14 @@
  *
  */
 
-package com.hivemq.client.internal.util.netty;
+package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
-import io.netty.channel.Channel;
-import io.netty.channel.DefaultChannelPromise;
-import org.jetbrains.annotations.NotNull;
+import com.hivemq.client.internal.util.collections.HandleList;
 
 /**
  * @author Silvio Giebl
  */
-public class DefaultContextPromise<C> extends DefaultChannelPromise implements ContextFuture.Promise<C> {
+class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
 
-    private final @NotNull C context;
-
-    public DefaultContextPromise(final @NotNull Channel channel, final @NotNull C context) {
-        super(channel);
-        this.context = context;
-    }
-
-    @Override
-    public @NotNull C getContext() {
-        return context;
-    }
+    boolean subscriptionFound;
 }

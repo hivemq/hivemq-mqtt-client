@@ -46,10 +46,12 @@ public class MqttClientConnectionConfig
     private static final int FLAG_WILDCARD_SUBSCRIPTION_AVAILABLE = 1 << 5;
     private static final int FLAG_SHARED_SUBSCRIPTION_AVAILABLE = 1 << 6;
     private static final int FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE = 1 << 7;
+    private static final int FLAG_CLEAN_START = 1 << 8;
+    private static final int FLAG_CLEAN_STOP = 1 << 9;
 
     private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final short keepAlive;
-    private final int sessionExpiryInterval;
+    private volatile int sessionExpiryInterval;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private final short receiveMaximum;
     private final int maximumPacketSize;
@@ -65,6 +67,8 @@ public class MqttClientConnectionConfig
     public MqttClientConnectionConfig(
             final @NotNull MqttClientTransportConfigImpl transportConfig,
             final int keepAlive,
+            final boolean cleanStart,
+            final boolean cleanStop,
             final long sessionExpiryInterval,
             final boolean hasSimpleAuth,
             final boolean hasWillPublish,
@@ -124,6 +128,12 @@ public class MqttClientConnectionConfig
         if (subscriptionIdentifiersAvailable) {
             flags |= FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
         }
+        if (cleanStart) {
+            flags |= FLAG_CLEAN_START;
+        }
+        if (cleanStop) {
+            flags |= FLAG_CLEAN_STOP;
+        }
         this.flags = flags;
     }
 
@@ -137,9 +147,21 @@ public class MqttClientConnectionConfig
         return keepAlive & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
+    public boolean isCleanStart() {
+        return (flags & FLAG_CLEAN_START) != 0;
+    }
+
+    public boolean isCleanStop() {
+        return (flags & FLAG_CLEAN_STOP) != 0;
+    }
+
     @Override
     public long getSessionExpiryInterval() {
         return sessionExpiryInterval & UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
+    }
+
+    public void setSessionExpiryInterval(final long sessionExpiryInterval) {
+        this.sessionExpiryInterval = (int) sessionExpiryInterval;
     }
 
     @Override

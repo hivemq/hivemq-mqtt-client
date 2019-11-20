@@ -15,28 +15,18 @@
  *
  */
 
-package com.hivemq.client.internal.logging;
+package com.hivemq.client.internal.util;
 
-import com.hivemq.client.internal.util.ClassUtil;
-import org.jetbrains.annotations.NotNull;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Silvio Giebl
  */
-public final class InternalLoggerFactory {
+class ByteArrayTest {
 
-    private static final boolean SLF4J_AVAILABLE;
-
-    static {
-        SLF4J_AVAILABLE = ClassUtil.isAvailable("org.slf4j.Logger");
+    @Test
+    void equals() {
+        EqualsVerifier.forClass(ByteArray.class).verify();
     }
-
-    public static @NotNull InternalLogger getLogger(final @NotNull Class<?> clazz) {
-        if (SLF4J_AVAILABLE) {
-            return new InternalSlf4jLogger(clazz);
-        }
-        return new InternalNoopLogger(clazz);
-    }
-
-    private InternalLoggerFactory() {}
 }

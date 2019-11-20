@@ -1,9 +1,13 @@
 .gradle
-/out/
-/build/
-.DS_Store
+out/
+build/
+
 *.iml
 .idea/*
 !.idea/codeStyles
 !.idea/inspectionProfiles
+
+.DS_Store
+.java-version
+credentials.gradle
 bintray.gradle

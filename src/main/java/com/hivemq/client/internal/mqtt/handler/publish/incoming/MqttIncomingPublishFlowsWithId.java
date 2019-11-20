@@ -23,20 +23,16 @@ import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.function.Consumer;
 
 import static com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
 /**
- * single threaded, in channel eventloop
- *
  * @author Silvio Giebl
  */
 @ClientScope
@@ -45,7 +41,6 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     private final @NotNull HashMap<Integer, MqttSubscribedPublishFlow> flowsWithIdsMap = new HashMap<>();
     private final @NotNull MqttSubscriptionFlows flowsWithIds;
-    private final @NotNull Consumer<MqttSubscribedPublishFlow> flowWithIdUnsubscribedCallback = this::unsubscribed;
 
     @Inject
     MqttIncomingPublishFlowsWithId(
@@ -62,8 +57,8 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         if (flow != null) {
             final int subscriptionIdentifier = subscribe.getSubscriptionIdentifier();
             if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
-                flowsWithIdsMap.put(subscriptionIdentifier, flow);
                 flow.setSubscriptionIdentifier(subscriptionIdentifier);
+                flowsWithIdsMap.put(subscriptionIdentifier, flow);
             }
         }
         super.subscribe(subscribe, flow);
@@ -103,15 +98,12 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     void unsubscribe(final @NotNull MqttTopicFilterImpl topicFilter) {
-        flowsWithIds.unsubscribe(topicFilter, flowWithIdUnsubscribedCallback);
+        flowsWithIds.unsubscribe(topicFilter, this::unsubscribed);
         super.unsubscribe(topicFilter);
     }
 
     private void unsubscribed(final @NotNull MqttSubscribedPublishFlow flow) {
-        final int subscriptionIdentifier = flow.getSubscriptionIdentifier();
-        if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
-            flowsWithIdsMap.remove(subscriptionIdentifier);
-        }
+        flowsWithIdsMap.remove(flow.getSubscriptionIdentifier());
     }
 
     @Override
@@ -127,17 +119,20 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     void findMatching(
-            final @NotNull MqttStatefulPublish publish,
-            final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
+            final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
         final ImmutableIntList subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
         if (!subscriptionIdentifiers.isEmpty()) {
             for (int i = 0; i < subscriptionIdentifiers.size(); i++) {
-                final int subscriptionIdentifier = subscriptionIdentifiers.get(i);
-                final MqttSubscribedPublishFlow flow = flowsWithIdsMap.get(subscriptionIdentifier);
+                final MqttSubscribedPublishFlow flow = flowsWithIdsMap.get(subscriptionIdentifiers.get(i));
                 if (flow != null) {
                     matchingFlows.add(flow);
                 }
+            }
+            if (matchingFlows.isEmpty()) {
+                flowsWithIds.findMatching(publish.stateless().getTopic(), matchingFlows);
+            } else {
+                matchingFlows.subscriptionFound = true;
             }
         }
         super.findMatching(publish, matchingFlows);

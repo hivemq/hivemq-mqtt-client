@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
+import java.net.InetSocketAddress;
 
 /**
  * @author Christoph Schäbel
@@ -33,48 +34,41 @@ public final class SslUtil {
 
     private static final @NotNull String SSL_HANDLER_NAME = "ssl";
 
-    public static void initChannel(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)
-            throws SSLException {
+    public static void initChannel(
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
+            final @NotNull InetSocketAddress address) throws SSLException {
 
-        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig));
+        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig, address));
     }
 
     private static @NotNull SslHandler createSslHandler(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
+            final @NotNull InetSocketAddress address) throws SSLException {
 
-        final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
-        final SslHandler sslHandler = new SslHandler(sslEngine);
-
-        sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
-        return sslHandler;
+        return createSslContext(sslConfig).newHandler(channel.alloc(), address.getHostString(), address.getPort());
     }
 
-    static @NotNull SSLEngine createSslEngine(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-
-        final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
-
-        sslEngine.setUseClientMode(true);
-
-        return sslEngine;
-    }
-
-    private static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig)
-            throws SSLException {
-
-        final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
-                .sslProvider(SslProvider.JDK)
-                .trustManager(sslConfig.getRawTrustManagerFactory())
-                .keyManager(sslConfig.getRawKeyManagerFactory());
+    static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
         final ImmutableList<String> protocols = sslConfig.getRawProtocols();
-        //noinspection ToArrayCallWithZeroLengthArrayArgument
-        final String[] protocolArray = (protocols == null) ? null : protocols.toArray(new String[protocols.size()]);
-        sslContextBuilder.protocols(protocolArray);
 
-        sslContextBuilder.ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
+        final SslContext sslContext = SslContextBuilder.forClient()
+                .trustManager(sslConfig.getRawTrustManagerFactory())
+                .keyManager(sslConfig.getRawKeyManagerFactory())
+                .protocols((protocols == null) ? null : protocols.toArray(new String[0]))
+                .ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE)
+                .build();
 
-        return sslContextBuilder.build();
+        return new DelegatingSslContext(sslContext) {
+            @Override
+            protected void initEngine(@NotNull final SSLEngine engine) {
+            }
+
+            @Override
+            protected void initHandler(@NotNull final SslHandler handler) {
+                handler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
+            }
+        };
     }
 
     private SslUtil() {}

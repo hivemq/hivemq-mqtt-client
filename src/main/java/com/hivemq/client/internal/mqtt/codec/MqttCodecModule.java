@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  */
 @Module
-public class MqttCodecModule {
+public abstract class MqttCodecModule {
 
     @Provides
     @ConnectionScope

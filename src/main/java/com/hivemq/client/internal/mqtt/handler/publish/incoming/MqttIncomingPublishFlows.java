@@ -19,7 +19,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
-import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
@@ -75,8 +74,9 @@ public class MqttIncomingPublishFlows {
 
         final ImmutableList<MqttSubscription> subscriptions = subscribe.stateless().getSubscriptions();
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
+        final boolean countNotMatching = subscriptions.size() > reasonCodes.size();
         for (int i = 0; i < subscriptions.size(); i++) {
-            if (reasonCodes.get(i).isError()) {
+            if (countNotMatching || reasonCodes.get(i).isError()) {
                 remove(subscriptions.get(i).getTopicFilter(), flow);
             }
         }
@@ -89,9 +89,9 @@ public class MqttIncomingPublishFlows {
     public void unsubscribe(final @NotNull MqttStatefulUnsubscribe unsubscribe, final @NotNull MqttUnsubAck unsubAck) {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.stateless().getTopicFilters();
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
-        final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
+        final boolean allSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
-            if (areAllSuccess || !reasonCodes.get(i).isError()) {
+            if (allSuccess || !reasonCodes.get(i).isError()) {
                 unsubscribe(topicFilters.get(i));
             }
         }
@@ -106,17 +106,16 @@ public class MqttIncomingPublishFlows {
     }
 
     @NotNull HandleList<MqttIncomingPublishFlow> findMatching(final @NotNull MqttStatefulPublish publish) {
-        final HandleList<MqttIncomingPublishFlow> matchingFlows = new HandleList<>();
+        final MqttMatchingPublishFlows matchingFlows = new MqttMatchingPublishFlows();
         findMatching(publish, matchingFlows);
         return matchingFlows;
     }
 
     void findMatching(
-            final @NotNull MqttStatefulPublish publish,
-            final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
+            final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
-        final MqttTopicImpl topic = publish.stateless().getTopic();
-        if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
+        subscriptionFlows.findMatching(publish.stateless().getTopic(), matchingFlows);
+        if (matchingFlows.subscriptionFound) {
             add(matchingFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
         } else {
             add(matchingFlows, globalFlows[MqttGlobalPublishFilter.UNSOLICITED.ordinal()]);

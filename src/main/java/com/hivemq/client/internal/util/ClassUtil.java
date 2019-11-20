@@ -15,21 +15,22 @@
  *
  */
 
-package com.hivemq.client.internal.util.netty;
+package com.hivemq.client.internal.util;
 
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelPromise;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public interface ContextFuture<C> extends ChannelFuture {
+public final class ClassUtil {
 
-    @NotNull C getContext();
+    public static boolean isAvailable(final @NotNull String className) {
+        try {
+            return Class.forName(className) != null;
+        } catch (final ClassNotFoundException e) {
+            return false;
+        }
+    }
 
-    interface Promise<C> extends ChannelPromise, ContextFuture<C> {}
-
-    interface Listener<C> extends GenericFutureListener<ContextFuture<? extends C>> {}
+    private ClassUtil() {}
 }

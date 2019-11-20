@@ -22,7 +22,7 @@ import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttConnectAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.netty.NettyEventLoopProvider;
+import com.hivemq.client.internal.netty.NettyEventLoopProvider;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
@@ -38,11 +38,8 @@ import org.jetbrains.annotations.NotNull;
 abstract class ConnectionModule {
 
     @Provides
-    static @NotNull Bootstrap provideBootstrap(
-            final @NotNull NettyEventLoopProvider nettyEventLoopProvider,
-            final @NotNull MqttChannelInitializer channelInitializer) {
-
-        return new Bootstrap().channelFactory(nettyEventLoopProvider.getChannelFactory())
+    static @NotNull Bootstrap provideBootstrap(final @NotNull MqttChannelInitializer channelInitializer) {
+        return new Bootstrap().channelFactory(NettyEventLoopProvider.INSTANCE.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)

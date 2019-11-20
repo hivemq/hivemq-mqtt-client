@@ -15,28 +15,26 @@
  *
  */
 
-package com.hivemq.client.internal.logging;
+package com.hivemq.client.internal.netty;
 
-import com.hivemq.client.internal.util.ClassUtil;
+import io.netty.channel.Channel;
+import io.netty.channel.DefaultChannelPromise;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public final class InternalLoggerFactory {
+public class DefaultContextPromise<C> extends DefaultChannelPromise implements ContextFuture.Promise<C> {
 
-    private static final boolean SLF4J_AVAILABLE;
+    private final @NotNull C context;
 
-    static {
-        SLF4J_AVAILABLE = ClassUtil.isAvailable("org.slf4j.Logger");
+    public DefaultContextPromise(final @NotNull Channel channel, final @NotNull C context) {
+        super(channel);
+        this.context = context;
     }
 
-    public static @NotNull InternalLogger getLogger(final @NotNull Class<?> clazz) {
-        if (SLF4J_AVAILABLE) {
-            return new InternalSlf4jLogger(clazz);
-        }
-        return new InternalNoopLogger(clazz);
+    @Override
+    public @NotNull C getContext() {
+        return context;
     }
-
-    private InternalLoggerFactory() {}
 }
