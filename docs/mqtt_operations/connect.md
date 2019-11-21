@@ -26,38 +26,57 @@ MQTT 5.0
 Blocking
 ===
 
-The blocking API directly returns a `Mqtt5ConnAck` message (which contains data from the broker) if the connect was 
-successful.
+The blocking API directly returns a `Mqtt5ConnAck` message if connecting was successful.
 
 ```java
 Mqtt5ConnAck connAckMessage = client.connect();
 ```
+
+If connecting was not successful, it throws:
+
+| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
+| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
+| `Mqtt5ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 ====
 
 Async
 ===
 
-The asynchronous API returns a `CompletableFuture` which succeeds with a `Mqtt5ConnAck` message (which contains data 
-from the broker) if the connect was successful.
+The asynchronous API returns a `CompletableFuture` which completes with a `Mqtt5ConnAck` message if connecting was 
+successful.
 
 ```java
 CompletableFuture<Mqtt5ConnAck> connAckFuture = client.connect();
 ```
+
+If connecting was not successful, the `CompletableFuture` completes exceptionally with:
+
+| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
+| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
+| `Mqtt5ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 ====
 
 Reactive
 ===
 
-The reactive API returns a `Single` which succeeds with a `Mqtt5ConnAck` message (which contains data 
-from the broker) if the connect was successful.
-As the `Single` is a reactive type the following line does not connect immediately but only after you subscribe to it 
+The reactive API returns a `Single` which succeeds with a `Mqtt5ConnAck` message if connecting was successful.
+As the `Single` is a reactive type, the following line does not connect immediately but only after you subscribe to it 
 (in terms of Reactive Streams).
 
 ```java
 Single<Mqtt5ConnAck> connAckSingle = client.connect();
 ```
+
+If connecting was not successful, the `Single` errors with:
+
+| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
+| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
+| `Mqtt5ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 {% endcapture %}
 {% include tabs.html tab_group="api-flavour" %}
@@ -179,38 +198,57 @@ MQTT 3.1.1
 Blocking
 ===
 
-The blocking API directly returns a `Mqtt3ConnAck` message (which contains data from the broker) if the connect was 
-successful.
+The blocking API directly returns a `Mqtt3ConnAck` message if connecting was successful.
 
 ```java
 Mqtt3ConnAck connAckMessage = client.connect();
 ```
+
+If connecting was not successful, it throws:
+
+| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
+| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
+| `Mqtt3ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 ====
 
 Async
 ===
 
-The asynchronous API returns a `CompletableFuture` which succeeds with a `Mqtt3ConnAck` message (which contains data 
-from the broker) if the connect was successful.
+The asynchronous API returns a `CompletableFuture` which succeeds with a `Mqtt3ConnAck` message if connecting was 
+successful.
 
 ```java
 CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connect();
 ```
+
+If connecting was not successful, the `CompletableFuture` completes exceptionally with:
+
+| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
+| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
+| `Mqtt3ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 ====
 
 Reactive
 ===
 
-The reactive API returns a `Single` which succeeds with a `Mqtt3ConnAck` message (which contains data 
-from the broker) if the connect was successful.
+The reactive API returns a `Single` which succeeds with a `Mqtt3ConnAck` message if connecting was successful.
 As the `Single` is a reactive type the following line does not connect immediately but only after you subscribe to it 
 (in terms of Reactive Streams).
 
 ```java
 Single<Mqtt3ConnAck> connAckSingle = client.connect();
 ```
+
+If connecting was not successful, the `Single` errors with:
+
+| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
+| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
+| `Mqtt3ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 {% endcapture %}
 {% include tabs.html tab_group="api-flavour" %}
@@ -366,7 +404,7 @@ Clean start determines if the client wants to start a new "clean" session (`true
 if present (`false`).
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `cleanStart` | `true`/`false` | `true` | [3.1.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901039) |
 
 {% capture tab_content %}
@@ -396,7 +434,7 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().cleanStart(false)...
 The session expiry interval is the time interval (in seconds) the session will persist when the client is disconnected.
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `sessionExpiryInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.2.11.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048) |
 
 {% capture tab_content %}
@@ -455,7 +493,7 @@ Clean session determines if the client wants to start a new "clean" session (`tr
 session which will persist when the client is disconnected (`false`).
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `cleanSession` | `true`/`false` | `true` | [3.1.2.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
 
 {% capture tab_content %}
@@ -495,7 +533,7 @@ MQTT 5.0
 ===
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901045) |
 
 {% capture tab_content %}
@@ -549,7 +587,7 @@ MQTT 3.1.1
 ===
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
 
 {% capture tab_content %}
@@ -610,7 +648,7 @@ MQTT 5.0
 ===
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901071) |
 | `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901072) |
 
@@ -655,7 +693,7 @@ See the [Enhanced Auth](../security/auth.md) section for more details.
 Simple and enhanced auth can be used both at the same time.
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [3.1.2.11.9/10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055) |
 
 {% capture tab_content %}
@@ -695,7 +733,7 @@ MQTT 3.1.1
 ===
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
 | `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.5](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
 
@@ -749,7 +787,7 @@ It is the message that is published by the broker if the client disconnected ung
 `topic` is the only mandatory property for a Will publish message, all others have defaults or are optional.
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901069) |
 | `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041) |
 | `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070) |
@@ -862,7 +900,7 @@ It is the message that is published by the broker if the client disconnected ung
 `topic` is the only mandatory property for a Will publish message, all others have defaults or are optional.
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.2](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
 | `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
 | `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.3](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
@@ -940,7 +978,7 @@ The others for messages the client sends itself are used in conjunction with the
 the `Mqtt5ConnAck` message to determine the actual client side restrictions.
 
 | Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------------- | ------------------ |
+| -------- | ------ | ------- | ------------------ |
 | `restrictions.receiveMaximum` | [`1` - `65_535`] | `65_535` | [3.1.2.11.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901049) |
 | `restrictions.sendMaximum` | [`1` - `65_535`] | `65_535` | - |
 | `restrictions.maximumPacketSize` | [`1` - `268_435_460`] | `268_435_460` | [3.1.2.11.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901050) |
