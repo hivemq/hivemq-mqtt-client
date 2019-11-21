@@ -128,6 +128,7 @@ If connecting was not successful, the `Single` errors with:
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
 
 
+
 ***
 
 The rest of this section describes all possible properties of a `Mqtt5Connect` message.
@@ -338,6 +339,7 @@ Single<Mqtt3ConnAck> connAckSingle = client.connect(connectMessage);
 {: .mb-5 }
 
 
+
 #### List of connect properties
 
 {% capture tab_content %}
@@ -345,25 +347,29 @@ Single<Mqtt3ConnAck> connAckSingle = client.connect(connectMessage);
 MQTT 5.0
 ===
 
-* [Clean start](#clean-start)
-* [Session expiry interval](#session-expiry-interval)
-* [Keep alive](#keep-alive)
-* [Authentication/Authorization](#authenticationauthorization)
-* [Will](#will)
-* [Restrictions](#restrictions)
-* [User properties](#user-properties)
+- [Clean Start](#clean-start)
+- [Session Expiry Interval](#session-expiry-interval)
+- [Keep Alive](#keep-alive)
+- [Simple Auth (username/password)](#simple-auth-username--password)
+- [Enhanced Auth](#enhanced-auth)
+- [Will](#will)
+- [Restrictions](#restrictions)
+- [User Properties](#user-properties)
 
 ====
 
 MQTT 3.1.1
 ===
 
-* [Clean session](#clean-session)
-* [Keep alive](#keep-alive)
-* [Authentication/Authorization](#authenticationauthorization)
-* [Will](#will)
+- [Clean Session](#clean-session)
+- [Keep alive](#keep-alive)
+- [Simple Auth (username/password)](#simple-auth-username--password)
+- [Will](#will)
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+
+***
+
 
 
 {% capture tab_content %}
@@ -371,7 +377,7 @@ MQTT 3.1.1
 MQTT 5.0
 ===
 
-## Clean start
+## Clean Start
 
 Clean start determines if the client wants to start a new "clean" session (`true`) or wants to resume a previous session 
 if present (`false`).
@@ -400,8 +406,11 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder().cleanStart(false)...build()
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
+***
 
-## Session expiry interval
+
+
+## Session Expiry Interval
 
 The session expiry interval is the time interval (in seconds) the session will persist when the client is disconnected.
 
@@ -454,10 +463,11 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder().noSessionExpiry()...build()
 ====
 
 
+
 MQTT 3.1.1
 ===
 
-## Clean session
+## Clean Session
 
 Clean session determines if the client wants to start a new "clean" session (`true`) or wants to resume a previous 
 session which will persist when the client is disconnected (`false`).
@@ -488,8 +498,11 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder().cleanSession(false)...build
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
+***
 
-## Keep alive
+
+
+## Keep Alive
 
 The keep alive is the time interval (in seconds) in which the client sends a ping to the broker if no other MQTT packets 
 are sent during this period of time.
@@ -600,10 +613,13 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder().noKeepAlive()...build();
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
+***
 
-## Authentication/authorization
 
-### Simple auth (username/password)
+
+## Authentication & Authorization
+
+### Simple Auth (username & password)
 
 {% capture tab_content %}
 
@@ -661,7 +677,8 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 
-### Enhanced auth
+
+### Enhanced Auth
 
 You need to implement an `Mqtt5EnhancedAuthMechanism` for enhanced auth.
 See the [Enhanced Auth](../security/auth.md) section for more details.
@@ -758,6 +775,9 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+***
+
 
 
 ## Will
@@ -948,6 +968,9 @@ All properties of a Will publish message are the same as of a normal [`Mqtt3Publ
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
+***
+
+
 
 {% capture tab_content %}
 
@@ -1043,13 +1066,16 @@ MQTT 3.1.1
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
+***
+
+
 
 {% capture tab_content %}
 
 MQTT 5.0
 ===
 
-## User properties
+## User Properties
 
 User Properties are user defined name and value pairs which are sent with the `Mqtt5Connect` message.
 
