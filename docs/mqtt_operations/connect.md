@@ -21,10 +21,10 @@ The return type depends on the used MQTT version and API flavour.
 MQTT 5.0
 ===
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Blocking
-===
+ Blocking
+ ===
 
 The blocking API directly returns a `Mqtt5ConnAck` message if connecting was successful.
 
@@ -34,15 +34,10 @@ Mqtt5ConnAck connAckMessage = client.connect();
 
 If connecting was not successful, it throws:
 
-| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
-| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
-| `Mqtt5ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
-| `MqttClientStateException`  | if the client is already connecting or connected |
+ ====
 
-====
-
-Async
-===
+ Async
+ ===
 
 The asynchronous API returns a `CompletableFuture` which completes with a `Mqtt5ConnAck` message if connecting was 
 successful.
@@ -53,15 +48,10 @@ CompletableFuture<Mqtt5ConnAck> connAckFuture = client.connect();
 
 If connecting was not successful, the `CompletableFuture` completes exceptionally with:
 
-| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
-| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
-| `Mqtt5ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
-| `MqttClientStateException`  | if the client is already connecting or connected |
+ ====
 
-====
-
-Reactive
-===
+ Reactive
+ ===
 
 The reactive API returns a `Single` which succeeds with a `Mqtt5ConnAck` message if connecting was successful.
 As the `Single` is a reactive type, the following line does not connect immediately but only after you subscribe to it 
@@ -73,119 +63,12 @@ Single<Mqtt5ConnAck> connAckSingle = client.connect();
 
 If connecting was not successful, the `Single` errors with:
 
+ {% endcapture %}{% include tabs.html tab_group="api-flavour" %}
+
 | `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
 | `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
-| `Mqtt5ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `Mqtt5ConnAckException`     | if the ConnAck message contained an error code (the ConnAck message is contained in the exception) |
 | `MqttClientStateException`  | if the client is already connecting or connected |
-
-{% endcapture %}
-{% include tabs.html tab_group="api-flavour" %}
-
-***
-
-The rest of this section describes all possible properties of a `Mqtt5Connect` message.
-They can be set via a fluent builder API.
-
-{% capture tab_content %}
-
-Blocking
-===
-
-{% capture tab_content %}
-
-Fluent
-===
-
-```java
-Mqtt5ConnAck connAckMessage = client.connectWith()
-        ... // here you can specify multiple properties which are described below
-        .send();
-```
-
-====
-
-Prebuilt message
-===
-
-```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
-        ... // here you can specify multiple properties which are described below
-        .build();
-
-Mqtt5ConnAck connAckMessage = client.connect(connectMessage);
-```
-
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
-
-====
-
-
-Async
-===
-
-{% capture tab_content %}
-
-Fluent
-===
-
-```java
-CompletableFuture<Mqtt5ConnAck> connAckFuture = client.connectWith()
-        ... // here you can specify multiple properties described below
-        .send();
-```
-
-====
-
-Prebuilt message
-===
-
-```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
-        ... // here you can specify multiple properties described below
-        .build();
-
-CompletableFuture<Mqtt5ConnAck> connAckFuture = client.connect(connectMessage);
-```
-
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
-
-====
-
-
-Reactive
-===
-
-{% capture tab_content %}
-
-Fluent
-===
-
-```java
-Single<Mqtt5ConnAck> connAckSingle = client.connectWith()
-        ... // here you can specify multiple properties described below
-        .applyConnect();
-```
-
-====
-
-Prebuilt message
-===
-
-```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
-        ... // here you can specify multiple properties described below
-        .build();
-
-Single<Mqtt5ConnAck> connAckSingle = client.connect(connectMessage);
-```
-
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
-
-{% endcapture %}
-{% include tabs.html tab_group="api-flavour" tab_merge=true %}
 
 ====
 
@@ -193,10 +76,10 @@ Single<Mqtt5ConnAck> connAckSingle = client.connect(connectMessage);
 MQTT 3.1.1
 ===
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Blocking
-===
+ Blocking
+ ===
 
 The blocking API directly returns a `Mqtt3ConnAck` message if connecting was successful.
 
@@ -206,15 +89,10 @@ Mqtt3ConnAck connAckMessage = client.connect();
 
 If connecting was not successful, it throws:
 
-| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
-| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
-| `Mqtt3ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
-| `MqttClientStateException`  | if the client is already connecting or connected |
+ ====
 
-====
-
-Async
-===
+ Async
+ ===
 
 The asynchronous API returns a `CompletableFuture` which succeeds with a `Mqtt3ConnAck` message if connecting was 
 successful.
@@ -225,15 +103,10 @@ CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connect();
 
 If connecting was not successful, the `CompletableFuture` completes exceptionally with:
 
-| `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
-| `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
-| `Mqtt3ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
-| `MqttClientStateException`  | if the client is already connecting or connected |
+ ====
 
-====
-
-Reactive
-===
+ Reactive
+ ===
 
 The reactive API returns a `Single` which succeeds with a `Mqtt3ConnAck` message if connecting was successful.
 As the `Single` is a reactive type the following line does not connect immediately but only after you subscribe to it 
@@ -245,28 +118,136 @@ Single<Mqtt3ConnAck> connAckSingle = client.connect();
 
 If connecting was not successful, the `Single` errors with:
 
+ {% endcapture %}{% include tabs.html tab_group="api-flavour" %}
+
 | `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
 | `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
-| `Mqtt3ConnAckException`     | if the ConnAck message contained an Error code (the ConnAck message is contained in the exception) |
+| `Mqtt3ConnAckException`     | if the ConnAck message contained an error code (the ConnAck message is contained in the exception) |
 | `MqttClientStateException`  | if the client is already connecting or connected |
 
-{% endcapture %}
-{% include tabs.html tab_group="api-flavour" %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+
 
 ***
 
-The rest of this section describes all possible properties of a `Mqtt3Connect` message.
+The rest of this section describes all possible properties of a `Mqtt5Connect` message.
 They can be set via a fluent builder API.
 
 {% capture tab_content %}
 
-Blocking
+MQTT 5.0
 ===
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
+ Blocking
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
+
+```java
+Mqtt5ConnAck connAckMessage = client.connectWith()
+        ... // here you can specify multiple properties which are described below
+        .send();
+```
+
+  ====
+
+  Prebuilt message
+  ===
+
+```java
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
+        ... // here you can specify multiple properties which are described below
+        .build();
+
+Mqtt5ConnAck connAckMessage = client.connect(connectMessage);
+```
+
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+ ====
+
+ Async
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
+
+```java
+CompletableFuture<Mqtt5ConnAck> connAckFuture = client.connectWith()
+        ... // here you can specify multiple properties described below
+        .send();
+```
+
+  ====
+
+  Prebuilt message
+  ===
+
+```java
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
+        ... // here you can specify multiple properties described below
+        .build();
+
+CompletableFuture<Mqtt5ConnAck> connAckFuture = client.connect(connectMessage);
+```
+
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+ ====
+
+ Reactive
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
+
+```java
+Single<Mqtt5ConnAck> connAckSingle = client.connectWith()
+        ... // here you can specify multiple properties described below
+        .applyConnect();
+```
+
+  ====
+
+  Prebuilt message
+  ===
+
+```java
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
+        ... // here you can specify multiple properties described below
+        .build();
+
+Single<Mqtt5ConnAck> connAckSingle = client.connect(connectMessage);
+```
+
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+ {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+
+====
+
+
+MQTT 3.1.1
 ===
+
+ {% capture tab_content %}
+
+ Blocking
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
 
 ```java
 Mqtt3ConnAck connAckMessage = client.connectWith()
@@ -274,10 +255,10 @@ Mqtt3ConnAck connAckMessage = client.connectWith()
         .send();
 ```
 
-====
+  ====
 
-Prebuilt message
-===
+  Prebuilt message
+  ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder()
@@ -287,19 +268,17 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
 Mqtt3ConnAck connAckMessage = client.connect(connectMessage);
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
-====
+ ====
 
+ Async
+ ===
 
-Async
-===
+  {% capture tab_content %}
 
-{% capture tab_content %}
-
-Fluent
-===
+  Fluent
+  ===
 
 ```java
 CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connectWith()
@@ -307,10 +286,10 @@ CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connectWith()
         .send();
 ```
 
-====
+  ====
 
-Prebuilt message
-===
+  Prebuilt message
+  ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder()
@@ -320,19 +299,17 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
 CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connect(connectMessage);
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
-====
+ ====
 
+ Reactive
+ ===
 
-Reactive
-===
+  {% capture tab_content %}
 
-{% capture tab_content %}
-
-Fluent
-===
+  Fluent
+  ===
 
 ```java
 Single<Mqtt3ConnAck> connAckSingle = client.connectWith()
@@ -340,10 +317,10 @@ Single<Mqtt3ConnAck> connAckSingle = client.connectWith()
         .applyConnect();
 ```
 
-====
+  ====
 
-Prebuilt message
-===
+  Prebuilt message
+  ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder()
@@ -353,14 +330,11 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
 Single<Mqtt3ConnAck> connAckSingle = client.connect(connectMessage);
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
-{% endcapture %}
-{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+ {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 {: .mb-5 }
 
 
@@ -389,8 +363,7 @@ MQTT 3.1.1
 * [Authentication/Authorization](#authenticationauthorization)
 * [Will](#will)
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
 
 {% capture tab_content %}
@@ -407,26 +380,25 @@ if present (`false`).
 | -------- | ------ | ------- | ------------------ |
 | `cleanStart` | `true`/`false` | `true` | [3.1.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901039) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().cleanStart(false)...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().cleanStart(false)...build();
+Mqtt5Connect connectMessage = Mqtt5Connect.builder().cleanStart(false)...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 
 ## Session expiry interval
@@ -437,49 +409,47 @@ The session expiry interval is the time interval (in seconds) the session will p
 | -------- | ------ | ------- | ------------------ |
 | `sessionExpiryInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.2.11.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().sessionExpiryInterval(100)...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().sessionExpiryInterval(100)...build();
+Mqtt5Connect connectMessage = Mqtt5Connect.builder().sessionExpiryInterval(100)...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 Session expiry can be disabled by setting it to `4_294_967_295` or using the method `noSessionExpiry`.
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().noSessionExpiry()...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().noSessionExpiry()...build();
+Mqtt5Connect connectMessage = Mqtt5Connect.builder().noSessionExpiry()...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
 ====
 
@@ -496,29 +466,27 @@ session which will persist when the client is disconnected (`false`).
 | -------- | ------ | ------- | ------------------ |
 | `cleanSession` | `true`/`false` | `true` | [3.1.2.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().cleanSession(false)...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder().cleanSession(false)...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
 
 ## Keep alive
@@ -536,49 +504,47 @@ MQTT 5.0
 | -------- | ------ | ------- | ------------------ |
 | `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901045) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().keepAlive(30)...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().keepAlive(30)...build();
+Mqtt5Connect connectMessage = Mqtt5Connect.builder().keepAlive(30)...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 Keep alive can be disabled by setting it to `0` or using the method `noKeepAlive`.
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().noKeepAlive()...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().noKeepAlive()...build();
+Mqtt5Connect connectMessage = Mqtt5Connect.builder().noKeepAlive()...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
 ====
 
@@ -590,52 +556,49 @@ MQTT 3.1.1
 | -------- | ------ | ------- | ------------------ |
 | `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().keepAlive(30)...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(30)...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 Keep alive can be disabled by setting it to `0` or using the method `noKeepAlive`.
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith().noKeepAlive()...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder().noKeepAlive()...build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
 
 ## Authentication/authorization
@@ -652,10 +615,10 @@ MQTT 5.0
 | `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901071) |
 | `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901072) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith()
@@ -666,13 +629,13 @@ client.connectWith()
         ...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .simpleAuth()
             .username("username")
             .password("password".getBytes())
@@ -681,8 +644,21 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
         .build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+You can also prebuild the `Mqtt5SimpleAuth`.
+
+```java
+Mqtt5SimpleAuth simpleAuth = Mqtt5SimpleAuth.builder()
+        .username("username")
+        .password("password".getBytes())
+        .build();
+
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
+        .simpleAuth(simpleAuth)
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 
 ### Enhanced auth
@@ -696,10 +672,10 @@ Simple and enhanced auth can be used both at the same time.
 | -------- | ------ | ------- | ------------------ |
 | `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [3.1.2.11.9/10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 Mqtt5EnhancedAuthMechanism myEnhancedAuthMechanism = ...
@@ -709,22 +685,21 @@ client.connectWith()
         ...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
 Mqtt5EnhancedAuthMechanism myEnhancedAuthMechanism = ...
 
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .enhancedAuth(myEnhancedAuthMechanism)
         ...
         .build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 ====
 
@@ -737,10 +712,10 @@ MQTT 3.1.1
 | `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
 | `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.5](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith()
@@ -751,10 +726,10 @@ client.connectWith()
         ...;
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder()
@@ -766,11 +741,23 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
         .build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+You can also prebuild the `Mqtt3SimpleAuth`.
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+```java
+Mqtt3SimpleAuth simpleAuth = Mqtt3SimpleAuth.builder()
+        .username("username")
+        .password("password".getBytes())
+        .build();
+
+Mqtt3Connect connectMessage = Mqtt3Connect.builder()
+        .simpleAuth(simpleAuth)
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
 
 ## Will
@@ -800,10 +787,10 @@ It is the message that is published by the broker if the client disconnected ung
 | `willPublish.correlationData` | `byte[]`/`ByteBuffer` | - | [3.1.3.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901067) |
 | `willPublish.userProperties` | `Mqtt5UserProperties` | - | [3.1.3.2.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901068) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith()
@@ -826,13 +813,13 @@ client.connectWith()
         ...
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .willPublish()
             .topic("test/topic")
             .qos(MqttQos.AT_LEAST_ONCE)
@@ -873,15 +860,14 @@ Mqtt5WillPublish willPublishMessage = Mqtt5WillPublish.builder()
             .applyUserProperties()
         .build()
 
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .willPublish(willPublishMessage)
         ...
         .build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
-{: .mb-5 }
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {: .mb-5 }
 
 Message expiry can be disabled by setting it to `4_294_967_295` (default) or using the method `noMessageExpiry`.
 
@@ -906,10 +892,10 @@ It is the message that is published by the broker if the client disconnected ung
 | `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.3](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
 | `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith()
@@ -922,10 +908,10 @@ client.connectWith()
         ...
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
 Mqtt3Connect connectMessage = Mqtt3Connect.builder()
@@ -955,14 +941,12 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
         .build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
-{: .mb-5 }
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {: .mb-5 }
 
 All properties of a Will publish message are the same as of a normal [`Mqtt3Publish` message](publish.md).
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
 
 {% capture tab_content %}
@@ -988,10 +972,10 @@ the `Mqtt5ConnAck` message to determine the actual client side restrictions.
 | `restrictions.requestProblemInformation` | `true`/`false` | `true` | [3.1.2.11.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901053) |
 | `restrictions.requestResponseInformation` | `true`/`false` | `false` | [3.1.2.11.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901052) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith()
@@ -1008,13 +992,13 @@ client.connectWith()
         ...
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .restrictions()
             .receiveMaximum(16)
             .sendMaximum(32)
@@ -1043,14 +1027,13 @@ Mqtt5ConnectRestrictions restrictions = Mqtt5ConnectRestrictions.builder()
         .requestResponseInformation(true)
         .build();
 
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .restrictions(restrictions)
         ...
         .build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 ====
 
@@ -1058,8 +1041,7 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
 
 {% capture tab_content %}
@@ -1075,10 +1057,10 @@ User Properties are user defined name and value pairs which are sent with the `M
 | ------ | ------ | ------------------ |
 | `userProperties.add` | `String, String`<br/>`MqttUtf8String, MqttUtf8String`<br/>`Mqtt5UserProperty` | [3.1.2.11.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901054) |
 
-{% capture tab_content %}
+ {% capture tab_content %}
 
-Fluent
-===
+ Fluent
+ ===
 
 ```java
 client.connectWith()
@@ -1089,13 +1071,13 @@ client.connectWith()
         ...
 ```
 
-====
+ ====
 
-Prebuilt message
-===
+ Prebuilt message
+ ===
 
 ```java
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .userProperties()
             .add("key1", "value1")
             .add(Mqtt5UserProperty.of("key2", "value2"))
@@ -1112,14 +1094,13 @@ Mqtt5UserProperties connectUserProperties = Mqtt5UserProperties.builder()
         .add(Mqtt5UserProperty.of("key2", "value2"))
         .build();
 
-Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .userProperties(connectUserProperties)
         ...
         .build();
 ```
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 ====
 
@@ -1127,5 +1108,4 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}
-{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
