@@ -9,8 +9,6 @@ search_enabled: true
 
 color_scheme: dark
 
-permalink: pretty
-
 aux_links:
   "News":
     - "https://hivemq.github.io/hivemq-mqtt-client/news"
