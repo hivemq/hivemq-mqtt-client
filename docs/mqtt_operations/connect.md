@@ -340,8 +340,6 @@ Single<Mqtt3ConnAck> connAckSingle = client.connect(connectMessage);
 
 
 
-#### List of connect properties
-
 {% capture tab_content %}
 
 MQTT 5.0
@@ -350,7 +348,7 @@ MQTT 5.0
 - [Clean Start](#clean-start)
 - [Session Expiry Interval](#session-expiry-interval)
 - [Keep Alive](#keep-alive)
-- [Simple Auth (username/password)](#simple-auth-username--password)
+- [Simple Auth (username & password)](#simple-auth-username--password)
 - [Enhanced Auth](#enhanced-auth)
 - [Will](#will)
 - [Restrictions](#restrictions)
@@ -363,7 +361,7 @@ MQTT 3.1.1
 
 - [Clean Session](#clean-session)
 - [Keep alive](#keep-alive)
-- [Simple Auth (username/password)](#simple-auth-username--password)
+- [Simple Auth (username & password)](#simple-auth-username--password)
 - [Will](#will)
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
@@ -617,9 +615,7 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder().noKeepAlive()...build();
 
 
 
-## Authentication & Authorization
-
-### Simple Auth (username & password)
+## Simple Auth (username & password)
 
 {% capture tab_content %}
 
@@ -670,48 +666,6 @@ Mqtt5SimpleAuth simpleAuth = Mqtt5SimpleAuth.builder()
 
 Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .simpleAuth(simpleAuth)
-        ...
-        .build();
-```
-
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
-
-
-
-### Enhanced Auth
-
-You need to implement an `Mqtt5EnhancedAuthMechanism` for enhanced auth.
-See the [Enhanced Auth](../security/auth.md) section for more details.
-
-Simple and enhanced auth can be used both at the same time.
-
-| Property | Values | Default | MQTT Specification |
-| -------- | ------ | ------- | ------------------ |
-| `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [3.1.2.11.9/10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055) |
-
- {% capture tab_content %}
-
- Fluent
- ===
-
-```java
-Mqtt5EnhancedAuthMechanism myEnhancedAuthMechanism = ...
-
-client.connectWith()
-        .enhancedAuth(myEnhancedAuthMechanism)
-        ...;
-```
-
- ====
-
- Prebuilt message
- ===
-
-```java
-Mqtt5EnhancedAuthMechanism myEnhancedAuthMechanism = ...
-
-Mqtt5Connect connectMessage = Mqtt5Connect.builder()
-        .enhancedAuth(myEnhancedAuthMechanism)
         ...
         .build();
 ```
@@ -773,6 +727,63 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header="true" %}
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+***
+
+## Enhanced Auth
+
+You need to implement an `Mqtt5EnhancedAuthMechanism` for enhanced auth.
+See the [Enhanced Auth](../security/auth.md) section for more details.
+
+Simple and enhanced auth can be used both at the same time.
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [3.1.2.11.9/10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055) |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+Mqtt5EnhancedAuthMechanism myEnhancedAuthMechanism = ...
+
+client.connectWith()
+        .enhancedAuth(myEnhancedAuthMechanism)
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5EnhancedAuthMechanism myEnhancedAuthMechanism = ...
+
+Mqtt5Connect connectMessage = Mqtt5Connect.builder()
+        .enhancedAuth(myEnhancedAuthMechanism)
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+====
+
+
+MQTT 3.1.1
+===
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
@@ -968,14 +979,14 @@ All properties of a Will publish message are the same as of a normal [`Mqtt3Publ
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
-***
-
 
 
 {% capture tab_content %}
 
 MQTT 5.0
 ===
+
+***
 
 ## Restrictions
 
@@ -1066,14 +1077,14 @@ MQTT 3.1.1
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
-***
-
 
 
 {% capture tab_content %}
 
 MQTT 5.0
 ===
+
+***
 
 ## User Properties
 
