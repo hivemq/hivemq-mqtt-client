@@ -127,17 +127,17 @@ If connecting was not successful, the `Single` errors with:
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
 
-
-
 ***
 
-The rest of this section describes all possible properties of a `Mqtt5Connect` message.
-They can be set via a fluent builder API.
+
 
 {% capture tab_content %}
 
 MQTT 5.0
 ===
+
+The rest of this section describes all possible properties of a `Mqtt5Connect` message.
+They can be set via a fluent builder API.
 
  {% capture tab_content %}
 
@@ -240,6 +240,9 @@ Single<Mqtt5ConnAck> connAckSingle = client.connect(connectMessage);
 MQTT 3.1.1
 ===
 
+The rest of this section describes all possible properties of a `Mqtt3Connect` message.
+They can be set via a fluent builder API.
+
  {% capture tab_content %}
 
  Blocking
@@ -336,7 +339,6 @@ Single<Mqtt3ConnAck> connAckSingle = client.connect(connectMessage);
  {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
-{: .mb-5 }
 
 
 

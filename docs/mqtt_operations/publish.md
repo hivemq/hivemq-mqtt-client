@@ -188,3 +188,405 @@ all publish results have been received.
  {% endcapture %}{% include tabs.html tab_group="api-flavour" %}
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+
+***
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+The rest of this section describes all possible properties of a `Mqtt5Publish` message.
+They can be set via a fluent builder API.
+
+ {% capture tab_content %}
+
+ Blocking
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
+
+```java
+Mqtt5PublishResult publishResult = client.publishWith()
+        ... // here you can specify multiple properties which are described below
+        .send();
+```
+
+  ====
+
+  Prebuilt message
+  ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        ... // here you can specify multiple properties which are described below
+        .build();
+
+Mqtt5PublishResult publishResult = client.publish(publishMessage);
+```
+
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+ ====
+
+ Async
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
+
+```java
+CompletableFuture<Mqtt5PublishResult> publishResultFuture = client.publishWith()
+        ... // here you can specify multiple properties described below
+        .send();
+```
+
+  ====
+
+  Prebuilt message
+  ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        ... // here you can specify multiple properties described below
+        .build();
+
+CompletableFuture<Mqtt5PublishResult> publishResultFuture = client.publish(publishMessage);
+```
+
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+ ====
+
+ Reactive
+ ===
+
+  {% capture tab_content %}
+  -===
+  {% endcapture %}{% include tabs.html tab_group="dummy" %}
+
+```java
+Flowable<Mqtt5PublishResult> publishResultFlowable = client.publish(
+        Flowable.range(0, 100).map(i -> 
+                Mqtt5Publish.builder()
+                        ... // here you can specify multiple properties described below
+                        .build()
+        ));
+```
+
+ {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+
+====
+
+
+MQTT 3.1.1
+===
+
+The rest of this section describes all possible properties of a `Mqtt3Publish` message.
+They can be set via a fluent builder API.
+
+ {% capture tab_content %}
+
+ Blocking
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
+
+```java
+client.publishWith()
+        ... // here you can specify multiple properties which are described below
+        .send();
+```
+
+  ====
+
+  Prebuilt message
+  ===
+
+```java
+Mqtt3Publish publishMessage = Mqtt3Publish.builder()
+        ... // here you can specify multiple properties which are described below
+        .build();
+
+Mqtt3PublishResult publishResult = client.publish(publishMessage);
+```
+
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+ ====
+
+ Async
+ ===
+
+  {% capture tab_content %}
+
+  Fluent
+  ===
+
+```java
+CompletableFuture<Mqtt3Publish> publishResultFuture = client.publishWith()
+        ... // here you can specify multiple properties described below
+        .send();
+```
+
+  ====
+
+  Prebuilt message
+  ===
+
+```java
+Mqtt3Publish publishMessage = Mqtt5PuMqtt3Publishblish.builder()
+        ... // here you can specify multiple properties described below
+        .build();
+
+CompletableFuture<Mqtt3Publish> publishResultFuture = client.publish(publishMessage);
+```
+
+  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+ ====
+
+ Reactive
+ ===
+
+  {% capture tab_content %}
+  -===
+  {% endcapture %}{% include tabs.html tab_group="dummy" %}
+
+```java
+Flowable<Mqtt3PublishResult> publishResultFlowable = client.publish(
+        Flowable.range(0, 100).map(i -> 
+                Mqtt3Publish.builder()
+                        ... // here you can specify multiple properties described below
+                        .build()
+        ));
+```
+
+ {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+- [Topic](#topic)
+- [Payload](#payload)
+- [Quality of Service (QoS)](#quality-of-service-qos)
+- [Retain](#retain)
+- [Message Expiry Interval](#message-expiry-interval)
+- [Payload Format Indicator](#payload-format-indicator)
+- [Content Type](#content-type)
+- [Response Topic](#response-topic)
+- [Correlation Data](#correlation-data)
+- [User Properties](#user-properties)
+
+====
+
+MQTT 3.1.1
+===
+
+- [Topic](#topic)
+- [Payload](#payload)
+- [Quality of Servive (QoS)](#quality-of-service-qos)
+- [Retain](#retain)
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+
+***
+
+
+## Topic
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+***
+
+
+
+## Payload
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+***
+
+
+
+## Quality of Service (QoS)
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+***
+
+
+
+## Retain
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+***
+
+## Message Expiry Interval
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+***
+
+## Payload Format Indicator
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+***
+
+## Content Type
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+***
+
+## Response Topic
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+***
+
+## Correlation Data
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+
+
+
+
+{% capture tab_content %}
+
+MQTT 5.0
+===
+
+***
+
+## User Properties
+
+====
+
+MQTT 3.1.1
+===
+
+{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
