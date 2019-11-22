@@ -460,6 +460,10 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder().noSessionExpiry()...build()
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/)
+"%}
+
 ====
 
 
@@ -1140,6 +1144,10 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/)
+"%}
 
 ====
 

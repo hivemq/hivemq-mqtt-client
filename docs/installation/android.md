@@ -113,11 +113,13 @@ When you increase the Android API level to 24+ in the future, you will only need
 dependencies.
 You do not have to change your code.
 
-NOTE
-{: .label }
+{% include admonition.html type="note" title="Note" content='
+
 Android Studio will still display an error "Call requires API level 24 (current min is 21)".
 This error is actually just a warning.
 Android Studio does not know that we backport the API, so it still thinks that the API can not be used with the 
 minSdkVersion.
 You can build and run your app without any problems.
 If you want to get rid of the warning, just add `@SuppressLint("NewApi")` to the method or class where you use the API.
+
+'%}

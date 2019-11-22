@@ -411,15 +411,69 @@ MQTT 3.1.1
 
 ## Topic
 
+Messages are published with a topic.
+The MQTT broker needs the topic to route the message to subscribers.
+Hence the topic is mandatory for a Publish message (it is the only required property).
+A topic can be hierarchically structured in multiple topic levels (divided by `/`) enabling easier filtering for
+subscribers.
+
 {% capture tab_content %}
 
 MQTT 5.0
 ===
 
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `topic` | `String`/`MqttTopic` | mandatory | [3.3.2.1](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901107){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith().topic("test/topic")...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder().topic("test/topic")...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
 ====
 
 MQTT 3.1.1
 ===
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `topic` | `String`/`MqttTopic` | mandatory | [3.3.2.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc385349267){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith().topic("test/topic")...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt3Publish publishMessage = Mqtt3Publish.builder().topic("test/topic")...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
@@ -429,15 +483,78 @@ MQTT 3.1.1
 
 ## Payload
 
+The payload of a Publish message carries the actual application data.
+MQTT is data-agnostic so you can use any format for the payload. 
+
 {% capture tab_content %}
 
 MQTT 5.0
 ===
 
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `payload` | `byte[]`/`ByteBuffer` | - | [3.3.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901119){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .payload("hello world".getBytes())
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .payload("hello world".getBytes())
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
 ====
 
 MQTT 3.1.1
 ===
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `payload` | `byte[]`/`ByteBuffer` | - | [3.3.3](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180853){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .payload("hello world".getBytes())
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt3Publish publishMessage = Mqtt3Publish.builder()
+        .topic("test/topic")
+        .payload("hello world".getBytes())
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
@@ -447,15 +564,91 @@ MQTT 3.1.1
 
 ## Quality of Service (QoS)
 
+The QoS levels ensure different message delivery guarantees in case of connection failures.
+The QoS level should be chosen based on the use case.
+
+| QoS 0 | AT MOST ONCE  | Messages are not redelivered after a failure. Some messages may be lost. |
+| QoS 1 | AT LEAST ONCE | Messages are redelivered after a failure if they were not acknowledged by the broker. Some messages may be delivered more than once (initial delivery attempt + redelivery attempt(s)). |
+| QoS 2 | EXACTLY ONCE  | Messages are redelivered after a failure if they were not acknowledged by the broker. The broker additionally filters duplicate messages based on message ids. |
+
+The trade-off between the QoS levels is lower or higher latency and the amount of state that has to be stored on sender 
+and receiver.
+
+Keep in mind that the MQTT QoS levels cover guarantees between the client and the broker (not directly the subscribers)
+as MQTT is an asynchronous protocol (which is an advantage because it decouples publishers and subscribers and makes the 
+system more robust and scalable).
+Different brokers might provide different guarantees for end-to-end communication (especially if they are clustered).
+
+
 {% capture tab_content %}
 
 MQTT 5.0
 ===
 
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `qos` | `AT_MOST_ONCE` <br/> `AT_LEAST_ONCE` <br/> `EXACTLY_ONCE` | `AT_MOST_ONCE` | [3.3.1.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901103){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .qos(MqttQos.AT_LEAST_ONCE)
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .qos(MqttQos.AT_LEAST_ONCE)
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
 ====
 
 MQTT 3.1.1
 ===
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `qos` | `AT_MOST_ONCE` <br/> `AT_LEAST_ONCE` <br/> `EXACTLY_ONCE` | `AT_MOST_ONCE` | [3.3.1.2](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc385349263){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .qos(MqttQos.AT_LEAST_ONCE)
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt3Publish publishMessage = Mqtt3Publish.builder()
+        .topic("test/topic")
+        .qos(MqttQos.AT_LEAST_ONCE)
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
@@ -465,15 +658,78 @@ MQTT 3.1.1
 
 ## Retain
 
+The retain flag indicates that the message should be stored at the broker for its topic.
+New subscribers then get the last retained message on that topic even if they were not connected when it was published.
+
 {% capture tab_content %}
 
 MQTT 5.0
 ===
 
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `retain` | `true`/`false` | `false` | [3.3.1.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901104){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .retain(true)
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .retain(true)
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
 ====
 
 MQTT 3.1.1
 ===
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `retain` | `true`/`false` | `false` | [3.3.1.3](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc385349265){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .retain(true)
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .retain(true)
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
 
@@ -488,6 +744,70 @@ MQTT 5.0
 ***
 
 ## Message Expiry Interval
+
+The message expiry interval is the time interval (in seconds) the message will be queued for subscribers.
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `messageExpiryInterval` | [`0` - `4_294_967_295`] | - | [3.3.2.3.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901112){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .messageExpiryInterval(100)
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .messageExpiryInterval(100)
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+Session expiry can be disabled (the default) by using the method `noMessageExpiry`.
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .noMessageExpiry()
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .noMessageExpiry()
+        ...build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/)
+"%}
 
 ====
 
@@ -508,6 +828,10 @@ MQTT 5.0
 
 ## Payload Format Indicator
 
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/)
+"%}
+
 ====
 
 MQTT 3.1.1
@@ -526,6 +850,10 @@ MQTT 5.0
 ***
 
 ## Content Type
+
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/)
+"%}
 
 ====
 
@@ -546,6 +874,10 @@ MQTT 5.0
 
 ## Response Topic
 
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/)
+"%}
+
 ====
 
 MQTT 3.1.1
@@ -565,6 +897,10 @@ MQTT 5.0
 
 ## Correlation Data
 
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/)
+"%}
+
 ====
 
 MQTT 3.1.1
@@ -583,6 +919,10 @@ MQTT 5.0
 ***
 
 ## User Properties
+
+{% include admonition.html type="tip" title="Additional Resources" content="
+[MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/)
+"%}
 
 ====
 

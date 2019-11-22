@@ -44,8 +44,8 @@ If you use Maven, just include the following inside your `pom.xml` file.
 </project>
 ```
 
-NOTE
-{: .label }
+{% include admonition.html type="note" title="Note" content="
+
 You have to set the compiler version to `1.8` or higher.
 
 ```xml
@@ -58,6 +58,8 @@ You have to set the compiler version to `1.8` or higher.
     ...
 </project>
 ```
+
+"%}
 
 {% endcapture %}
 {% include tabs.html tab_group="build-tool" %}
