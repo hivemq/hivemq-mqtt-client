@@ -382,7 +382,7 @@ if present (`false`).
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `cleanStart` | `true`/`false` | `true` | [3.1.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901039) |
+| `cleanStart` | `true`/`false` | `true` | [3.1.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901039){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -414,7 +414,7 @@ The session expiry interval is the time interval (in seconds) the session will p
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `sessionExpiryInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.2.11.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048) |
+| `sessionExpiryInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.2.11.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -472,7 +472,7 @@ session which will persist when the client is disconnected (`false`).
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `cleanSession` | `true`/`false` | `true` | [3.1.2.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
+| `cleanSession` | `true`/`false` | `true` | [3.1.2.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -513,7 +513,7 @@ MQTT 5.0
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901045) |
+| `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901045){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -565,7 +565,7 @@ MQTT 3.1.1
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
+| `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -624,8 +624,8 @@ MQTT 5.0
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901071) |
-| `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901072) |
+| `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901071){:target="_blank"} |
+| `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901072){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -680,8 +680,8 @@ MQTT 3.1.1
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
-| `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.5](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
+| `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844){:target="_blank"} |
+| `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.5](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -748,7 +748,7 @@ Simple and enhanced auth can be used both at the same time.
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [3.1.2.11.9/10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055) |
+| `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [3.1.2.11.9/10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -806,17 +806,17 @@ It is the message that is published by the broker if the client disconnected ung
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901069) |
-| `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041) |
-| `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070) |
-| `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901042) |
-| `willPublish.messageExpiryInterval` | [`0` - `4_294_967_295`] | `4_294_967_295` | [3.1.3.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901064) |
-| `willPublish.delayInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.3.2.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901062) |
-| `willPublish.payloadFormatIndicator` | `Mqtt5PayloadFormatIndicator` | - | [3.1.3.2.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901063) |
-| `willPublish.contentType` | `String`/`MqttUtf8String` | - | [3.1.3.2.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901065) |
-| `willPublish.responseTopic` | `String`/`MqttTopic` | - | [3.1.3.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901066) |
-| `willPublish.correlationData` | `byte[]`/`ByteBuffer` | - | [3.1.3.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901067) |
-| `willPublish.userProperties` | `Mqtt5UserProperties` | - | [3.1.3.2.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901068) |
+| `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901069){:target="_blank"} |
+| `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041){:target="_blank"} |
+| `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070){:target="_blank"} |
+| `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901042){:target="_blank"} |
+| `willPublish.messageExpiryInterval` | [`0` - `4_294_967_295`] | `4_294_967_295` | [3.1.3.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901064){:target="_blank"} |
+| `willPublish.delayInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.3.2.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901062){:target="_blank"} |
+| `willPublish.payloadFormatIndicator` | `Mqtt5PayloadFormatIndicator` | - | [3.1.3.2.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901063){:target="_blank"} |
+| `willPublish.contentType` | `String`/`MqttUtf8String` | - | [3.1.3.2.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901065){:target="_blank"} |
+| `willPublish.responseTopic` | `String`/`MqttTopic` | - | [3.1.3.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901066){:target="_blank"} |
+| `willPublish.correlationData` | `byte[]`/`ByteBuffer` | - | [3.1.3.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901067){:target="_blank"} |
+| `willPublish.userProperties` | `Mqtt5UserProperties` | - | [3.1.3.2.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901068){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -918,10 +918,10 @@ It is the message that is published by the broker if the client disconnected ung
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.2](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
-| `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
-| `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.3](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
-| `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
+| `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.2](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844){:target="_blank"} |
+| `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843){:target="_blank"} |
+| `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.3](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844){:target="_blank"} |
+| `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -997,14 +997,14 @@ the `Mqtt5ConnAck` message to determine the actual client side restrictions.
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `restrictions.receiveMaximum` | [`1` - `65_535`] | `65_535` | [3.1.2.11.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901049) |
+| `restrictions.receiveMaximum` | [`1` - `65_535`] | `65_535` | [3.1.2.11.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901049){:target="_blank"} |
 | `restrictions.sendMaximum` | [`1` - `65_535`] | `65_535` | - |
-| `restrictions.maximumPacketSize` | [`1` - `268_435_460`] | `268_435_460` | [3.1.2.11.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901050) |
+| `restrictions.maximumPacketSize` | [`1` - `268_435_460`] | `268_435_460` | [3.1.2.11.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901050){:target="_blank"} |
 | `restrictions.sendMaximumPacketSize` | [`1` - `268_435_460`] | `268_435_460` | - |
-| `restrictions.topicAliasMaximum` | [`0` - `65_535`] | `0` | [3.1.2.11.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901051) |
+| `restrictions.topicAliasMaximum` | [`0` - `65_535`] | `0` | [3.1.2.11.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901051){:target="_blank"} |
 | `restrictions.sendTopicAliasMaximum` | [`0` - `65_535`] | `16` | - |
-| `restrictions.requestProblemInformation` | `true`/`false` | `true` | [3.1.2.11.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901053) |
-| `restrictions.requestResponseInformation` | `true`/`false` | `false` | [3.1.2.11.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901052) |
+| `restrictions.requestProblemInformation` | `true`/`false` | `true` | [3.1.2.11.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901053){:target="_blank"} |
+| `restrictions.requestResponseInformation` | `true`/`false` | `false` | [3.1.2.11.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901052){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -1092,7 +1092,7 @@ User Properties are user defined name and value pairs which are sent with the `M
 
 | Method | Values | MQTT Specification |
 | ------ | ------ | ------------------ |
-| `userProperties.add` | `String, String`<br/>`MqttUtf8String, MqttUtf8String`<br/>`Mqtt5UserProperty` | [3.1.2.11.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901054) |
+| `userProperties.add` | `String, String`<br/>`MqttUtf8String, MqttUtf8String`<br/>`Mqtt5UserProperty` | [3.1.2.11.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901054){:target="_blank"} |
 
  {% capture tab_content %}
 
