@@ -1,0 +1,39 @@
+---
+permalink: /assets/js/search-data.json
+---
+{
+  {%- assign i = 0 -%}
+  {% for page in site.html_pages %}
+    {%- if page.title and page.search_exclude != true -%}
+      {%- assign parts = page.content | split: "<h2" -%}
+      {% for part in parts %}
+        {%- assign title = page.title -%}
+        {%- assign content = part -%}
+        {%- assign url = page.url -%}
+        {%- assign heading = "" -%}
+        {%- assign id = "" -%}
+        {%- if forloop.first == false -%}
+          {%- capture content -%}{{ "<h2" | append: part }}{%- endcapture -%}
+          {%- assign heading = part | split: "<" -%}
+          {%- assign heading = heading[0] -%}
+          {%- assign heading = heading | split: ">" -%}
+          {%- assign heading = heading[1] -%}
+          {%- capture title -%}{{ title | append: " - " | append: heading }}{%- endcapture -%}
+          {%- assign id = part | split: 'id="' -%}
+          {%- assign id = id[1] -%}
+          {%- assign id = id | split: '"' -%}
+          {%- assign id = id[0] -%}
+          {%- capture url -%}{{ url | append: "#" | append: id }}{%- endcapture -%}
+        {%- endif -%}
+  {%- unless i == 0 -%},{%- endunless -%}
+  "{{ i }}": {
+    "title": "{{ title | replace: '&amp;', '&' }}",
+    "content": "{{ content | replace: '</h', ' . </h' | replace: '<hr', ' . <hr' | replace: '</p', ' . </p' | replace: '</ul', ' . </ul' | replace: '</tr', ' . </tr' | replace: '</li', ' | </li' | replace: '</td', ' | </td' | strip_html | escape_once | remove: 'Table of contents' | remove: '```'  | remove: '---' | replace: '\', ' ' | replace: ' .  .  . ', ' . ' | replace: ' .  . ', ' . ' | normalize_whitespace }}",
+    "url": "{{ url | absolute_url }}",
+    "relUrl": "{{ url }}"
+  }
+        {%- assign i = i | plus: 1 -%}
+      {% endfor %}
+    {%- endif -%}
+  {% endfor %}
+}
