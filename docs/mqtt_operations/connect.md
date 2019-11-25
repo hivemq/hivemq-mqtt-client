@@ -460,9 +460,9 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder().noSessionExpiry()...build()
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
-{% include admonition.html type="tip" title="Additional Resources" content="
-[MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/)
-"%}
+{% capture admonition_content %}
+[MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 
@@ -1108,8 +1108,8 @@ User Properties are user defined name and value pairs which are sent with the `M
 ```java
 client.connectWith()
         .userProperties()
-            .add("key1", "value1")
-            .add(Mqtt5UserProperty.of("key2", "value2"))
+            .add("name1", "value1")
+            .add(Mqtt5UserProperty.of("name2", "value2"))
             .applyUserProperties()
         ...
 ```
@@ -1122,8 +1122,8 @@ client.connectWith()
 ```java
 Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .userProperties()
-            .add("key1", "value1")
-            .add(Mqtt5UserProperty.of("key2", "value2"))
+            .add("name1", "value1")
+            .add(Mqtt5UserProperty.of("name2", "value2"))
             .applyUserProperties()
         ...
         .build();
@@ -1133,8 +1133,8 @@ You can also prebuild the `Mqtt5UserProperties`.
 
 ```java
 Mqtt5UserProperties connectUserProperties = Mqtt5UserProperties.builder()
-        .add("key1", "value1")
-        .add(Mqtt5UserProperty.of("key2", "value2"))
+        .add("name1", "value1")
+        .add(Mqtt5UserProperty.of("name2", "value2"))
         .build();
 
 Mqtt5Connect connectMessage = Mqtt5Connect.builder()
@@ -1145,9 +1145,9 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
-{% include admonition.html type="tip" title="Additional Resources" content="
-[MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/)
-"%}
+{% capture admonition_content %}
+[MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 

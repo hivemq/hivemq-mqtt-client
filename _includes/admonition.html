@@ -1,4 +1,4 @@
 <div class="admonition admonition-{{ include.type }}">
     <div class="admonition-title">{{ include.title }}</div>
-    <div class="admonition-content">{{ include.content | markdownify }}</div>
+    <div class="admonition-content">{% if include.content %}{{ include.content | markdownify }}{% else %}{{ admonition_content | markdownify }}{% endif %}</div>
 </div>

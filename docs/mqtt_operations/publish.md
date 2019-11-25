@@ -516,7 +516,8 @@ client.publishWith()
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .payload("hello world".getBytes())
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
@@ -551,7 +552,8 @@ client.publishWith()
 Mqtt3Publish publishMessage = Mqtt3Publish.builder()
         .topic("test/topic")
         .payload("hello world".getBytes())
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
@@ -610,7 +612,8 @@ client.publishWith()
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .qos(MqttQos.AT_LEAST_ONCE)
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
@@ -645,7 +648,8 @@ client.publishWith()
 Mqtt3Publish publishMessage = Mqtt3Publish.builder()
         .topic("test/topic")
         .qos(MqttQos.AT_LEAST_ONCE)
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
@@ -691,7 +695,8 @@ client.publishWith()
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .retain(true)
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
@@ -726,7 +731,8 @@ client.publishWith()
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .retain(true)
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
@@ -772,7 +778,8 @@ client.publishWith()
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .messageExpiryInterval(100)
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
@@ -800,14 +807,15 @@ client.publishWith()
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .noMessageExpiry()
-        ...build();
+        ...
+        .build();
 ```
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
-{% include admonition.html type="tip" title="Additional Resources" content="
-[MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/)
-"%}
+{% capture admonition_content %}
+[MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 
@@ -828,9 +836,43 @@ MQTT 5.0
 
 ## Payload Format Indicator
 
-{% include admonition.html type="tip" title="Additional Resources" content="
-[MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/)
-"%}
+To indicate if the payload is text or binary data, you can use the the payload format indicator.
+Used in conjunction with the [content type](#content-type) the payload encoding can be described precisely.
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `payloadFormatIndicator` | `UNSPECIFIED`<br/>`UTF_8` | `UNSPECIFIED` | [3.3.2.3.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .payloadFormatIndicator(Mqtt5PayloadFormatIndicator.UTF_8)
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .payloadFormatIndicator(Mqtt5PayloadFormatIndicator.UTF_8)
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+{% capture admonition_content %}
+[MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 
@@ -851,9 +893,9 @@ MQTT 5.0
 
 ## Content Type
 
-{% include admonition.html type="tip" title="Additional Resources" content="
-[MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/)
-"%}
+{% capture admonition_content %}
+[MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 
@@ -874,9 +916,9 @@ MQTT 5.0
 
 ## Response Topic
 
-{% include admonition.html type="tip" title="Additional Resources" content="
-[MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/)
-"%}
+{% capture admonition_content %}
+[MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 
@@ -897,9 +939,9 @@ MQTT 5.0
 
 ## Correlation Data
 
-{% include admonition.html type="tip" title="Additional Resources" content="
+{% capture admonition_content %}
 [MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/)
-"%}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 
@@ -920,9 +962,63 @@ MQTT 5.0
 
 ## User Properties
 
-{% include admonition.html type="tip" title="Additional Resources" content="
-[MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/)
-"%}
+User Properties are user defined name and value pairs which are sent with the `Mqtt5Publish` message.
+
+| Method | Values | MQTT Specification |
+| ------ | ------ | ------------------ |
+| `userProperties.add` | `String, String`<br/>`MqttUtf8String, MqttUtf8String`<br/>`Mqtt5UserProperty` | [3.3.2.3.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901116){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .userProperties()
+            .add("name1", "value1")
+            .add(Mqtt5UserProperty.of("name2", "value2"))
+            .applyUserProperties()
+        ...
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .userProperties()
+            .add("name1", "value1")
+            .add(Mqtt5UserProperty.of("name2", "value2"))
+            .applyUserProperties()
+        ...
+        .build();
+```
+
+You can also prebuild the `Mqtt5UserProperties`.
+
+```java
+Mqtt5UserProperties connectUserProperties = Mqtt5UserProperties.builder()
+        .add("name1", "value1")
+        .add(Mqtt5UserProperty.of("name2", "value2"))
+        .build();
+
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .userProperties(connectUserProperties)
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
+{% capture admonition_content %}
+[MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
 
