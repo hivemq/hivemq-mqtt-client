@@ -401,7 +401,7 @@ MQTT 3.1.1
 
 - [Topic](#topic)
 - [Payload](#payload)
-- [Quality of Servive (QoS)](#quality-of-service-qos)
+- [Quality of Service (QoS)](#quality-of-service-qos)
 - [Retain](#retain)
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
