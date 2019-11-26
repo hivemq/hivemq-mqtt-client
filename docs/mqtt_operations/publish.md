@@ -841,7 +841,7 @@ Used in conjunction with the [content type](#content-type) the payload encoding 
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------- | ------------------ |
-| `payloadFormatIndicator` | `UNSPECIFIED`<br/>`UTF_8` | `UNSPECIFIED` | [3.3.2.3.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111){:target="_blank"} |
+| `payloadFormatIndicator` | `UNSPECIFIED`<br/>`UTF_8` | - | [3.3.2.3.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111){:target="_blank"} |
 
  {% capture tab_content %}
 
@@ -893,8 +893,44 @@ MQTT 5.0
 
 ## Content Type
 
+The content type describes the encoding of the payload.
+It can be any string, but it is recommended to use a MIME type to ensure interoperability.
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `contentType` | `String`/`MqttUtf8String` | - | [3.3.2.3.9](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901118){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("test/topic")
+        .contentType("text/plain")
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("test/topic")
+        .contentType("text/plain")
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+
 {% capture admonition_content %}
 [MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/){:target="_blank"}
+
+[Available MIME types](https://www.iana.org/assignments/media-types/media-types.xhtml){:target="_blank"}
 {% endcapture %}{% include admonition.html type="tip" title="Additional Resources"%}
 
 ====
@@ -915,6 +951,45 @@ MQTT 5.0
 ***
 
 ## Response Topic
+
+Although MQTT is a publish/subscribe protocol, it can be used with a request/response pattern.
+MQTT's request/response is different from synchronous request/response (like HTTP) as it has still all MQTT 
+characteristics like asynchronism, decoupling of sender and receiver and 1-to-many communication.
+Requesting is done by subscribing to a response topic and then publishing to a request topic.
+The publish includes the response topic so a responder knows to which topic it should publish the response.
+To correlate request and response (as they are asynchron, multiple responses from different clients are possible), you 
+can use the [correlation data](#correlation-data).
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `responseTopic` | `String`/`MqttTopic` | - | [3.3.2.3.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901114){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("request/topic")
+        .responseTopic("response/topic")
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("request/topic")
+        .responseTopic("response/topic")
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/){:target="_blank"}
@@ -938,6 +1013,42 @@ MQTT 5.0
 ***
 
 ## Correlation Data
+
+Correlation data can be used to correlate a request to its response.
+If it is part of the request message then the responder copies it to the response message.
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------- | ------------------ |
+| `correlationData` | `byte[]`/`ByteBuffer` | - | [3.3.2.3.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901115){:target="_blank"} |
+
+ {% capture tab_content %}
+
+ Fluent
+ ===
+
+```java
+client.publishWith()
+        .topic("request/topic")
+        .responseTopic("response/topic")
+        .correlationData("1234".getBytes())
+        ...;
+```
+
+ ====
+
+ Prebuilt message
+ ===
+
+```java
+Mqtt5Publish publishMessage = Mqtt5Publish.builder()
+        .topic("request/topic")
+        .responseTopic("response/topic")
+        .correlationData("1234".getBytes())
+        ...
+        .build();
+```
+
+ {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/)
