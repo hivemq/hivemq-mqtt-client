@@ -31,6 +31,10 @@
           })(tabButtons[j], tabGroup, j);
         }
       }
+
+      var hash = window.location.hash.substring(1);
+      window.location.hash = ""
+      window.location.hash = hash
     }
 
     tabs.setActive = function(str_group, index) {
