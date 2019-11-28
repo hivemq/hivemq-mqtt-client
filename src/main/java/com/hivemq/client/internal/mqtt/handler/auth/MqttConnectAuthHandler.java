@@ -146,8 +146,8 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
         state = MqttAuthState.IN_PROGRESS_DONE;
         callMechanismFutureResult(() -> authMechanism.onAuthSuccess(clientConfig, connAck), ctx -> {
             state = MqttAuthState.NONE;
-            ctx.fireChannelRead(connAck);
             ctx.pipeline().replace(this, NAME, new MqttReAuthHandler(this));
+            ctx.fireChannelRead(connAck);
 
         }, (ctx, throwable) -> MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
                 new Mqtt5ConnAckException(connAck, "Server auth success not accepted.")));
