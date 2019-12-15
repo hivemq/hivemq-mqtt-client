@@ -262,6 +262,8 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             super(publishBuilder);
             if (publishBuilder instanceof WillBase) {
                 delayInterval = ((WillBase<?>) publishBuilder).delayInterval;
+            } else {
+                payload(payload); // check payload size restriction
             }
         }
 
