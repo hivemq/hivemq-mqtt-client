@@ -128,7 +128,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5AuthException(auth, "Must not receive AUTH with reason code CONTINUE_AUTHENTICATION " +
-                            "in no response to a client message."));
+                            "if client side AUTH is pending."));
             return;
         }
 
