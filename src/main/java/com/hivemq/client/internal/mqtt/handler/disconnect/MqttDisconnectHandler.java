@@ -240,12 +240,6 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     }
 
     @Override
-    public void channelUnregistered(final @NotNull ChannelHandlerContext ctx) {
-        ctx.fireChannelUnregistered();
-        clientConfig.releaseEventLoop();
-    }
-
-    @Override
     public boolean isSharable() {
         return false;
     }
