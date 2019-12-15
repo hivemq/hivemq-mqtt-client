@@ -119,18 +119,12 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      * @param connAck the received CONNACK message.
      */
     private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
-        if (state != MqttAuthState.WAIT_FOR_SERVER) {
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5ConnAckException(connAck, "Must not receive CONNACK in no response to a client message."));
-            return;
-        }
-
         cancelTimeout();
 
         if (connAck.getReasonCode().isError()) {
             readConnAckError(ctx, connAck);
         } else if (validateConnAck(ctx, connAck)) {
-            readConnAckSuccess(connAck);
+            readConnAckSuccess(ctx, connAck);
         }
     }
 
@@ -142,15 +136,22 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
                 new Mqtt5ConnAckException(connAck, "Connection failed. CONNACK contained Error Code."));
     }
 
-    private void readConnAckSuccess(final @NotNull MqttConnAck connAck) {
-        state = MqttAuthState.IN_PROGRESS_DONE;
-        callMechanismFutureResult(() -> authMechanism.onAuthSuccess(clientConfig, connAck), ctx -> {
-            state = MqttAuthState.NONE;
-            ctx.pipeline().replace(this, NAME, new MqttReAuthHandler(this));
-            ctx.fireChannelRead(connAck);
+    private void readConnAckSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
+        if (state != MqttAuthState.WAIT_FOR_SERVER) {
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    new Mqtt5ConnAckException(connAck,
+                            "Must not receive CONNACK with reason code SUCCESS if client side AUTH is pending."));
+            return;
+        }
 
-        }, (ctx, throwable) -> MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                new Mqtt5ConnAckException(connAck, "Server auth success not accepted.")));
+        state = MqttAuthState.IN_PROGRESS_DONE;
+        callMechanismFutureResult(() -> authMechanism.onAuthSuccess(clientConfig, connAck), ctx2 -> {
+            state = MqttAuthState.NONE;
+            ctx2.pipeline().replace(this, NAME, new MqttReAuthHandler(this));
+            ctx2.fireChannelRead(connAck);
+
+        }, (ctx2, throwable) -> MqttDisconnectUtil.disconnect(ctx2.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                new Mqtt5ConnAckException(connAck, "Server CONNACK with reason code SUCCESS not accepted.")));
     }
 
     /**
