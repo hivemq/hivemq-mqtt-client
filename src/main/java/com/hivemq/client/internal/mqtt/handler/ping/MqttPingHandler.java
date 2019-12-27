@@ -57,15 +57,16 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
     private boolean messageRead;
     private @Nullable ScheduledFuture<?> timeoutFuture;
 
-    public MqttPingHandler(final int keepAlive) {
+    public MqttPingHandler(final int keepAlive, final long lastFlushTimeNanos, final long lastReadTimeNanos) {
         keepAliveNanos = TimeUnit.SECONDS.toNanos(keepAlive) - TimeUnit.MILLISECONDS.toNanos(100);
+        this.lastFlushTimeNanos = lastFlushTimeNanos;
+        this.lastReadTimeNanos = lastReadTimeNanos;
     }
 
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
-        lastFlushTimeNanos = lastReadTimeNanos = System.nanoTime();
-        schedule(ctx, keepAliveNanos);
+        schedule(ctx, nextDelay(System.nanoTime()));
     }
 
     @Override
@@ -89,6 +90,10 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
         timeoutFuture = ctx.executor().schedule(this, delayNanos, TimeUnit.NANOSECONDS);
     }
 
+    private long nextDelay(final long timeNanos) {
+        return keepAliveNanos - (timeNanos - Math.min(lastReadTimeNanos, lastFlushTimeNanos));
+    }
+
     @Override
     public void run() {
         if (ctx == null) {
@@ -107,7 +112,7 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
         pingReqFlushed = false;
         messageRead = false;
         final long timeNanos = System.nanoTime();
-        final long nextDelayNanos = keepAliveNanos - (timeNanos - Math.min(lastReadTimeNanos, lastFlushTimeNanos));
+        final long nextDelayNanos = nextDelay(timeNanos);
         if (nextDelayNanos > 1_000) {
             pingReqWritten = false;
             schedule(ctx, nextDelayNanos);
