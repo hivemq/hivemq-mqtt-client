@@ -784,7 +784,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
 
-Session expiry can be disabled (the default) by using the method `noMessageExpiry`.
+Message expiry can be disabled (the default) by using the method `noMessageExpiry`.
 
  {% capture tab_content %}
 
@@ -1113,14 +1113,14 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 You can also prebuild the `Mqtt5UserProperties`.
 
 ```java
-Mqtt5UserProperties connectUserProperties = Mqtt5UserProperties.builder()
+Mqtt5UserProperties userProperties = Mqtt5UserProperties.builder()
         .add("name1", "value1")
         .add(Mqtt5UserProperty.of("name2", "value2"))
         .build();
 
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
-        .userProperties(connectUserProperties)
+        .userProperties(userProperties)
         ...
         .build();
 ```
