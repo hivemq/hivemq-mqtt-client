@@ -6,6 +6,14 @@ version: 1.1.3
 remote_theme: SgtSilvio/just-the-docs@merged
 
 search_enabled: true
+search:
+  heading_level: 2
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  rel_url: false
+  tokenizer_separator: /[\s\-/]+/
+  button: true
 
 color_scheme: dark
 
