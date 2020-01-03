@@ -816,7 +816,7 @@ It is the message that is published by the broker if the client disconnected ung
 | `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041){:target="_blank"} |
 | `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070){:target="_blank"} |
 | `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901042){:target="_blank"} |
-| `willPublish.messageExpiryInterval` | [`0` - `4_294_967_295`] | `4_294_967_295` | [3.1.3.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901064){:target="_blank"} |
+| `willPublish.messageExpiryInterval` | [`0` - `4_294_967_295`] | - | [3.1.3.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901064){:target="_blank"} |
 | `willPublish.delayInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.3.2.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901062){:target="_blank"} |
 | `willPublish.payloadFormatIndicator` | `Mqtt5PayloadFormatIndicator` | - | [3.1.3.2.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901063){:target="_blank"} |
 | `willPublish.contentType` | `String`/`MqttUtf8String` | - | [3.1.3.2.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901065){:target="_blank"} |
@@ -906,7 +906,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
  {: .mb-5 }
 
-Message expiry can be disabled by setting it to `4_294_967_295` (default) or using the method `noMessageExpiry`.
+Message expiry can be disabled (the default) by using the method `noMessageExpiry`.
 
 All properties of a Will publish message are the same as of a normal [`Mqtt5Publish` message](publish.md) with the 
 addition of the `delayInterval`.
