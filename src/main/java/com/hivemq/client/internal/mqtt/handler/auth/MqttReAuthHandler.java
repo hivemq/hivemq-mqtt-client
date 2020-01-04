@@ -40,7 +40,7 @@ import static com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONT
 import static com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTHENTICATE;
 
 /**
- * Enhanced reauth handling according during connection according to the MQTT 5 specification.
+ * Enhanced reauth handling according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
