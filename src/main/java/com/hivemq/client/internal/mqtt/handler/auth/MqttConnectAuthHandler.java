@@ -45,7 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 
 /**
- * Enhanced auth handling according during connection according to the MQTT 5 specification.
+ * Enhanced auth handling during connection according to the MQTT 5 specification.
  * <p>
  * After successful connection the handler replaces itself with a {@link MqttReAuthHandler}.
  *
