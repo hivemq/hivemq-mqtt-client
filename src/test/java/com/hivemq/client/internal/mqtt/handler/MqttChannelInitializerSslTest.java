@@ -30,21 +30,21 @@ import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslHandler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.net.InetSocketAddress;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 /**
  * @author Christoph Schäbel
  */
 @SuppressWarnings("NullabilityAnnotations")
-public class MqttChannelInitializerSslTest {
+class MqttChannelInitializerSslTest {
 
     @Mock
     private MqttClientConfig clientData;
@@ -69,7 +69,7 @@ public class MqttChannelInitializerSslTest {
 
     private Channel channel;
 
-    @Before
+    @BeforeEach
     public void before() {
         MockitoAnnotations.initMocks(this);
         channel = new EmbeddedChannel();

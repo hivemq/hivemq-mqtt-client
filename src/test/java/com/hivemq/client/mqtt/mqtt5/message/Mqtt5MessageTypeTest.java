@@ -17,16 +17,14 @@
 
 package com.hivemq.client.mqtt.mqtt5.message;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5MessageTypeTest {
+class Mqtt5MessageTypeTest {
 
     @Test
     public void test_getCode_connect() {

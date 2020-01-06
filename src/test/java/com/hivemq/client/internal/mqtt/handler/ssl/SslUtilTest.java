@@ -24,8 +24,8 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -35,17 +35,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Christoph Schäbel
  */
-public class SslUtilTest {
+class SslUtilTest {
 
     @SuppressWarnings("NullabilityAnnotations")
     private EmbeddedChannel embeddedChannel;
 
-    @Before
+    @BeforeEach
     public void before() {
         embeddedChannel = new EmbeddedChannel();
     }
