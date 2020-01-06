@@ -20,7 +20,6 @@ package com.hivemq.client.internal.mqtt.datatypes;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.hamcrest.CoreMatchers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
@@ -29,14 +28,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
@@ -44,38 +43,13 @@ import static org.junit.Assert.*;
  */
 class MqttTopicFilterImplTest {
 
-    /**
-     * Extension of Function&lt;T, R&gt; used to make test results more readable.
-     */
-    static class NamedFunction<T, R> implements Function<T, R> {
-
-        private final @NotNull String name;
-        private final @NotNull Function<T, R> function;
-
-        NamedFunction(final @NotNull String name, final @NotNull Function<T, R> function) {
-            this.name = name;
-            this.function = function;
-        }
-
-        @Override
-        public @Nullable R apply(final @NotNull T t) {
-            return function.apply(t);
-        }
-
-        @Override
-        public @NotNull String toString() {
-            return name;
-        }
-    }
-
-    private static final @NotNull NamedFunction[] topicFilterFactoryMethods = {
-            new NamedFunction<>("ByteBuf", MqttTopicFilterImplTest::createFromByteBuf),
-            new NamedFunction<String, MqttTopicFilterImpl>("String", MqttTopicFilterImpl::of)
-    };
+    private static final @NotNull List<Function<String, MqttTopicFilterImpl>> topicFilterFactoryMethods =
+            Arrays.asList(new NamedFunction<>("ByteBuf", MqttTopicFilterImplTest::createFromByteBuf),
+                    new NamedFunction<>("String", MqttTopicFilterImpl::of));
 
     private static @Nullable MqttTopicFilterImpl createFromByteBuf(final @NotNull String string) {
         final ByteBuf byteBuf = Unpooled.buffer();
-        final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
+        final byte[] binary = string.getBytes(StandardCharsets.UTF_8);
         byteBuf.writeShort(binary.length);
         byteBuf.writeBytes(binary);
         final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.decode(byteBuf);
@@ -94,12 +68,13 @@ class MqttTopicFilterImplTest {
     void from_emptyString_throws() {
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicFilterImpl.of(""));
-        assertTrue("IllegalArgumentException must give hint that string must not be empty.",
-                exception.getMessage().contains("must be at least one character long"));
+        assertTrue(
+                exception.getMessage().contains("must be at least one character long"),
+                "IllegalArgumentException must give hint that string must not be empty.");
     }
 
-    private static Stream topicFilterFactoryMethodProvider() {
-        return Stream.of(topicFilterFactoryMethods);
+    private static @NotNull List<Function<String, MqttTopicFilterImpl>> topicFilterFactoryMethodProvider() {
+        return topicFilterFactoryMethods;
     }
 
     @ParameterizedTest
@@ -116,7 +91,7 @@ class MqttTopicFilterImplTest {
 
     private static @NotNull List<Arguments> validTopicFilterProvider() {
         final List<Arguments> testSpecs = new LinkedList<>();
-        for (final NamedFunction method : topicFilterFactoryMethods) {
+        for (final Function<String, MqttTopicFilterImpl> method : topicFilterFactoryMethods) {
             testSpecs.add(Arguments.of(method, "containing space", "ab c/def"));
             testSpecs.add(Arguments.of(method, "containing single space only", " "));
             testSpecs.add(Arguments.of(method, "containing multi level wildcard at end", "abc/def/ghi/#"));
@@ -151,7 +126,7 @@ class MqttTopicFilterImplTest {
         assertEquals("", levels.get(1));
     }
 
-    private static Stream misplacedWildcardsTopicFilterProvider() {
+    private static @NotNull Stream<Arguments> misplacedWildcardsTopicFilterProvider() {
         return Stream.of(Arguments.of("multilevel wildcard not at end", "abc/def/ghi/#/"),
                 Arguments.of("multilevel wildcard after non separator", "abc/def/ghi#"),
                 Arguments.of("multiple single level wildcards one level", "abc/++/def/ghi"),
@@ -176,8 +151,9 @@ class MqttTopicFilterImplTest {
             final @NotNull String topicFilterString) {
         final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> MqttTopicFilterImpl.of(topicFilterString));
-        assertTrue("IllegalArgumentException must give hint that string contains misplaced wildcard characters.",
-                exception.getMessage().contains("misplaced wildcard characters"));
+        assertTrue(
+                exception.getMessage().contains("misplaced wildcard characters"),
+                "IllegalArgumentException must give hint that string contains misplaced wildcard characters.");
     }
 
     @ParameterizedTest
@@ -187,7 +163,7 @@ class MqttTopicFilterImplTest {
         final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(string);
         assertNotNull(mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
-        assertThat(levels, CoreMatchers.is(Arrays.asList("abc", "def", "ghi")));
+        assertEquals(levels, Arrays.asList("abc", "def", "ghi"));
     }
 
     @ParameterizedTest
@@ -197,12 +173,12 @@ class MqttTopicFilterImplTest {
         final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(string);
         assertNotNull(mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
-        assertThat(levels, CoreMatchers.is(Arrays.asList("", "abc", "", "def", "", "", "ghi", "")));
+        assertEquals(levels, Arrays.asList("", "abc", "", "def", "", "", "ghi", ""));
     }
 
     private static @NotNull List<Arguments> wildcardTopicFilterProvider() {
         final List<Arguments> testSpecs = new LinkedList<>();
-        for (final NamedFunction method : topicFilterFactoryMethods) {
+        for (final Function<String, MqttTopicFilterImpl> method : topicFilterFactoryMethods) {
             testSpecs.add(Arguments.of(method, "contains no wildcards", "abc/def/ghi", false, false, false));
             testSpecs.add(Arguments.of(method, "contains multi level wildcard", "abc/def/ghi/#", true, true, false));
             testSpecs.add(Arguments.of(method, "contains single level wildcard", "abc/+/def/ghi", true, false, true));
@@ -229,7 +205,7 @@ class MqttTopicFilterImplTest {
 
     private static @NotNull List<Arguments> invalidSharedTopicFilterProvider() {
         final List<Arguments> testSpecs = new LinkedList<>();
-        for (final NamedFunction method : topicFilterFactoryMethods) {
+        for (final Function<String, MqttTopicFilterImpl> method : topicFilterFactoryMethods) {
             testSpecs.add(Arguments.of(method, "$shared is valid topic prefix", "$shared/group/abc/def"));
             testSpecs.add(Arguments.of(method, "just $share does not define a shared topic", "$share"));
         }
@@ -246,5 +222,29 @@ class MqttTopicFilterImplTest {
         assertNotNull(mqtt5TopicFilter);
         assertFalse(mqtt5TopicFilter.isShared());
         assertFalse(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
+    }
+
+    /**
+     * Extension of Function&lt;T, R&gt; used to make test results more readable.
+     */
+    static class NamedFunction<T, R> implements Function<T, R> {
+
+        private final @NotNull String name;
+        private final @NotNull Function<T, R> function;
+
+        NamedFunction(final @NotNull String name, final @NotNull Function<T, R> function) {
+            this.name = name;
+            this.function = function;
+        }
+
+        @Override
+        public @Nullable R apply(final @NotNull T t) {
+            return function.apply(t);
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return name;
+        }
     }
 }

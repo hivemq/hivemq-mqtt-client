@@ -20,7 +20,6 @@ package com.hivemq.client.internal.mqtt.datatypes;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.hamcrest.CoreMatchers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
@@ -30,12 +29,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
@@ -65,7 +64,7 @@ class MqttSharedTopicFilterImplTest {
         switch (source) {
             case BYTE_BUF:
                 final ByteBuf byteBuf = Unpooled.buffer();
-                final byte[] binary = sharedSubscriptionTopicFilter.getBytes(Charset.forName("UTF-8"));
+                final byte[] binary = sharedSubscriptionTopicFilter.getBytes(StandardCharsets.UTF_8);
                 byteBuf.writeShort(binary.length);
                 byteBuf.writeBytes(binary);
                 final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.decode(byteBuf);
@@ -120,7 +119,7 @@ class MqttSharedTopicFilterImplTest {
 
         final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> from(SharedTopicFilterSource.STRING, sharedTopicFilter));
-        assertTrue("IllegalArgumentException must give hint that " + message, exception.getMessage().contains(message));
+        assertTrue(exception.getMessage().contains(message), "IllegalArgumentException must give hint that " + message);
     }
 
     private static @NotNull List<Arguments> invalidShareNameOrTopicFilter(
@@ -187,7 +186,7 @@ class MqttSharedTopicFilterImplTest {
 
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> from(source, shareName, topicFilter));
-        assertTrue("IllegalArgumentException must give hint that " + message, exception.getMessage().contains(message));
+        assertTrue(exception.getMessage().contains(message), "IllegalArgumentException must give hint that " + message);
     }
 
     @Test
@@ -197,8 +196,8 @@ class MqttSharedTopicFilterImplTest {
         final String errorMsg = "Share name [gro/up] must not contain topic level separator";
         final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> from(SharedTopicFilterSource.SHARE_NAME_AND_TOPIC_FILTER, shareName, topicFilter));
-        assertTrue("IllegalArgumentException must give hint that " + errorMsg,
-                exception.getMessage().contains(errorMsg));
+        assertTrue(exception.getMessage().contains(errorMsg),
+                "IllegalArgumentException must give hint that " + errorMsg);
     }
 
     @Test
@@ -266,7 +265,7 @@ class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
-        assertThat(levels, CoreMatchers.is(Arrays.asList("", "")));
+        assertEquals(levels, Arrays.asList("", ""));
 
         final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
@@ -283,7 +282,7 @@ class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
-        assertThat(levels, CoreMatchers.is(Arrays.asList("abc", "def", "ghi")));
+        assertEquals(levels, Arrays.asList("abc", "def", "ghi"));
     }
 
     @ParameterizedTest
@@ -296,6 +295,6 @@ class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
-        assertThat(levels, CoreMatchers.is(Arrays.asList("", "abc", "", "def", "", "", "ghi", "")));
+        assertEquals(levels, Arrays.asList("", "abc", "", "def", "", "", "ghi", ""));
     }
 }

@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
@@ -65,8 +65,8 @@ class MqttTopicImplTest {
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.of(""));
         assertTrue(
-                "IllegalArgumentException must give hint that string must not be empty.",
-                exception.getMessage().contains("must be at least one character long"));
+                exception.getMessage().contains("must be at least one character long"),
+                "IllegalArgumentException must give hint that string must not be empty.");
     }
 
     @ParameterizedTest
@@ -121,8 +121,8 @@ class MqttTopicImplTest {
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.of("abc/def/#"));
         assertTrue(
-                "IllegalArgumentException must give hint that string contains a forbidden multi level wildcard character.",
-                exception.getMessage().contains("multi level wildcard"));
+                exception.getMessage().contains("multi level wildcard"),
+                "IllegalArgumentException must give hint that string contains a forbidden multi level wildcard character.");
     }
 
     @Test
@@ -137,8 +137,8 @@ class MqttTopicImplTest {
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.of("abc/+/def"));
         assertTrue(
-                "IllegalArgumentException must give hint that string contains a forbidden single level wildcard character.",
-                exception.getMessage().contains("single level wildcard"));
+                exception.getMessage().contains("single level wildcard"),
+                "IllegalArgumentException must give hint that string contains a forbidden single level wildcard character.");
     }
 
     @ParameterizedTest

@@ -17,41 +17,26 @@
 
 package com.hivemq.client.internal.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.nio.charset.Charset;
-import java.util.Collection;
+import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
  */
-@RunWith(Parameterized.class)
-public class MqttClientIdentifierImplTest {
+class MqttClientIdentifierImplTest {
 
-    @Parameterized.Parameters
-    public static @NotNull Collection<Boolean> parameters() {
-        return ImmutableSet.of(false, true);
-    }
-
-    private final boolean isFromByteBuf;
-
-    public MqttClientIdentifierImplTest(final boolean isFromByteBuf) {
-        this.isFromByteBuf = isFromByteBuf;
-    }
-
-    private @Nullable MqttClientIdentifierImpl from(final @NotNull String string) {
-        if (isFromByteBuf) {
+    private @Nullable MqttClientIdentifierImpl from(final @NotNull String string, final boolean fromByteBuf) {
+        if (fromByteBuf) {
             final ByteBuf byteBuf = Unpooled.buffer();
-            final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
+            final byte[] binary = string.getBytes(StandardCharsets.UTF_8);
             byteBuf.writeShort(binary.length);
             byteBuf.writeBytes(binary);
             final MqttClientIdentifierImpl mqtt5ClientIdentifier = MqttClientIdentifierImpl.decode(byteBuf);
@@ -62,42 +47,47 @@ public class MqttClientIdentifierImplTest {
         }
     }
 
-    @Test
-    public void test_must_be_allowed_by_server() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    public void test_must_be_allowed_by_server(final boolean fromByteBuf) {
         final String string = "abc123DEF";
-        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string);
+        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string, fromByteBuf);
         assertNotNull(mqtt5ClientIdentifier);
         assertTrue(mqtt5ClientIdentifier.mustBeAllowedByServer());
     }
 
-    @Test
-    public void test_must_be_allowed_by_server_length_23() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    public void test_must_be_allowed_by_server_length_23(final boolean fromByteBuf) {
         final String string = "abcdefghijklmnopqrstuvw";
-        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string);
+        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string, fromByteBuf);
         assertNotNull(mqtt5ClientIdentifier);
         assertTrue(mqtt5ClientIdentifier.mustBeAllowedByServer());
     }
 
-    @Test
-    public void test_must_not_be_allowed_by_server_length_24() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    public void test_must_not_be_allowed_by_server_length_24(final boolean fromByteBuf) {
         final String string = "abcdefghijklmnopqrstuvwx";
-        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string);
+        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string, fromByteBuf);
         assertNotNull(mqtt5ClientIdentifier);
         assertFalse(mqtt5ClientIdentifier.mustBeAllowedByServer());
     }
 
-    @Test
-    public void test_must_not_be_allowed_by_server_zero_length() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    public void test_must_not_be_allowed_by_server_zero_length(final boolean fromByteBuf) {
         final String string = "";
-        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string);
+        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string, fromByteBuf);
         assertNotNull(mqtt5ClientIdentifier);
         assertFalse(mqtt5ClientIdentifier.mustBeAllowedByServer());
     }
 
-    @Test
-    public void test_must_not_be_allowed_by_server_character() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    public void test_must_not_be_allowed_by_server_character(final boolean fromByteBuf) {
         final String string = "abc123-DEF";
-        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string);
+        final MqttClientIdentifierImpl mqtt5ClientIdentifier = from(string, fromByteBuf);
         assertNotNull(mqtt5ClientIdentifier);
         assertFalse(mqtt5ClientIdentifier.mustBeAllowedByServer());
     }

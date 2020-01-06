@@ -16,75 +16,68 @@
 
 package com.hivemq.client.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Christoph Schäbel
  */
-public class KeyStoreUtilTest {
-
-    private TestKeyStoreGenerator testKeyStoreGenerator;
-
-    @Before
-    public void before() {
-        testKeyStoreGenerator = new TestKeyStoreGenerator();
-    }
+class KeyStoreUtilTest {
 
     @Test
     public void test_valid_kmf() throws Exception {
-        final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
+        final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
         final KeyManagerFactory kmf = KeyStoreUtil.keyManagerFromKeystore(store, "pw", "pk");
         assertNotNull(kmf.getKeyManagers());
         assertEquals(1, kmf.getKeyManagers().length);
     }
 
-    @Test(expected = SSLException.class)
+    @Test
     public void test_wrong_kmf_ks_path() throws Exception {
-        final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final KeyManagerFactory kmf =
-                KeyStoreUtil.keyManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw", "pk");
+        final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
+        assertThrows(
+                SSLException.class,
+                () -> KeyStoreUtil.keyManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw", "pk"));
     }
 
-    @Test(expected = SSLException.class)
+    @Test
     public void test_wrong_kmf_ks_pw() throws Exception {
-        final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final KeyManagerFactory kmf = KeyStoreUtil.keyManagerFromKeystore(store, "wrong", "pk");
+        final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
+        assertThrows(SSLException.class, () -> KeyStoreUtil.keyManagerFromKeystore(store, "wrong", "pk"));
     }
 
-    @Test(expected = SSLException.class)
+    @Test
     public void test_wrong_kmf_key_pw() throws Exception {
-        final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final KeyManagerFactory kmf = KeyStoreUtil.keyManagerFromKeystore(store, "pw", "wrong");
+        final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
+        assertThrows(SSLException.class, () -> KeyStoreUtil.keyManagerFromKeystore(store, "pw", "wrong"));
     }
 
     @Test
     public void test_valid_tmf() throws Exception {
-        final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
+        final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
         final TrustManagerFactory tmf = KeyStoreUtil.trustManagerFromKeystore(store, "pw");
         assertNotNull(tmf.getTrustManagers());
         assertEquals(1, tmf.getTrustManagers().length);
     }
 
-    @Test(expected = SSLException.class)
+    @Test
     public void test_wrong_tmf_ks_path() throws Exception {
-        final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final TrustManagerFactory tmf =
-                KeyStoreUtil.trustManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw");
+        final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
+        assertThrows(
+                SSLException.class,
+                () -> KeyStoreUtil.trustManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw"));
     }
 
-    @Test(expected = SSLException.class)
+    @Test
     public void test_wrong_tmf_ks_pw() throws Exception {
-        final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final TrustManagerFactory tmf = KeyStoreUtil.trustManagerFromKeystore(store, "wrong");
+        final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
+        assertThrows(SSLException.class, () -> KeyStoreUtil.trustManagerFromKeystore(store, "wrong"));
     }
 
 }

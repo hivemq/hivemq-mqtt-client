@@ -17,14 +17,14 @@
 
 package com.hivemq.client.internal.mqtt.message;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttPropertyTest {
+class MqttPropertyTest {
 
     @Test
     public void test_all_properties() {
