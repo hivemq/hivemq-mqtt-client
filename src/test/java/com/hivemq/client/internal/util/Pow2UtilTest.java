@@ -17,29 +17,26 @@
 
 package com.hivemq.client.internal.util;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Silvio Giebl
  */
-class ByteArrayTest {
-
-    @ParameterizedTest
-    @ValueSource(ints = {0, 1, 10})
-    void length(final int length) {
-        final ByteArray empty = new ByteArray(new byte[length]);
-        assertEquals(length, empty.length());
-        assertEquals(0, empty.getStart());
-        assertEquals(length, empty.getEnd());
-    }
+class Pow2UtilTest {
 
     @Test
-    void equals() {
-        EqualsVerifier.forClass(ByteArray.class).verify();
+    void roundToPowerOf2Bits() {
+        assertEquals(0, Pow2Util.roundToPowerOf2Bits(1));
+        for (int i = 2; i < 1000; i++) {
+            final int powerOf2Bits = Pow2Util.roundToPowerOf2Bits(i);
+            final int powerOf2 = 1 << powerOf2Bits;
+            final int smallerPowerOf2 = 1 << (powerOf2Bits - 1);
+            assertEquals(smallerPowerOf2, powerOf2 >> 1);
+            assertTrue(powerOf2 >= i);
+            assertTrue(smallerPowerOf2 < i);
+        }
     }
 }

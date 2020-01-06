@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2028 dc-square and the HiveMQ MQTT Client Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,29 +17,22 @@
 
 package com.hivemq.client.internal.util;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Silvio Giebl
  */
-class ByteArrayTest {
+class StringUtilTest {
 
-    @ParameterizedTest
-    @ValueSource(ints = {0, 1, 10})
-    void length(final int length) {
-        final ByteArray empty = new ByteArray(new byte[length]);
-        assertEquals(length, empty.length());
-        assertEquals(0, empty.getStart());
-        assertEquals(length, empty.getEnd());
+    @Test
+    void prepend() {
+        assertEquals("prefix-test", StringUtil.prepend("prefix-", "test"));
     }
 
     @Test
-    void equals() {
-        EqualsVerifier.forClass(ByteArray.class).verify();
+    void prepend_empty() {
+        assertEquals("", StringUtil.prepend("prefix-", ""));
     }
 }

@@ -154,7 +154,7 @@ public final class Checks {
                 throw new IndexOutOfBoundsException("Start index must not be smaller than 0, but was " + start + ".");
             } else if (start > end) {
                 throw new IndexOutOfBoundsException(
-                        "Start index must be greater than the end index, but " + start + " > " + end + ".");
+                        "Start index must not be greater than the end index, but " + start + " > " + end + ".");
             } else {
                 throw new IndexOutOfBoundsException(
                         "End index must not be greater than or equal to the size (" + size + "), but was " + end + ".");
