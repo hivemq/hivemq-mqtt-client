@@ -18,6 +18,7 @@
 package com.hivemq.client.rx;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
@@ -306,35 +307,77 @@ class FlowableWithSingleTest {
             throws InterruptedException {
 
         final CountDownLatch latch = new CountDownLatch(6);
-        flowableWithSingle.subscribeBoth(new FlowableWithSingleSubscriber<String, StringBuilder>() {
-            @Override
-            public void onSubscribe(final @NotNull Subscription s) {
-                assertEquals(6, latch.getCount());
-                latch.countDown();
-                s.request(10);
-            }
+        final WithSingleSubscriber<String, StringBuilder> subscriber =
+                new FlowableWithSingleSubscriber<String, StringBuilder>() {
+                    @Override
+                    public void onSubscribe(final @NotNull Subscription s) {
+                        assertEquals(6, latch.getCount());
+                        latch.countDown();
+                        s.request(10);
+                    }
 
-            @Override
-            public void onSingle(final @NotNull StringBuilder stringBuilder) {
-                assertEquals("single", stringBuilder.toString());
-                assertEquals(5, latch.getCount());
-                latch.countDown();
-            }
+                    @Override
+                    public void onSingle(final @NotNull StringBuilder stringBuilder) {
+                        assertEquals("single", stringBuilder.toString());
+                        assertEquals(5, latch.getCount());
+                        latch.countDown();
+                    }
 
-            @Override
-            public void onNext(final @NotNull String s) {
-                latch.countDown();
-            }
+                    @Override
+                    public void onNext(final @NotNull String s) {
+                        latch.countDown();
+                    }
 
-            @Override
-            public void onComplete() {
-                latch.countDown();
-            }
+                    @Override
+                    public void onComplete() {
+                        latch.countDown();
+                    }
 
-            @Override
-            public void onError(final @NotNull Throwable t) {
-            }
-        });
+                    @Override
+                    public void onError(final @NotNull Throwable t) {
+                    }
+                };
+        flowableWithSingle.subscribeBoth(subscriber);
+        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+    }
+
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void subscribeBoth_strict(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle)
+            throws InterruptedException {
+
+        final CountDownLatch latch = new CountDownLatch(6);
+        final WithSingleSubscriber<String, StringBuilder> subscriber =
+                new WithSingleSubscriber<String, StringBuilder>() {
+                    @Override
+                    public void onSubscribe(final @NotNull Subscription s) {
+                        assertEquals(6, latch.getCount());
+                        latch.countDown();
+                        s.request(10);
+                    }
+
+                    @Override
+                    public void onSingle(final @NotNull StringBuilder stringBuilder) {
+                        assertEquals("single", stringBuilder.toString());
+                        assertEquals(5, latch.getCount());
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onNext(final @NotNull String s) {
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(final @NotNull Throwable t) {
+                    }
+                };
+        flowableWithSingle.subscribeBoth(subscriber);
         assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 

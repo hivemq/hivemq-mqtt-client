@@ -17,29 +17,24 @@
 
 package com.hivemq.client.internal.util;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Silvio Giebl
  */
-class ByteArrayTest {
+class ClassUtilTest {
 
-    @ParameterizedTest
-    @ValueSource(ints = {0, 1, 10})
-    void length(final int length) {
-        final ByteArray empty = new ByteArray(new byte[length]);
-        assertEquals(length, empty.length());
-        assertEquals(0, empty.getStart());
-        assertEquals(length, empty.getEnd());
+    @Test
+    void isAvailable_true() {
+        assertTrue(ClassUtil.isAvailable("java.lang.String"));
+        assertTrue(ClassUtil.isAvailable("com.hivemq.client.internal.util.ClassUtilTest"));
     }
 
     @Test
-    void equals() {
-        EqualsVerifier.forClass(ByteArray.class).verify();
+    void isAvailable_unknownClass() {
+        assertFalse(ClassUtil.isAvailable("com.hivemq.client.UnknownClass"));
     }
 }
