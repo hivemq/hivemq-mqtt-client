@@ -59,7 +59,7 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
 
         if (msg instanceof MqttMessage) {
             final MqttMessage message = (MqttMessage) msg;
-            final MqttMessageEncoder messageEncoder = encoders.get(message.getType().getCode());
+            final MqttMessageEncoder<?> messageEncoder = encoders.get(message.getType().getCode());
             if (messageEncoder == null) {
                 throw new UnsupportedOperationException();
             }

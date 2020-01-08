@@ -85,8 +85,8 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
      * Returns the CONNACK Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the CONNACK Reason Code belonging to the given byte code or null if the byte code is not a valid CONNACK
-     *         Reason Code code.
+     * @return the CONNACK Reason Code belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid CONNACK Reason Code code.
      */
     public static @Nullable Mqtt5ConnAckReasonCode fromCode(final int code) {
         if (code == SUCCESS.code) {
