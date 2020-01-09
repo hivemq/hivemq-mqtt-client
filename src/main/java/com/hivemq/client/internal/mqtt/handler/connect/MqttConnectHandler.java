@@ -44,7 +44,6 @@ import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -127,16 +126,11 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    public void operationComplete(final @NotNull ChannelFuture future) {
-        if (ctx == null) {
-            return;
+    protected void operationSuccessful(final @NotNull ChannelHandlerContext ctx) {
+        if (connect.getRawEnhancedAuthMechanism() == null) {
+            scheduleTimeout(ctx.channel());
         }
-        if (future.isSuccess()) {
-            if (connect.getRawEnhancedAuthMechanism() == null) {
-                scheduleTimeout(ctx.channel());
-            }
-            ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
-        }
+        ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
     }
 
     @Override
@@ -163,8 +157,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      */
     private void readConnAck(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
         if (connAck.getReasonCode().isError()) {
-            MqttDisconnectUtil.close(channel, new Mqtt5ConnAckException(
-                    connAck,
+            MqttDisconnectUtil.close(channel, new Mqtt5ConnAckException(connAck,
                     "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."));
 
         } else if (validateClientIdentifier(connAck, channel)) {
