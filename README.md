@@ -42,6 +42,20 @@ backpressure support.
   - Automatic Topic Alias mapping
   - Interceptors for QoS flows
 
+## Users
+
+[
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/300px-BMW.svg.png" alt="BMW CarIT" height="60px"/>
+](https://github.com/bmwcarit) &nbsp;&nbsp; [
+<img src="https://github.com/bmwcarit/joynr/raw/master/graphics/joynr-logo.png" alt="joynr" height="60px"/>
+](https://github.com/bmwcarit/joynr) &nbsp;&nbsp; [
+<img src="https://www.openhab.org/openhab-logo.png" alt="openHAB" height="60px"/>
+](https://www.openhab.org/) &nbsp;&nbsp; [
+<img src="https://eclipse.org/ditto/images/ditto.svg" alt="Eclipse Ditto" height="60px"/>
+](https://github.com/eclipse/ditto)
+
+If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
+
 ## How to use
 
 Java 8 or higher is required.
