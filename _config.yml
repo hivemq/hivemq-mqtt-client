@@ -26,8 +26,6 @@ plugins:
   - jekyll-remote-theme
   - jekyll-relative-links
 
-github: [metadata]
-
 sass:
   style: compressed
 
