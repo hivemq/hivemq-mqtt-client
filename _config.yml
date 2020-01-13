@@ -4,6 +4,7 @@ logo: assets/images/hivemq-mqtt-client-neg.svg
 version: 1.1.3
 
 remote_theme: SgtSilvio/just-the-docs@merged
+color_scheme: dark
 
 search_enabled: true
 search:
@@ -14,8 +15,6 @@ search:
   rel_url: false
   tokenizer_separator: /[\s\-/]+/
   button: true
-
-color_scheme: dark
 
 aux_links:
   "News":
