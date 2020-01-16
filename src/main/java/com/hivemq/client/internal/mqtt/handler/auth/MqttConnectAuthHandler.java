@@ -29,6 +29,7 @@ import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.netty.DefaultChannelOutboundHandler;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException;
@@ -132,8 +133,9 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
         callMechanism(() -> authMechanism.onAuthRejected(clientConfig, connAck));
         state = MqttAuthState.NONE;
 
-        MqttDisconnectUtil.close(ctx.channel(),
-                new Mqtt5ConnAckException(connAck, "Connection failed. CONNACK contained Error Code."));
+        MqttDisconnectUtil.fireDisconnectEvent(ctx.channel(), new Mqtt5ConnAckException(connAck,
+                        "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."),
+                MqttDisconnectSource.SERVER);
     }
 
     private void readConnAckSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
@@ -198,8 +200,8 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      */
     @Override
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
-        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, new Mqtt5AuthException(
-                auth,
+        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                new Mqtt5AuthException(auth,
                         "Must not receive AUTH with reason code REAUTHENTICATE during connect auth."));
     }
 
