@@ -41,6 +41,7 @@ import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
@@ -157,8 +158,9 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      */
     private void readConnAck(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
         if (connAck.getReasonCode().isError()) {
-            MqttDisconnectUtil.close(channel, new Mqtt5ConnAckException(connAck,
-                    "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."));
+            MqttDisconnectUtil.fireDisconnectEvent(channel, new Mqtt5ConnAckException(connAck,
+                            "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."),
+                    MqttDisconnectSource.SERVER);
 
         } else if (validateClientIdentifier(connAck, channel)) {
             final MqttClientConnectionConfig connectionConfig = addConnectionConfig(connAck, channel);

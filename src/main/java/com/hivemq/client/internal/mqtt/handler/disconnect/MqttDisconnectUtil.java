@@ -38,20 +38,20 @@ public final class MqttDisconnectUtil {
      * Closes the channel from the client side without sending a DISCONNECT message.
      *
      * @param channel the channel to close.
-     * @param cause   the cause why the channel is closed.
+     * @param reason  the reason why the channel is closed.
      */
-    public static void close(final @NotNull Channel channel, final @NotNull Throwable cause) {
-        fireDisconnectEvent(channel, cause, MqttDisconnectSource.CLIENT);
+    public static void close(final @NotNull Channel channel, final @NotNull String reason) {
+        fireDisconnectEvent(channel, new ConnectionClosedException(reason), MqttDisconnectSource.CLIENT);
     }
 
     /**
      * Closes the channel from the client side without sending a DISCONNECT message.
      *
      * @param channel the channel to close.
-     * @param reason  the reason why the channel is closed.
+     * @param cause   the cause why the channel is closed.
      */
-    public static void close(final @NotNull Channel channel, final @NotNull String reason) {
-        fireDisconnectEvent(channel, new ConnectionClosedException(reason), MqttDisconnectSource.CLIENT);
+    public static void close(final @NotNull Channel channel, final @NotNull Throwable cause) {
+        fireDisconnectEvent(channel, cause, MqttDisconnectSource.CLIENT);
     }
 
     /**
@@ -87,7 +87,7 @@ public final class MqttDisconnectUtil {
         fireDisconnectEvent(channel, new Mqtt5DisconnectException(disconnect, cause), MqttDisconnectSource.CLIENT);
     }
 
-    static void fireDisconnectEvent(
+    public static void fireDisconnectEvent(
             final @NotNull Channel channel, final @NotNull Throwable cause,
             final @NotNull MqttDisconnectSource source) {
 
