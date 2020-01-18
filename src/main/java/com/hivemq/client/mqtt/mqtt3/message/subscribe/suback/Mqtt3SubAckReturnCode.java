@@ -29,9 +29,23 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Mqtt3SubAckReturnCode implements Mqtt3ReturnCode {
 
+    /**
+     * The subscription is accepted and the maximum QoS sent will be QoS 0 (this might be a lower QoS than was
+     * requested).
+     */
     SUCCESS_MAXIMUM_QOS_0(0),
+    /**
+     * The subscription is accepted and the maximum QoS sent will be QoS 1 (this might be a lower QoS than was
+     * requested).
+     */
     SUCCESS_MAXIMUM_QOS_1(1),
+    /**
+     * The subscription is accepted and the maximum QoS sent will be QoS 2.
+     */
     SUCCESS_MAXIMUM_QOS_2(2),
+    /**
+     * The subscription failed.
+     */
     FAILURE(128);
 
     private final int code;

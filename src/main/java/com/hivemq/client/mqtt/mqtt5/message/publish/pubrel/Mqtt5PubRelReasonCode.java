@@ -30,7 +30,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Mqtt5PubRelReasonCode implements Mqtt5ReasonCode {
 
+    /**
+     * Message released.
+     */
     SUCCESS(MqttCommonReasonCode.SUCCESS),
+    /**
+     * The packet identifier is not known. This is not an error during recovery, but at other times indicates a mismatch
+     * between the session state on the client and server.
+     */
     PACKET_IDENTIFIER_NOT_FOUND(MqttCommonReasonCode.PACKET_IDENTIFIER_NOT_FOUND);
 
     private final int code;
