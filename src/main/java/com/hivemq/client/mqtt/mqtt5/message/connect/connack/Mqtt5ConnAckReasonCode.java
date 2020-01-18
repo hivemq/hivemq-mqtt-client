@@ -30,27 +30,93 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
 
+    /**
+     * The connection is accepted.
+     */
     SUCCESS(MqttCommonReasonCode.SUCCESS),
+    /**
+     * The server either does not want to reveal the reason for the failure or none of the other reason codes apply.
+     */
     UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    /**
+     * The CONNECT packet could not be correctly parsed according to the MQTT specification.
+     */
     MALFORMED_PACKET(MqttCommonReasonCode.MALFORMED_PACKET),
+    /**
+     * The CONNECT contained data that is not allowed by the MQTT protocol.
+     */
     PROTOCOL_ERROR(MqttCommonReasonCode.PROTOCOL_ERROR),
+    /**
+     * The CONNECT packet is valid but is not accepted by the server.
+     */
     IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    /**
+     * The server does not support the version of the MQTT protocol requested by the client.
+     */
     UNSUPPORTED_PROTOCOL_VERSION(0x84),
+    /**
+     * The client identifier is correctly formed but is not accepted by the server.
+     */
     CLIENT_IDENTIFIER_NOT_VALID(0x85),
+    /**
+     * The server does not accept the user name or password specified by the client.
+     */
     BAD_USER_NAME_OR_PASSWORD(0x86),
+    /**
+     * The client is not authorized to connect.
+     */
     NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    /**
+     * The MQTT service is not available.
+     */
     SERVER_UNAVAILABLE(0x88),
+    /**
+     * The server is busy. Try again later.
+     */
     SERVER_BUSY(MqttCommonReasonCode.SERVER_BUSY),
+    /**
+     * This client has been banned by administrative action. Contact the server administrator.
+     */
     BANNED(0x8A),
+    /**
+     * The authentication method is not supported or does not match the authentication method currently in use.
+     */
     BAD_AUTHENTICATION_METHOD(MqttCommonReasonCode.BAD_AUTHENTICATION_METHOD),
+    /**
+     * The Will topic name is correctly formed but is not accepted by the server.
+     */
     TOPIC_NAME_INVALID(MqttCommonReasonCode.TOPIC_NAME_INVALID),
+    /**
+     * The CONNECT packet exceeded the maximum permissible size.
+     */
     PACKET_TOO_LARGE(MqttCommonReasonCode.PACKET_TOO_LARGE),
+    /**
+     * An implementation or administrative imposed limit has been exceeded.
+     */
     QUOTA_EXCEEDED(MqttCommonReasonCode.QUOTA_EXCEEDED),
+    /**
+     * The Will payload does not match the specified payload format indicator.
+     */
     PAYLOAD_FORMAT_INVALID(MqttCommonReasonCode.PAYLOAD_FORMAT_INVALID),
+    /**
+     * The server does not support retained messages, but the Will retain flag was set.
+     */
     RETAIN_NOT_SUPPORTED(MqttCommonReasonCode.RETAIN_NOT_SUPPORTED),
+    /**
+     * The server does not support the QoS of the Will.
+     */
     QOS_NOT_SUPPORTED(MqttCommonReasonCode.QOS_NOT_SUPPORTED),
+    /**
+     * The client should temporarily use another server.
+     */
     USE_ANOTHER_SERVER(MqttCommonReasonCode.USE_ANOTHER_SERVER),
+    /**
+     * The client should permanently use another server.
+     */
     SERVER_MOVED(MqttCommonReasonCode.SERVER_MOVED),
+    /**
+     * The connection rate limit has been exceeded.
+     */
     CONNECTION_RATE_EXCEEDED(MqttCommonReasonCode.CONNECTION_RATE_EXCEEDED);
 
     private final int code;

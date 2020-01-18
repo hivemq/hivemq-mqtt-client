@@ -30,8 +30,17 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
 
+    /**
+     * Authentication is successful.
+     */
     SUCCESS(MqttCommonReasonCode.SUCCESS),
+    /**
+     * Continue the authentication with another step.
+     */
     CONTINUE_AUTHENTICATION(0x18),
+    /**
+     * Initiate a re-authentication.
+     */
     REAUTHENTICATE(0x19);
 
     private final int code;
