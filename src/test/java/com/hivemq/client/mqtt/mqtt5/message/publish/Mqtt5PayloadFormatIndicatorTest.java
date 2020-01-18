@@ -15,7 +15,7 @@
  *
  */
 
-package com.hivemq.client.mqtt.mqtt5.message.subscribe;
+package com.hivemq.client.mqtt.mqtt5.message.publish;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -26,36 +26,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * @author David Katz
  * @author Silvio Giebl
  */
-class Mqtt5RetainHandlingTest {
+class Mqtt5PayloadFormatIndicatorTest {
 
     @Test
-    void getCode_send() {
-        assertEquals(0x00, Mqtt5RetainHandling.SEND.getCode());
+    void getCode_unspecified() {
+        assertEquals(0x00, Mqtt5PayloadFormatIndicator.UNSPECIFIED.getCode());
     }
 
     @Test
-    void getCode_sendIfSubscriptionDoesNotExist() {
-        assertEquals(0x01, Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST.getCode());
-    }
-
-    @Test
-    void getCode_doNotSend() {
-        assertEquals(0x02, Mqtt5RetainHandling.DO_NOT_SEND.getCode());
+    void getCode_utf8() {
+        assertEquals(0x01, Mqtt5PayloadFormatIndicator.UTF_8.getCode());
     }
 
     @ParameterizedTest
-    @EnumSource(Mqtt5RetainHandling.class)
-    void fromCode(final @NotNull Mqtt5RetainHandling retainHandling) {
-        assertEquals(retainHandling, Mqtt5RetainHandling.fromCode(retainHandling.getCode()));
+    @EnumSource(Mqtt5PayloadFormatIndicator.class)
+    void fromCode(final @NotNull Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
+        assertEquals(payloadFormatIndicator, Mqtt5PayloadFormatIndicator.fromCode(payloadFormatIndicator.getCode()));
     }
 
     @Test
     void fromCode_invalidCodes() {
-        assertNull(Mqtt5RetainHandling.fromCode(0x03));
-        assertNull(Mqtt5RetainHandling.fromCode(0xFF));
-        assertNull(Mqtt5RetainHandling.fromCode(-1));
+        assertNull(Mqtt5PayloadFormatIndicator.fromCode(0x02));
+        assertNull(Mqtt5PayloadFormatIndicator.fromCode(0xFF));
+        assertNull(Mqtt5PayloadFormatIndicator.fromCode(-1));
     }
 }

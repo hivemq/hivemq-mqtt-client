@@ -22,176 +22,260 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author David Katz
+ * @author Silvio Giebl
  */
 class Mqtt5DisconnectReasonCodeTest {
 
     @Test
-    void test_getCode_normalDisconnection() {
+    void getCode_normalDisconnection() {
         assertEquals(0x00, Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION.getCode());
     }
 
     @Test
-    void test_getCode_disconnectWithWill() {
+    void getCode_disconnectWithWill() {
         assertEquals(0x04, Mqtt5DisconnectReasonCode.DISCONNECT_WITH_WILL_MESSAGE.getCode());
     }
 
     @Test
-    void test_getCode_unspecifiedError() {
+    void getCode_unspecifiedError() {
         assertEquals(0x80, Mqtt5DisconnectReasonCode.UNSPECIFIED_ERROR.getCode());
     }
 
     @Test
-    void test_getCode_malformedPacket() {
+    void getCode_malformedPacket() {
         assertEquals(0x81, Mqtt5DisconnectReasonCode.MALFORMED_PACKET.getCode());
     }
 
     @Test
-    void test_getCode_protocolError() {
+    void getCode_protocolError() {
         assertEquals(0x82, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR.getCode());
     }
 
     @Test
-    void test_getCode_implementationSpecificError() {
+    void getCode_implementationSpecificError() {
         assertEquals(0x83, Mqtt5DisconnectReasonCode.IMPLEMENTATION_SPECIFIC_ERROR.getCode());
     }
 
     @Test
-    void test_getCode_notAuthorized() {
+    void getCode_notAuthorized() {
         assertEquals(0x87, Mqtt5DisconnectReasonCode.NOT_AUTHORIZED.getCode());
     }
 
     @Test
-    void test_getCode_ServerBusy() {
+    void getCode_serverBusy() {
         assertEquals(0x89, Mqtt5DisconnectReasonCode.SERVER_BUSY.getCode());
     }
 
     @Test
-    void test_getCode_ServerShuttingDown() {
+    void getCode_serverShuttingDown() {
         assertEquals(0x8B, Mqtt5DisconnectReasonCode.SERVER_SHUTTING_DOWN.getCode());
     }
 
     @Test
-    void test_getCode_badAuthenticationMethod() {
+    void getCode_badAuthenticationMethod() {
         assertEquals(0x8C, Mqtt5DisconnectReasonCode.BAD_AUTHENTICATION_METHOD.getCode());
     }
 
     @Test
-    void test_getCode_keepAliveTimeout() {
+    void getCode_keepAliveTimeout() {
         assertEquals(0x8D, Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT.getCode());
     }
 
     @Test
-    void test_getCode_sessionTakenOver() {
+    void getCode_sessionTakenOver() {
         assertEquals(0x8E, Mqtt5DisconnectReasonCode.SESSION_TAKEN_OVER.getCode());
     }
 
     @Test
-    void test_getCode_topicFilterInvalid() {
+    void getCode_topicFilterInvalid() {
         assertEquals(0x8F, Mqtt5DisconnectReasonCode.TOPIC_FILTER_INVALID.getCode());
     }
 
     @Test
-    void test_getCode_TopicNameInvalid() {
+    void getCode_topicNameInvalid() {
         assertEquals(0x90, Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID.getCode());
     }
 
     @Test
-    void test_getCode_receiveMaximumExceeded() {
+    void getCode_receiveMaximumExceeded() {
         assertEquals(0x93, Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED.getCode());
     }
 
     @Test
-    void test_getCode_topicAliasInvalid() {
+    void getCode_topicAliasInvalid() {
         assertEquals(0x94, Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID.getCode());
     }
 
     @Test
-    void test_getCode_packetTooLarge() {
+    void getCode_packetTooLarge() {
         assertEquals(0x95, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE.getCode());
     }
 
     @Test
-    void test_getCode_messageRateTooHigh() {
+    void getCode_messageRateTooHigh() {
         assertEquals(0x96, Mqtt5DisconnectReasonCode.MESSAGE_RATE_TOO_HIGH.getCode());
     }
 
     @Test
-    void test_getCode_quotaExceeded() {
+    void getCode_quotaExceeded() {
         assertEquals(0x97, Mqtt5DisconnectReasonCode.QUOTA_EXCEEDED.getCode());
     }
 
     @Test
-    void test_getCode_administrativeAction() {
+    void getCode_administrativeAction() {
         assertEquals(0x98, Mqtt5DisconnectReasonCode.ADMINISTRATIVE_ACTION.getCode());
     }
 
     @Test
-    void test_getCode_payloadFormatInvalid() {
+    void getCode_payloadFormatInvalid() {
         assertEquals(0x99, Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID.getCode());
     }
 
     @Test
-    void test_getCode_retainNotSupported() {
+    void getCode_retainNotSupported() {
         assertEquals(0x9A, Mqtt5DisconnectReasonCode.RETAIN_NOT_SUPPORTED.getCode());
     }
 
     @Test
-    void test_getCode_qosNotSupported() {
+    void getCode_qosNotSupported() {
         assertEquals(0x9B, Mqtt5DisconnectReasonCode.QOS_NOT_SUPPORTED.getCode());
     }
 
     @Test
-    void test_getCode_useAnotherServer() {
+    void getCode_useAnotherServer() {
         assertEquals(0x9C, Mqtt5DisconnectReasonCode.USE_ANOTHER_SERVER.getCode());
     }
 
     @Test
-    void test_getCode_serverMoved() {
+    void getCode_serverMoved() {
         assertEquals(0x9D, Mqtt5DisconnectReasonCode.SERVER_MOVED.getCode());
     }
 
     @Test
-    void test_getCode_sharedSubscriptionNotSupported() {
+    void getCode_sharedSubscriptionNotSupported() {
         assertEquals(0x9E, Mqtt5DisconnectReasonCode.SHARED_SUBSCRIPTIONS_NOT_SUPPORTED.getCode());
     }
 
     @Test
-    void test_getCode_connectionRateExceeded() {
+    void getCode_connectionRateExceeded() {
         assertEquals(0x9F, Mqtt5DisconnectReasonCode.CONNECTION_RATE_EXCEEDED.getCode());
     }
 
     @Test
-    void test_getCode_maximumConnectTime() {
+    void getCode_maximumConnectTime() {
         assertEquals(0xA0, Mqtt5DisconnectReasonCode.MAXIMUM_CONNECT_TIME.getCode());
     }
 
     @Test
-    void test_getCode_subscriptionIdentifiersNotSupported() {
+    void getCode_subscriptionIdentifiersNotSupported() {
         assertEquals(0xA1, Mqtt5DisconnectReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED.getCode());
     }
 
     @Test
-    void test_getCode_wildcardSubscriptionNotSupported() {
+    void getCode_wildcardSubscriptionNotSupported() {
         assertEquals(0xA2, Mqtt5DisconnectReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED.getCode());
     }
 
     @ParameterizedTest
     @EnumSource(Mqtt5DisconnectReasonCode.class)
-    void test_fromCode(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
-        final Mqtt5DisconnectReasonCode mqtt5DisconnectReasonCode =
-                Mqtt5DisconnectReasonCode.fromCode(reasonCode.getCode());
-        assertEquals(reasonCode, mqtt5DisconnectReasonCode);
+    void fromCode(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertEquals(reasonCode, Mqtt5DisconnectReasonCode.fromCode(reasonCode.getCode()));
     }
 
     @Test
-    void test_invalidReasonCodes() {
+    void fromCode_invalidCodes() {
         assertNull(Mqtt5DisconnectReasonCode.fromCode(0x03));
         assertNull(Mqtt5DisconnectReasonCode.fromCode(0xFF));
+        assertNull(Mqtt5DisconnectReasonCode.fromCode(-1));
     }
 
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class,
+            names = {"NORMAL_DISCONNECTION", "DISCONNECT_WITH_WILL_MESSAGE"})
+    void isError_false(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertFalse(reasonCode.isError());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class, names = {
+            "UNSPECIFIED_ERROR", "MALFORMED_PACKET", "PROTOCOL_ERROR", "IMPLEMENTATION_SPECIFIC_ERROR",
+            "NOT_AUTHORIZED", "SERVER_BUSY", "SERVER_SHUTTING_DOWN", "BAD_AUTHENTICATION_METHOD", "KEEP_ALIVE_TIMEOUT",
+            "SESSION_TAKEN_OVER", "TOPIC_FILTER_INVALID", "TOPIC_NAME_INVALID", "RECEIVE_MAXIMUM_EXCEEDED",
+            "TOPIC_ALIAS_INVALID", "PACKET_TOO_LARGE", "MESSAGE_RATE_TOO_HIGH", "QUOTA_EXCEEDED",
+            "ADMINISTRATIVE_ACTION", "PAYLOAD_FORMAT_INVALID", "RETAIN_NOT_SUPPORTED", "QOS_NOT_SUPPORTED",
+            "USE_ANOTHER_SERVER", "SERVER_MOVED", "SHARED_SUBSCRIPTIONS_NOT_SUPPORTED", "CONNECTION_RATE_EXCEEDED",
+            "MAXIMUM_CONNECT_TIME", "SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED", "WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED"
+    })
+    void isError_true(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertTrue(reasonCode.isError());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class, names = {
+            "NORMAL_DISCONNECTION", "UNSPECIFIED_ERROR", "MALFORMED_PACKET", "PROTOCOL_ERROR",
+            "IMPLEMENTATION_SPECIFIC_ERROR", "NOT_AUTHORIZED", "SERVER_BUSY", "SERVER_SHUTTING_DOWN",
+            "BAD_AUTHENTICATION_METHOD", "KEEP_ALIVE_TIMEOUT", "SESSION_TAKEN_OVER", "TOPIC_FILTER_INVALID",
+            "TOPIC_NAME_INVALID", "RECEIVE_MAXIMUM_EXCEEDED", "TOPIC_ALIAS_INVALID", "PACKET_TOO_LARGE",
+            "MESSAGE_RATE_TOO_HIGH", "QUOTA_EXCEEDED", "ADMINISTRATIVE_ACTION", "PAYLOAD_FORMAT_INVALID",
+            "RETAIN_NOT_SUPPORTED", "QOS_NOT_SUPPORTED", "USE_ANOTHER_SERVER", "SERVER_MOVED",
+            "SHARED_SUBSCRIPTIONS_NOT_SUPPORTED", "CONNECTION_RATE_EXCEEDED", "MAXIMUM_CONNECT_TIME",
+            "SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED", "WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED"
+    })
+    void canBeSentByServer_true(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertTrue(reasonCode.canBeSentByServer());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class, names = {"DISCONNECT_WITH_WILL_MESSAGE"})
+    void canBeSentByServer_false(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertFalse(reasonCode.canBeSentByServer());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class, names = {
+            "NORMAL_DISCONNECTION", "DISCONNECT_WITH_WILL_MESSAGE", "UNSPECIFIED_ERROR", "MALFORMED_PACKET",
+            "PROTOCOL_ERROR", "IMPLEMENTATION_SPECIFIC_ERROR", "BAD_AUTHENTICATION_METHOD", "TOPIC_NAME_INVALID",
+            "RECEIVE_MAXIMUM_EXCEEDED", "TOPIC_ALIAS_INVALID", "PACKET_TOO_LARGE", "MESSAGE_RATE_TOO_HIGH",
+            "QUOTA_EXCEEDED", "ADMINISTRATIVE_ACTION", "PAYLOAD_FORMAT_INVALID"
+    })
+    void canBeSentByClient_true(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertTrue(reasonCode.canBeSentByClient());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class, names = {
+            "NOT_AUTHORIZED", "SERVER_BUSY", "SERVER_SHUTTING_DOWN", "KEEP_ALIVE_TIMEOUT", "TOPIC_FILTER_INVALID",
+            "RETAIN_NOT_SUPPORTED", "QOS_NOT_SUPPORTED", "USE_ANOTHER_SERVER", "SERVER_MOVED",
+            "SHARED_SUBSCRIPTIONS_NOT_SUPPORTED", "CONNECTION_RATE_EXCEEDED", "MAXIMUM_CONNECT_TIME",
+            "SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED", "WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED"
+    })
+    void canBeSentByClient_false(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertFalse(reasonCode.canBeSentByClient());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class, names = {
+            "NORMAL_DISCONNECTION", "DISCONNECT_WITH_WILL_MESSAGE", "UNSPECIFIED_ERROR",
+            "IMPLEMENTATION_SPECIFIC_ERROR", "TOPIC_NAME_INVALID", "MESSAGE_RATE_TOO_HIGH", "QUOTA_EXCEEDED",
+            "ADMINISTRATIVE_ACTION", "PAYLOAD_FORMAT_INVALID"
+    })
+    void canBeSetByUser_true(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertTrue(reasonCode.canBeSetByUser());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Mqtt5DisconnectReasonCode.class, names = {
+            "MALFORMED_PACKET", "PROTOCOL_ERROR", "NOT_AUTHORIZED", "SERVER_BUSY", "SERVER_SHUTTING_DOWN",
+            "BAD_AUTHENTICATION_METHOD", "KEEP_ALIVE_TIMEOUT", "TOPIC_FILTER_INVALID", "RECEIVE_MAXIMUM_EXCEEDED",
+            "TOPIC_ALIAS_INVALID", "PACKET_TOO_LARGE", "RETAIN_NOT_SUPPORTED", "QOS_NOT_SUPPORTED",
+            "USE_ANOTHER_SERVER", "SERVER_MOVED", "SHARED_SUBSCRIPTIONS_NOT_SUPPORTED", "CONNECTION_RATE_EXCEEDED",
+            "MAXIMUM_CONNECT_TIME", "SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED", "WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED"
+    })
+    void canBeSetByUser_false(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        assertFalse(reasonCode.canBeSetByUser());
+    }
 }
