@@ -15,19 +15,15 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.jupiter.api.Test;
+package com.hivemq.client.mqtt;
 
 /**
  * @author Silvio Giebl
+ * @since 1.2
  */
-class MqttWebSocketConfigImplTest {
+public enum MqttProxyType {
 
-    @Test
-    void equals() {
-        EqualsVerifier.forClass(MqttWebSocketConfigImpl.class).suppress(Warning.STRICT_INHERITANCE).verify();
-    }
+    SOCKS_4,
+    SOCKS_5,
+    HTTP
 }

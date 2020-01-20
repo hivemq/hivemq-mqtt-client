@@ -30,7 +30,7 @@ import java.net.InetSocketAddress;
  * @author Christoph Schäbel
  * @author Silvio Giebl
  */
-public final class SslUtil {
+public final class SslInitializer {
 
     private static final @NotNull String SSL_HANDLER_NAME = "ssl";
 
@@ -38,7 +38,7 @@ public final class SslUtil {
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
             final @NotNull InetSocketAddress address) throws SSLException {
 
-        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig, address));
+        channel.pipeline().addLast(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig, address));
     }
 
     private static @NotNull SslHandler createSslHandler(
@@ -71,5 +71,5 @@ public final class SslUtil {
         };
     }
 
-    private SslUtil() {}
+    private SslInitializer() {}
 }

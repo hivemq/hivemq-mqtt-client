@@ -15,19 +15,23 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt;
+package com.hivemq.client.mqtt;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.jupiter.api.Test;
+import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
+ * @since 1.2
  */
-class MqttWebSocketConfigImplTest {
+@DoNotImplement
+public interface MqttProxyConfigBuilder extends MqttProxyConfigBuilderBase<MqttProxyConfigBuilder> {
 
-    @Test
-    void equals() {
-        EqualsVerifier.forClass(MqttWebSocketConfigImpl.class).suppress(Warning.STRICT_INHERITANCE).verify();
+    @NotNull MqttProxyConfig build();
+
+    @DoNotImplement
+    interface Nested<P> extends MqttProxyConfigBuilderBase<Nested<P>> {
+
+        @NotNull P applyProxyConfig();
     }
 }

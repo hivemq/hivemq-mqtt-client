@@ -17,17 +17,15 @@
 
 package com.hivemq.client.internal.mqtt.handler;
 
-import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
-import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImpl;
+import com.hivemq.client.internal.mqtt.*;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
-import com.hivemq.client.internal.mqtt.handler.ssl.SslUtil;
+import com.hivemq.client.internal.mqtt.handler.proxy.MqttProxyInitializer;
+import com.hivemq.client.internal.mqtt.handler.ssl.SslInitializer;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -96,9 +94,13 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     void initChannel(final @NotNull Channel channel) throws Exception {
         final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
+        final MqttProxyConfigImpl proxyConfig = transportConfig.getRawProxyConfig();
+        if (proxyConfig != null) {
+            MqttProxyInitializer.initChannel(channel, proxyConfig);
+        }
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
         if (sslConfig != null) {
-            SslUtil.initChannel(channel, sslConfig, transportConfig.getServerAddress());
+            SslInitializer.initChannel(channel, sslConfig, transportConfig.getServerAddress());
         }
         final MqttWebSocketConfigImpl webSocketConfig = transportConfig.getRawWebSocketConfig();
         if (webSocketConfig != null) {

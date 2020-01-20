@@ -177,4 +177,26 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      */
     @CheckReturnValue
     @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> webSocketConfig();
+
+    /**
+     * Sets the optional {@link MqttClientTransportConfig#getProxyConfig() proxy configuration}.
+     *
+     * @param proxyConfig the proxy configuration or <code>null</code> to remove any previously set proxy
+     *                    configuration.
+     * @return the builder.
+     * @since 1.2
+     */
+    @NotNull B proxyConfig(@Nullable MqttProxyConfig proxyConfig);
+
+    /**
+     * Fluent counterpart of {@link #proxyConfig(MqttProxyConfig)}.
+     * <p>
+     * Calling {@link MqttProxyConfigBuilder.Nested#applyProxyConfig()} on the returned builder has the effect of
+     * extending the current proxy configuration.
+     *
+     * @return the fluent builder for the proxy configuration.
+     * @see #proxyConfig(MqttProxyConfig)
+     * @since 1.2
+     */
+    @NotNull MqttProxyConfigBuilder.Nested<? extends B> proxyConfig();
 }
