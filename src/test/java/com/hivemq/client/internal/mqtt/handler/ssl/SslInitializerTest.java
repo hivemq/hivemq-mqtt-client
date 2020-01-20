@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Christoph Schäbel
  */
-class SslUtilTest {
+class SslInitializerTest {
 
     @SuppressWarnings("NullabilityAnnotations")
     private EmbeddedChannel embeddedChannel;
@@ -183,6 +183,6 @@ class SslUtilTest {
     private static @NotNull SSLEngine createSslEngine(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
-        return SslUtil.createSslContext(sslConfig).newEngine(channel.alloc());
+        return SslInitializer.createSslContext(sslConfig).newEngine(channel.alloc());
     }
 }

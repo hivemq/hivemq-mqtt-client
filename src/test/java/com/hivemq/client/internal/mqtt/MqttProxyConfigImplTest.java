@@ -19,15 +19,20 @@ package com.hivemq.client.internal.mqtt;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Silvio Giebl
  */
-class MqttWebSocketConfigImplTest {
+class MqttProxyConfigImplTest {
 
     @Test
     void equals() {
-        EqualsVerifier.forClass(MqttWebSocketConfigImpl.class).suppress(Warning.STRICT_INHERITANCE).verify();
+        EqualsVerifier.forClass(MqttProxyConfigImpl.class)
+                .suppress(Warning.STRICT_INHERITANCE)
+                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
+                .withNonnullFields("type", "address")
+                .verify();
     }
 }

@@ -8,6 +8,7 @@ buildscript {
 }
 
 plugins {
+    id 'nebula.optional-base' version '3.0.3'
     id 'com.github.johnrengelman.shadow' version '4.0.4' apply false
     id 'biz.aQute.bnd.builder' version '4.2.0' apply false
     id 'com.github.hierynomus.license' version '0.14.0' apply false
@@ -80,14 +81,23 @@ ext {
 
 dependencies {
     api group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
+
+    implementation group: 'io.netty', name: 'netty-buffer', version: nettyVersion
+    implementation group: 'io.netty', name: 'netty-codec', version: nettyVersion
+    implementation group: 'io.netty', name: 'netty-common', version: nettyVersion
     implementation group: 'io.netty', name: 'netty-handler', version: nettyVersion
-    implementation group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
-    implementation group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
+    implementation group: 'io.netty', name: 'netty-transport', version: nettyVersion
     implementation group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
     implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
-    annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
+
+    implementation group: 'io.netty', name: 'netty-codec-http', version: nettyVersion, optional
+    implementation group: 'io.netty', name: 'netty-handler-proxy', version: nettyVersion, optional
+    implementation group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64', optional
+
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+
+    annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 }
 
 
