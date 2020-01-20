@@ -19,7 +19,7 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttProxyConfigBuilder;
-import com.hivemq.client.mqtt.MqttProxyType;
+import com.hivemq.client.mqtt.MqttProxyProtocol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,7 @@ import java.util.function.Function;
  */
 public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBuilder<B>> {
 
-    private @NotNull MqttProxyType type = MqttProxyConfigImpl.DEFAULT_PROXY_TYPE;
+    private @NotNull MqttProxyProtocol protocol = MqttProxyConfigImpl.DEFAULT_PROXY_PROTOCOL;
     private @Nullable InetSocketAddress address;
     private @NotNull Object host = MqttProxyConfigImpl.DEFAULT_PROXY_HOST; // String or InetAddress
     private int port = -1;
@@ -51,8 +51,8 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
 
     abstract @NotNull B self();
 
-    public @NotNull B proxyType(final @Nullable MqttProxyType type) {
-        this.type = Checks.notNull(type, "Proxy type");
+    public @NotNull B proxyProtocol(final @Nullable MqttProxyProtocol protocol) {
+        this.protocol = Checks.notNull(protocol, "Proxy protocol");
         return self();
     }
 
@@ -117,7 +117,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
         if (port != -1) {
             return port;
         }
-        switch (type) {
+        switch (protocol) {
             case SOCKS_4:
             case SOCKS_5:
                 return MqttProxyConfigImpl.DEFAULT_SOCKS_PROXY_PORT;
@@ -128,7 +128,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
     }
 
     public @NotNull MqttProxyConfigImpl build() {
-        return new MqttProxyConfigImpl(type, getProxyAddress(), username, password);
+        return new MqttProxyConfigImpl(protocol, getProxyAddress(), username, password);
     }
 
     public static class Default extends MqttProxyConfigImplBuilder<Default> implements MqttProxyConfigBuilder {

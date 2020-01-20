@@ -25,28 +25,64 @@ import java.net.InetSocketAddress;
 import java.util.Optional;
 
 /**
+ * Configuration for a proxy to use by {@link MqttClient MQTT clients}.
+ *
  * @author Silvio Giebl
  * @since 1.2
  */
 @DoNotImplement
 public interface MqttProxyConfig {
 
-    @NotNull MqttProxyType DEFAULT_PROXY_TYPE = MqttProxyType.SOCKS_5;
+    /**
+     * The default proxy protocol.
+     */
+    @NotNull MqttProxyProtocol DEFAULT_PROXY_PROTOCOL = MqttProxyProtocol.SOCKS_5;
+    /**
+     * The default proxy host.
+     */
     @NotNull String DEFAULT_PROXY_HOST = "localhost";
+    /**
+     * The default SOCKS proxy port.
+     */
     int DEFAULT_SOCKS_PROXY_PORT = 1080;
+    /**
+     * The default HTTP proxy port.
+     */
     int DEFAULT_HTTP_PROXY_PORT = 80;
 
+    /**
+     * Creates a builder for a proxy configuration.
+     *
+     * @return the created builder for a proxy configuration.
+     */
     static @NotNull MqttProxyConfigBuilder builder() {
         return new MqttProxyConfigImplBuilder.Default();
     }
 
-    @NotNull MqttProxyType getProxyType();
+    /**
+     * @return the proxy protocol.
+     */
+    @NotNull MqttProxyProtocol getProxyProtocol();
 
+    /**
+     * @return the proxy address to connect to.
+     */
     @NotNull InetSocketAddress getProxyAddress();
 
+    /**
+     * @return the optional proxy username.
+     */
     @NotNull Optional<String> getProxyUsername();
 
+    /**
+     * @return the optional proxy password.
+     */
     @NotNull Optional<String> getProxyPassword();
 
+    /**
+     * Creates a builder for extending this proxy configuration.
+     *
+     * @return the created builder.
+     */
     @NotNull MqttProxyConfigBuilder extend();
 }

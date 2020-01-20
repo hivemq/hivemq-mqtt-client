@@ -18,7 +18,7 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.mqtt.MqttProxyConfig;
-import com.hivemq.client.mqtt.MqttProxyType;
+import com.hivemq.client.mqtt.MqttProxyProtocol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,24 +31,24 @@ import java.util.Optional;
  */
 public class MqttProxyConfigImpl implements MqttProxyConfig {
 
-    private final @NotNull MqttProxyType type;
+    private final @NotNull MqttProxyProtocol protocol;
     private final @NotNull InetSocketAddress address;
     private final @Nullable String username;
     private final @Nullable String password;
 
     MqttProxyConfigImpl(
-            final @NotNull MqttProxyType type, final @NotNull InetSocketAddress address,
+            final @NotNull MqttProxyProtocol protocol, final @NotNull InetSocketAddress address,
             final @Nullable String username, final @Nullable String password) {
 
-        this.type = type;
+        this.protocol = protocol;
         this.address = address;
         this.username = username;
         this.password = password;
     }
 
     @Override
-    public @NotNull MqttProxyType getProxyType() {
-        return type;
+    public @NotNull MqttProxyProtocol getProxyProtocol() {
+        return protocol;
     }
 
     @Override
@@ -89,13 +89,13 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
         }
         final MqttProxyConfigImpl that = (MqttProxyConfigImpl) o;
 
-        return (type == that.type) && address.equals(that.address) && Objects.equals(username, that.username) &&
+        return (protocol == that.protocol) && address.equals(that.address) && Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        int result = type.hashCode();
+        int result = protocol.hashCode();
         result = 31 * result + address.hashCode();
         result = 31 * result + Objects.hashCode(username);
         result = 31 * result + Objects.hashCode(password);
