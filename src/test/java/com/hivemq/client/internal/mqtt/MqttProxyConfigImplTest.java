@@ -32,7 +32,7 @@ class MqttProxyConfigImplTest {
         EqualsVerifier.forClass(MqttProxyConfigImpl.class)
                 .suppress(Warning.STRICT_INHERITANCE)
                 .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
-                .withNonnullFields("type", "address")
+                .withNonnullFields("protocol", "address")
                 .verify();
     }
 }
