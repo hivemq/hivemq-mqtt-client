@@ -18,12 +18,23 @@
 package com.hivemq.client.mqtt;
 
 /**
+ * Available proxy protocols for a {@link MqttProxyConfig}.
+ *
  * @author Silvio Giebl
  * @since 1.2
  */
-public enum MqttProxyType {
+public enum MqttProxyProtocol {
 
+    /**
+     * SOCKS4 proxy protocol.
+     */
     SOCKS_4,
+    /**
+     * SOCKS5 proxy protocol.
+     */
     SOCKS_5,
+    /**
+     * HTTP CONNECT proxy protocol.
+     */
     HTTP
 }

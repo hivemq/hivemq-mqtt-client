@@ -40,7 +40,7 @@ public class MqttProxyInitializer {
         final String password = proxyConfig.getRawProxyPassword();
 
         final ProxyHandler proxyHandler;
-        switch (proxyConfig.getProxyType()) {
+        switch (proxyConfig.getProxyProtocol()) {
             case SOCKS_4:
                 proxyHandler = new Socks4ProxyHandler(address, username);
                 break;

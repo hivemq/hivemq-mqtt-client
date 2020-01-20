@@ -25,23 +25,67 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
+ * Builder base for a {@link MqttProxyConfig}.
+ *
  * @author Silvio Giebl
  * @since 1.2
  */
 @DoNotImplement
 public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase<B>> {
 
-    @NotNull B proxyType(@NotNull MqttProxyType type);
+    /**
+     * Sets the {@link MqttProxyConfig#getProxyProtocol() proxy protocol}.
+     *
+     * @param protocol the proxy protocol.
+     * @return the builder.
+     */
+    @NotNull B proxyProtocol(@NotNull MqttProxyProtocol protocol);
 
+    /**
+     * Sets the {@link MqttProxyConfig#getProxyAddress() proxy address} to connect to.
+     *
+     * @param address the proxy address.
+     * @return the builder.
+     */
     @NotNull B proxyAddress(@NotNull InetSocketAddress address);
 
+    /**
+     * Sets the proxy host to connect to.
+     *
+     * @param host the proxy host.
+     * @return the builder.
+     */
     @NotNull B proxyHost(@NotNull String host);
 
+    /**
+     * Sets the proxy host to connect to.
+     *
+     * @param host the proxy host.
+     * @return the builder.
+     */
     @NotNull B proxyHost(@NotNull InetAddress host);
 
+    /**
+     * Sets the proxy port to connect to.
+     *
+     * @param port the proxy port.
+     * @return the builder.
+     */
     @NotNull B proxyPort(int port);
 
+    /**
+     * Sets the {@link MqttProxyConfig#getProxyUsername() proxy username}.
+     *
+     * @param username the proxy username.
+     * @return the builder.
+     */
     @NotNull B proxyUsername(@Nullable String username);
 
+    /**
+     * Sets the {@link MqttProxyConfig#getProxyPassword() proxy password}.
+     *
+     * @param password the proxy username.
+     * @return the builder.
+     */
     @NotNull B proxyPassword(@Nullable String password);
 }
