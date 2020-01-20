@@ -114,7 +114,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 return reasonCode;
             }
 
-            protected boolean partialEquals(final @NotNull WithCode that) {
+            protected boolean partialEquals(final @NotNull WithCode<R> that) {
                 return super.partialEquals(that) && reasonCode.equals(that.reasonCode);
             }
 

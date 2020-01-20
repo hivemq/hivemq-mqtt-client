@@ -44,7 +44,7 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
 
     public Mqtt3RxClientViewBuilder() {}
 
-    public Mqtt3RxClientViewBuilder(final @NotNull MqttRxClientBuilderBase clientBuilder) {
+    public Mqtt3RxClientViewBuilder(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
         super(clientBuilder);
     }
 

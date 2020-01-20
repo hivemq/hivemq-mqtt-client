@@ -84,7 +84,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
 
         private final @NotNull Function<? super MqttWebSocketConfigImpl, P> parentConsumer;
 
-        public Nested(
+        Nested(
                 final @Nullable MqttWebSocketConfigImpl webSocketConfig,
                 final @NotNull Function<? super MqttWebSocketConfigImpl, P> parentConsumer) {
 

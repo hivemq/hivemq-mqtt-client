@@ -105,7 +105,7 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
         private final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer;
 
-        public Nested(
+        Nested(
                 final @Nullable MqttClientSslConfigImpl sslConfig,
                 final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer) {
 
