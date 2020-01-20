@@ -46,7 +46,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     public MqttRxClientBuilder() {}
 
-    MqttRxClientBuilder(final @NotNull MqttRxClientBuilderBase clientBuilder) {
+    MqttRxClientBuilder(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
         super(clientBuilder);
     }
 

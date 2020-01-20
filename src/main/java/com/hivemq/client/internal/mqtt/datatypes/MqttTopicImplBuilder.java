@@ -27,7 +27,7 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
+public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder<B>> {
 
     @Nullable StringBuilder stringBuilder;
 

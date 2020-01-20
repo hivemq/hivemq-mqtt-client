@@ -88,7 +88,7 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
 
         private final @NotNull Function<? super MqttClientExecutorConfigImpl, P> parentConsumer;
 
-        public Nested(
+        Nested(
                 final @NotNull MqttClientExecutorConfigImpl executorConfig,
                 final @NotNull Function<? super MqttClientExecutorConfigImpl, P> parentConsumer) {
 
