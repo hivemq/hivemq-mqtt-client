@@ -139,7 +139,7 @@ def addCheck(Jar jarTask) {
             archiveName += '-' + archiveAppendix
         }
 
-        String lastSemVer = project.prevVersion == null ? lastSemVer() : project.prevVersion
+        String lastSemVer = project.prevVersion
         String lastJarName = archiveName + '-' + lastSemVer + '.jar'
         File lastJar = new File(project.tasks.japicc.workingDir, lastJarName)
 
@@ -189,20 +189,6 @@ def addCheck(Jar jarTask) {
         }
     }
     project.tasks.japicc.dependsOn(task)
-}
-
-String lastSemVer() {
-    String version = project.version
-    def split = version.split('-')[0].split('\\.')
-    def major = Integer.valueOf(split[0])
-    def minor = Integer.valueOf(split[1])
-    def patch = Integer.valueOf(split[2])
-    if (patch > 0) {
-        patch--
-    } else if (minor > 0) {
-        minor--
-    }
-    return major + '.' + minor + '.' + patch
 }
 
 addCheck(project.tasks.jar)
