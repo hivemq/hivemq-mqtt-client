@@ -2,9 +2,7 @@ task japicc {
     group 'verification'
 
     ext {
-        japiccVersion = '2.4'
         workingDir = new File(project.buildDir, 'japicc')
-        executable = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '/japi-compliance-checker.pl')
     }
 }
 project.tasks.check.dependsOn(japicc)
@@ -14,14 +12,20 @@ if (rootProject.tasks.findByName('japiccDownload') == null) {
         group 'japicc'
         description 'Download Java API Compliance Checker'
 
-        outputs.files japicc.executable
+        String japiccVersion = '2.4'
+        File workingDir = new File(rootProject.buildDir, 'japicc')
+        ext {
+            executable = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '/japi-compliance-checker.pl')
+        }
 
-        File archive = new File(japicc.workingDir, 'japi-compliance-checker-' + japicc.japiccVersion + '.zip')
+        outputs.files executable
+
+        File archive = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '.zip')
 
         doLast {
             archive.parentFile.mkdirs()
             if (!archive.exists()) {
-                new URL('https://github.com/lvc/japi-compliance-checker/archive/' + japicc.japiccVersion + '.zip')
+                new URL('https://github.com/lvc/japi-compliance-checker/archive/' + japiccVersion + '.zip')
                         .withInputStream { i -> archive.withOutputStream { it << i } }
             }
         }
@@ -29,92 +33,90 @@ if (rootProject.tasks.findByName('japiccDownload') == null) {
         doLast {
             copy {
                 from zipTree(archive)
-                into japicc.workingDir
+                into workingDir
             }
         }
     }
 }
 
-if (rootProject.tasks.findByName('japiccNonImpl') == null) {
-    rootProject.tasks.create('japiccNonImpl') {
-        group 'japicc'
-        description 'List non impl interfaces'
+task japiccNonImpl {
+    group 'japicc'
+    description 'List non impl interfaces'
 
-        ext {
-            nonImplFile = new File(japicc.workingDir, 'non-impl')
-        }
+    ext {
+        nonImplFile = new File(project.tasks.japicc.workingDir, 'non-impl')
+    }
 
-        inputs.files sourceSets.main.java
-        outputs.files nonImplFile
+    inputs.files sourceSets.main.java
+    outputs.files nonImplFile
 
-        doLast {
-            nonImplFile.delete()
-            nonImplFile.parentFile.mkdirs()
-            nonImplFile.createNewFile()
+    doLast {
+        nonImplFile.delete()
+        nonImplFile.parentFile.mkdirs()
+        nonImplFile.createNewFile()
 
-            sourceSets.main.java.visit { FileTreeElement f ->
-                if (f.file.isFile()) {
-                    def packageName = f.relativePath.parent.pathString.replace('/', '.').replace('\\', '.')
+        sourceSets.main.java.visit { FileTreeElement f ->
+            if (f.file.isFile()) {
+                def packageName = f.relativePath.parent.pathString.replace('/', '.').replace('\\', '.')
 
-                    def content = f.file.getText("UTF-8")
-                    content = content.replaceAll('//.*\n', ' ') // remove line comments
-                    content = content.replaceAll('\n', ' ') // remove new lines
-                    content = content.replaceAll('/\\*.*?\\*/', ' ') // remove multi line comments
-                    content = content.replaceAll(' +', ' ') // remove unnecessary spaces
+                def content = f.file.getText("UTF-8")
+                content = content.replaceAll('//.*\n', ' ') // remove line comments
+                content = content.replaceAll('\n', ' ') // remove new lines
+                content = content.replaceAll('/\\*.*?\\*/', ' ') // remove multi line comments
+                content = content.replaceAll(' +', ' ') // remove unnecessary spaces
 
-                    def index = 0
-                    def classNames = []
-                    while (true) {
-                        def start = content.indexOf(' interface ', index)
-                        if (start == -1) break
+                def index = 0
+                def classNames = []
+                while (true) {
+                    def start = content.indexOf(' interface ', index)
+                    if (start == -1) break
 
-                        def sub = content.substring(0, start)
-                        def level = sub.count('{') - sub.count('}')
-                        while (level < classNames.size()) {
-                            classNames.remove(classNames.size() - 1)
-                        }
-
-                        start += ' interface '.length()
-                        def end = content.indexOf('{', start)
-                        if (end == -1) break
-
-                        def interfaceDef = content.substring(start, end)
-                        def className = interfaceDef.split('[ <{]', 2)[0]
-                        classNames.add(className)
-
-                        def annotationIndex = content.indexOf('@DoNotImplement', index)
-                        if (annotationIndex == -1) break
-
-                        if (annotationIndex < start) {
-                            def qualifiedName = packageName + "." + classNames.join('.')
-
-                            def rest = interfaceDef.substring(className.length()).trim()
-                            if (rest.startsWith('<')) {
-                                rest = rest.replaceAll('extends [^ <,]+', '') // remove all extends ...
-                                rest = rest.replaceAll('@.*? ', '') // remove all annotations
-                                def generics = '<'
-                                def nesting = 0
-                                for (def c : rest.chars) {
-                                    if (c == '<') {
-                                        nesting++
-                                    } else if (c == '>') {
-                                        nesting--
-                                    } else if (nesting == 1) {
-                                        generics += c
-                                    } else if (nesting == 0) {
-                                        break
-                                    }
-                                }
-                                generics += '>'
-                                generics = generics.replace(' ', '')
-                                qualifiedName += generics
-                            }
-
-                            nonImplFile.append(qualifiedName + '\n')
-                        }
-
-                        index = end + 1
+                    def sub = content.substring(0, start)
+                    def level = sub.count('{') - sub.count('}')
+                    while (level < classNames.size()) {
+                        classNames.remove(classNames.size() - 1)
                     }
+
+                    start += ' interface '.length()
+                    def end = content.indexOf('{', start)
+                    if (end == -1) break
+
+                    def interfaceDef = content.substring(start, end)
+                    def className = interfaceDef.split('[ <{]', 2)[0]
+                    classNames.add(className)
+
+                    def annotationIndex = content.indexOf('@DoNotImplement', index)
+                    if (annotationIndex == -1) break
+
+                    if (annotationIndex < start) {
+                        def qualifiedName = packageName + "." + classNames.join('.')
+
+                        def rest = interfaceDef.substring(className.length()).trim()
+                        if (rest.startsWith('<')) {
+                            rest = rest.replaceAll('extends [^ <,]+', '') // remove all extends ...
+                            rest = rest.replaceAll('@.*? ', '') // remove all annotations
+                            def generics = '<'
+                            def nesting = 0
+                            for (def c : rest.chars) {
+                                if (c == '<') {
+                                    nesting++
+                                } else if (c == '>') {
+                                    nesting--
+                                } else if (nesting == 1) {
+                                    generics += c
+                                } else if (nesting == 0) {
+                                    break
+                                }
+                            }
+                            generics += '>'
+                            generics = generics.replace(' ', '')
+                            qualifiedName += generics
+                        }
+
+                        nonImplFile.append(qualifiedName + '\n')
+                    }
+
+                    index = end + 1
                 }
             }
         }
@@ -130,20 +132,19 @@ def addCheck(Jar jarTask) {
 
         group 'japicc'
         description 'Checks for binary and source incompatibility.'
-        dependsOn rootProject.tasks.japiccDownload, rootProject.tasks.japiccNonImpl
+        dependsOn rootProject.tasks.japiccDownload, project.tasks.japiccNonImpl
 
-        File taskDir = new File(japicc.workingDir, taskName)
         String archiveName = archiveBaseName
-        if (archiveAppendix == '-') {
+        if (archiveAppendix != '') {
             archiveName += '-' + archiveAppendix
         }
 
         String lastSemVer = project.prevVersion == null ? lastSemVer() : project.prevVersion
         String lastJarName = archiveName + '-' + lastSemVer + '.jar'
-        File lastJar = new File(taskDir, lastJarName)
+        File lastJar = new File(project.tasks.japicc.workingDir, lastJarName)
 
-        File reportDir = new File(taskDir, 'compat_reports')
-        File report = new File(new File(reportDir, lastSemVer + '_to_' + project.version), 'compat_report.html')
+        File report = new File(new File(new File(new File(project.tasks.japicc.workingDir, 'compat_reports'),
+                archiveName), lastSemVer + '_to_' + project.version), 'compat_report.html')
 
         inputs.files jarTask
         outputs.files report
@@ -173,14 +174,14 @@ def addCheck(Jar jarTask) {
             description 'Check binary and source compatibility for last version'
             println(description)
 
-            def command = ['perl', japicc.executable.getPath(), '-lib', archiveName,
+            def command = ['perl', rootProject.tasks.japiccDownload.executable.getPath(), '-lib', archiveName,
                            '-skip-internal-packages', 'com.hivemq.client.internal',
                            '-skip-internal-packages', 'com.hivemq.shaded',
-                           '-non-impl', japiccNonImpl.nonImplFile.getPath(),
+                           '-non-impl', project.tasks.japiccNonImpl.nonImplFile.getPath(),
                            '-check-annotations', '-s',
                            lastJar.getPath(), jarTask.archiveFile.get().getAsFile().getPath()]
 
-            Process process = new ProcessBuilder(command).directory(taskDir).start()
+            Process process = new ProcessBuilder(command).directory(project.tasks.japicc.workingDir).start()
             int returnCode = process.waitFor()
             if (returnCode != 0) {
                 throw new GradleException('Binary or source incompatibilities, code ' + returnCode)
