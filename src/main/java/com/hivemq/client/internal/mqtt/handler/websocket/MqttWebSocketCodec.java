@@ -23,10 +23,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.ContinuationWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -39,7 +36,7 @@ import javax.inject.Singleton;
 @Singleton
 public class MqttWebSocketCodec extends ChannelDuplexHandler {
 
-    public static final @NotNull String NAME = "ws.codec";
+    public static final @NotNull String NAME = "ws.mqtt";
 
     @Inject
     MqttWebSocketCodec() {}
@@ -47,10 +44,19 @@ public class MqttWebSocketCodec extends ChannelDuplexHandler {
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (msg instanceof WebSocketFrame) {
+            final WebSocketFrame webSocketFrame = (WebSocketFrame) msg;
             if ((msg instanceof BinaryWebSocketFrame) || (msg instanceof ContinuationWebSocketFrame)) {
-                ctx.fireChannelRead(((WebSocketFrame) msg).content());
+                ctx.fireChannelRead(webSocketFrame.content());
             } else if (msg instanceof TextWebSocketFrame) {
+                webSocketFrame.release();
                 MqttDisconnectUtil.close(ctx.channel(), "Must not receive text websocket frames");
+            } else if (msg instanceof CloseWebSocketFrame) {
+                webSocketFrame.release();
+                ctx.close();
+            } else if (msg instanceof PingWebSocketFrame) {
+                ctx.channel().writeAndFlush(new PongWebSocketFrame(webSocketFrame.content()));
+            } else {
+                webSocketFrame.release();
             }
         } else {
             ctx.fireChannelRead(msg);
