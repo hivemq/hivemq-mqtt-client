@@ -52,19 +52,16 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
     private final @NotNull MqttClientConfig clientConfig;
 
     private final @NotNull MqttChannelInitializer mqttChannelInitializer;
-    private final @NotNull WebSocketBinaryFrameEncoder webSocketBinaryFrameEncoder;
-    private final @NotNull WebSocketBinaryFrameDecoder webSocketBinaryFrameDecoder;
+    private final @NotNull MqttWebSocketCodec mqttWebSocketCodec;
 
     @Inject
     MqttWebSocketInitializer(
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttChannelInitializer mqttChannelInitializer,
-            final @NotNull WebSocketBinaryFrameEncoder webSocketBinaryFrameEncoder,
-            final @NotNull WebSocketBinaryFrameDecoder webSocketBinaryFrameDecoder) {
+            final @NotNull MqttWebSocketCodec mqttWebSocketCodec) {
 
         this.clientConfig = clientConfig;
         this.mqttChannelInitializer = mqttChannelInitializer;
-        this.webSocketBinaryFrameEncoder = webSocketBinaryFrameEncoder;
-        this.webSocketBinaryFrameDecoder = webSocketBinaryFrameDecoder;
+        this.mqttWebSocketCodec = mqttWebSocketCodec;
     }
 
     public void initChannel(final @NotNull Channel channel, final @NotNull MqttWebSocketConfigImpl webSocketConfig)
@@ -87,8 +84,7 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
                 .addLast(HTTP_AGGREGATOR_NAME, httpAggregator)
                 .addLast(PROTOCOL_HANDLER_NAME, webSocketClientProtocolHandler)
                 .addLast(NAME, this)
-                .addLast(WebSocketBinaryFrameEncoder.NAME, webSocketBinaryFrameEncoder)
-                .addLast(WebSocketBinaryFrameDecoder.NAME, webSocketBinaryFrameDecoder);
+                .addLast(MqttWebSocketCodec.NAME, mqttWebSocketCodec);
     }
 
     @Override
