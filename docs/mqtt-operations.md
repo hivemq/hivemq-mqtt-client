@@ -3,6 +3,7 @@ layout: default
 title: MQTT Operations
 nav_order: 5
 has_children: true
+redirect_from: /docs/mqtt_operations.html
 ---
 
 # MQTT Operations

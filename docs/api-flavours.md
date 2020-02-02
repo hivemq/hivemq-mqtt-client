@@ -2,6 +2,7 @@
 layout: default
 title: API Flavours
 nav_order: 4
+redirect_from: /docs/api_flavours.html
 ---
 
 # API Flavours

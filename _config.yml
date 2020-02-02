@@ -22,6 +22,8 @@ aux_links:
   "GitHub":
     - "https://github.com/hivemq/hivemq-mqtt-client"
 
+permalink: pretty
+
 plugins:
   - jekyll-remote-theme
   - jekyll-relative-links
