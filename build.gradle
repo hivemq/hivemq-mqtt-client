@@ -17,9 +17,7 @@ plugins {
 
 allprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
-        jcenter()
     }
 }
 
@@ -147,6 +145,11 @@ allprojects {
                     'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
                     '-consumer-policy': '${range;[==,=+)}',
                     '-removeheaders': 'Private-Package')
+        }
+
+        javadoc {
+            options.encoding 'UTF-8'
+            exclude '**/internal/**'
         }
 
         task javadocJar(type: Jar) {
