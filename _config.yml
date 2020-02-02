@@ -25,6 +25,7 @@ aux_links:
 plugins:
   - jekyll-remote-theme
   - jekyll-relative-links
+  - jekyll-redirect-from
 
 sass:
   style: compressed
