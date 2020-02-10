@@ -92,7 +92,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'gradle.plugin.com.github.sgtsilvio.gradle:android-retrofix:0.2.1'
+        classpath 'gradle.plugin.com.github.sgtsilvio.gradle:android-retrofix:{{ site.android_retrofix_version }}'
     }
 }
 
