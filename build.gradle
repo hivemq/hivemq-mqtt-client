@@ -1,24 +1,9 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.2.0'
-    }
-}
-
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.4' apply false
-    id 'biz.aQute.bnd.builder' version '4.2.0' apply false
-    id 'com.github.hierynomus.license' version '0.14.0' apply false
-    id 'com.jfrog.bintray' version '1.8.4' apply false
-    id 'com.github.breadmoirai.github-release' version '2.2.9' apply false
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-    }
+    id 'com.github.johnrengelman.shadow' apply false
+    id 'biz.aQute.bnd.builder' apply false
+    id 'com.github.hierynomus.license' apply false
+    id 'com.jfrog.bintray' apply false
+    id 'com.github.breadmoirai.github-release' apply false
 }
 
 
@@ -68,6 +53,12 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 
 /* ******************** dependencies ******************** */
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
 
 ext {
     rxJavaVersion = '2.2.5'
@@ -176,7 +167,7 @@ allprojects {
             group 'documentation'
             description 'Assembles a jar archive containing the javadoc.'
 
-            from javadoc
+            from tasks.javadoc
             classifier 'javadoc'
         }
 
