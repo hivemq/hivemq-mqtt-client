@@ -1,5 +1,6 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' apply false
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow'
     id 'biz.aQute.bnd.builder' apply false
     id 'com.github.hierynomus.license' apply false
     id 'com.jfrog.bintray' apply false
@@ -38,18 +39,15 @@ allprojects {
 /* ******************** java ******************** */
 
 allprojects {
-    apply plugin: 'java'
+    plugins.withType(JavaPlugin) {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
+        tasks.withType(JavaCompile) {
+            options.encoding = 'UTF-8'
+        }
     }
 }
-
-apply plugin: 'java-library'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 
 /* ******************** dependencies ******************** */
@@ -108,20 +106,22 @@ dependencies {
 /* ******************** test ******************** */
 
 allprojects {
-    dependencies {
-        def junit5Version = '5.5.1'
-        def junitPlatformVersion = '1.5.1'
+    plugins.withType(JavaPlugin) {
+        dependencies {
+            def  junit5Version = '5.5.1'
+            def junitPlatformVersion = '1.5.1'
 
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
-        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
-        testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
-    }
+            testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+            testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
+            testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine',  version: junit5Version
+            testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
+        }
 
-    test {
-        useJUnitPlatform()
-        maxHeapSize = '4096m'
-        jvmArgs '-XX:+UseParallelGC'
+        test {
+            useJUnitPlatform()
+            maxHeapSize = '4096m'
+            jvmArgs '-XX:+UseParallelGC'
+        }
     }
 }
 
@@ -262,34 +262,34 @@ allprojects {
 
         project.apply plugin: 'com.jfrog.bintray'
 
-        afterEvaluate {
-            bintray {
-                user = project.bintray_username
-                key = project.bintray_apiKey
-                publications = publishing.publications.withType(MavenPublication).stream().collect { it.name }
-                publish = true
-                pkg {
-                    userOrg = 'hivemq'
-                    repo = 'HiveMQ'
-                    name = 'hivemq-mqtt-client'
-                    desc = project.description
-                    websiteUrl = project.githubUrl
-                    issueTrackerUrl = project.issuesUrl
-                    vcsUrl = project.githubUrl + '.git'
-                    licenses = [project.licenseShortName]
-                    labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
-                    version {
-                        released = new Date()
-                        gpg {
-                            sign = true
-                        }
-                        /*mavenCentralSync {
-                            user = ''
-                            password = ''
-                        }*/
+        bintray {
+            user = project.bintray_username
+            key = project.bintray_apiKey
+            publish = true
+            pkg {
+                userOrg = 'hivemq'
+                repo = 'HiveMQ'
+                name = 'hivemq-mqtt-client'
+                desc = project.description
+                websiteUrl = project.githubUrl
+                issueTrackerUrl = project.issuesUrl
+                vcsUrl = project.githubUrl + '.git'
+                licenses = [project.licenseShortName]
+                labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
+                version {
+                    released = new Date()
+                    gpg {
+                        sign = true
                     }
+                    /*mavenCentralSync {
+                        user = ''
+                        password = ''
+                    }*/
                 }
             }
+        }
+        afterEvaluate {
+            bintray.publications = publishing.publications.withType(MavenPublication).stream().collect { it.name }
         }
 
         // workaround for publishing gradle metadata https://github.com/bintray/gradle-bintray-plugin/issues/229

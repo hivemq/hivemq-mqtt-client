@@ -1,3 +1,7 @@
+plugins {
+    id 'java-library'
+}
+
 description 'Adds a reactor API to the HiveMQ MQTT Client'
 
 ext {
@@ -5,8 +9,6 @@ ext {
     readableName = 'HiveMQ MQTT Client reactor module'
     prevVersion = '1.1.3'
 }
-
-apply plugin: 'java-library'
 
 dependencies {
     api rootProject
