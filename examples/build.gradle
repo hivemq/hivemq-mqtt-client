@@ -1,4 +1,8 @@
-description 'HiveMQ MQTT Client examples'
+plugins {
+    id 'java'
+}
+
+description 'Examples using the HiveMQ MQTT Client'
 
 ext {
     moduleName = 'com.hivemq.client.mqtt.examples'
