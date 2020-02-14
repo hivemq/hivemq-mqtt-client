@@ -38,6 +38,9 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * @author Silvio Giebl
+ */
 public class MqttReactorClient implements Mqtt5ReactorClient {
 
     private final @NotNull Mqtt5RxClient delegate;

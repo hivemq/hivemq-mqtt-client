@@ -37,6 +37,9 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * @author Silvio Giebl
+ */
 public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
 
     private final @NotNull Mqtt3RxClient delegate;
