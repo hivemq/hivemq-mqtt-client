@@ -139,7 +139,6 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
         if (reconnector.isReconnect()) {
             clientConfig.getRawState().set(DISCONNECTED_RECONNECT);
-            clientConfig.acquireEventLoop();
             eventLoop.schedule(() -> {
                 reconnector.getFuture().whenComplete((ignored, throwable) -> {
                     if (reconnector.isReconnect()) {
@@ -163,6 +162,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             }, reconnector.getDelay(TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS);
         } else {
             clientConfig.getRawState().set(DISCONNECTED);
+            clientConfig.releaseEventLoop();
             if (flow != null) {
                 flow.onError(cause);
             }

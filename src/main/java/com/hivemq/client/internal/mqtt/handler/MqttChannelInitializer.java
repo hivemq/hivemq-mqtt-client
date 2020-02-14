@@ -115,6 +115,5 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         ctx.close();
         MqttConnAckSingle.reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause),
                 connect, connAckFlow, ctx.channel().eventLoop());
-        clientConfig.releaseEventLoop();
     }
 }
