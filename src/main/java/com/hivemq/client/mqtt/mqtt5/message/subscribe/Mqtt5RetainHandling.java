@@ -28,15 +28,15 @@ import org.jetbrains.annotations.Nullable;
 public enum Mqtt5RetainHandling {
 
     /**
-     * Send retained messages at the time of the subscribe.
+     * Send retained messages for the current subscription.
      */
     SEND,
     /**
-     * Send retained messages at subscribe only if the subscription does not currently exist.
+     * Send retained messages for the current subscription only if the subscription does not currently exist.
      */
     SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST,
     /**
-     * Do not send retained messages at the time of the subscribe.
+     * Do not send retained messages for the current subscription.
      */
     DO_NOT_SEND;
 
