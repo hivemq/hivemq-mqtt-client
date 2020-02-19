@@ -45,7 +45,7 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
      */
     UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
     /**
-     * A packet could not be correctly parsed according to the MQTT specification.
+     * A packet could not be parsed correctly according to the MQTT specification.
      */
     MALFORMED_PACKET(MqttCommonReasonCode.MALFORMED_PACKET),
     /**
@@ -82,11 +82,11 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
      */
     SESSION_TAKEN_OVER(0x8E),
     /**
-     * A packet contained a topic filter that is correctly formed but is not accepted by the server.
+     * A packet contained a topic filter that is formed correctly but is not accepted by the server.
      */
     TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
     /**
-     * A packet contained a topic name that is correctly formed but is not accepted by the receiver.
+     * A packet contained a topic name that is formed correctly but is not accepted by the receiver.
      */
     TOPIC_NAME_INVALID(MqttCommonReasonCode.TOPIC_NAME_INVALID),
     /**

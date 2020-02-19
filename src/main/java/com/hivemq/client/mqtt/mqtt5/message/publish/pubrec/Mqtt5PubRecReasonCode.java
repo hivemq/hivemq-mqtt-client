@@ -53,7 +53,7 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
      */
     NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
     /**
-     * The topic name is correctly formed but is not accepted by the receiver.
+     * The topic name is formed correctly but is not accepted by the receiver.
      */
     TOPIC_NAME_INVALID(MqttCommonReasonCode.TOPIC_NAME_INVALID),
     /**

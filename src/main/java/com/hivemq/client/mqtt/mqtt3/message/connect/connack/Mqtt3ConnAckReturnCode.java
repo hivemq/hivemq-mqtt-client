@@ -39,7 +39,7 @@ public enum Mqtt3ConnAckReturnCode implements Mqtt3ReturnCode {
      */
     UNSUPPORTED_PROTOCOL_VERSION,
     /**
-     * The client identifier is correctly formed but is not accepted by the server.
+     * The client identifier is formed correctly but is not accepted by the server.
      */
     IDENTIFIER_REJECTED,
     /**

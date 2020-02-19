@@ -39,7 +39,7 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
      */
     UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
     /**
-     * The CONNECT packet could not be correctly parsed according to the MQTT specification.
+     * The CONNECT packet could not be parsed correctly according to the MQTT specification.
      */
     MALFORMED_PACKET(MqttCommonReasonCode.MALFORMED_PACKET),
     /**
@@ -55,7 +55,7 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
      */
     UNSUPPORTED_PROTOCOL_VERSION(0x84),
     /**
-     * The client identifier is correctly formed but is not accepted by the server.
+     * The client identifier is formed correctly but is not accepted by the server.
      */
     CLIENT_IDENTIFIER_NOT_VALID(0x85),
     /**
@@ -83,7 +83,7 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
      */
     BAD_AUTHENTICATION_METHOD(MqttCommonReasonCode.BAD_AUTHENTICATION_METHOD),
     /**
-     * The Will topic name is correctly formed but is not accepted by the server.
+     * The Will topic name is formed correctly but is not accepted by the server.
      */
     TOPIC_NAME_INVALID(MqttCommonReasonCode.TOPIC_NAME_INVALID),
     /**

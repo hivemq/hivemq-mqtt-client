@@ -51,7 +51,7 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
      */
     NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
     /**
-     * The topic filter is correctly formed but is not accepted by the server (for this client).
+     * The topic filter is formed correctly but is not accepted by the server (for this client).
      */
     TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
     /**
