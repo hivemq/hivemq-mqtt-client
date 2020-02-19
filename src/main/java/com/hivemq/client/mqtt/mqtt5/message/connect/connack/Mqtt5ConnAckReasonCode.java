@@ -43,7 +43,7 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
      */
     MALFORMED_PACKET(MqttCommonReasonCode.MALFORMED_PACKET),
     /**
-     * The CONNECT contained data that is not allowed by the MQTT protocol.
+     * The CONNECT packet contained data that is not allowed by the MQTT protocol.
      */
     PROTOCOL_ERROR(MqttCommonReasonCode.PROTOCOL_ERROR),
     /**

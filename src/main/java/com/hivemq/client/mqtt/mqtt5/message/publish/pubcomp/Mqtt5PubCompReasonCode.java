@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
 
     /**
-     * Packet identifier released. Publication of QoS 2 message is complete.
+     * Packet identifier released. Publication of the QoS 2 message is complete.
      */
     SUCCESS(MqttCommonReasonCode.SUCCESS),
     /**
