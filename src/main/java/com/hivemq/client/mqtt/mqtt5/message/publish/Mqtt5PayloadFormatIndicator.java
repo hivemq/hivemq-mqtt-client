@@ -28,11 +28,11 @@ import org.jetbrains.annotations.Nullable;
 public enum Mqtt5PayloadFormatIndicator {
 
     /**
-     * Payload is unspecified bytes.
+     * Payload consists of unspecified bytes.
      */
     UNSPECIFIED,
     /**
-     * Payload is UTF-8 encoded character data as defined by the Unicode specification and restated in RFC 3629.
+     * Payload consists of UTF-8 encoded character data as defined by the Unicode specification and restated in RFC 3629.
      */
     UTF_8;
 
