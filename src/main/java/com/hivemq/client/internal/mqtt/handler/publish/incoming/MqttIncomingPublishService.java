@@ -64,7 +64,7 @@ class MqttIncomingPublishService {
                 final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos0It.next();
                 qos0It.remove();
                 for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
-                    if (h.getElement().dereference() == 1) {
+                    if (h.getElement().dereference() == 0) {
                         referencedFlowCount--;
                     }
                 }

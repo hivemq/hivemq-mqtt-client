@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 @NotThreadSafe
 public class NodeList<N extends NodeList.Node<N>> {
 
-    public static abstract class Node<N extends Node> {
+    public static abstract class Node<N extends Node<N>> {
 
         @Nullable N prev, next;
 
