@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil.fireDisconnectEvent;
@@ -113,8 +114,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         if (state == null) {
             state = State.CLOSED;
             fireDisconnectEvent(ctx.channel(), new ConnectionClosedException(cause), MqttDisconnectSource.CLIENT);
-        } else {
-            LOGGER.error("Exception while disconnecting.", cause);
+        } else if (!(cause instanceof IOException)) {
+            LOGGER.warn("Exception while disconnecting: {}", cause);
         }
     }
 
