@@ -366,7 +366,7 @@ public class Index<E, K> {
                         }
                     } else {
                         final int hash = spec.keyFunction.apply(cast(o)).hashCode();
-                        final int newIndex = hash & (newCapacity - 1);
+                        final int newIndex = hash & newMask;
                         newTable[newIndex] = o;
                     }
                 }
@@ -392,9 +392,9 @@ public class Index<E, K> {
 
             System.arraycopy(oldTable, 0, newTable, 0, newCapacity);
             for (int oldIndex = newCapacity; oldIndex < oldCapacity; oldIndex++) {
-                final int newIndex = oldIndex - newCapacity;
                 final Object old = oldTable[oldIndex];
                 if (old != null) {
+                    final int newIndex = oldIndex - newCapacity;
                     final Object o = newTable[newIndex];
                     if (o == null) {
                         newTable[newIndex] = old;
