@@ -349,7 +349,7 @@ public class IntIndex<E> {
                         }
                     } else {
                         final int key = spec.keyFunction.applyAsInt(cast(o));
-                        final int newIndex = key & (newCapacity - 1);
+                        final int newIndex = key & newMask;
                         newTable[newIndex] = o;
                     }
                 }
@@ -375,9 +375,9 @@ public class IntIndex<E> {
 
             System.arraycopy(oldTable, 0, newTable, 0, newCapacity);
             for (int oldIndex = newCapacity; oldIndex < oldCapacity; oldIndex++) {
-                final int newIndex = oldIndex - newCapacity;
                 final Object old = oldTable[oldIndex];
                 if (old != null) {
+                    final int newIndex = oldIndex - newCapacity;
                     final Object o = newTable[newIndex];
                     if (o == null) {
                         newTable[newIndex] = old;
