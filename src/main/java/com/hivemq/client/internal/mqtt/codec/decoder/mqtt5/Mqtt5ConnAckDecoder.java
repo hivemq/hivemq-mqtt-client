@@ -26,6 +26,7 @@ import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
+import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.buffer.ByteBuf;
@@ -62,7 +63,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         checkFixedHeaderFlags(FLAGS, flags);
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            throw remainingLengthTooShort();
+            return tryDecodeMqtt3(in);
         }
 
         final short connAckFlags = in.readUnsignedByte();
@@ -260,5 +261,18 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         return new MqttConnAck(reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive,
                 assignedClientIdentifier, enhancedAuth, restrictions, responseInformation, serverReference,
                 reasonString, userProperties);
+    }
+
+    public @NotNull MqttConnAck tryDecodeMqtt3(final @NotNull ByteBuf in) throws MqttDecoderException {
+        if (in.readableBytes() == 2) {
+            in.readUnsignedByte(); // ignore connAckFlags
+            final Mqtt3ConnAckReturnCode returnCode = Mqtt3ConnAckReturnCode.fromCode(in.readUnsignedByte());
+            if (returnCode == Mqtt3ConnAckReturnCode.UNSUPPORTED_PROTOCOL_VERSION) {
+                return new MqttConnAck(Mqtt5ConnAckReasonCode.UNSUPPORTED_PROTOCOL_VERSION, false,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT, KEEP_ALIVE_FROM_CONNECT, null, null,
+                        MqttConnAckRestrictions.DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+            }
+        }
+        throw remainingLengthTooShort();
     }
 }
