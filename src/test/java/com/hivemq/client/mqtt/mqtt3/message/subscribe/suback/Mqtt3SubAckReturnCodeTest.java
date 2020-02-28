@@ -30,22 +30,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt3SubAckReturnCodeTest {
 
     @Test
-    void getCode_success() {
+    void getCode_successMaximumQos0() {
         assertEquals(0x00, Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_0.getCode());
     }
 
     @Test
-    void getCode_unsupportedProtocolVersion() {
+    void getCode_successMaximumQos1() {
         assertEquals(0x01, Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_1.getCode());
     }
 
     @Test
-    void getCode_identifierRejected() {
+    void getCode_successMaximumQos2() {
         assertEquals(0x02, Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_2.getCode());
     }
 
     @Test
-    void getCode_serverUnavailable() {
+    void getCode_failure() {
         assertEquals(0x80, Mqtt3SubAckReturnCode.FAILURE.getCode());
     }
 
