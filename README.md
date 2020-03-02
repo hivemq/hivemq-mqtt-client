@@ -68,7 +68,7 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.1.3'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.1.4'
 }
 ```
 
@@ -90,7 +90,7 @@ NOTE: You have to set the compiler version to `1.8` or higher.
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.1.3</version>
+            <version>1.1.4</version>
         </dependency>
     </dependencies>
     ...
@@ -107,7 +107,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.1.3'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.1.4'
 }
 ```
 
@@ -120,7 +120,7 @@ dependencies {
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.1.3</version>
+            <version>1.1.4</version>
         </dependency>
     </dependencies>
     ...
