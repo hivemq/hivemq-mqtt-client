@@ -31,6 +31,7 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.reactor.mqtt3.Mqtt3ReactorClient;
+import com.hivemq.client.rx.reactor.FluxWithSingle;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
@@ -56,8 +57,8 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return Mono.fromDirect(delegate.subscribe(subscribe).toFlowable());
     }
 
-    public @NotNull Flux<Mqtt3Publish> subscribeStream(final @NotNull Mqtt3Subscribe subscribe) {
-        return Flux.from(delegate.subscribeStream(subscribe));
+    public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(final @NotNull Mqtt3Subscribe subscribe) {
+        return FluxWithSingle.from(delegate.subscribeStream(subscribe));
     }
 
     public @NotNull Flux<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {

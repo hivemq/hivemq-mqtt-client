@@ -32,6 +32,7 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.reactor.mqtt5.Mqtt5ReactorClient;
+import com.hivemq.client.rx.reactor.FluxWithSingle;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
@@ -57,8 +58,8 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return Mono.fromDirect(delegate.subscribe(subscribe).toFlowable());
     }
 
-    public @NotNull Flux<Mqtt5Publish> subscribeStream(final @NotNull Mqtt5Subscribe subscribe) {
-        return Flux.from(delegate.subscribeStream(subscribe));
+    public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(final @NotNull Mqtt5Subscribe subscribe) {
+        return FluxWithSingle.from(delegate.subscribeStream(subscribe));
     }
 
     public @NotNull Flux<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
