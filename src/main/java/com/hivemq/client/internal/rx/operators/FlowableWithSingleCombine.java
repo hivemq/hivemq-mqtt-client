@@ -90,12 +90,18 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
 
         @Override
         public void onError(final @NotNull Throwable throwable) {
-            subscriber.onError(throwable);
+            final Object next = queued.get();
+            if ((next == null) || !queued.compareAndSet(next, new TerminalElement(next, throwable))) {
+                subscriber.onError(throwable);
+            }
         }
 
         @Override
         public void onComplete() {
-            subscriber.onComplete();
+            final Object next = queued.get();
+            if ((next == null) || !queued.compareAndSet(next, new TerminalElement(next, null))) {
+                subscriber.onComplete();
+            }
         }
 
         @Override
@@ -105,8 +111,19 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
                 if (requested.get() == 0) {
                     final Object next = queued.getAndSet(null);
                     if (next != null) {
-                        subscriber.onNext(next);
-                        n--;
+                        if (next instanceof TerminalElement) {
+                            final TerminalElement terminalElement = (TerminalElement) next;
+                            subscriber.onNext(terminalElement.element);
+                            if (terminalElement.error == null) {
+                                subscriber.onComplete();
+                            } else {
+                                subscriber.onError(terminalElement.error);
+                            }
+                            return;
+                        } else {
+                            subscriber.onNext(next);
+                            n--;
+                        }
                     }
                 }
                 if (n > 0) {
@@ -228,6 +245,17 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
 
         SingleElement(final @NotNull Object element) {
             this.element = element;
+        }
+    }
+
+    private static class TerminalElement {
+
+        final @NotNull Object element;
+        final @Nullable Throwable error;
+
+        TerminalElement(final @NotNull Object element, final @Nullable Throwable error) {
+            this.element = element;
+            this.error = error;
         }
     }
 }

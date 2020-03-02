@@ -188,7 +188,10 @@ class FlowableWithSingleTest {
                 .assertValue("next0")
                 .requestMore(1022)
                 .awaitCount(1023)
+                .assertValueCount(1023)
                 .requestMore(1)
+                .awaitCount(1024)
+                .assertValueCount(1024)
                 .await()
                 .assertError(IllegalArgumentException.class)
                 .assertErrorMessage("test");

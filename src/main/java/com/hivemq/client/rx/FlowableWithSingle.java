@@ -140,8 +140,8 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
             final @NotNull Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
-        Checks.notNull(singleMapper, "Single mapper");
         Checks.notNull(flowableMapper, "Flowable mapper");
+        Checks.notNull(singleMapper, "Single mapper");
         return FlowableWithSingleMap.mapBoth(this, flowableMapper, singleMapper);
     }
 
