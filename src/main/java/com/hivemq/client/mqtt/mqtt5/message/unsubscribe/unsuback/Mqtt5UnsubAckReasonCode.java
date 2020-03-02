@@ -30,12 +30,33 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
 
+    /**
+     * The subscription is deleted.
+     */
     SUCCESS(MqttCommonReasonCode.SUCCESS),
+    /**
+     * No matching topic filter is being used by the client.
+     */
     NO_SUBSCRIPTIONS_EXISTED(0x11),
+    /**
+     * The server either does not want to reveal the reason for the failure or none of the other reason codes apply.
+     */
     UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    /**
+     * The UNSUBSCRIBE packet is valid but is not accepted by the server.
+     */
     IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    /**
+     * The client is not authorized to unsubscribe.
+     */
     NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    /**
+     * The topic filter is formed correctly but is not accepted by the server (for this client).
+     */
     TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
+    /**
+     * The specified packet identifier is already in use.
+     */
     PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE);
 
     private static final @NotNull Mqtt5UnsubAckReasonCode[] VALUES = values();
@@ -59,8 +80,8 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
      * Returns the UnsubAck Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the UnsubAck Reason Code belonging to the given byte code or null if the byte code is not a valid
-     *         UnsubAck Reason Code code.
+     * @return the UnsubAck Reason Code belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid UnsubAck Reason Code code.
      */
     public static @Nullable Mqtt5UnsubAckReasonCode fromCode(final int code) {
         for (final Mqtt5UnsubAckReasonCode reasonCode : VALUES) {

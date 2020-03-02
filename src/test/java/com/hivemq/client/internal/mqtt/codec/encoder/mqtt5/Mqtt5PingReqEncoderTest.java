@@ -23,7 +23,7 @@ import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * @author David Katz

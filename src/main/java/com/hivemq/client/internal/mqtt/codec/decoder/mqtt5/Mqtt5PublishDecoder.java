@@ -27,7 +27,6 @@ import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.internal.util.Utf8Util;
 import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.internal.util.collections.IntMap;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
@@ -173,20 +172,20 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         }
 
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-            final IntMap<MqttTopicImpl> topicAliasMapping = context.getTopicAliasMapping();
-            if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.getMaxKey())) {
+            final MqttTopicImpl[] topicAliasMapping = context.getTopicAliasMapping();
+            if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
                 throw new MqttDecoderException(
                         Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
                         "topic alias must not exceed topic alias maximum");
             }
             if (topic == null) {
-                topic = topicAliasMapping.get(topicAlias);
+                topic = topicAliasMapping[topicAlias - 1];
                 if (topic == null) {
                     throw new MqttDecoderException(
                             Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias has no mapping");
                 }
             } else {
-                topicAliasMapping.put(topicAlias, topic);
+                topicAliasMapping[topicAlias - 1] = topic;
                 topicAlias |= TOPIC_ALIAS_FLAG_NEW;
             }
         } else if (topic == null) {

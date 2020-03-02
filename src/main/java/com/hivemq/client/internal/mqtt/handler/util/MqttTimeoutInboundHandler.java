@@ -25,10 +25,12 @@ import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,13 +49,20 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
      * @param future the future of the operation that triggers a timeout.
      */
     @Override
-    public void operationComplete(final @NotNull ChannelFuture future) {
+    public void operationComplete(final @NotNull ChannelFuture future) throws Exception {
         if (ctx == null) {
             return;
         }
-        if (future.isSuccess()) {
-            scheduleTimeout(ctx.channel());
+        final Throwable cause = future.cause();
+        if (cause == null) {
+            operationSuccessful(ctx);
+        } else if (!(cause instanceof IOException)) {
+            exceptionCaught(ctx, cause);
         }
+    }
+
+    protected void operationSuccessful(final @NotNull ChannelHandlerContext ctx) {
+        scheduleTimeout(ctx.channel());
     }
 
     /**
@@ -102,8 +111,9 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
     }
 
     @Override
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        super.onDisconnectEvent(disconnectEvent);
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
         cancelTimeout();
     }
 
@@ -124,9 +134,4 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
      * @return the Reason String that will be used to notify the API and may also be sent with a DISCONNECT message.
      */
     protected abstract @NotNull String getTimeoutReasonString();
-
-    @Override
-    public final boolean isSharable() {
-        return false;
-    }
 }

@@ -136,10 +136,9 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return handleSubAck(
-                delegate.subscribeStreamUnsafe(mqttSubscribe)
-                .observeOnBoth(Schedulers.from(executor), true).subscribeSingleFuture(new CallbackSubscriber(callback)),
-                mqttSubscribe);
+        return handleSubAck(delegate.subscribeStreamUnsafe(mqttSubscribe)
+                .observeOnBoth(Schedulers.from(executor), true)
+                .subscribeSingleFuture(new CallbackSubscriber(callback)), mqttSubscribe);
     }
 
     @Override

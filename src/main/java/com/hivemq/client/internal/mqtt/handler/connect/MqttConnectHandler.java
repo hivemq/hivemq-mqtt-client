@@ -41,10 +41,10 @@ import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,23 +73,21 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttSession session;
     private final @NotNull MqttDecoder decoder;
-    private final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler;
 
     private boolean connectCalled = false;
+    private long connectFlushTime;
 
     @Inject
     MqttConnectHandler(
             final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow connAckFlow,
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session,
-            final @NotNull MqttDecoder decoder,
-            final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
+            final @NotNull MqttDecoder decoder) {
 
         this.connect = connect;
         this.connAckFlow = connAckFlow;
         this.clientConfig = clientConfig;
         this.session = session;
         this.decoder = decoder;
-        this.disconnectOnConnAckHandler = disconnectOnConnAckHandler;
     }
 
     @Override
@@ -122,21 +120,17 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param ctx the channel handler context.
      */
     private void writeConnect(final @NotNull ChannelHandlerContext ctx) {
+        connectFlushTime = System.nanoTime();
         ctx.writeAndFlush((connect.getRawEnhancedAuthMechanism() == null) ?
                 connect.createStateful(clientConfig.getRawClientIdentifier(), null) : connect).addListener(this);
     }
 
     @Override
-    public void operationComplete(final @NotNull ChannelFuture future) {
-        if (ctx == null) {
-            return;
+    protected void operationSuccessful(final @NotNull ChannelHandlerContext ctx) {
+        if (connect.getRawEnhancedAuthMechanism() == null) {
+            scheduleTimeout(ctx.channel());
         }
-        if (future.isSuccess()) {
-            if (connect.getRawEnhancedAuthMechanism() == null) {
-                scheduleTimeout(ctx.channel());
-            }
-            ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
-        }
+        ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
     }
 
     @Override
@@ -155,22 +149,22 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * <p>
      * If it contains an Error Code, the channel is closed.
      * <p>
-     * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link MqttPingHandler} and
-     * {@link MqttDisconnectOnConnAckHandler} are added to the pipeline.
+     * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link MqttPingHandler} is
+     * added to the pipeline.
      *
      * @param connAck the CONNACK message.
      * @param channel the channel.
      */
     private void readConnAck(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
         if (connAck.getReasonCode().isError()) {
-            MqttDisconnectUtil.close(channel, new Mqtt5ConnAckException(
-                    connAck,
-                    "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."));
+            MqttDisconnectUtil.fireDisconnectEvent(channel, new Mqtt5ConnAckException(connAck,
+                            "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."),
+                    MqttDisconnectSource.SERVER);
 
         } else if (validateClientIdentifier(connAck, channel)) {
             final MqttClientConnectionConfig connectionConfig = addConnectionConfig(connAck, channel);
 
-            channel.pipeline().remove(this).addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
+            channel.pipeline().remove(this);
 
             ((MqttEncoder) channel.pipeline().get(MqttEncoder.NAME)).onConnected(connectionConfig);
 
@@ -178,7 +172,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
             final int keepAlive = connectionConfig.getKeepAlive();
             if (keepAlive > 0) {
-                channel.pipeline().addAfter(MqttDecoder.NAME, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
+                final MqttPingHandler pingHandler = new MqttPingHandler(keepAlive, connectFlushTime, System.nanoTime());
+                channel.pipeline().addAfter(MqttDecoder.NAME, MqttPingHandler.NAME, pingHandler);
             }
 
             clientConfig.getRawState().set(MqttClientState.CONNECTED);
@@ -298,12 +293,11 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        final ChannelHandlerContext ctx = this.ctx;
-        if (ctx == null) {
-            return;
-        }
-        super.onDisconnectEvent(disconnectEvent);
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
+        super.onDisconnectEvent(ctx, disconnectEvent);
+
         MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
                 connAckFlow, ctx.channel().eventLoop());
     }

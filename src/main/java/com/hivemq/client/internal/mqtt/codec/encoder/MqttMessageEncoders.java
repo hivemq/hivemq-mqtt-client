@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class MqttMessageEncoders {
 
-    protected final @NotNull MqttMessageEncoder @NotNull [] encoders = new MqttMessageEncoder[16];
+    protected final @NotNull MqttMessageEncoder<?> @NotNull [] encoders = new MqttMessageEncoder[16];
 
     /**
      * Returns the corresponding encoder to the given MQTT message type code.
@@ -36,7 +36,7 @@ public abstract class MqttMessageEncoders {
      * @return the corresponding decoder to the MQTT message type code or null if there is no encoder for the MQTT
      *         message type code.
      */
-    public final @Nullable MqttMessageEncoder get(final int code) {
+    public final @Nullable MqttMessageEncoder<?> get(final int code) {
         if (code < 0 || code >= encoders.length) {
             return null;
         }

@@ -38,8 +38,8 @@ import java.nio.ByteBuffer;
 import static com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 import static com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
 import static com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author David Katz

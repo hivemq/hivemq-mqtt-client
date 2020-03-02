@@ -19,11 +19,24 @@ package com.hivemq.client.internal.util;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Silvio Giebl
  */
 class ByteArrayTest {
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 10})
+    void length(final int length) {
+        final ByteArray empty = new ByteArray(new byte[length]);
+        assertEquals(length, empty.length());
+        assertEquals(0, empty.getStart());
+        assertEquals(length, empty.getEnd());
+    }
 
     @Test
     void equals() {

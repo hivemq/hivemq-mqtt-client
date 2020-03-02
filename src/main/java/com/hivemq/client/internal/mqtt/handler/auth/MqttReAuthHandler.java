@@ -40,7 +40,7 @@ import static com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONT
 import static com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTHENTICATE;
 
 /**
- * Enhanced reauth handling according during connection according to the MQTT 5 specification.
+ * Enhanced reauth handling according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
@@ -116,9 +116,8 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     void readAuthSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5AuthException(
-                            auth,
-                            "Must not receive AUTH with reason code SUCCESS in no response to a client message."));
+                    new Mqtt5AuthException(auth,
+                            "Must not receive AUTH with reason code SUCCESS if client side AUTH is pending."));
             return;
         }
 
@@ -134,7 +133,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
                 flow = null;
             }
         }, (ctx2, throwable) -> MqttDisconnectUtil.disconnect(ctx2.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                new Mqtt5AuthException(auth, "Server auth success not accepted.")));
+                new Mqtt5AuthException(auth, "Server AUTH with reason code SUCCESS not accepted.")));
     }
 
     /**
@@ -154,7 +153,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (!clientConfig.getAdvancedConfig().isAllowServerReAuth()) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5AuthException(auth, "Must not receive an AUTH with reason code REAUTHENTICATE."));
+                    new Mqtt5AuthException(auth, "Must not receive AUTH with reason code REAUTHENTICATE."));
             return;
         }
         if (state != MqttAuthState.NONE) {
@@ -172,7 +171,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
             ctx2.writeAndFlush(authBuilder.build()).addListener(this);
 
         }, (ctx2, throwable) -> MqttDisconnectUtil.disconnect(ctx2.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                new Mqtt5AuthException(auth, "Server reauth not accepted.")));
+                new Mqtt5AuthException(auth, "Server AUTH with reason code REAUTHENTICATE not accepted.")));
     }
 
     /**
@@ -201,8 +200,10 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * @param disconnectEvent the channel close event.
      */
     @Override
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        super.onDisconnectEvent(disconnectEvent);
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
+        super.onDisconnectEvent(ctx, disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
             callMechanism(() -> authMechanism.onReAuthError(clientConfig, disconnectEvent.getCause()));

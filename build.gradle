@@ -17,9 +17,7 @@ plugins {
 
 allprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
-        jcenter()
     }
 }
 
@@ -28,7 +26,7 @@ allprojects {
 
 allprojects {
     group 'com.hivemq'
-    version '1.1.3'
+    version '1.1.4'
 
     description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java ' +
             'client library with different API flavours and backpressure support'
@@ -47,7 +45,7 @@ allprojects {
         licenseReadableName = 'The Apache License, Version 2.0'
         licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
         shadedAppendix = 'shaded'
-        prevVersion = '1.1.2'
+        prevVersion = '1.1.3'
     }
 }
 
@@ -66,6 +64,7 @@ allprojects {
 }
 
 apply plugin: 'java-library'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 
 /* ******************** dependencies ******************** */
@@ -96,15 +95,12 @@ dependencies {
 
 allprojects {
     dependencies {
-        def junit4Version = '4.12'
         def junit5Version = '5.5.1'
         def junitPlatformVersion = '1.5.1'
 
-        testImplementation group: 'junit', name: 'junit', version: junit4Version
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
         testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
-        testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5Version
         testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
     }
 
@@ -128,63 +124,75 @@ dependencies {
 
 /* ******************** jars ******************** */
 
-apply plugin: 'biz.aQute.bnd.builder'
+allprojects {
+    plugins.withType(JavaLibraryPlugin) {
 
-jar {
-    bnd('Automatic-Module-Name': project.moduleName,
-            'Bundle-Name': project.name,
-            'Bundle-SymbolicName': project.moduleName,
-            'Bundle-Description': project.description,
-            'Bundle-Vendor': 'HiveMQ and the HiveMQ Community',
-            'Bundle-License': project.licenseShortName + ';description="' + project.licenseReadableName + '";link="' + project.licenseUrl + '"',
-            'Bundle-DocURL': project.docUrl,
-            'Bundle-SCM': 'url="' + project.githubUrl + '";connection="' + project.scmConnection + '";developerConnection="' + project.scmDeveloperConnection + '"',
-            'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
-            '-consumer-policy': '${range;[==,=+)}',
-            '-removeheaders': 'Private-Package')
-}
+        project.apply plugin: 'biz.aQute.bnd.builder'
 
-apply plugin: 'com.github.johnrengelman.shadow'
+        jar {
+            bnd(
+                    'Automatic-Module-Name': project.moduleName,
+                    'Bundle-Name': project.name,
+                    'Bundle-SymbolicName': project.moduleName,
+                    'Bundle-Description': project.description,
+                    'Bundle-Vendor': 'HiveMQ and the HiveMQ Community',
+                    'Bundle-License': project.licenseShortName + ';description="' + project.licenseReadableName + '";link="' + project.licenseUrl + '"',
+                    'Bundle-DocURL': project.docUrl,
+                    'Bundle-SCM': 'url="' + project.githubUrl + '";connection="' + project.scmConnection + '";developerConnection="' + project.scmDeveloperConnection + '"',
+                    'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
+                    '-consumer-policy': '${range;[==,=+)}',
+                    '-removeheaders': 'Private-Package')
+        }
 
-shadowJar {
-    appendix project.shadedAppendix
-    classifier null
+        javadoc {
+            options.encoding 'UTF-8'
+            exclude '**/internal/**'
+        }
 
-    // api: not shaded and relocated, added as dependencies in pom
-    dependencies {
-        it.exclude(it.dependency('io.reactivex.rxjava2:rxjava'))
-        it.exclude(it.dependency('org.reactivestreams:reactive-streams'))
-        it.exclude(it.dependency('org.slf4j:slf4j-api'))
+        task javadocJar(type: Jar) {
+            group 'documentation'
+            description 'Assembles a jar archive containing the javadoc.'
+
+            from javadoc
+            classifier 'javadoc'
+        }
+
+        task sourcesJar(type: Jar) {
+            group 'build'
+            description 'Assembles a jar archive containing the main sources.'
+
+            from sourceSets.main.allSource
+            classifier 'sources'
+        }
     }
-
-    def shadePrefix = project.group.toString() + '.shaded.'
-    def shadeFilePrefix = shadePrefix.replace('.', '_')
-    relocate 'io.netty', shadePrefix + 'io.netty'
-    relocate 'META-INF/native/libnetty', 'META-INF/native/lib' + shadeFilePrefix + 'netty'
-    exclude 'META-INF/io.netty.versions.properties'
-    relocate 'org.jctools', shadePrefix + 'org.jctools'
-    relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
-    relocate 'dagger', shadePrefix + 'dagger'
-    relocate 'javax.inject', shadePrefix + 'javax.inject'
-
-    minimize()
 }
 
 allprojects {
-    task javadocJar(type: Jar) {
-        group 'documentation'
-        description 'Assembles a jar archive containing the javadoc.'
+    plugins.withId('com.github.johnrengelman.shadow') {
 
-        from javadoc
-        classifier 'javadoc'
-    }
+        shadowJar {
+            appendix project.shadedAppendix
+            classifier null
 
-    task sourcesJar(type: Jar) {
-        group 'build'
-        description 'Assembles a jar archive containing the main sources.'
+            // api: not shaded and relocated, added as dependencies in pom
+            dependencies {
+                it.exclude(it.dependency('io.reactivex.rxjava2:rxjava'))
+                it.exclude(it.dependency('org.reactivestreams:reactive-streams'))
+                it.exclude(it.dependency('org.slf4j:slf4j-api'))
+            }
 
-        from sourceSets.main.allSource
-        classifier 'sources'
+            def shadePrefix = project.group.toString() + '.shaded.'
+            def shadeFilePrefix = shadePrefix.replace('.', '_')
+            relocate 'io.netty', shadePrefix + 'io.netty'
+            relocate 'META-INF/native/libnetty', 'META-INF/native/lib' + shadeFilePrefix + 'netty'
+            exclude 'META-INF/io.netty.versions.properties'
+            relocate 'org.jctools', shadePrefix + 'org.jctools'
+            relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
+            relocate 'dagger', shadePrefix + 'dagger'
+            relocate 'javax.inject', shadePrefix + 'javax.inject'
+
+            minimize()
+        }
     }
 }
 
@@ -193,93 +201,104 @@ allprojects {
 
 apply from: "${project.rootDir}/gradle/publishing.gradle"
 
-apply plugin: 'maven-publish'
+allprojects {
+    plugins.withType(JavaLibraryPlugin) {
 
-void addPom(MavenPublication publication) {
-    publication.pom {
-        name = project.readableName
-        description = project.description
-        url = project.githubUrl
-        licenses {
-            license {
-                name = project.licenseReadableName
-                url = project.licenseUrl
+        project.apply plugin: 'maven-publish'
+
+        publishing {
+            publications {
+                withType(MavenPublication) {
+                    pom {
+                        name = project.readableName
+                        description = project.description
+                        url = project.githubUrl
+                        licenses {
+                            license {
+                                name = project.licenseReadableName
+                                url = project.licenseUrl
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = 'SG'
+                                name = 'Silvio Giebl'
+                                email = 'silvio.giebl@hivemq.com'
+                            }
+                        }
+                        scm {
+                            connection = project.scmConnection
+                            developerConnection = project.scmDeveloperConnection
+                            url = project.githubUrl
+                        }
+                        issueManagement {
+                            system = 'github'
+                            url = project.issuesUrl
+                        }
+                    }
+                    artifact javadocJar
+                    artifact sourcesJar
+                }
+                normal(MavenPublication) {
+                    from components.java
+                }
             }
         }
-        developers {
-            developer {
-                id = 'SG'
-                name = 'Silvio Giebl'
-                email = 'silvio.giebl@hivemq.com'
-            }
-        }
-        scm {
-            connection = project.scmConnection
-            developerConnection = project.scmDeveloperConnection
-            url = project.githubUrl
-        }
-        issueManagement {
-            system = 'github'
-            url = project.issuesUrl
-        }
-    }
-}
 
-publishing {
-    publications {
-        normal(MavenPublication) {
-            from components.java
-            artifact javadocJar
-            artifact sourcesJar
-            addPom(it)
-        }
-        shaded(MavenPublication) {
-            artifactId project.name + '-' + project.shadedAppendix
-            artifact shadowJar
-            artifact javadocJar
-            artifact sourcesJar
-            addPom(it)
-            pom.withXml { xml ->
-                def dependenciesNode = xml.asNode().appendNode('dependencies')
+        project.apply plugin: 'com.jfrog.bintray'
 
-                project.configurations.api.allDependencies.each {
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', it.group)
-                    dependencyNode.appendNode('artifactId', it.name)
-                    dependencyNode.appendNode('version', it.version)
-                    dependencyNode.appendNode('scope', 'compile')
+        afterEvaluate {
+            bintray {
+                user = project.bintray_username
+                key = project.bintray_apiKey
+                publications = publishing.publications.withType(MavenPublication).stream().collect { it.name }
+                publish = true
+                pkg {
+                    userOrg = 'hivemq'
+                    repo = 'HiveMQ'
+                    name = 'hivemq-mqtt-client'
+                    desc = project.description
+                    websiteUrl = project.githubUrl
+                    issueTrackerUrl = project.issuesUrl
+                    vcsUrl = project.githubUrl + '.git'
+                    licenses = [project.licenseShortName]
+                    labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
+                    version {
+                        released = new Date()
+                        gpg {
+                            sign = true
+                        }
+                        /*mavenCentralSync {
+                            user = ''
+                            password = ''
+                        }*/
+                    }
                 }
             }
         }
     }
 }
 
-apply plugin: 'com.jfrog.bintray'
+allprojects {
+    plugins.withId('com.github.johnrengelman.shadow') {
+        publishing {
+            publications {
+                shaded(MavenPublication) {
+                    artifactId project.name + '-' + project.shadedAppendix
+                    artifact shadowJar
+                    pom.withXml { xml ->
+                        def dependenciesNode = xml.asNode().appendNode('dependencies')
 
-bintray {
-    user = project.bintray_username
-    key = project.bintray_apiKey
-    publications = ['normal', 'shaded']
-    publish = true
-    pkg {
-        userOrg = 'hivemq'
-        repo = 'HiveMQ'
-        name = 'hivemq-mqtt-client'
-        desc = project.description
-        websiteUrl = project.githubUrl
-        issueTrackerUrl = project.issuesUrl
-        vcsUrl = project.githubUrl + '.git'
-        licenses = [project.licenseShortName]
-        labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
-        version {
-            released = new Date()
-            gpg {
-                sign = true
+                        project.configurations.api.allDependencies.each {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                            dependencyNode.appendNode('scope', 'compile')
+                        }
+                    }
+                }
             }
-            /*mavenCentralSync {
-                user = ''
-                password = ''
-            }*/
         }
     }
 }
@@ -314,4 +333,8 @@ allprojects {
     }
 }
 
-apply from: "${project.rootDir}/gradle/japicc.gradle"
+allprojects {
+    plugins.withType(JavaLibraryPlugin) {
+        project.apply from: "${project.rootDir}/gradle/japicc.gradle"
+    }
+}

@@ -15,14 +15,26 @@
  *
  */
 
-package com.hivemq.client.internal.util.collections;
+package com.hivemq.client.internal.util;
 
-import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Silvio Giebl
  */
-abstract class HandleListNode<E> {
+class ClassUtilTest {
 
-    @Nullable HandleList.Handle<E> next;
+    @Test
+    void isAvailable_true() {
+        assertTrue(ClassUtil.isAvailable("java.lang.String"));
+        assertTrue(ClassUtil.isAvailable("com.hivemq.client.internal.util.ClassUtilTest"));
+    }
+
+    @Test
+    void isAvailable_unknownClass() {
+        assertFalse(ClassUtil.isAvailable("com.hivemq.client.UnknownClass"));
+    }
 }

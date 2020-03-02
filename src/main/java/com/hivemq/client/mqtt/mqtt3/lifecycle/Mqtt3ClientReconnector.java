@@ -81,7 +81,7 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
      * If the {@link #connect(Mqtt3Connect)} method has not been called before (including previous {@link
      * com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the
      * Connect message that is reconstructed from the {@link com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig
-     * Mqtt3ClientConnectionConfig} or the Connect message of the previous connect try if it has not been successfully *
+     * Mqtt3ClientConnectionConfig} or the Connect message of the previous connect try if it has not been successfully
      * connected.
      *
      * @return the Connect message.

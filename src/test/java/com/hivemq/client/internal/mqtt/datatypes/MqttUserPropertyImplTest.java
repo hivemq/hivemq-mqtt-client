@@ -21,16 +21,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttUserPropertyImplTest {
+class MqttUserPropertyImplTest {
 
     @Test
     public void test_decode() {

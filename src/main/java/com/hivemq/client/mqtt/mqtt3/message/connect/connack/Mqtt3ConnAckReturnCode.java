@@ -30,11 +30,29 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Mqtt3ConnAckReturnCode implements Mqtt3ReturnCode {
 
+    /**
+     * The connection is accepted.
+     */
     SUCCESS,
+    /**
+     * The server does not support the version of the MQTT protocol requested by the client.
+     */
     UNSUPPORTED_PROTOCOL_VERSION,
+    /**
+     * The client identifier is formed correctly but is not accepted by the server.
+     */
     IDENTIFIER_REJECTED,
+    /**
+     * The MQTT service is not available.
+     */
     SERVER_UNAVAILABLE,
+    /**
+     * The server does not accept the user name or password specified by the client.
+     */
     BAD_USER_NAME_OR_PASSWORD,
+    /**
+     * The client is not authorized to connect.
+     */
     NOT_AUTHORIZED;
 
     private static final @NotNull Mqtt3ConnAckReturnCode[] VALUES = values();

@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @Immutable class ImmutableEmptyIntList implements ImmutableIntList {
 
-    public static final @NotNull ImmutableEmptyIntList INSTANCE = new ImmutableEmptyIntList();
+    static final @NotNull ImmutableEmptyIntList INSTANCE = new ImmutableEmptyIntList();
 
     private ImmutableEmptyIntList() {}
 

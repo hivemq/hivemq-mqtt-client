@@ -17,36 +17,45 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author David Katz
+ * @author Silvio Giebl
  */
 class Mqtt5RetainHandlingTest {
 
     @Test
-    void test_getCode_send() {
+    void getCode_send() {
         assertEquals(0x00, Mqtt5RetainHandling.SEND.getCode());
-        assertEquals(Mqtt5RetainHandling.SEND, Mqtt5RetainHandling.fromCode(0x00));
     }
 
     @Test
-    void test_getCode_sendIfSubscriptionDoesNotExist() {
+    void getCode_sendIfSubscriptionDoesNotExist() {
         assertEquals(0x01, Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST.getCode());
-        assertEquals(Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST, Mqtt5RetainHandling.fromCode(0x01));
     }
 
     @Test
-    void test_getCode_doNotSend() {
+    void getCode_doNotSend() {
         assertEquals(0x02, Mqtt5RetainHandling.DO_NOT_SEND.getCode());
-        assertEquals(Mqtt5RetainHandling.DO_NOT_SEND, Mqtt5RetainHandling.fromCode(0x02));
+    }
+
+    @ParameterizedTest
+    @EnumSource(Mqtt5RetainHandling.class)
+    void fromCode(final @NotNull Mqtt5RetainHandling retainHandling) {
+        assertEquals(retainHandling, Mqtt5RetainHandling.fromCode(retainHandling.getCode()));
     }
 
     @Test
-    void test_invalidCode() {
+    void fromCode_invalidCodes() {
+        assertNull(Mqtt5RetainHandling.fromCode(0x03));
         assertNull(Mqtt5RetainHandling.fromCode(0xFF));
+        assertNull(Mqtt5RetainHandling.fromCode(-1));
     }
 }

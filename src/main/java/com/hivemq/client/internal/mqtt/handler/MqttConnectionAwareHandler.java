@@ -37,13 +37,18 @@ public abstract class MqttConnectionAwareHandler extends ChannelInboundHandlerAd
 
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof MqttDisconnectEvent) {
-            onDisconnectEvent((MqttDisconnectEvent) evt);
+        if ((evt instanceof MqttDisconnectEvent) && (this.ctx != null)) {
+            this.ctx = null;
+            onDisconnectEvent(ctx, (MqttDisconnectEvent) evt);
         }
         ctx.fireUserEventTriggered(evt);
     }
 
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        this.ctx = null;
+    protected abstract void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent);
+
+    @Override
+    public boolean isSharable() {
+        return false;
     }
 }

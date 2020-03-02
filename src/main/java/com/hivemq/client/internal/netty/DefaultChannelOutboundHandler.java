@@ -21,6 +21,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandler;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
 
@@ -43,7 +44,7 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
     @Override
     default void connect(
             final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress remoteAddress,
-            final @NotNull SocketAddress localAddress, final @NotNull ChannelPromise promise) {
+            final @Nullable SocketAddress localAddress, final @NotNull ChannelPromise promise) {
 
         ctx.connect(remoteAddress, localAddress, promise);
     }

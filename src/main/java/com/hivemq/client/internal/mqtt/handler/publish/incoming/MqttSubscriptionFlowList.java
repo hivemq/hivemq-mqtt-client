@@ -21,12 +21,12 @@ import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.util.collections.HandleList;
+import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 /**
@@ -65,19 +65,14 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
     public void remove(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscribedPublishFlow flow) {
         if (flow != null) {
             final HandleList<MqttTopicFilterImpl> topicFilters = flow.getTopicFilters();
-            for (final Iterator<MqttTopicFilterImpl> iterator = topicFilters.iterator(); iterator.hasNext(); ) {
-                if (topicFilter.equals(iterator.next())) {
-                    iterator.remove();
+            for (Handle<MqttTopicFilterImpl> h = topicFilters.getFirst(); h != null; h = h.getNext()) {
+                if (topicFilter.equals(h.getElement())) {
+                    topicFilters.remove(h);
                     break;
                 }
             }
             if (topicFilters.isEmpty()) {
-                for (final Iterator<MqttSubscribedPublishFlow> iterator = flows.iterator(); iterator.hasNext(); ) {
-                    if (iterator.next() == flow) {
-                        iterator.remove();
-                        break;
-                    }
-                }
+                cancel(flow);
             }
         }
         final Integer count = subscribedTopicFilters.remove(topicFilter);
@@ -91,16 +86,16 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
             final @NotNull MqttTopicFilterImpl topicFilter,
             final @Nullable Consumer<MqttSubscribedPublishFlow> unsubscribedCallback) {
 
-        for (final Iterator<MqttSubscribedPublishFlow> flowIt = flows.iterator(); flowIt.hasNext(); ) {
-            final MqttSubscribedPublishFlow flow = flowIt.next();
-            final HandleList<MqttTopicFilterImpl> flowTopicFilters = flow.getTopicFilters();
-            for (final Iterator<MqttTopicFilterImpl> iterator = flowTopicFilters.iterator(); iterator.hasNext(); ) {
-                if (topicFilter.equals(iterator.next())) {
-                    iterator.remove();
+        for (Handle<MqttSubscribedPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
+            final MqttSubscribedPublishFlow flow = h.getElement();
+            final HandleList<MqttTopicFilterImpl> topicFilters = flow.getTopicFilters();
+            for (Handle<MqttTopicFilterImpl> h2 = topicFilters.getFirst(); h2 != null; h2 = h2.getNext()) {
+                if (topicFilter.equals(h2.getElement())) {
+                    topicFilters.remove(h2);
                 }
             }
-            if (flowTopicFilters.isEmpty()) {
-                flowIt.remove();
+            if (topicFilters.isEmpty()) {
+                flows.remove(h);
                 flow.onComplete();
                 if (unsubscribedCallback != null) {
                     unsubscribedCallback.accept(flow);
@@ -112,9 +107,9 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
     @Override
     public void cancel(final @NotNull MqttSubscribedPublishFlow flow) {
-        for (final Iterator<MqttSubscribedPublishFlow> iterator = flows.iterator(); iterator.hasNext(); ) {
-            if (iterator.next() == flow) {
-                iterator.remove();
+        for (Handle<MqttSubscribedPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
+            if (h.getElement() == flow) {
+                flows.remove(h);
                 break;
             }
         }
@@ -124,9 +119,10 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
     public void findMatching(
             final @NotNull MqttTopicImpl topic, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
-        for (final MqttSubscribedPublishFlow flow : flows) {
-            for (final MqttTopicFilterImpl topicFilter : flow.getTopicFilters()) {
-                if (topicFilter.matches(topic)) {
+        for (Handle<MqttSubscribedPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
+            final MqttSubscribedPublishFlow flow = h.getElement();
+            for (Handle<MqttTopicFilterImpl> h2 = flow.getTopicFilters().getFirst(); h2 != null; h2 = h2.getNext()) {
+                if (h2.getElement().matches(topic)) {
                     matchingFlows.add(flow);
                     break;
                 }
@@ -146,10 +142,10 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
     @Override
     public void clear(final @NotNull Throwable cause) {
-        for (final Iterator<MqttSubscribedPublishFlow> iterator = flows.iterator(); iterator.hasNext(); ) {
-            iterator.next().onError(cause);
-            iterator.remove();
+        for (Handle<MqttSubscribedPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
+            h.getElement().onError(cause);
         }
+        flows.clear();
         subscribedTopicFilters.clear();
     }
 }

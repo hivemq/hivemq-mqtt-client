@@ -33,18 +33,18 @@ import java.util.function.BiConsumer;
 public final class RxFutureConverter {
 
     public static @NotNull CompletableFuture<Void> toFuture(final @NotNull Completable completable) {
-        return new RxJavaCompletableFuture(completable);
+        return new RxCompletableFuture(completable);
     }
 
     public static <T> @NotNull CompletableFuture<@NotNull Optional<T>> toFuture(final @NotNull Maybe<T> maybe) {
-        return new RxJavaMaybeFuture<>(maybe);
+        return new RxMaybeFuture<>(maybe);
     }
 
     public static <T> @NotNull CompletableFuture<@NotNull T> toFuture(final @NotNull Single<T> single) {
-        return new RxJavaSingleFuture<>(single);
+        return new RxSingleFuture<>(single);
     }
 
-    private static class RxJavaFuture<T> extends CompletableFuture<T> {
+    private static abstract class RxFuture<T> extends CompletableFuture<T> {
 
         volatile @Nullable Disposable disposable;
         volatile boolean cancelled;
@@ -73,9 +73,9 @@ public final class RxFutureConverter {
         }
     }
 
-    private static class RxJavaCompletableFuture extends RxJavaFuture<Void> implements CompletableObserver {
+    private static class RxCompletableFuture extends RxFuture<Void> implements CompletableObserver {
 
-        RxJavaCompletableFuture(final @NotNull Completable completable) {
+        RxCompletableFuture(final @NotNull Completable completable) {
             completable.subscribe(this);
         }
 
@@ -87,9 +87,9 @@ public final class RxFutureConverter {
         }
     }
 
-    private static class RxJavaMaybeFuture<T> extends RxJavaFuture<Optional<T>> implements MaybeObserver<T> {
+    private static class RxMaybeFuture<T> extends RxFuture<Optional<T>> implements MaybeObserver<T> {
 
-        RxJavaMaybeFuture(final @NotNull Maybe<T> maybe) {
+        RxMaybeFuture(final @NotNull Maybe<T> maybe) {
             maybe.subscribe(this);
         }
 
@@ -108,9 +108,9 @@ public final class RxFutureConverter {
         }
     }
 
-    private static class RxJavaSingleFuture<T> extends RxJavaFuture<T> implements SingleObserver<T> {
+    private static class RxSingleFuture<T> extends RxFuture<T> implements SingleObserver<T> {
 
-        RxJavaSingleFuture(final @NotNull Single<T> single) {
+        RxSingleFuture(final @NotNull Single<T> single) {
             single.subscribe(this);
         }
 
