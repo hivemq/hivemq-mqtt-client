@@ -21,7 +21,12 @@ import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
 import reactor.core.CoreSubscriber;
 
 /**
+ * A {@link reactor.util.context.Context Context} aware {@link WithSingleSubscriber} which has relaxed rules for §1.3
+ * and §3.9 compared to the original {@link org.reactivestreams.Subscriber} from Reactive Streams.
+ *
  * @author Silvio Giebl
+ * @see WithSingleSubscriber
+ * @see CoreSubscriber
  * @since 1.2
  */
 public interface CoreWithSingleSubscriber<T, S> extends WithSingleSubscriber<T, S>, CoreSubscriber<T> {}
