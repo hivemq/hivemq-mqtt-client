@@ -32,8 +32,10 @@ import org.reactivestreams.Subscriber;
 public interface PublisherWithSingle<T, S> extends Publisher<T> {
 
     /**
-     * Does {@link Publisher#subscribe(Subscriber) subscribe} to this {@link PublisherWithSingle}. {@link
-     * WithSingleSubscriber#onSingle(Object)} will be notified on the single item.
+     * {@link Publisher#subscribe(Subscriber) Subscribes} to this {@link PublisherWithSingle}.
+     * <p>
+     * In addition to signalling the stream of items via {@link WithSingleSubscriber#onNext(Object) onNext}, the single
+     * item will is signalled via {@link WithSingleSubscriber#onSingle(Object) onSingle}.
      *
      * @param subscriber the {@link WithSingleSubscriber} that will consume signals from this {@link
      *                   PublisherWithSingle}.

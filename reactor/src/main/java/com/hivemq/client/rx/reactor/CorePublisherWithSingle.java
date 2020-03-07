@@ -18,14 +18,35 @@
 package com.hivemq.client.rx.reactor;
 
 import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
+import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 import reactor.core.CorePublisher;
+import reactor.core.CoreSubscriber;
 
 /**
+ * A {@link CoreWithSingleSubscriber} aware {@link PublisherWithSingle}.
+ * <p>
+ * {@inheritDoc}
+ *
  * @author Silvio Giebl
+ * @see PublisherWithSingle
+ * @see CorePublisher
  * @since 1.2
  */
 public interface CorePublisherWithSingle<T, S> extends PublisherWithSingle<T, S>, CorePublisher<T> {
 
+    /**
+     * {@link PublisherWithSingle#subscribeBoth(WithSingleSubscriber) Subscribes} to this {@link
+     * CorePublisherWithSingle}.
+     * <p>
+     * In addition to behave as expected by {@link Publisher#subscribe(Subscriber)} in a controlled manner, it supports
+     * direct subscribe-time {@link reactor.util.context.Context Context} passing.
+     *
+     * @param subscriber the {@link Subscriber} interested into the published sequence.
+     * @see PublisherWithSingle#subscribeBoth(WithSingleSubscriber)
+     * @see CorePublisher#subscribe(CoreSubscriber)
+     */
     void subscribeBoth(@NotNull CoreWithSingleSubscriber<? super T, ? super S> subscriber);
 }
