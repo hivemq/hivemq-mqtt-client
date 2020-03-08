@@ -50,6 +50,14 @@ import java.util.function.Function;
  */
 public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublisherWithSingle<F, S> {
 
+    /**
+     * Decorate the specified {@link PublisherWithSingle} with the {@link FluxWithSingle} API.
+     *
+     * @param source the source to decorate.
+     * @param <F>    the type of the flow items.
+     * @param <S>    the type of the single item.
+     * @return a new {@link FluxWithSingle}.
+     */
     public static <F, S> @NotNull FluxWithSingle<F, S> from(
             final @NotNull PublisherWithSingle<? extends F, ? extends S> source) {
 
@@ -60,14 +68,38 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return new FluxWithSingleFrom<>(source);
     }
 
+    /**
+     * Run onSingle, onNext, onComplete and onError on a supplied {@link Scheduler.Worker}.
+     *
+     * @param scheduler a {@link Scheduler} providing the {@link Scheduler.Worker} where to publish.
+     * @return a {@link FluxWithSingle} producing asynchronously.
+     * @see Flux#publishOn(Scheduler)
+     */
     public final @NotNull FluxWithSingle<F, S> publishBothOn(final @NotNull Scheduler scheduler) {
         return publishBothOn(scheduler, Queues.SMALL_BUFFER_SIZE);
     }
 
+    /**
+     * Run onSingle, onNext, onComplete and onError on a supplied {@link Scheduler.Worker}.
+     *
+     * @param scheduler see {@link Flux#publishOn(Scheduler, int)}
+     * @param prefetch  see {@link Flux#publishOn(Scheduler, int)}
+     * @return a {@link FluxWithSingle} producing asynchronously.
+     * @see Flux#publishOn(Scheduler, int)
+     */
     public final @NotNull FluxWithSingle<F, S> publishBothOn(final @NotNull Scheduler scheduler, final int prefetch) {
         return publishBothOn(scheduler, true, prefetch);
     }
 
+    /**
+     * Run onSingle, onNext, onComplete and onError on a supplied {@link Scheduler.Worker}.
+     *
+     * @param scheduler  see {@link Flux#publishOn(Scheduler, boolean, int)}
+     * @param delayError see {@link Flux#publishOn(Scheduler, boolean, int)}
+     * @param prefetch   see {@link Flux#publishOn(Scheduler, boolean, int)}
+     * @return a {@link FluxWithSingle} producing asynchronously.
+     * @see Flux#publishOn(Scheduler, boolean, int)
+     */
     public final @NotNull FluxWithSingle<F, S> publishBothOn(
             final @NotNull Scheduler scheduler, final boolean delayError, final int prefetch) {
 
@@ -75,6 +107,13 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return new FluxWithSinglePublishOn<>(this, scheduler, delayError, prefetch);
     }
 
+    /**
+     * Transform the single item emitted by this {@link FluxWithSingle} by applying a synchronous function to it.
+     *
+     * @param singleMapper the synchronous transforming {@link Function} for the single item.
+     * @param <SM>         the transformed type of the single item.
+     * @return a transformed {@link FluxWithSingle}.
+     */
     public final <SM> @NotNull FluxWithSingle<F, SM> mapSingle(
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
@@ -82,6 +121,15 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return FluxWithSingleMap.mapSingle(this, singleMapper);
     }
 
+    /**
+     * Transform the items emitted by this {@link FluxWithSingle} by applying a synchronous function to each item.
+     *
+     * @param fluxMapper   the synchronous transforming {@link Function} for the flow of items.
+     * @param singleMapper the synchronous transforming {@link Function} for the single item.
+     * @param <FM>         the transformed type of the flow items.
+     * @param <SM>         the transformed type of the single item.
+     * @return a transformed {@link FluxWithSingle}.
+     */
     public final <FM, SM> @NotNull FluxWithSingle<FM, SM> mapBoth(
             final @NotNull Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
@@ -91,6 +139,12 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return FluxWithSingleMap.mapBoth(this, fluxMapper, singleMapper);
     }
 
+    /**
+     * Add behavior (side-effect) triggered when this {@link FluxWithSingle} emits the single item.
+     *
+     * @param singleConsumer the callback to call on {@link WithSingleSubscriber#onSingle}.
+     * @return an observed {@link FluxWithSingle}.
+     */
     public final @NotNull FluxWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
         Checks.notNull(singleConsumer, "Single consumer");
         return FluxWithSingleMap.mapSingle(this, s -> {
@@ -110,6 +164,21 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         }
     }
 
+    /**
+     * {@link #subscribe() Subscribes} to this Flowable and returns a future for the single item.
+     * <ul>
+     *   <li>The future will complete with the single item if this {@link FluxWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FluxWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FluxWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FluxWithSingle} also when the future already completed
+     *     normally or exceptionally.
+     * </ul>
+     *
+     * @return a future for the single item.
+     * @see #subscribe()
+     */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture() {
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
@@ -117,6 +186,22 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return future;
     }
 
+    /**
+     * {@link #subscribe(Consumer) Subscribes} to this Flowable and returns a future for the single item.
+     * <ul>
+     *   <li>The future will complete with the single item if this {@link FluxWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FluxWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FluxWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FluxWithSingle} also when the future already completed
+     *     normally or exceptionally.
+     * </ul>
+     *
+     * @param consumer see {@link #subscribe(Consumer)}
+     * @return a future for the single item.
+     * @see #subscribe(Consumer)
+     */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(final @NotNull Consumer<? super F> consumer) {
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
@@ -124,6 +209,23 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return future;
     }
 
+    /**
+     * {@link #subscribe(Consumer, Consumer) Subscribes} to this Flowable and returns a future for the single item.
+     * <ul>
+     *   <li>The future will complete with the single item if this {@link FluxWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FluxWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FluxWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FluxWithSingle} also when the future already completed
+     *     normally or exceptionally.
+     * </ul>
+     *
+     * @param consumer      see {@link #subscribe(Consumer, Consumer)}
+     * @param errorConsumer see {@link #subscribe(Consumer, Consumer)}
+     * @return a future for the single item.
+     * @see #subscribe(Consumer, Consumer)
+     */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
             final @NotNull Consumer<? super F> consumer, final @NotNull Consumer<? super Throwable> errorConsumer) {
 
@@ -133,6 +235,25 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return future;
     }
 
+    /**
+     * {@link #subscribe(Consumer, Consumer, Runnable) Subscribes} to this Flowable and returns a future for the single
+     * item.
+     * <ul>
+     *   <li>The future will complete with the single item if this {@link FluxWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FluxWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FluxWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FluxWithSingle} also when the future already completed
+     *     normally or exceptionally.
+     * </ul>
+     *
+     * @param consumer         see {@link #subscribe(Consumer, Consumer, Runnable)}
+     * @param errorConsumer    see {@link #subscribe(Consumer, Consumer, Runnable)}
+     * @param completeConsumer see {@link #subscribe(Consumer, Consumer, Runnable)}
+     * @return a future for the single item.
+     * @see #subscribe(Consumer, Consumer, Runnable)
+     */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
             final @NotNull Consumer<? super F> consumer, final @NotNull Consumer<? super Throwable> errorConsumer,
             final @NotNull Runnable completeConsumer) {
@@ -143,6 +264,26 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return future;
     }
 
+    /**
+     * {@link #subscribe(Consumer, Consumer, Runnable, Context) Subscribes} to this Flowable and returns a future for
+     * the single item.
+     * <ul>
+     *   <li>The future will complete with the single item if this {@link FluxWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FluxWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FluxWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FluxWithSingle} also when the future already completed
+     *     normally or exceptionally.
+     * </ul>
+     *
+     * @param consumer         see {@link #subscribe(Consumer, Consumer, Runnable, Context)}
+     * @param errorConsumer    see {@link #subscribe(Consumer, Consumer, Runnable, Context)}
+     * @param completeConsumer see {@link #subscribe(Consumer, Consumer, Runnable, Context)}
+     * @param initialContext   see {@link #subscribe(Consumer, Consumer, Runnable, Context)}
+     * @return a future for the single item.
+     * @see #subscribe(Consumer, Consumer, Runnable, Context)
+     */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
             final @NotNull Consumer<? super F> consumer, final @NotNull Consumer<? super Throwable> errorConsumer,
             final @NotNull Runnable completeConsumer, final @NotNull Context initialContext) {
@@ -153,6 +294,22 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
         return future;
     }
 
+    /**
+     * {@link #subscribe(Subscriber) Subscribes} to this Flowable and returns a future for the single item.
+     * <ul>
+     *   <li>The future will complete with the single item if this {@link FluxWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FluxWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FluxWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FluxWithSingle} also when the future already completed
+     *     normally or exceptionally.
+     * </ul>
+     *
+     * @param subscriber see {@link #subscribe(Subscriber)}
+     * @return a future for the single item.
+     * @see #subscribe(Subscriber)
+     */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(final @NotNull Subscriber<? super F> subscriber) {
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
