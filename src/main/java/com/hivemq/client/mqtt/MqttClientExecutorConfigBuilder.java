@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,7 @@ public interface MqttClientExecutorConfigBuilder
      *
      * @return the built {@link MqttClientExecutorConfig}.
      */
+    @CheckReturnValue
     @NotNull MqttClientExecutorConfig build();
 
     /**

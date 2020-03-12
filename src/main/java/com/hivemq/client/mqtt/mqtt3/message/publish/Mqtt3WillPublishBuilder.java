@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.publish;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +42,7 @@ public interface Mqtt3WillPublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Wi
          *
          * @return the built {@link Mqtt3Publish}.
          */
+        @CheckReturnValue
         @NotNull Mqtt3Publish build();
     }
 

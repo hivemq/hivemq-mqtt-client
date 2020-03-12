@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.datatypes;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
      *
      * @return the created builder for a Topic Filter.
      */
+    @CheckReturnValue
     @NotNull MqttTopicFilterBuilder filter();
 
     /**
@@ -42,6 +44,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
      * @param shareName the Share Name.
      * @return the created builder for a Shared Topic Filter.
      */
+    @CheckReturnValue
     @NotNull MqttSharedTopicFilterBuilder share(@NotNull String shareName);
 
     /**
@@ -55,6 +58,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
          *
          * @return the built {@link MqttTopic}.
          */
+        @CheckReturnValue
         @NotNull MqttTopic build();
     }
 

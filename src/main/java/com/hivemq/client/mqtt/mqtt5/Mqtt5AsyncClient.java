@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.MqttAsyncClient;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -90,6 +91,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5ConnectBuilder.Send<CompletableFuture<Mqtt5ConnAck>> connectWith() {
         return new MqttConnectBuilder.Send<>(this::connect);
     }
@@ -163,6 +165,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe, Consumer)
      * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5SubscribeAndCallbackBuilder.Start subscribeWith() {
         return new MqttAsyncClient.MqttSubscribeAndCallbackBuilder(this);
     }
@@ -213,6 +216,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5UnsubscribeBuilder.Send.Start<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith() {
         return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
     }
@@ -244,6 +248,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt5Publish)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5PublishBuilder.Send<CompletableFuture<Mqtt5PublishResult>> publishWith() {
         return new MqttPublishBuilder.Send<>(this::publish);
     }
@@ -294,6 +299,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #disconnect(Mqtt5Disconnect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5DisconnectBuilder.Send<CompletableFuture<Void>> disconnectWith() {
         return new MqttDisconnectBuilder.Send<>(this::disconnect);
     }
@@ -337,6 +343,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         @DoNotImplement
         interface Call {
 
+            @CheckReturnValue
             @NotNull Ex callback(@NotNull Consumer<Mqtt5Publish> callback);
 
             @NotNull CompletableFuture<Mqtt5SubAck> send();
@@ -344,6 +351,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             @DoNotImplement
             interface Ex extends Call {
 
+                @CheckReturnValue
                 @NotNull Ex executor(@NotNull Executor executor);
             }
         }

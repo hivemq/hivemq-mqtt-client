@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
@@ -84,6 +85,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3ConnectBuilder.Send<CompletableFuture<Mqtt3ConnAck>> connectWith() {
         return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
@@ -157,6 +159,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer)
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3SubscribeAndCallbackBuilder.Start subscribeWith() {
         return new Mqtt3AsyncClientView.Mqtt3SubscribeViewAndCallbackBuilder(this);
     }
@@ -204,6 +207,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3UnsubscribeBuilder.Send.Start<CompletableFuture<Void>> unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.Send<>(this::unsubscribe);
     }
@@ -231,6 +235,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt3Publish)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3PublishBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith() {
         return new Mqtt3PublishViewBuilder.Send<>(this::publish);
     }
@@ -285,6 +290,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         @DoNotImplement
         interface Call {
 
+            @CheckReturnValue
             @NotNull Ex callback(@NotNull Consumer<Mqtt3Publish> callback);
 
             @NotNull CompletableFuture<Mqtt3SubAck> send();
@@ -292,6 +298,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             @DoNotImplement
             interface Ex extends Call {
 
+                @CheckReturnValue
                 @NotNull Ex executor(@NotNull Executor executor);
             }
         }

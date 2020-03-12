@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +41,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @return the built {@link Mqtt3Subscribe}.
          */
+        @CheckReturnValue
         @NotNull Mqtt3Subscribe build();
     }
 

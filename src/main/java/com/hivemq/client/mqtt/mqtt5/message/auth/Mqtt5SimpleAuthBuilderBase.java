@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.auth;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +40,7 @@ public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase
      * @param username the username string.
      * @return the builder that is now complete as the username is set.
      */
+    @CheckReturnValue
     @NotNull C username(@NotNull String username);
 
     /**
@@ -47,6 +49,7 @@ public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase
      * @param username the username string.
      * @return the builder that is now complete as the username is set.
      */
+    @CheckReturnValue
     @NotNull C username(@NotNull MqttUtf8String username);
 
     /**
@@ -55,6 +58,7 @@ public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase
      * @param password the password as byte array.
      * @return the builder that is now complete as the password is set.
      */
+    @CheckReturnValue
     @NotNull C password(@NotNull byte[] password);
 
     /**
@@ -63,5 +67,6 @@ public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase
      * @param password the password as {@link ByteBuffer}.
      * @return the builder that is now complete as the password is set.
      */
+    @CheckReturnValue
     @NotNull C password(@NotNull ByteBuffer password);
 }

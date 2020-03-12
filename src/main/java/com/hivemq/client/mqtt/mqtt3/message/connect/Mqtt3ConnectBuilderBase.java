@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.connect;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
@@ -43,6 +44,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @param keepAlive the keep alive in seconds.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B keepAlive(int keepAlive);
 
     /**
@@ -50,6 +52,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      *
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B noKeepAlive();
 
     /**
@@ -58,6 +61,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @param cleanSession whether the client connects with a clean session.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B cleanSession(boolean cleanSession);
 
     /**
@@ -67,6 +71,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      *                   related data.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B simpleAuth(@Nullable Mqtt3SimpleAuth simpleAuth);
 
     /**
@@ -79,6 +84,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @return the fluent builder for the simple auth related data.
      * @see #simpleAuth(Mqtt3SimpleAuth)
      */
+    @CheckReturnValue
     @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends B> simpleAuth();
 
     /**
@@ -87,6 +93,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @param willPublish the Will Publish or <code>null</code> to remove any previously set Will Publish.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B willPublish(@Nullable Mqtt3Publish willPublish);
 
     /**
@@ -99,5 +106,6 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt3Publish)
      */
+    @CheckReturnValue
     @NotNull Mqtt3WillPublishBuilder.Nested<? extends B> willPublish();
 }

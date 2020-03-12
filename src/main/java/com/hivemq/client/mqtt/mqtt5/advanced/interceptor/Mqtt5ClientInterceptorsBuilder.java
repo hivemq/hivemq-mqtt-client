@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,7 @@ public interface Mqtt5ClientInterceptorsBuilder
      *
      * @return the built {@link Mqtt5ClientInterceptors}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientInterceptors build();
 
     /**

@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
@@ -45,6 +46,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @param identifier the string representation of the Client Identifier.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B identifier(@NotNull String identifier);
 
     /**
@@ -53,6 +55,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @param identifier the Client Identifier.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B identifier(@NotNull MqttClientIdentifier identifier);
 
     /**
@@ -62,6 +65,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B serverAddress(@NotNull InetSocketAddress address);
 
     /**
@@ -70,6 +74,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @param host the server host.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverHost(@NotNull String host);
 
     /**
@@ -79,6 +84,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B serverHost(@NotNull InetAddress host);
 
     /**
@@ -87,6 +93,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @param port the server port.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverPort(int port);
 
     /**
@@ -105,6 +112,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B sslWithDefaultConfig();
 
     /**
@@ -123,6 +131,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B sslConfig(@Nullable MqttClientSslConfig sslConfig);
 
     /**
@@ -143,6 +152,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @see #sslConfig(MqttClientSslConfig)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull MqttClientSslConfigBuilder.Nested<? extends B> sslConfig();
 
     /**
@@ -160,6 +170,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B webSocketWithDefaultConfig();
 
     /**
@@ -178,6 +189,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B webSocketConfig(@Nullable MqttWebSocketConfig webSocketConfig);
 
     /**
@@ -198,6 +210,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @see #webSocketConfig(MqttWebSocketConfig)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> webSocketConfig();
 
     /**
@@ -207,6 +220,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B transportConfig(@NotNull MqttClientTransportConfig transportConfig);
 
     /**
@@ -219,6 +233,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @see #transportConfig(MqttClientTransportConfig)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull MqttClientTransportConfigBuilder.Nested<? extends B> transportConfig();
 
     /**
@@ -227,6 +242,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @param executorConfig the executor configuration.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B executorConfig(@NotNull MqttClientExecutorConfig executorConfig);
 
     /**
@@ -238,6 +254,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the fluent builder for the executor configuration.
      * @see #executorConfig(MqttClientExecutorConfig)
      */
+    @CheckReturnValue
     @NotNull MqttClientExecutorConfigBuilder.Nested<? extends B> executorConfig();
 
     /**
@@ -246,6 +263,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B automaticReconnectWithDefaultConfig();
 
     /**
@@ -256,6 +274,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B automaticReconnect(@Nullable MqttClientAutoReconnect autoReconnect);
 
     /**
@@ -268,6 +287,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @see #automaticReconnect(MqttClientAutoReconnect)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull MqttClientAutoReconnectBuilder.Nested<? extends B> automaticReconnect();
 
     /**
@@ -279,6 +299,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B addConnectedListener(@NotNull MqttClientConnectedListener connectedListener);
 
     /**
@@ -291,5 +312,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull B addDisconnectedListener(@NotNull MqttClientDisconnectedListener disconnectedListener);
 }

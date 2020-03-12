@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +45,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
          *
          * @return the built {@link Mqtt5Unsubscribe}.
          */
+        @CheckReturnValue
         @NotNull Mqtt5Unsubscribe build();
     }
 

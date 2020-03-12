@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
      *
      * @return the created builder for a Will Publish.
      */
+    @CheckReturnValue
     @NotNull Mqtt5WillPublishBuilder asWill();
 
     /**
@@ -48,6 +50,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
          * @return the created complete builder for a Will Publish.
          */
         @Override
+        @CheckReturnValue
         @NotNull Mqtt5WillPublishBuilder.Complete asWill();
 
         /**
@@ -55,6 +58,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
          *
          * @return the built {@link Mqtt5Publish}.
          */
+        @CheckReturnValue
         @NotNull Mqtt5Publish build();
     }
 

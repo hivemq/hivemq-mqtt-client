@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,6 +44,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                          factory.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B keyManagerFactory(@Nullable KeyManagerFactory keyManagerFactory);
 
     /**
@@ -52,6 +54,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                            manager factory
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B trustManagerFactory(@Nullable TrustManagerFactory trustManagerFactory);
 
     /**
@@ -61,6 +64,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                     communication framework).
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B cipherSuites(@Nullable Collection<@NotNull String> cipherSuites);
 
     /**
@@ -70,6 +74,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                  framework).
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B protocols(@Nullable Collection<@NotNull String> protocols);
 
     /**
@@ -79,5 +84,6 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      * @param timeUnit the time unit of the given timeout.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 }

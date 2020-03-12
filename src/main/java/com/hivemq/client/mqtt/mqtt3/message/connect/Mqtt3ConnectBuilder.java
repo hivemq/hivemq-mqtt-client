@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.connect;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,7 @@ public interface Mqtt3ConnectBuilder extends Mqtt3ConnectBuilderBase<Mqtt3Connec
      *
      * @return the built {@link Mqtt3Connect}.
      */
+    @CheckReturnValue
     @NotNull Mqtt3Connect build();
 
     /**

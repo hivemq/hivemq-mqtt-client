@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
@@ -39,6 +40,7 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
      * @param topicFilter the string representation of the Topic Filter.
      * @return the builder that is now complete as the mandatory Topic Filter is set.
      */
+    @CheckReturnValue
     @NotNull C topicFilter(@NotNull String topicFilter);
 
     /**
@@ -47,6 +49,7 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
      * @param topicFilter the Topic Filter.
      * @return the builder that is now complete as the mandatory Topic Filter is set.
      */
+    @CheckReturnValue
     @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
     /**
@@ -59,6 +62,7 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
      * @return the fluent builder for the Topic Filter.
      * @see #topicFilter(MqttTopicFilter)
      */
+    @CheckReturnValue
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
     /**
@@ -75,6 +79,7 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
          * @param qos the QoS.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C qos(@NotNull MqttQos qos);
     }
 }

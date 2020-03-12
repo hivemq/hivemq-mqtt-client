@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,7 @@ public interface MqttWebSocketConfigBuilder extends MqttWebSocketConfigBuilderBa
      *
      * @return the built {@link MqttWebSocketConfig}.
      */
+    @CheckReturnValue
     @NotNull MqttWebSocketConfig build();
 
     /**

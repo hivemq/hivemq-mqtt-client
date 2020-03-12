@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +39,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param receiveMaximum the receive maximum.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B receiveMaximum(int receiveMaximum);
 
     /**
@@ -50,6 +52,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param receiveMaximum the send maximum.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B sendMaximum(int receiveMaximum);
 
     /**
@@ -60,6 +63,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param maximumPacketSize the maximum packet size.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B maximumPacketSize(int maximumPacketSize);
 
     /**
@@ -72,6 +76,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param maximumPacketSize the maximum packet size for sending.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B sendMaximumPacketSize(int maximumPacketSize);
 
     /**
@@ -82,6 +87,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param topicAliasMaximum the topic alias maximum.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B topicAliasMaximum(int topicAliasMaximum);
 
     /**
@@ -94,6 +100,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param topicAliasMaximum the topic alias maximum for sending.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B sendTopicAliasMaximum(int topicAliasMaximum);
 
     /**
@@ -102,6 +109,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param requestProblemInformation whether problem information is requested.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B requestProblemInformation(boolean requestProblemInformation);
 
     /**
@@ -110,5 +118,6 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @param requestResponseInformation whether response information is requested.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B requestResponseInformation(boolean requestResponseInformation);
 }

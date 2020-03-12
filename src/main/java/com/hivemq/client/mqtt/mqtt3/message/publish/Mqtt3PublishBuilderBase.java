@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.publish;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
@@ -42,6 +43,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * @param topic the string representation of the Topic.
      * @return the builder that is now complete as the mandatory Topic is set.
      */
+    @CheckReturnValue
     @NotNull C topic(@NotNull String topic);
 
     /**
@@ -50,6 +52,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * @param topic the Topic.
      * @return the builder that is now complete as the mandatory Topic is set.
      */
+    @CheckReturnValue
     @NotNull C topic(@NotNull MqttTopic topic);
 
     /**
@@ -61,6 +64,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * @return the fluent builder for the Topic.
      * @see #topic(MqttTopic)
      */
+    @CheckReturnValue
     @NotNull MqttTopicBuilder.Nested<? extends C> topic();
 
     /**
@@ -77,6 +81,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param payload the payload as byte array or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C payload(@Nullable byte[] payload);
 
         /**
@@ -85,6 +90,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param payload the payload as {@link ByteBuffer} or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C payload(@Nullable ByteBuffer payload);
 
         /**
@@ -93,6 +99,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param qos the QoS.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C qos(@NotNull MqttQos qos);
 
         /**
@@ -101,6 +108,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param retain whether the Publish message should be retained.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C retain(boolean retain);
     }
 }

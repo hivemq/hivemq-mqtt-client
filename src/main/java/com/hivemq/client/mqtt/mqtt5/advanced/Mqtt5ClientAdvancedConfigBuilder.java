@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.advanced;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,7 @@ public interface Mqtt5ClientAdvancedConfigBuilder
      *
      * @return the built {@link Mqtt5ClientAdvancedConfig}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientAdvancedConfig build();
 
     /**

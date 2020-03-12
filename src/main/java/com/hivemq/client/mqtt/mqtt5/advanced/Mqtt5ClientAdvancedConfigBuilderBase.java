@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.advanced;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptorsBuilder;
@@ -39,6 +40,7 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      * @param allowServerReAuth whether server re-auth is allowed.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B allowServerReAuth(boolean allowServerReAuth);
 
     /**
@@ -47,6 +49,7 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      * @param validatePayloadFormat whether the payload format is validated.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B validatePayloadFormat(boolean validatePayloadFormat);
 
     /**
@@ -56,6 +59,7 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      *                     interceptors.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B interceptors(@Nullable Mqtt5ClientInterceptors interceptors);
 
     /**
@@ -67,5 +71,6 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      * @return the fluent builder for the collection of interceptors.
      * @see #interceptors(Mqtt5ClientInterceptors)
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientInterceptorsBuilder.Nested<? extends B> interceptors();
 }

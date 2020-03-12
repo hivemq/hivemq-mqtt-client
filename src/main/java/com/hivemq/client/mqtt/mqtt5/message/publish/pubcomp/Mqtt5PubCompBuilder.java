@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.publish.pubcomp;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -66,6 +67,7 @@ public interface Mqtt5PubCompBuilder {
      * @return the fluent builder for the User Properties.
      * @see #userProperties(Mqtt5UserProperties)
      */
+    @CheckReturnValue
     @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends Mqtt5PubCompBuilder> userProperties();
 
     /**

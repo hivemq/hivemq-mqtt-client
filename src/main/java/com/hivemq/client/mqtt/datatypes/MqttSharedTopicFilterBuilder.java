@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.datatypes;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +57,7 @@ public interface MqttSharedTopicFilterBuilder extends
          *
          * @return the built {@link MqttSharedTopicFilter}.
          */
+        @CheckReturnValue
         @NotNull MqttSharedTopicFilter build();
     }
 

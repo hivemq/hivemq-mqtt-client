@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,7 @@ public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecuto
      * @param nettyExecutor the user defined executor for Netty or <code>null</code> to use the default executor.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B nettyExecutor(@Nullable Executor nettyExecutor);
 
     /**
@@ -50,6 +52,7 @@ public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecuto
      * @param nettyThreads the user defined amount of threads Netty.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B nettyThreads(int nettyThreads);
 
     /**
@@ -59,5 +62,6 @@ public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecuto
      * @param applicationScheduler the scheduler used for executing application specific code.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B applicationScheduler(@NotNull Scheduler applicationScheduler);
 }

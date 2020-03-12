@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
@@ -83,6 +84,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5ConnectBuilder.Send<Mqtt5ConnAck> connectWith() {
         return new MqttConnectBuilder.Send<>(this::connect);
     }
@@ -109,6 +111,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5SubscribeBuilder.Send.Start<Mqtt5SubAck> subscribeWith() {
         return new MqttSubscribeBuilder.Send<>(this::subscribe);
     }
@@ -142,6 +145,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5UnsubscribeBuilder.Send.Start<Mqtt5UnsubAck> unsubscribeWith() {
         return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
     }
@@ -168,6 +172,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt5Publish)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5PublishBuilder.Send<Mqtt5PublishResult> publishWith() {
         return new MqttPublishBuilder.Send<>(this::publish);
     }
@@ -205,6 +210,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #disconnect(Mqtt5Disconnect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5DisconnectBuilder.SendVoid disconnectWith() {
         return new MqttDisconnectBuilder.SendVoid(this::disconnect);
     }
