@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
@@ -45,6 +46,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
      * @param topic the string representation of the Topic.
      * @return the builder that is now complete as the mandatory Topic is set.
      */
+    @CheckReturnValue
     @NotNull C topic(@NotNull String topic);
 
     /**
@@ -53,6 +55,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
      * @param topic the Topic.
      * @return the builder that is now complete as the mandatory Topic is set.
      */
+    @CheckReturnValue
     @NotNull C topic(@NotNull MqttTopic topic);
 
     /**
@@ -64,6 +67,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
      * @return the fluent builder for the Topic.
      * @see #topic(MqttTopic)
      */
+    @CheckReturnValue
     @NotNull MqttTopicBuilder.Nested<? extends C> topic();
 
     /**
@@ -80,6 +84,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param payload the payload as byte array or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C payload(@Nullable byte[] payload);
 
         /**
@@ -88,6 +93,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param payload the payload as {@link ByteBuffer} or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C payload(@Nullable ByteBuffer payload);
 
         /**
@@ -96,6 +102,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param qos the QoS.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C qos(@NotNull MqttQos qos);
 
         /**
@@ -104,6 +111,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param retain whether the Publish message should be retained.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C retain(boolean retain);
 
         /**
@@ -114,6 +122,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param messageExpiryInterval the message expiry interval in seconds.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C messageExpiryInterval(long messageExpiryInterval);
 
         /**
@@ -121,6 +130,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          *
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C noMessageExpiry();
 
         /**
@@ -130,6 +140,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          *                               payload format indicator.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C payloadFormatIndicator(@Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator);
 
         /**
@@ -138,6 +149,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param contentType the content type or <code>null</code> to remove any previously set content type.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C contentType(@Nullable String contentType);
 
         /**
@@ -146,6 +158,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param contentType the content type or <code>null</code> to remove any previously set content type.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C contentType(@Nullable MqttUtf8String contentType);
 
         /**
@@ -154,6 +167,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param responseTopic the response topic or <code>null</code> to remove any previously set response topic.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C responseTopic(@Nullable String responseTopic);
 
         /**
@@ -162,6 +176,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param responseTopic the response topic or <code>null</code> to remove any previously set response topic.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C responseTopic(@Nullable MqttTopic responseTopic);
 
         /**
@@ -173,6 +188,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @return the fluent builder for the response topic.
          * @see #responseTopic(MqttTopic)
          */
+        @CheckReturnValue
         @NotNull MqttTopicBuilder.Nested<? extends C> responseTopic();
 
         /**
@@ -182,6 +198,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          *                        correlation data.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C correlationData(@Nullable byte[] correlationData);
 
         /**
@@ -191,6 +208,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          *                        previously set correlation data.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C correlationData(@Nullable ByteBuffer correlationData);
 
         /**
@@ -199,6 +217,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @param userProperties the User Properties.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
         /**
@@ -210,6 +229,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @return the fluent builder for the User Properties.
          * @see #userProperties(Mqtt5UserProperties)
          */
+        @CheckReturnValue
         @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
     }
 
@@ -237,6 +257,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
              * @param delayInterval the delay interval in seconds.
              * @return the builder.
              */
+            @CheckReturnValue
             @NotNull C delayInterval(long delayInterval);
         }
     }

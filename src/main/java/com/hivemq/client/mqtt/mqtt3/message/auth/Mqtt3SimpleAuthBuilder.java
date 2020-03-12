@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.auth;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +42,7 @@ public interface Mqtt3SimpleAuthBuilder extends Mqtt3SimpleAuthBuilderBase<Mqtt3
          *
          * @return the built {@link Mqtt3SimpleAuth}.
          */
+        @CheckReturnValue
         @NotNull Mqtt3SimpleAuth build();
     }
 

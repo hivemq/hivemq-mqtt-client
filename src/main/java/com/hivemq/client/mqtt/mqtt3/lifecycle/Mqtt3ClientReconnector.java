@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.lifecycle;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientTransportConfig;
 import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
@@ -54,6 +55,7 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
     @NotNull Mqtt3ClientReconnector transportConfig(@NotNull MqttClientTransportConfig transportConfig);
 
     @Override
+    @CheckReturnValue
     @NotNull MqttClientTransportConfigBuilder.Nested<? extends Mqtt3ClientReconnector> transportConfig();
 
     /**
@@ -73,6 +75,7 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
+    @CheckReturnValue
     @NotNull Mqtt3ConnectBuilder.Nested<? extends Mqtt3ClientReconnector> connectWith();
 
     /**

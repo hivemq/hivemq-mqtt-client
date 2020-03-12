@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilterBuilder;
@@ -45,6 +46,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @param topicFilter the string representation of the Topic Filter.
      * @return the builder that is now complete as at least one Topic Filter is set.
      */
+    @CheckReturnValue
     @NotNull C addTopicFilter(@NotNull String topicFilter);
 
     /**
@@ -54,6 +56,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @param topicFilter the Topic Filter.
      * @return the builder that is now complete as at least one Topic Filter is set.
      */
+    @CheckReturnValue
     @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
     /**
@@ -66,6 +69,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @return the fluent builder for the Topic Filter.
      * @see #addTopicFilter(MqttTopicFilter)
      */
+    @CheckReturnValue
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
 
     /**
@@ -104,6 +108,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @param subscribe the Subscribe message.
      * @return the builder that is now complete as at least one Topic Filter is set.
      */
+    @CheckReturnValue
     @NotNull C reverse(@NotNull Mqtt5Subscribe subscribe);
 
     /**
@@ -120,6 +125,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * @param userProperties the User Properties.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
         /**
@@ -131,6 +137,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * @return the fluent builder for the User Properties.
          * @see #userProperties(Mqtt5UserProperties)
          */
+        @CheckReturnValue
         @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
     }
 
@@ -148,6 +155,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * @param topicFilter the string representation of the Topic Filter.
          * @return the builder that is now complete as the mandatory Topic Filter is set.
          */
+        @CheckReturnValue
         @NotNull C topicFilter(@NotNull String topicFilter);
 
         /**
@@ -156,6 +164,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * @param topicFilter the Topic Filter.
          * @return the builder that is now complete as the mandatory Topic Filter is set.
          */
+        @CheckReturnValue
         @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
         /**
@@ -168,6 +177,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * @return the fluent builder for the Topic Filter.
          * @see #addTopicFilter(MqttTopicFilter)
          */
+        @CheckReturnValue
         @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
     }
 }

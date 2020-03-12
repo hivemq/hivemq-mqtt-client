@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
@@ -44,6 +45,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @param advancedConfig the advanced configuration.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder advancedConfig(@NotNull Mqtt5ClientAdvancedConfig advancedConfig);
 
     /**
@@ -55,6 +57,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the fluent builder for the advanced configuration.
      * @see #advancedConfig(Mqtt5ClientAdvancedConfig)
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientAdvancedConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
     /**
@@ -66,6 +69,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder simpleAuth(@Nullable Mqtt5SimpleAuth simpleAuth);
 
     /**
@@ -79,6 +83,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @see #simpleAuth(Mqtt5SimpleAuth)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5SimpleAuthBuilder.Nested<? extends Mqtt5ClientBuilder> simpleAuth();
 
     /**
@@ -90,6 +95,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder enhancedAuth(@Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism);
 
     /**
@@ -99,6 +105,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder willPublish(@Nullable Mqtt5Publish willPublish);
 
     /**
@@ -112,6 +119,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @see #willPublish(Mqtt5Publish)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5WillPublishBuilder.Nested<? extends Mqtt5ClientBuilder> willPublish();
 
     /**
@@ -119,6 +127,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5Client}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5Client build();
 
     /**
@@ -126,6 +135,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5RxClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5RxClient buildRx();
 
     /**
@@ -133,6 +143,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5AsyncClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5AsyncClient buildAsync();
 
     /**
@@ -140,5 +151,6 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5BlockingClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5BlockingClient buildBlocking();
 }

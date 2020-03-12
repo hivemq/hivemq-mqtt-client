@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
@@ -77,6 +78,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3ConnectBuilder.Send<Mqtt3ConnAck> connectWith() {
         return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
@@ -103,6 +105,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith() {
         return new Mqtt3SubscribeViewBuilder.Send<>(this::subscribe);
     }
@@ -132,6 +135,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3UnsubscribeBuilder.SendVoid.Start unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.SendVoid(this::unsubscribe);
     }
@@ -152,6 +156,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt3Publish)
      */
+    @CheckReturnValue
     default @NotNull Mqtt3PublishBuilder.SendVoid publishWith() {
         return new Mqtt3PublishViewBuilder.SendVoid(this::publish);
     }

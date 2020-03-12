@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.lifecycle;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientTransportConfig;
 import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
@@ -117,6 +118,7 @@ public interface MqttClientReconnector {
      * @return the fluent builder for the transport configuration.
      * @see #transportConfig(MqttClientTransportConfig)
      */
+    @CheckReturnValue
     @NotNull MqttClientTransportConfigBuilder.Nested<? extends MqttClientReconnector> transportConfig();
 
     /**

@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.MqttRxClientBuilder;
 import com.hivemq.client.mqtt.MqttClient;
@@ -50,6 +51,7 @@ public interface Mqtt5Client extends MqttClient {
      *
      * @return a reactive API for this client.
      */
+    @CheckReturnValue
     @NotNull Mqtt5RxClient toRx();
 
     /**
@@ -59,6 +61,7 @@ public interface Mqtt5Client extends MqttClient {
      *
      * @return a asynchronous API for this client.
      */
+    @CheckReturnValue
     @NotNull Mqtt5AsyncClient toAsync();
 
     /**
@@ -68,5 +71,6 @@ public interface Mqtt5Client extends MqttClient {
      *
      * @return a blocking API for this client.
      */
+    @CheckReturnValue
     @NotNull Mqtt5BlockingClient toBlocking();
 }

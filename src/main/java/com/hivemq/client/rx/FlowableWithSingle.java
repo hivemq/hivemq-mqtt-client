@@ -17,6 +17,7 @@
 
 package com.hivemq.client.rx;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.internal.rx.WithSingleStrictSubscriber;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMap;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMapError;
@@ -58,6 +59,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @return a {@link FlowableWithSingle} notified from the upstream on the specified Scheduler.
      * @see Flowable#observeOn(Scheduler)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeOnBoth(final @NotNull Scheduler scheduler) {
@@ -73,6 +75,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @return a {@link FlowableWithSingle} notified from the upstream on the specified Scheduler.
      * @see Flowable#observeOn(Scheduler)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeOnBoth(
@@ -91,6 +94,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @return a {@link FlowableWithSingle} notified from the upstream on the specified Scheduler.
      * @see Flowable#observeOn(Scheduler)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeOnBoth(
@@ -108,6 +112,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param <SM>         the type of the mapped single item.
      * @return a {@link FlowableWithSingle} that applies the mapper function to the single item.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final <SM> @NotNull FlowableWithSingle<F, SM> mapSingle(
@@ -128,6 +133,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param <FM>           the type of the mapped flow items.
      * @return a {@link FlowableWithSingle} that applies the mapper functions to the single item and the flow of items.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final <FM, SM> @NotNull FlowableWithSingle<FM, SM> mapBoth(
@@ -145,6 +151,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param mapper the mapper function to apply to an error.
      * @return a {@link FlowableWithSingle} that applies the mapper function to an error.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull FlowableWithSingle<F, S> mapError(
@@ -160,6 +167,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param singleConsumer the consumer of the single item.
      * @return a {@link FlowableWithSingle} that calls the consumer with the single item.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull FlowableWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
@@ -206,6 +214,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      *
      * @return a future for the single item of type S.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture() {
@@ -230,6 +239,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param onNext see {@link #subscribe(Consumer)}
      * @return a future for the single item of type S.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(final @NotNull Consumer<? super F> onNext) {
@@ -256,6 +266,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param onError see {@link #subscribe(Consumer, Consumer)}
      * @return a future for the single item of type S.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
@@ -285,6 +296,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param onComplete see {@link #subscribe(Consumer, Consumer, Action)}
      * @return a future for the single item of type S.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
@@ -313,6 +325,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param subscriber see {@link #subscribe(Subscriber)}
      * @return a future for the single item of type S.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(final @NotNull Subscriber<? super F> subscriber) {

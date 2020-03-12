@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.datatypes;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,7 @@ public interface Mqtt5UserPropertiesBuilder extends Mqtt5UserPropertiesBuilderBa
      *
      * @return the built {@link Mqtt5UserProperties}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5UserProperties build();
 
     /**

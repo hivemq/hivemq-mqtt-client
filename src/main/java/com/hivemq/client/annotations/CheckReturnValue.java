@@ -15,28 +15,16 @@
  *
  */
 
-package com.hivemq.client.mqtt.datatypes;
+package com.hivemq.client.annotations;
 
-import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
-import org.jetbrains.annotations.NotNull;
+import java.lang.annotation.*;
 
 /**
- * Builder base for a {@link MqttTopic}.
+ * Documents that the return value of a method should not be ignored.
  *
- * @param <C> the type of the complete builder.
  * @author Silvio Giebl
- * @since 1.0
  */
-@DoNotImplement
-public interface MqttTopicBuilderBase<C extends MqttTopicBuilderBase<C>> {
-
-    /**
-     * Adds a {@link MqttTopic#getLevels() Topic level}.
-     *
-     * @param topicLevel the level.
-     * @return the builder that is now complete as at least one Topic level is set.
-     */
-    @CheckReturnValue
-    @NotNull C addLevel(@NotNull String topicLevel);
-}
+@Documented
+@Retention(RetentionPolicy.CLASS)
+@Target(ElementType.METHOD)
+public @interface CheckReturnValue {}

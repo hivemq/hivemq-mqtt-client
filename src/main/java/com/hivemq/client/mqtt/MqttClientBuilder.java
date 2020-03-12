@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientBuilder;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientBuilder;
@@ -36,6 +37,7 @@ public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuild
      *
      * @return the builder for the {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client Mqtt3Client}.
      */
+    @CheckReturnValue
     @NotNull Mqtt3ClientBuilder useMqttVersion3();
 
     /**
@@ -43,5 +45,6 @@ public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuild
      *
      * @return the builder for the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder useMqttVersion5();
 }

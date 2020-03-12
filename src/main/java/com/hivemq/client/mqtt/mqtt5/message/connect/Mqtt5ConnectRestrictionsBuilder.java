@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,7 @@ public interface Mqtt5ConnectRestrictionsBuilder
      *
      * @return the built {@link Mqtt5ConnectRestrictions}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5ConnectRestrictions build();
 
     /**

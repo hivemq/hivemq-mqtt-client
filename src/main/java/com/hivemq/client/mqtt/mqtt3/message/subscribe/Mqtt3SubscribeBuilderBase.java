@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +41,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @param subscription the subscription.
      * @return the builder that is now complete as at least one subscription is set.
      */
+    @CheckReturnValue
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 
     /**
@@ -52,6 +54,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @return the fluent builder for the subscription.
      * @see #addSubscription(Mqtt3Subscription)
      */
+    @CheckReturnValue
     @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
 
     /**

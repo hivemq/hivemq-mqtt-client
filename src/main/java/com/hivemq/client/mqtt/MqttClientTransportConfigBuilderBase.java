@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @param address the server address.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverAddress(@NotNull InetSocketAddress address);
 
     /**
@@ -47,6 +49,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @param host the server host.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverHost(@NotNull String host);
 
     /**
@@ -55,6 +58,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @param host the server host.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverHost(@NotNull InetAddress host);
 
     /**
@@ -63,6 +67,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @param port the server port.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverPort(int port);
 
     /**
@@ -73,6 +78,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      *
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B sslWithDefaultConfig();
 
     /**
@@ -82,6 +88,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      *                  transport configuration.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B sslConfig(@Nullable MqttClientSslConfig sslConfig);
 
     /**
@@ -93,6 +100,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the fluent builder for the secure transport configuration.
      * @see #sslConfig(MqttClientSslConfig)
      */
+    @CheckReturnValue
     @NotNull MqttClientSslConfigBuilder.Nested<? extends B> sslConfig();
 
     /**
@@ -101,6 +109,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      *
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B webSocketWithDefaultConfig();
 
     /**
@@ -110,6 +119,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      *                        WebSocket transport configuration.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B webSocketConfig(@Nullable MqttWebSocketConfig webSocketConfig);
 
     /**
@@ -121,5 +131,6 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the fluent builder for the WebSocket configuration.
      * @see #webSocketConfig(MqttWebSocketConfig)
      */
+    @CheckReturnValue
     @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> webSocketConfig();
 }

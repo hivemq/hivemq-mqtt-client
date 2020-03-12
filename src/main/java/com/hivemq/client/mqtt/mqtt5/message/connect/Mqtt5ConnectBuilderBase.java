@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -46,6 +47,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @param keepAlive the keep alive in seconds.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B keepAlive(int keepAlive);
 
     /**
@@ -53,6 +55,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      *
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B noKeepAlive();
 
     /**
@@ -61,6 +64,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @param cleanStart whether the client starts a clean session.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B cleanStart(boolean cleanStart);
 
     /**
@@ -71,6 +75,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @param sessionExpiryInterval the session expiry interval in seconds.
      * @return teh builder.
      */
+    @CheckReturnValue
     @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
 
     /**
@@ -79,6 +84,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      *
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B noSessionExpiry();
 
     /**
@@ -87,6 +93,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @param restrictions the restrictions from the client.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B restrictions(@NotNull Mqtt5ConnectRestrictions restrictions);
 
     /**
@@ -98,6 +105,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @return the fluent builder for the restrictions.
      * @see #restrictions(Mqtt5ConnectRestrictions)
      */
+    @CheckReturnValue
     @NotNull Mqtt5ConnectRestrictionsBuilder.Nested<? extends B> restrictions();
 
     /**
@@ -107,6 +115,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      *                   related data.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B simpleAuth(@Nullable Mqtt5SimpleAuth simpleAuth);
 
     /**
@@ -119,6 +128,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @return the fluent builder for the simple auth related data.
      * @see #simpleAuth(Mqtt5SimpleAuth)
      */
+    @CheckReturnValue
     @NotNull Mqtt5SimpleAuthBuilder.Nested<? extends B> simpleAuth();
 
     /**
@@ -128,6 +138,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      *                              enhanced auth mechanism.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B enhancedAuth(@Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism);
 
     /**
@@ -136,6 +147,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @param willPublish the Will Publish or <code>null</code> to remove any previously set Will Publish.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B willPublish(@Nullable Mqtt5Publish willPublish);
 
     /**
@@ -148,6 +160,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt5Publish)
      */
+    @CheckReturnValue
     @NotNull Mqtt5WillPublishBuilder.Nested<? extends B> willPublish();
 
     /**
@@ -156,6 +169,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @param userProperties the User Properties.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
 
     /**
@@ -167,5 +181,6 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @return the fluent builder for the User Properties.
      * @see #userProperties(Mqtt5UserProperties)
      */
+    @CheckReturnValue
     @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
 }

@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
@@ -92,6 +93,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5ConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith() {
         return new MqttConnectBuilder.Nested<>(this::connect);
     }
@@ -130,6 +132,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith() {
         return new MqttSubscribeBuilder.Nested<>(this::subscribe);
     }
@@ -170,6 +173,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribeStream(Mqtt5Subscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
         return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
     }
@@ -223,6 +227,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Single<Mqtt5UnsubAck>> unsubscribeWith() {
         return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
     }
@@ -300,6 +305,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the builder for the Disconnect message.
      * @see #disconnect(Mqtt5Disconnect)
      */
+    @CheckReturnValue
     default @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith() {
         return new MqttDisconnectBuilder.Nested<>(this::disconnect);
     }

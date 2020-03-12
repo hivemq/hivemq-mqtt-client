@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +42,7 @@ public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5Su
          *
          * @return the built {@link Mqtt5Subscribe}.
          */
+        @CheckReturnValue
         @NotNull Mqtt5Subscribe build();
     }
 

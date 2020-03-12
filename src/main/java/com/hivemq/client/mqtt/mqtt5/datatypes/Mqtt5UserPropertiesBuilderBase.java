@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.datatypes;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,7 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
      * @param value the value of the User Property.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B add(@NotNull String name, @NotNull String value);
 
     /**
@@ -50,6 +52,7 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
      * @param value the value of the User Property.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B add(@NotNull MqttUtf8String name, @NotNull MqttUtf8String value);
 
     /**
@@ -58,6 +61,7 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
      * @param userProperty the User Property.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
 
     /**
