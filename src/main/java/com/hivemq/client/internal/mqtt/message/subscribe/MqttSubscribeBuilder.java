@@ -78,7 +78,9 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable Collection<@Nullable Mqtt5Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(
+            final @Nullable Collection<@Nullable ? extends Mqtt5Subscription> subscriptions) {
+
         Checks.notNull(subscriptions, "Subscriptions");
         buildFirstSubscription();
         subscriptionsBuilder.ensureFree(subscriptions.size());
@@ -87,7 +89,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable Mqtt5Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable ? extends Mqtt5Subscription> subscriptions) {
         Checks.notNull(subscriptions, "Subscriptions");
         buildFirstSubscription();
         subscriptions.forEach(this::addSubscription);

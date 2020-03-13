@@ -75,7 +75,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @return the builder that is now complete as at least one subscription is set.
      * @since 1.2
      */
-    @NotNull C addSubscriptions(@NotNull Collection<@NotNull Mqtt3Subscription> subscriptions);
+    @NotNull C addSubscriptions(@NotNull Collection<@NotNull ? extends Mqtt3Subscription> subscriptions);
 
     /**
      * Adds a stream of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
@@ -85,7 +85,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @return the builder that is now complete as at least one subscription is set.
      * @since 1.2
      */
-    @NotNull C addSubscriptions(@NotNull Stream<@NotNull Mqtt3Subscription> subscriptions);
+    @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt3Subscription> subscriptions);
 
     /**
      * {@link Mqtt3SubscribeBuilderBase} that provides additional methods for the first subscription.

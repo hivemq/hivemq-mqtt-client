@@ -90,7 +90,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @return the builder that is now complete as at least one Topic Filter is set.
      * @since 1.2
      */
-    @NotNull C addTopicFilters(@NotNull Collection<@NotNull MqttTopicFilter> topicFilters);
+    @NotNull C addTopicFilters(@NotNull Collection<@NotNull ? extends MqttTopicFilter> topicFilters);
 
     /**
      * Adds a stream of {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of
@@ -100,7 +100,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @return the builder that is now complete as at least one Topic Filter is set.
      * @since 1.2
      */
-    @NotNull C addTopicFilters(@NotNull Stream<@NotNull MqttTopicFilter> topicFilters);
+    @NotNull C addTopicFilters(@NotNull Stream<@NotNull ? extends MqttTopicFilter> topicFilters);
 
     /**
      * Reverses the subscriptions of a Subscribe message by adding their Topic Filters.
