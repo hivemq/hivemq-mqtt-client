@@ -244,7 +244,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * performed lazy and asynchronous. When subscribing (in terms of Reactive Streams) to the returned {@link Flux} the
      * client subscribes (in terms of Reactive Streams) to the given {@link Publisher}.
      *
-     * @param publishFlowable the source of the Publish messages to publish.
+     * @param publisher the source of the Publish messages to publish.
      * @return the {@link Flux} which
      *         <ul>
      *         <li>emits {@link Mqtt3PublishResult}s each corresponding to a Publish message,</li>
@@ -255,7 +255,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException MqttSessionExpiredException}).</li>
      *         </ul>
      */
-    @NotNull Flux<Mqtt3PublishResult> publish(@NotNull Publisher<Mqtt3Publish> publishFlowable);
+    @NotNull Flux<Mqtt3PublishResult> publish(@NotNull Publisher<Mqtt3Publish> publisher);
 
     /**
      * Creates a {@link Mono} for disconnecting this client.
