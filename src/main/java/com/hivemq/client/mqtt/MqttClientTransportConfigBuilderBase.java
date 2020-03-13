@@ -186,6 +186,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B proxyConfig(@Nullable MqttProxyConfig proxyConfig);
 
     /**
@@ -198,5 +199,6 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @see #proxyConfig(MqttProxyConfig)
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull MqttProxyConfigBuilder.Nested<? extends B> proxyConfig();
 }
