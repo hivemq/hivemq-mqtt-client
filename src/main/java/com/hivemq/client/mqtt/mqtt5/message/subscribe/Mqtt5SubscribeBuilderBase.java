@@ -67,6 +67,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @return the builder that is now complete as at least one subscription is set.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull C addSubscriptions(@NotNull Mqtt5Subscription @NotNull ... subscriptions);
 
     /**
@@ -77,6 +78,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @return the builder that is now complete as at least one subscription is set.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull C addSubscriptions(@NotNull Collection<@NotNull ? extends Mqtt5Subscription> subscriptions);
 
     /**
@@ -87,6 +89,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @return the builder that is now complete as at least one subscription is set.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt5Subscription> subscriptions);
 
     /**

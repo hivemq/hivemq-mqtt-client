@@ -80,6 +80,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @return the builder that is now complete as at least one Topic Filter is set.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull C addTopicFilters(@NotNull MqttTopicFilter @NotNull ... topicFilters);
 
     /**
@@ -90,6 +91,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @return the builder that is now complete as at least one Topic Filter is set.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull C addTopicFilters(@NotNull Collection<@NotNull ? extends MqttTopicFilter> topicFilters);
 
     /**
@@ -100,6 +102,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @return the builder that is now complete as at least one Topic Filter is set.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull C addTopicFilters(@NotNull Stream<@NotNull ? extends MqttTopicFilter> topicFilters);
 
     /**

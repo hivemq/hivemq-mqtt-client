@@ -71,6 +71,7 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B addAll(@NotNull Mqtt5UserProperty @NotNull ... userProperties);
 
     /**
@@ -80,6 +81,7 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B addAll(@NotNull Collection<@NotNull ? extends Mqtt5UserProperty> userProperties);
 
     /**
@@ -89,5 +91,6 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B addAll(@NotNull Stream<@NotNull ? extends Mqtt5UserProperty> userProperties);
 }

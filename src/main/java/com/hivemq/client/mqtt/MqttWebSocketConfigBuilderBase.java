@@ -46,6 +46,7 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
      * @param queryString the query string.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B queryString(@NotNull String queryString);
 
     /**
