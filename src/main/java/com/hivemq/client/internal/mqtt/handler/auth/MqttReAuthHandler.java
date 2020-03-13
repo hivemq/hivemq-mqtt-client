@@ -158,8 +158,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         }
         if (state != MqttAuthState.NONE) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5AuthException(
-                            auth,
+                    new Mqtt5AuthException(auth,
                             "Must not receive AUTH with reason code REAUTHENTICATE if reauth is still pending."));
             return;
         }

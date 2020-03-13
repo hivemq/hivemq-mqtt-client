@@ -116,8 +116,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         super.onSessionStartOrResume(connectionConfig, eventLoop);
 
         final int oldSendMaximum = sendMaximum;
-        final int newSendMaximum = Math.min(
-                connectionConfig.getSendMaximum(),
+        final int newSendMaximum = Math.min(connectionConfig.getSendMaximum(),
                 UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING);
         sendMaximum = newSendMaximum;
         packetIdentifiers.resize(newSendMaximum);
@@ -260,8 +259,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private void writeQos0Publish(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPublishWithFlow publishWithFlow) {
 
-        ctx.write(
-                publishWithFlow.getPublish().createStateful(NO_PACKET_IDENTIFIER_QOS_0, false, topicAliasMapping),
+        ctx.write(publishWithFlow.getPublish().createStateful(NO_PACKET_IDENTIFIER_QOS_0, false, topicAliasMapping),
                 new DefaultContextPromise<>(ctx.channel(), publishWithFlow)).addListener(this);
     }
 
@@ -291,8 +289,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         pendingIndex.put(publishWithFlow);
         pending.add(publishWithFlow);
 
-        writeQos1Or2Publish(
-                ctx,
+        writeQos1Or2Publish(ctx,
                 publishWithFlow.getPublish().createStateful(packetIdentifier, false, topicAliasMapping),
                 publishWithFlow);
     }

@@ -32,7 +32,8 @@ public enum Mqtt5PayloadFormatIndicator {
      */
     UNSPECIFIED,
     /**
-     * Payload consists of UTF-8 encoded character data as defined by the Unicode specification and restated in RFC 3629.
+     * Payload consists of UTF-8 encoded character data as defined by the Unicode specification and restated in RFC
+     * 3629.
      */
     UTF_8;
 
