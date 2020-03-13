@@ -108,7 +108,7 @@ dependencies {
 allprojects {
     plugins.withType(JavaPlugin) {
         dependencies {
-            def  junit5Version = '5.5.1'
+            def junit5Version = '5.5.1'
             def junitPlatformVersion = '1.5.1'
 
             testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version

@@ -70,8 +70,8 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return Mono.fromDirect(delegate.unsubscribe(unsubscribe).toFlowable());
     }
 
-    public @NotNull Flux<Mqtt5PublishResult> publish(final @NotNull Publisher<Mqtt5Publish> publishFlowable) {
-        return Flux.from(delegate.publish(Flowable.fromPublisher(publishFlowable)));
+    public @NotNull Flux<Mqtt5PublishResult> publish(final @NotNull Publisher<Mqtt5Publish> publisher) {
+        return Flux.from(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
     public @NotNull Mono<Void> reauth() {

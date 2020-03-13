@@ -69,8 +69,8 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return Mono.fromDirect(delegate.unsubscribe(unsubscribe).toFlowable());
     }
 
-    public @NotNull Flux<Mqtt3PublishResult> publish(final @NotNull Publisher<Mqtt3Publish> publishFlowable) {
-        return Flux.from(delegate.publish(Flowable.fromPublisher(publishFlowable)));
+    public @NotNull Flux<Mqtt3PublishResult> publish(final @NotNull Publisher<Mqtt3Publish> publisher) {
+        return Flux.from(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
     public @NotNull Mono<Void> disconnect() {

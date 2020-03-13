@@ -252,7 +252,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * performed lazy and asynchronous. When subscribing (in terms of Reactive Streams) to the returned {@link Flux} the
      * client subscribes (in terms of Reactive Streams) to the given {@link Publisher}.
      *
-     * @param publishFlowable the source of the Publish messages to publish.
+     * @param publisher the source of the Publish messages to publish.
      * @return the {@link Flux} which
      *         <ul>
      *         <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,</li>
@@ -263,7 +263,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException MqttSessionExpiredException}).</li>
      *         </ul>
      */
-    @NotNull Flux<Mqtt5PublishResult> publish(@NotNull Publisher<Mqtt5Publish> publishFlowable);
+    @NotNull Flux<Mqtt5PublishResult> publish(@NotNull Publisher<Mqtt5Publish> publisher);
 
     /**
      * Creates a {@link Mono} for re-authenticating this client.
