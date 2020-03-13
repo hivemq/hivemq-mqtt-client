@@ -77,7 +77,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @return the builder that is now complete as at least one subscription is set.
      * @since 1.2
      */
-    @NotNull C addSubscriptions(@NotNull Collection<@NotNull Mqtt5Subscription> subscriptions);
+    @NotNull C addSubscriptions(@NotNull Collection<@NotNull ? extends Mqtt5Subscription> subscriptions);
 
     /**
      * Adds a stream of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
@@ -87,7 +87,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @return the builder that is now complete as at least one subscription is set.
      * @since 1.2
      */
-    @NotNull C addSubscriptions(@NotNull Stream<@NotNull Mqtt5Subscription> subscriptions);
+    @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt5Subscription> subscriptions);
 
     /**
      * {@link Mqtt5SubscribeBuilderBase} that is complete which means all mandatory fields are set.

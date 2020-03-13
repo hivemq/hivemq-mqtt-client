@@ -74,7 +74,9 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable Collection<@Nullable Mqtt3Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(
+            final @Nullable Collection<@Nullable ? extends Mqtt3Subscription> subscriptions) {
+
         Checks.notNull(subscriptions, "Subscriptions");
         buildFirstSubscription();
         subscriptionsBuilder.ensureFree(subscriptions.size());
@@ -83,7 +85,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable Mqtt3Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable ? extends Mqtt3Subscription> subscriptions) {
         Checks.notNull(subscriptions, "Subscriptions");
         buildFirstSubscription();
         subscriptions.forEach(this::addSubscription);
