@@ -79,6 +79,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B localAddress(@Nullable InetSocketAddress address);
 
     /**
@@ -90,6 +91,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B localAddress(@Nullable String address);
 
     /**
@@ -99,6 +101,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B localAddress(@Nullable InetAddress address);
 
     /**
@@ -108,6 +111,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the builder.
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull B localPort(int port);
 
     /**
