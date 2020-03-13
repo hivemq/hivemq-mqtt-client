@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @param protocol the proxy protocol.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B proxyProtocol(@NotNull MqttProxyProtocol protocol);
 
     /**
@@ -47,6 +49,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @param address the proxy address.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B proxyAddress(@NotNull InetSocketAddress address);
 
     /**
@@ -55,6 +58,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @param host the proxy host.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B proxyHost(@NotNull String host);
 
     /**
@@ -63,6 +67,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @param host the proxy host.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B proxyHost(@NotNull InetAddress host);
 
     /**
@@ -71,6 +76,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @param port the proxy port.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B proxyPort(int port);
 
     /**
@@ -79,6 +85,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @param username the proxy username.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B proxyUsername(@Nullable String username);
 
     /**
@@ -87,5 +94,6 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @param password the proxy username.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B proxyPassword(@Nullable String password);
 }
