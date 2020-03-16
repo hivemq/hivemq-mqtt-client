@@ -15,7 +15,7 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt.reactor.mqtt3;
+package com.hivemq.client.internal.mqtt.mqtt3.reactor;
 
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
@@ -30,7 +30,7 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
-import com.hivemq.client.mqtt.reactor.mqtt3.Mqtt3ReactorClient;
+import com.hivemq.client.mqtt.mqtt3.reactor.Mqtt3ReactorClient;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;

@@ -15,7 +15,7 @@
  *
  */
 
-package com.hivemq.client.mqtt.reactor.mqtt5;
+package com.hivemq.client.mqtt.mqtt5.reactor;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;

@@ -15,14 +15,14 @@
  *
  */
 
-package com.hivemq.client.mqtt.reactor.mqtt3;
+package com.hivemq.client.mqtt.mqtt3.reactor;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
-import com.hivemq.client.internal.mqtt.reactor.mqtt3.Mqtt3ReactorClientView;
+import com.hivemq.client.internal.mqtt.mqtt3.reactor.Mqtt3ReactorClientView;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3Client;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
