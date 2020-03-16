@@ -43,6 +43,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
 
     MqttProxyConfigImplBuilder(final @Nullable MqttProxyConfigImpl proxyConfig) {
         if (proxyConfig != null) {
+            protocol = proxyConfig.getProxyProtocol();
             address = proxyConfig.getProxyAddress();
             username = proxyConfig.getRawProxyUsername();
             password = proxyConfig.getRawProxyPassword();
@@ -135,7 +136,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
 
         public Default() {}
 
-        Default(final @NotNull MqttProxyConfigImpl proxyConfig) {
+        Default(final @Nullable MqttProxyConfigImpl proxyConfig) {
             super(proxyConfig);
         }
 
