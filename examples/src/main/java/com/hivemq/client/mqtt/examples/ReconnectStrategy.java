@@ -73,7 +73,7 @@ public class ReconnectStrategy {
                 .addDisconnectedListener(context -> {
                     context.getReconnector()
                             .reconnect(true) // always reconnect (includes calling disconnect)
-                            .delay(2 * context.getReconnector().getAttempts(), TimeUnit.SECONDS); // linear scaling delay
+                            .delay(2L * context.getReconnector().getAttempts(), TimeUnit.SECONDS); // linear scaling delay
                 })
                 // multiple DisconnectedListener can form a reconnect strategy
                 .addDisconnectedListener(context -> {
