@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
@@ -56,6 +58,8 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
     }
 
     private static class AckLinkSubscriber implements FlowableSubscriber<MqttPublish>, Subscription, LinkedFlow {
+
+        private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(AckLinkSubscriber.class);
 
         static final int STATE_NONE = 0;
         static final int STATE_EMITTING = 1;
@@ -124,6 +128,7 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         @Override
         public void cancel() {
             assert subscription != null;
+            LOGGER.error("MqttPublishFlowables is global and must never cancel. This must not happen and is a bug.");
             subscription.cancel();
         }
 
