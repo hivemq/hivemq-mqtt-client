@@ -32,7 +32,7 @@ public final class MqttVariableByteInteger {
     public static final int NOT_MINIMUM_BYTES = -3;
     private static final int CONTINUATION_BIT_MASK = 0x80;
     private static final int VALUE_MASK = 0x7f;
-    private static final int VALUE_BITS = 7;
+    private static final byte VALUE_BITS = 7;
     private static final int MAX_SHIFT = VALUE_BITS * 3;
     private static final int ONE_BYTE_MAX_VALUE = (1 << VALUE_BITS) - 1;
     private static final int TWO_BYTES_MAX_VALUE = (1 << (VALUE_BITS * 2)) - 1;
@@ -87,7 +87,7 @@ public final class MqttVariableByteInteger {
     public static void encode(int value, final @NotNull ByteBuf byteBuf) {
         do {
             int encodedByte = value & VALUE_MASK;
-            value >>>= 7;
+            value >>>= VALUE_BITS;
             if (value > 0) {
                 encodedByte |= CONTINUATION_BIT_MASK;
             }

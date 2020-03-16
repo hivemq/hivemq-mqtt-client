@@ -100,7 +100,7 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
             }
             fullOverwriteTries = 0;
             if (fullOverwriteCost < OVERWRITE_COST_MAX) {
-                fullOverwriteCost += Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - fullOverwriteCost);
+                fullOverwriteCost += (byte) Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - fullOverwriteCost);
             }
             if (lowest.topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
                 newEntry.setNewTopicAlias(lowest.topicAlias);
@@ -136,7 +136,7 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
                 }
                 overwriteTries = 0;
                 if (overwriteCost < OVERWRITE_COST_MAX) {
-                    overwriteCost += Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - overwriteCost);
+                    overwriteCost += (byte) Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - overwriteCost);
                 }
                 entry.setNewTopicAlias(higher.topicAlias);
                 higher.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
