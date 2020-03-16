@@ -19,7 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
 import com.hivemq.client.internal.annotations.CallByThread;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkCancellable;
+import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkedFlow;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
 import com.hivemq.client.internal.util.collections.ChunkedArrayQueue;
 import io.reactivex.internal.util.BackpressureHelper;
@@ -56,7 +56,7 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
 
     private final @NotNull ChunkedArrayQueue<MqttPublishResult> queue = new ChunkedArrayQueue<>(32);
 
-    private final @NotNull AtomicReference<@Nullable LinkCancellable> linkCancellable = new AtomicReference<>();
+    private final @NotNull AtomicReference<@Nullable LinkedFlow> linkedFlow = new AtomicReference<>();
 
     MqttAckFlowableFlow(
             final @NotNull Subscriber<? super MqttPublishResult> subscriber,
@@ -197,15 +197,15 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
     }
 
     private void cancelLink() {
-        final LinkCancellable linkCancellable = this.linkCancellable.getAndSet(LinkCancellable.CANCELLED);
-        if (linkCancellable != null) {
-            linkCancellable.cancelLink();
+        final LinkedFlow linkedFlow = this.linkedFlow.getAndSet(LinkedFlow.CANCELLED);
+        if (linkedFlow != null) {
+            linkedFlow.cancelLink();
         }
     }
 
-    void link(final @NotNull LinkCancellable linkCancellable) {
-        if (!this.linkCancellable.compareAndSet(null, linkCancellable)) {
-            linkCancellable.cancelLink();
+    void link(final @NotNull LinkedFlow linkedFlow) {
+        if (!this.linkedFlow.compareAndSet(null, linkedFlow)) {
+            linkedFlow.cancelLink();
         }
     }
 }
