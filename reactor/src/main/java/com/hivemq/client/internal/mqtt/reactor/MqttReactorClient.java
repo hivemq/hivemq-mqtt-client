@@ -31,7 +31,7 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import com.hivemq.client.mqtt.reactor.mqtt5.Mqtt5ReactorClient;
+import com.hivemq.client.mqtt.mqtt5.reactor.Mqtt5ReactorClient;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
