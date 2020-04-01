@@ -43,11 +43,11 @@ public abstract class FlowWithEventLoop {
     }
 
     public boolean init() {
-        if (doneState.getAndSet(STATE_NOT_DONE) == STATE_CANCELLED) {
-            clientConfig.releaseEventLoop();
-            return false;
+        if (doneState.compareAndSet(STATE_INIT, STATE_NOT_DONE)) {
+            return true;
         }
-        return true;
+        clientConfig.releaseEventLoop();
+        return false;
     }
 
     protected boolean setDone() {

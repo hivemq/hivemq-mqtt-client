@@ -18,14 +18,12 @@
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
-import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -43,15 +41,11 @@ public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
 
     @Override
     protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5SubAck> observer) {
-        if (clientConfig.getState().isConnectedOrReconnect()) {
-            final ClientComponent clientComponent = clientConfig.getClientComponent();
-            final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
+        final ClientComponent clientComponent = clientConfig.getClientComponent();
+        final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final MqttSubOrUnsubAckFlow<MqttSubAck> flow = new MqttSubOrUnsubAckFlow<>(observer, clientConfig);
-            observer.onSubscribe(flow);
-            subscriptionHandler.subscribe(subscribe, flow);
-        } else {
-            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), observer);
-        }
+        final MqttSubOrUnsubAckFlow<MqttSubAck> flow = new MqttSubOrUnsubAckFlow<>(observer, clientConfig);
+        observer.onSubscribe(flow);
+        subscriptionHandler.subscribe(subscribe, flow);
     }
 }

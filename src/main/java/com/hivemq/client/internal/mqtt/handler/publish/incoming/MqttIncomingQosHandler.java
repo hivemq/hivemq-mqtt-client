@@ -237,7 +237,6 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     @Override
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
-        incomingPublishFlows.clear(cause);
         messages.clear();
     }
 

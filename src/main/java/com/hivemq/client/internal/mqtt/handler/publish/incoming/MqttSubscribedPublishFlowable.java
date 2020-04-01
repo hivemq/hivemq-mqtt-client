@@ -18,7 +18,6 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
@@ -26,7 +25,6 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import com.hivemq.client.rx.FlowableWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
-import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 
@@ -47,18 +45,14 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> subscriber) {
-        if (clientConfig.getState().isConnectedOrReconnect()) {
-            final ClientComponent clientComponent = clientConfig.getClientComponent();
-            final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
-            final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
+        final ClientComponent clientComponent = clientConfig.getClientComponent();
+        final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
+        final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final MqttSubscribedPublishFlow flow =
-                    new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler);
-            subscriber.onSubscribe(flow);
-            subscriptionHandler.subscribe(subscribe, flow);
-        } else {
-            EmptySubscription.error(MqttClientStateExceptions.notConnected(), subscriber);
-        }
+        final MqttSubscribedPublishFlow flow =
+                new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler);
+        subscriber.onSubscribe(flow);
+        subscriptionHandler.subscribe(subscribe, flow);
     }
 
     @Override

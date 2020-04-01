@@ -17,21 +17,15 @@
 
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
-import com.hivemq.client.internal.mqtt.message.MqttStatefulMessage;
 import com.hivemq.client.internal.util.collections.NodeList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-abstract class MqttSubOrUnsubWithFlow {
+abstract class MqttSubOrUnsubWithFlow extends NodeList.Node<MqttSubOrUnsubWithFlow> {
+
+    int packetIdentifier;
 
     abstract @NotNull MqttSubscriptionFlow<?> getFlow();
-
-    static abstract class Stateful extends NodeList.Node<Stateful> {
-
-        abstract @NotNull MqttStatefulMessage.WithId<?> getMessage();
-
-        abstract @NotNull MqttSubscriptionFlow<?> getFlow();
-    }
 }

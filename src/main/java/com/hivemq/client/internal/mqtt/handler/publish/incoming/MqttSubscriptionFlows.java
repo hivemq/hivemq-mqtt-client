@@ -20,6 +20,7 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,9 +32,11 @@ import java.util.function.Consumer;
 @NotThreadSafe
 public interface MqttSubscriptionFlows {
 
-    void subscribe(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscribedPublishFlow flow);
+    void subscribe(
+            @NotNull MqttSubscription subscription, int subscriptionIdentifier,
+            @Nullable MqttSubscribedPublishFlow flow);
 
-    void remove(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscribedPublishFlow flow);
+    void suback(@NotNull MqttTopicFilterImpl topicFilter, int subscriptionIdentifier, boolean error);
 
     void unsubscribe(
             @NotNull MqttTopicFilterImpl topicFilter,

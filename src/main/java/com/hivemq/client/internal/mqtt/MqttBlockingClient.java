@@ -17,6 +17,7 @@
 
 package com.hivemq.client.internal.mqtt;
 
+import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
@@ -96,6 +97,9 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     public @NotNull Mqtt5SubAck subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         try {
+            if (!getState().isConnectedOrReconnect()) {
+                throw MqttClientStateExceptions.notConnected();
+            }
             return handleSubAck(delegate.subscribeUnsafe(mqttSubscribe).blockingGet());
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
@@ -113,6 +117,9 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     public @NotNull Mqtt5UnsubAck unsubscribe(final @Nullable Mqtt5Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
         try {
+            if (!getState().isConnectedOrReconnect()) {
+                throw MqttClientStateExceptions.notConnected();
+            }
             return handleUnsubAck(delegate.unsubscribeUnsafe(mqttUnsubscribe).blockingGet());
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);

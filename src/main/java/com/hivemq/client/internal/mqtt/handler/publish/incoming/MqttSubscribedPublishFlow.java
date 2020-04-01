@@ -20,7 +20,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubscriptionFlow;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -35,7 +34,6 @@ import org.reactivestreams.Subscriber;
 public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implements MqttSubscriptionFlow<MqttSubAck> {
 
     private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
-    private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscribedPublishFlow(
             final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
@@ -61,13 +59,5 @@ public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implement
 
     @NotNull HandleList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
-    }
-
-    int getSubscriptionIdentifier() {
-        return subscriptionIdentifier;
-    }
-
-    void setSubscriptionIdentifier(final int subscriptionIdentifier) {
-        this.subscriptionIdentifier = subscriptionIdentifier;
     }
 }
