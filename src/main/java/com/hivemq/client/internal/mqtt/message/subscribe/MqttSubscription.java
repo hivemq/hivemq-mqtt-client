@@ -111,4 +111,33 @@ public class MqttSubscription implements Mqtt5Subscription {
         result = 31 * result + Boolean.hashCode(retainAsPublished);
         return result;
     }
+
+    public byte encodeSubscriptionOptions() {
+        byte subscriptionOptions = 0;
+        subscriptionOptions |= retainHandling.getCode() << 4;
+        if (retainAsPublished) {
+            subscriptionOptions |= 0b0000_1000;
+        }
+        if (noLocal) {
+            subscriptionOptions |= 0b0000_0100;
+        }
+        subscriptionOptions |= qos.getCode();
+        return subscriptionOptions;
+    }
+
+    public static @Nullable MqttQos decodeQos(final byte subscriptionOptions) {
+        return MqttQos.fromCode(subscriptionOptions & 0b0000_0011);
+    }
+
+    public static boolean decodeNoLocal(final byte subscriptionOptions) {
+        return (subscriptionOptions & 0b0000_0100) != 0;
+    }
+
+    public static @Nullable Mqtt5RetainHandling decodeRetainHandling(final byte subscriptionOptions) {
+        return Mqtt5RetainHandling.fromCode(subscriptionOptions & 0b0011_0000);
+    }
+
+    public static boolean decodeRetainAsPublished(final byte subscriptionOptions) {
+        return (subscriptionOptions & 0b0000_1000) != 0;
+    }
 }

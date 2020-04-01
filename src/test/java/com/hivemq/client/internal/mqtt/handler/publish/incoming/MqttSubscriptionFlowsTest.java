@@ -20,6 +20,8 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.google.common.collect.ImmutableSet;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import com.hivemq.client.internal.util.collections.HandleList;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,8 +53,7 @@ abstract class MqttSubscriptionFlowsTest {
     }
 
     private final @NotNull Supplier<MqttSubscriptionFlows> flowsSupplier;
-    @SuppressWarnings("NullabilityAnnotations")
-    MqttSubscriptionFlows flows;
+    @NotNull MqttSubscriptionFlows flows;
 
     MqttSubscriptionFlowsTest(final @NotNull Supplier<MqttSubscriptionFlows> flowsSupplier) {
         this.flowsSupplier = flowsSupplier;
@@ -74,10 +75,11 @@ abstract class MqttSubscriptionFlowsTest {
 
         final MqttSubscribedPublishFlow[] matchingFlows = new MqttSubscribedPublishFlow[matchingTopicFilters.length];
         for (int i = 0; i < matchingTopicFilters.length; i++) {
+            final MqttSubscription subscription =
+                    new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilters[i]).build();
             final MqttSubscribedPublishFlow flow = mockSubscriptionFlow(matchingTopicFilters[i]);
-            final MqttTopicFilterImpl topicFilter = MqttTopicFilterImpl.of(matchingTopicFilters[i]);
-            flows.subscribe(topicFilter, flow);
-            assertEquals(ImmutableSet.of(topicFilter), toSet(flow.getTopicFilters()));
+            flows.subscribe(subscription, i, flow);
+            assertEquals(ImmutableSet.of(subscription.getTopicFilter()), toSet(flow.getTopicFilters()));
             matchingFlows[i] = flow;
         }
 
@@ -97,8 +99,10 @@ abstract class MqttSubscriptionFlowsTest {
     void subscribe_matchingTopicFilters_doMatch_noFlow(
             final @NotNull String topic, @ConvertWith(CsvToArray.class) final @NotNull String[] matchingTopicFilters) {
 
-        for (final String matchingTopicFilter : matchingTopicFilters) {
-            flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), null);
+        for (int i = 0; i < matchingTopicFilters.length; i++) {
+            final MqttSubscription subscription =
+                    new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilters[i]).build();
+            flows.subscribe(subscription, i, null);
         }
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
@@ -117,11 +121,12 @@ abstract class MqttSubscriptionFlowsTest {
             final @NotNull String topic,
             @ConvertWith(CsvToArray.class) final @NotNull String[] notMatchingTopicFilters) {
 
-        for (final String notMatchingTopicFilter : notMatchingTopicFilters) {
-            final MqttSubscribedPublishFlow flow = mockSubscriptionFlow(notMatchingTopicFilter);
-            final MqttTopicFilterImpl topicFilter = MqttTopicFilterImpl.of(notMatchingTopicFilter);
-            flows.subscribe(topicFilter, flow);
-            assertEquals(ImmutableSet.of(topicFilter), toSet(flow.getTopicFilters()));
+        for (int i = 0; i < notMatchingTopicFilters.length; i++) {
+            final MqttSubscription subscription =
+                    new MqttSubscriptionBuilder.Default().topicFilter(notMatchingTopicFilters[i]).build();
+            final MqttSubscribedPublishFlow flow = mockSubscriptionFlow(notMatchingTopicFilters[i]);
+            flows.subscribe(subscription, i, flow);
+            assertEquals(ImmutableSet.of(subscription.getTopicFilter()), toSet(flow.getTopicFilters()));
         }
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
@@ -140,8 +145,10 @@ abstract class MqttSubscriptionFlowsTest {
             final @NotNull String topic,
             @ConvertWith(CsvToArray.class) final @NotNull String[] notMatchingTopicFilters) {
 
-        for (final String notMatchingTopicFilter : notMatchingTopicFilters) {
-            flows.subscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter), null);
+        for (int i = 0; i < notMatchingTopicFilters.length; i++) {
+            final MqttSubscription subscription =
+                    new MqttSubscriptionBuilder.Default().topicFilter(notMatchingTopicFilters[i]).build();
+            flows.subscribe(subscription, i, null);
         }
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
@@ -157,8 +164,8 @@ abstract class MqttSubscriptionFlowsTest {
 
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), flow1);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), flow2);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, flow1);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 2, flow2);
 
         final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
         flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter), unsubscribed::add);
@@ -177,8 +184,8 @@ abstract class MqttSubscriptionFlowsTest {
     void unsubscribe_matchingTopicFilters_doNoLongerMatch_noFlow(
             final @NotNull String topic, final @NotNull String matchingTopicFilter) {
 
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), null);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 2, null);
 
         final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
         flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter), unsubscribed::add);
@@ -198,8 +205,8 @@ abstract class MqttSubscriptionFlowsTest {
 
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(notMatchingTopicFilter);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), flow1);
-        flows.subscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter), flow2);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, flow1);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(notMatchingTopicFilter).build(), 2, flow2);
 
         final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
         flows.unsubscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter), unsubscribed::add);
@@ -220,8 +227,8 @@ abstract class MqttSubscriptionFlowsTest {
             final @NotNull String topic, final @NotNull String matchingTopicFilter,
             final @NotNull String notMatchingTopicFilter) {
 
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), null);
-        flows.subscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter), null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(notMatchingTopicFilter).build(), 2, null);
 
         final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
         flows.unsubscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter), unsubscribed::add);
@@ -238,8 +245,8 @@ abstract class MqttSubscriptionFlowsTest {
     void cancel_doNoLongerMatch(final @NotNull String topic, final @NotNull String matchingTopicFilter) {
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), flow1);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), flow2);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, flow1);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 2, flow2);
 
         flows.cancel(flow1);
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
@@ -260,7 +267,7 @@ abstract class MqttSubscriptionFlowsTest {
     void cancel_notPresentFlows_areIgnored(final @NotNull String topic, final @NotNull String matchingTopicFilter) {
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), flow1);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, flow1);
 
         flows.cancel(flow2);
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
@@ -273,8 +280,8 @@ abstract class MqttSubscriptionFlowsTest {
     @Test
     void cancel_partiallyUnsubscribedFlow() {
         final MqttSubscribedPublishFlow flow = mockSubscriptionFlow("test/topic(2)");
-        flows.subscribe(MqttTopicFilterImpl.of("test/topic"), flow);
-        flows.subscribe(MqttTopicFilterImpl.of("test/topic2"), flow);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter("test/topic").build(), 1, flow);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter("test/topic2").build(), 2, flow);
 
         flows.unsubscribe(MqttTopicFilterImpl.of("test/topic"), null);
         flows.cancel(flow);
@@ -298,14 +305,18 @@ abstract class MqttSubscriptionFlowsTest {
             final @NotNull String matchingTopicFilter2) {
 
         final MqttSubscribedPublishFlow flow = mockSubscriptionFlow(matchingTopicFilter);
-        final MqttTopicFilterImpl topicFilter = MqttTopicFilterImpl.of(matchingTopicFilter);
-        final MqttTopicFilterImpl topicFilter2 = MqttTopicFilterImpl.of(matchingTopicFilter2);
-        flows.subscribe(topicFilter, flow);
-        flows.subscribe(topicFilter2, flow);
-        assertEquals(ImmutableSet.of(topicFilter, topicFilter2), toSet(flow.getTopicFilters()));
+        final MqttSubscription subscription =
+                new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build();
+        final MqttSubscription subscription2 =
+                new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter2).build();
+        flows.subscribe(subscription, 1, flow);
+        flows.subscribe(subscription2, 2, flow);
+        assertEquals(
+                ImmutableSet.of(subscription.getTopicFilter(), subscription2.getTopicFilter()),
+                toSet(flow.getTopicFilters()));
 
-        flows.remove(topicFilter, flow);
-        assertEquals(ImmutableSet.of(topicFilter2), toSet(flow.getTopicFilters()));
+        flows.suback(subscription.getTopicFilter(), 1, true);
+        assertEquals(ImmutableSet.of(subscription2.getTopicFilter()), toSet(flow.getTopicFilters()));
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -329,10 +340,10 @@ abstract class MqttSubscriptionFlowsTest {
             final @NotNull String topic, final @NotNull String matchingTopicFilter, final @NotNull String topic2,
             final @NotNull String matchingTopicFilter2) {
 
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), null);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter2), null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter2).build(), 2, null);
 
-        flows.remove(MqttTopicFilterImpl.of(matchingTopicFilter), null);
+        flows.suback(MqttTopicFilterImpl.of(matchingTopicFilter), 1, true);
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -350,15 +361,16 @@ abstract class MqttSubscriptionFlowsTest {
     void remove_doesNotUnsubscribe(final @NotNull String topic, final @NotNull String matchingTopicFilter) {
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
-        final MqttTopicFilterImpl topicFilter = MqttTopicFilterImpl.of(matchingTopicFilter);
-        flows.subscribe(topicFilter, flow1);
-        flows.subscribe(topicFilter, flow2);
-        assertEquals(ImmutableSet.of(topicFilter), toSet(flow1.getTopicFilters()));
-        assertEquals(ImmutableSet.of(topicFilter), toSet(flow2.getTopicFilters()));
+        final MqttSubscription subscription =
+                new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build();
+        flows.subscribe(subscription, 1, flow1);
+        flows.subscribe(subscription, 2, flow2);
+        assertEquals(ImmutableSet.of(subscription.getTopicFilter()), toSet(flow1.getTopicFilters()));
+        assertEquals(ImmutableSet.of(subscription.getTopicFilter()), toSet(flow2.getTopicFilters()));
 
-        flows.remove(topicFilter, flow1);
+        flows.suback(subscription.getTopicFilter(), 1, true);
         assertTrue(flow1.getTopicFilters().isEmpty());
-        assertEquals(ImmutableSet.of(topicFilter), toSet(flow2.getTopicFilters()));
+        assertEquals(ImmutableSet.of(subscription.getTopicFilter()), toSet(flow2.getTopicFilters()));
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -370,10 +382,10 @@ abstract class MqttSubscriptionFlowsTest {
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
     void remove_doesNotUnsubscribe_noFlow(final @NotNull String topic, final @NotNull String matchingTopicFilter) {
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), null);
-        flows.subscribe(MqttTopicFilterImpl.of(matchingTopicFilter), null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 1, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build(), 2, null);
 
-        flows.remove(MqttTopicFilterImpl.of(matchingTopicFilter), null);
+        flows.suback(MqttTopicFilterImpl.of(matchingTopicFilter), 1, true);
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -387,9 +399,9 @@ abstract class MqttSubscriptionFlowsTest {
             final @NotNull String topic, final @NotNull String filter1, final @NotNull String filter2,
             final @NotNull String filter3) {
 
-        flows.subscribe(MqttTopicFilterImpl.of(filter1), null);
-        flows.subscribe(MqttTopicFilterImpl.of(filter2), null);
-        flows.subscribe(MqttTopicFilterImpl.of(filter3), null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter1).build(), 1, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter2).build(), 2, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter3).build(), 3, null);
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -405,12 +417,30 @@ abstract class MqttSubscriptionFlowsTest {
         final MqttSubscribedPublishFlow flow4 = mockSubscriptionFlow("test/topic/filter2");
         final MqttSubscribedPublishFlow flow5 = mockSubscriptionFlow("+/topic");
         final MqttSubscribedPublishFlow flow6 = mockSubscriptionFlow("topic/#");
-        flows.subscribe(MqttTopicFilterImpl.of(flow1.toString()), flow1);
-        flows.subscribe(MqttTopicFilterImpl.of(flow2.toString()), flow2);
-        flows.subscribe(MqttTopicFilterImpl.of(flow3.toString()), flow3);
-        flows.subscribe(MqttTopicFilterImpl.of(flow4.toString()), flow4);
-        flows.subscribe(MqttTopicFilterImpl.of(flow5.toString()), flow5);
-        flows.subscribe(MqttTopicFilterImpl.of(flow6.toString()), flow6);
+        final MqttSubscription subscription1 =
+                new MqttSubscriptionBuilder.Default().topicFilter(flow1.toString()).build();
+        final MqttSubscription subscription2 =
+                new MqttSubscriptionBuilder.Default().topicFilter(flow2.toString()).build();
+        final MqttSubscription subscription3 =
+                new MqttSubscriptionBuilder.Default().topicFilter(flow3.toString()).build();
+        final MqttSubscription subscription4 =
+                new MqttSubscriptionBuilder.Default().topicFilter(flow4.toString()).build();
+        final MqttSubscription subscription5 =
+                new MqttSubscriptionBuilder.Default().topicFilter(flow5.toString()).build();
+        final MqttSubscription subscription6 =
+                new MqttSubscriptionBuilder.Default().topicFilter(flow6.toString()).build();
+        flows.subscribe(subscription1, 1, flow1);
+        flows.subscribe(subscription2, 2, flow2);
+        flows.subscribe(subscription3, 3, flow3);
+        flows.subscribe(subscription4, 4, flow4);
+        flows.subscribe(subscription5, 5, flow5);
+        flows.subscribe(subscription6, 6, flow6);
+        flows.suback(subscription1.getTopicFilter(), 1, false);
+        flows.suback(subscription2.getTopicFilter(), 2, false);
+        flows.suback(subscription3.getTopicFilter(), 3, false);
+        flows.suback(subscription4.getTopicFilter(), 4, false);
+        flows.suback(subscription5.getTopicFilter(), 5, false);
+        flows.suback(subscription6.getTopicFilter(), 6, false);
 
         final Exception cause = new Exception("test");
         flows.clear(cause);

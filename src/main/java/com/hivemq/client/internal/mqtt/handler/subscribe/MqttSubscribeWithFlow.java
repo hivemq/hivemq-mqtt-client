@@ -17,59 +17,30 @@
 
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
-import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlow;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
  */
 class MqttSubscribeWithFlow extends MqttSubOrUnsubWithFlow {
 
-    private final @NotNull MqttSubscribe subscribe;
+    final @NotNull MqttSubscribe subscribe;
+    final int subscriptionIdentifier;
     private final @NotNull MqttSubscriptionFlow<MqttSubAck> flow;
 
     MqttSubscribeWithFlow(
-            final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
+            final @NotNull MqttSubscribe subscribe, final int subscriptionIdentifier,
+            final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
 
         this.subscribe = subscribe;
+        this.subscriptionIdentifier = subscriptionIdentifier;
         this.flow = flow;
-    }
-
-    @NotNull MqttSubscribe getMessage() {
-        return subscribe;
     }
 
     @Override
     @NotNull MqttSubscriptionFlow<MqttSubAck> getFlow() {
         return flow;
-    }
-
-    static class Stateful extends MqttSubOrUnsubWithFlow.Stateful {
-
-        private final @NotNull MqttStatefulSubscribe subscribe;
-        private final @NotNull MqttSubscriptionFlow<MqttSubAck> flow;
-
-        Stateful(final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
-            this.subscribe = subscribe;
-            this.flow = flow;
-        }
-
-        @Override
-        @NotNull MqttStatefulSubscribe getMessage() {
-            return subscribe;
-        }
-
-        @Override
-        @NotNull MqttSubscriptionFlow<MqttSubAck> getFlow() {
-            return flow;
-        }
-
-        @Nullable MqttSubscribedPublishFlow getPublishFlow() {
-            return (flow instanceof MqttSubscribedPublishFlow) ? (MqttSubscribedPublishFlow) flow : null;
-        }
     }
 }

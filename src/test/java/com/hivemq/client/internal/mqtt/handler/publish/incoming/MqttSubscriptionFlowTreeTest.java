@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -96,9 +97,9 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
             final @NotNull String filter3, final @NotNull String topic1, final @NotNull String topic2,
             final @NotNull String topic3) {
 
-        flows.subscribe(MqttTopicFilterImpl.of(filter1), null);
-        flows.subscribe(MqttTopicFilterImpl.of(filter2), null);
-        flows.subscribe(MqttTopicFilterImpl.of(filter3), null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter1).build(), 1, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter2).build(), 2, null);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter3).build(), 3, null);
 
         final MqttMatchingPublishFlows matching1 = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic1), matching1);
@@ -117,9 +118,9 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
                 flows.unsubscribe(MqttTopicFilterImpl.of(filter3), null);
                 break;
             case "remove":
-                flows.remove(MqttTopicFilterImpl.of(filter1), null);
-                flows.remove(MqttTopicFilterImpl.of(filter2), null);
-                flows.remove(MqttTopicFilterImpl.of(filter3), null);
+                flows.suback(MqttTopicFilterImpl.of(filter1), 1, true);
+                flows.suback(MqttTopicFilterImpl.of(filter2), 2, true);
+                flows.suback(MqttTopicFilterImpl.of(filter3), 3, true);
                 break;
             default:
                 fail();
