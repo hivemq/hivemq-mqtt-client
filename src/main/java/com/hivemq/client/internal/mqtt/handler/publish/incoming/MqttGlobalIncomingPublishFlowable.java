@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -44,15 +45,11 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> subscriber) {
         final ClientComponent clientComponent = clientConfig.getClientComponent();
         final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
-        final MqttIncomingPublishFlows incomingPublishFlows = incomingQosHandler.getIncomingPublishFlows();
+        final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
         final MqttGlobalIncomingPublishFlow flow =
                 new MqttGlobalIncomingPublishFlow(subscriber, clientConfig, incomingQosHandler, filter);
         subscriber.onSubscribe(flow);
-        flow.getEventLoop().execute(() -> {
-            if (flow.init()) {
-                incomingPublishFlows.subscribeGlobal(flow);
-            }
-        });
+        subscriptionHandler.subscribeGlobal(flow);
     }
 }

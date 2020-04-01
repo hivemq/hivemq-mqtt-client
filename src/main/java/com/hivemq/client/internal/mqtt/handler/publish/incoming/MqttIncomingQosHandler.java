@@ -59,8 +59,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
             new IntIndex.Spec<>(MqttMessage.WithId::getPacketIdentifier);
 
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
-    private final @NotNull MqttIncomingPublishService incomingPublishService;
+    final @NotNull MqttIncomingPublishService incomingPublishService;
 
     private final @NotNull IntIndex<MqttMessage.WithId> messages = new IntIndex<>(INDEX_SPEC);
     // contains StatefulPublish with AT_LEAST_ONCE/EXACTLY_ONCE, MqttPubAck or MqttPubRec
@@ -73,8 +72,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
             final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
 
         this.clientConfig = clientConfig;
-        this.incomingPublishFlows = incomingPublishFlows;
-        incomingPublishService = new MqttIncomingPublishService(this);
+        incomingPublishService = new MqttIncomingPublishService(this, incomingPublishFlows);
     }
 
     @Override
@@ -271,13 +269,5 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
             }
         }
         return pubCompBuilder.build();
-    }
-
-    @NotNull MqttIncomingPublishFlows getIncomingPublishFlows() {
-        return incomingPublishFlows;
-    }
-
-    @NotNull MqttIncomingPublishService getIncomingPublishService() {
-        return incomingPublishService;
     }
 }

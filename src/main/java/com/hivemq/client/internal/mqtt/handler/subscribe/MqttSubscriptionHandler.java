@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
+import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttGlobalIncomingPublishFlow;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttIncomingPublishFlows;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlow;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
@@ -124,6 +125,14 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         flow.getEventLoop().execute(() -> {
             if (flow.init()) {
                 queue(new MqttUnsubscribeWithFlow(unsubscribe, flow));
+            }
+        });
+    }
+
+    public void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
+        flow.getEventLoop().execute(() -> {
+            if (flow.init()) {
+                incomingPublishFlows.subscribeGlobal(flow);
             }
         });
     }

@@ -114,7 +114,7 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
+    public void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
         final int filter = flow.getFilter().ordinal();
         HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
         if (globalFlow == null) {

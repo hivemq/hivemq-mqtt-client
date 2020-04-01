@@ -53,7 +53,7 @@ public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implement
 
     @Override
     void runCancel() {
-        incomingQosHandler.getIncomingPublishFlows().cancel(this);
+        incomingPublishService.incomingPublishFlows.cancel(this);
         super.runCancel();
     }
 
