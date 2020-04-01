@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -97,9 +98,15 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
             final @NotNull String filter3, final @NotNull String topic1, final @NotNull String topic2,
             final @NotNull String topic3) {
 
-        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter1).build(), 1, null);
-        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter2).build(), 2, null);
-        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(filter3).build(), 3, null);
+        final MqttSubscription subscription1 = new MqttSubscriptionBuilder.Default().topicFilter(filter1).build();
+        final MqttSubscription subscription2 = new MqttSubscriptionBuilder.Default().topicFilter(filter2).build();
+        final MqttSubscription subscription3 = new MqttSubscriptionBuilder.Default().topicFilter(filter3).build();
+        flows.subscribe(subscription1, 1, null);
+        flows.subscribe(subscription2, 2, null);
+        flows.subscribe(subscription3, 3, null);
+        flows.suback(subscription1.getTopicFilter(), 1, false);
+        flows.suback(subscription2.getTopicFilter(), 2, false);
+        flows.suback(subscription3.getTopicFilter(), 3, false);
 
         final MqttMatchingPublishFlows matching1 = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic1), matching1);
