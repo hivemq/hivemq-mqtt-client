@@ -28,7 +28,7 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
+public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
 
     private final @NotNull MqttGlobalPublishFilter filter;
     private @Nullable Handle<MqttGlobalIncomingPublishFlow> handle;
@@ -43,7 +43,7 @@ class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
 
     @Override
     void runCancel() {
-        incomingQosHandler.getIncomingPublishFlows().cancelGlobal(this);
+        incomingPublishService.incomingPublishFlows.cancelGlobal(this);
         super.runCancel();
     }
 

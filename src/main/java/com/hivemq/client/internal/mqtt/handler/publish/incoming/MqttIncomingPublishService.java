@@ -39,6 +39,7 @@ class MqttIncomingPublishService {
     private static final boolean QOS_0_DROP_OLDEST = true; // TODO configurable
 
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
+    final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
     private final @NotNull ChunkedArrayQueue<Object> qos0Queue = new ChunkedArrayQueue<>(32);
     private final @NotNull ChunkedArrayQueue<Object>.Iterator qos0It = qos0Queue.iterator();
@@ -49,8 +50,12 @@ class MqttIncomingPublishService {
     private int runIndex;
     private int blockingFlowCount;
 
-    MqttIncomingPublishService(final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+    MqttIncomingPublishService(
+            final @NotNull MqttIncomingQosHandler incomingQosHandler,
+            final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
+
         this.incomingQosHandler = incomingQosHandler;
+        this.incomingPublishFlows = incomingPublishFlows;
     }
 
     @CallByThread("Netty EventLoop")
@@ -96,8 +101,7 @@ class MqttIncomingPublishService {
 
     @CallByThread("Netty EventLoop")
     private @NotNull HandleList<MqttIncomingPublishFlow> onPublish(final @NotNull MqttStatefulPublish publish) {
-        final HandleList<MqttIncomingPublishFlow> flows =
-                incomingQosHandler.getIncomingPublishFlows().findMatching(publish);
+        final HandleList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }

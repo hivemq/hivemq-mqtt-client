@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
+abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         implements Emitter<Mqtt5Publish>, Subscription, Runnable {
 
     private static final int STATE_NO_NEW_REQUESTS = 0;
@@ -43,7 +43,7 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     private static final int STATE_BLOCKED = 2;
 
     final @NotNull Subscriber<? super Mqtt5Publish> subscriber;
-    final @NotNull MqttIncomingQosHandler incomingQosHandler;
+    final @NotNull MqttIncomingPublishService incomingPublishService;
 
     private long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
@@ -62,7 +62,7 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
 
         super(clientConfig);
         this.subscriber = subscriber;
-        this.incomingQosHandler = incomingQosHandler;
+        incomingPublishService = incomingQosHandler.incomingPublishService;
     }
 
     @CallByThread("Netty EventLoop")
@@ -84,7 +84,7 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         if ((referenced == 0) && setDone()) {
             subscriber.onComplete();
         } else {
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
         }
     }
 
@@ -102,7 +102,7 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         if ((referenced == 0) && setDone()) {
             subscriber.onError(t);
         } else {
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
         }
     }
 
@@ -134,7 +134,7 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     @Override
     public void run() { // only executed if was blocking
         if (referenced > 0) { // is blocking
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
         }
     }
 
@@ -176,7 +176,7 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     @CallByThread("Netty EventLoop")
     void runCancel() { // always executed if cancelled
         if (referenced > 0) { // is blocking
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
         }
     }
 
