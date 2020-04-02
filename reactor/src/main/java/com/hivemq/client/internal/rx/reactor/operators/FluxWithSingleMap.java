@@ -36,16 +36,15 @@ import java.util.function.Function;
  */
 public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, SM> {
 
-    public static <FU, SU, F, S> @NotNull FluxWithSingleMap<FU, SU, F, S> mapBoth(
-            final @NotNull FluxWithSingle<FU, SU> source, final @Nullable Function<? super FU, ? extends F> fluxMapper,
-            final @NotNull Function<? super SU, ? extends S> singleMapper) {
+    public static <F, S, FM, SM> @NotNull FluxWithSingleMap<F, S, FM, SM> mapBoth(
+            final @NotNull FluxWithSingle<F, S> source, final @Nullable Function<? super F, ? extends FM> fluxMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FluxWithSingleMap<>(source, fluxMapper, singleMapper);
     }
 
-    public static <FU, SU, S> @NotNull FluxWithSingleMap<FU, SU, FU, S> mapSingle(
-            final @NotNull FluxWithSingle<FU, SU> source,
-            final @NotNull Function<? super SU, ? extends S> singleMapper) {
+    public static <F, S, SM> @NotNull FluxWithSingleMap<F, S, F, SM> mapSingle(
+            final @NotNull FluxWithSingle<F, S> source, final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FluxWithSingleMap<>(source, null, singleMapper);
     }

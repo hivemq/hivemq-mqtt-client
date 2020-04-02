@@ -35,17 +35,17 @@ import org.reactivestreams.Subscription;
  */
 public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, S, FM, SM> {
 
-    public static <FU, SU, F, S> @NotNull FlowableWithSingleMap<FU, SU, F, S> mapBoth(
-            final @NotNull FlowableWithSingle<FU, SU> source,
-            final @Nullable Function<? super FU, ? extends F> flowableMapper,
-            final @NotNull Function<? super SU, ? extends S> singleMapper) {
+    public static <F, S, FM, SM> @NotNull FlowableWithSingleMap<F, S, FM, SM> mapBoth(
+            final @NotNull FlowableWithSingle<F, S> source,
+            final @Nullable Function<? super F, ? extends FM> flowableMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FlowableWithSingleMap<>(source, flowableMapper, singleMapper);
     }
 
-    public static <FU, SU, S> @NotNull FlowableWithSingleMap<FU, SU, FU, S> mapSingle(
-            final @NotNull FlowableWithSingle<FU, SU> source,
-            final @NotNull Function<? super SU, ? extends S> singleMapper) {
+    public static <F, S, SM> @NotNull FlowableWithSingleMap<F, S, F, SM> mapSingle(
+            final @NotNull FlowableWithSingle<F, S> source,
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FlowableWithSingleMap<>(source, null, singleMapper);
     }
