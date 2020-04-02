@@ -84,7 +84,7 @@ public class MqttIncomingPublishFlows {
         final boolean allSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
             if (allSuccess || !reasonCodes.get(i).isError()) {
-                subscriptionFlows.unsubscribe(topicFilters.get(i), null);
+                subscriptionFlows.unsubscribe(topicFilters.get(i));
             }
         }
     }

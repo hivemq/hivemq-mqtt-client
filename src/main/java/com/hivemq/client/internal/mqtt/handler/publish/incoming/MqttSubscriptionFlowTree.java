@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
-import java.util.function.Consumer;
 
 /**
  * @author Silvio Giebl
@@ -69,14 +68,11 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
     }
 
     @Override
-    public void unsubscribe(
-            final @NotNull MqttTopicFilterImpl topicFilter,
-            final @Nullable Consumer<MqttSubscribedPublishFlow> unsubscribedCallback) {
-
+    public void unsubscribe(final @NotNull MqttTopicFilterImpl topicFilter) {
         final MqttTopicIterator topicIterator = MqttTopicIterator.of(topicFilter);
         TopicTreeNode node = rootNode;
         while (node != null) {
-            node = node.unsubscribe(topicIterator, unsubscribedCallback);
+            node = node.unsubscribe(topicIterator);
         }
         compact();
     }
@@ -235,19 +231,16 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             return false;
         }
 
-        @Nullable TopicTreeNode unsubscribe(
-                final @NotNull MqttTopicIterator topicIterator,
-                final @Nullable Consumer<MqttSubscribedPublishFlow> unsubscribedCallback) {
-
+        @Nullable TopicTreeNode unsubscribe(final @NotNull MqttTopicIterator topicIterator) {
             if (topicIterator.hasNext()) {
                 return traverseNext(topicIterator);
             }
             if (topicIterator.hasMultiLevelWildcard()) {
-                if (unsubscribe(multiLevelEntries, unsubscribedCallback)) {
+                if (unsubscribe(multiLevelEntries)) {
                     multiLevelEntries = null;
                 }
             } else {
-                if (unsubscribe(entries, unsubscribedCallback)) {
+                if (unsubscribe(entries)) {
                     entries = null;
                 }
             }
@@ -255,10 +248,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             return null;
         }
 
-        private static boolean unsubscribe(
-                final @Nullable NodeList<TopicTreeEntry> entries,
-                final @Nullable Consumer<MqttSubscribedPublishFlow> unsubscribedCallback) {
-
+        private static boolean unsubscribe(final @Nullable NodeList<TopicTreeEntry> entries) {
             if (entries != null) {
                 for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
                     if (entry.acknowledged) {
@@ -267,9 +257,6 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                             entry.flow.getTopicFilters().remove(entry.handle);
                             if (entry.flow.getTopicFilters().isEmpty()) {
                                 entry.flow.onComplete();
-                                if (unsubscribedCallback != null) {
-                                    unsubscribedCallback.accept(entry.flow);
-                                }
                             }
                         }
                         entries.remove(entry);

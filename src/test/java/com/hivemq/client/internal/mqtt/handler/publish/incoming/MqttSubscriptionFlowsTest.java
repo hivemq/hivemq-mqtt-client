@@ -173,11 +173,9 @@ abstract class MqttSubscriptionFlowsTest {
         flows.suback(subscription1.getTopicFilter(), 1, false);
         flows.suback(subscription2.getTopicFilter(), 2, false);
 
-        final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
-        flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter), unsubscribed::add);
+        flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter));
         assertTrue(flow1.getTopicFilters().isEmpty());
         assertTrue(flow2.getTopicFilters().isEmpty());
-        assertEquals(ImmutableSet.of(flow1, flow2), toSet(unsubscribed));
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -199,9 +197,7 @@ abstract class MqttSubscriptionFlowsTest {
         flows.suback(subscription1.getTopicFilter(), 1, false);
         flows.suback(subscription2.getTopicFilter(), 2, false);
 
-        final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
-        flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter), unsubscribed::add);
-        assertTrue(unsubscribed.isEmpty());
+        flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter));
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -226,11 +222,9 @@ abstract class MqttSubscriptionFlowsTest {
         flows.suback(subscription1.getTopicFilter(), 1, false);
         flows.suback(subscription2.getTopicFilter(), 2, false);
 
-        final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
-        flows.unsubscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter), unsubscribed::add);
+        flows.unsubscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter));
         assertFalse(flow1.getTopicFilters().isEmpty());
         assertTrue(flow2.getTopicFilters().isEmpty());
-        assertEquals(ImmutableSet.of(flow2), toSet(unsubscribed));
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -254,9 +248,7 @@ abstract class MqttSubscriptionFlowsTest {
         flows.suback(subscription1.getTopicFilter(), 1, false);
         flows.suback(subscription2.getTopicFilter(), 2, false);
 
-        final HandleList<MqttSubscribedPublishFlow> unsubscribed = new HandleList<>();
-        flows.unsubscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter), unsubscribed::add);
-        assertTrue(unsubscribed.isEmpty());
+        flows.unsubscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter));
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic), matching);
@@ -317,7 +309,7 @@ abstract class MqttSubscriptionFlowsTest {
         flows.suback(subscription1.getTopicFilter(), 1, false);
         flows.suback(subscription2.getTopicFilter(), 1, false);
 
-        flows.unsubscribe(MqttTopicFilterImpl.of("test/topic"), null);
+        flows.unsubscribe(MqttTopicFilterImpl.of("test/topic"));
         flows.cancel(flow);
 
         final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
