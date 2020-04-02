@@ -248,11 +248,10 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @return the {@link Flux} which
      *         <ul>
      *         <li>emits {@link Mqtt3PublishResult}s each corresponding to a Publish message,</li>
-     *         <li>completes when the given {@link Publisher} completes,</li>
-     *         <li>errors with the same exception when the given {@link Publisher} errors or</li>
-     *         <li>errors with a different exception if an error occurred before all Publish messages of the given
-     *         {@link Publisher} are answered by a {@link Mqtt3PublishResult} (e.g. {@link
-     *         com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException MqttSessionExpiredException}).</li>
+     *         <li>completes if the given {@link Publisher} completes, but not before all {@link Mqtt3PublishResult}s
+     *         were emitted, or</li>
+     *         <li>errors with the same exception if the given {@link Publisher} errors, but not before all
+     *         {@link Mqtt3PublishResult}s were emitted.</li>
      *         </ul>
      */
     @NotNull Flux<Mqtt3PublishResult> publish(@NotNull Publisher<Mqtt3Publish> publisher);
