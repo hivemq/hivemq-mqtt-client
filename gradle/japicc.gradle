@@ -5,7 +5,7 @@ task japicc {
         workingDir = new File(project.buildDir, 'japicc')
     }
 }
-project.tasks.check.dependsOn(japicc)
+tasks.check.dependsOn(japicc)
 
 if (rootProject.tasks.findByName('japiccDownload') == null) {
     rootProject.tasks.create('japiccDownload') {
@@ -44,7 +44,7 @@ task japiccNonImpl {
     description 'List non impl interfaces'
 
     ext {
-        nonImplFile = new File(project.tasks.japicc.workingDir, 'non-impl')
+        nonImplFile = new File(tasks.japicc.workingDir, 'non-impl')
     }
 
     inputs.files sourceSets.main.java
@@ -128,11 +128,11 @@ def addCheck(Jar jarTask) {
     String archiveAppendix = jarTask.archiveAppendix.getOrElse('')
     String taskName = 'japiccCheck' + archiveAppendix.capitalize()
 
-    def task = project.tasks.create(taskName) {
+    def task = tasks.create(taskName) {
 
         group 'japicc'
         description 'Checks for binary and source incompatibility.'
-        dependsOn rootProject.tasks.japiccDownload, project.tasks.japiccNonImpl
+        dependsOn rootProject.tasks.japiccDownload, tasks.japiccNonImpl
 
         String archiveName = archiveBaseName
         if (archiveAppendix != '') {
@@ -141,9 +141,9 @@ def addCheck(Jar jarTask) {
 
         String lastSemVer = project.prevVersion
         String lastJarName = archiveName + '-' + lastSemVer + '.jar'
-        File lastJar = new File(project.tasks.japicc.workingDir, lastJarName)
+        File lastJar = new File(tasks.japicc.workingDir, lastJarName)
 
-        File report = new File(new File(new File(new File(project.tasks.japicc.workingDir, 'compat_reports'),
+        File report = new File(new File(new File(new File(tasks.japicc.workingDir, 'compat_reports'),
                 archiveName), lastSemVer + '_to_' + project.version), 'compat_report.html')
 
         inputs.files jarTask
@@ -165,7 +165,7 @@ def addCheck(Jar jarTask) {
             lastJar.parentFile.mkdirs()
             if (!lastJar.exists()) {
                 String path = project.group.replace('.', '/') + '/' + archiveName + '/' + lastSemVer + '/' + lastJarName
-                new URL(project.repositories.mavenCentral().url.toString() + path)
+                new URL(repositories.mavenCentral().url.toString() + path)
                         .withInputStream { i -> lastJar.withOutputStream { it << i } }
             }
         }
@@ -177,23 +177,23 @@ def addCheck(Jar jarTask) {
             def command = ['perl', rootProject.tasks.japiccDownload.executable.getPath(), '-lib', archiveName,
                            '-skip-internal-packages', 'com.hivemq.client.internal',
                            '-skip-internal-packages', 'com.hivemq.shaded',
-                           '-non-impl', project.tasks.japiccNonImpl.nonImplFile.getPath(),
+                           '-non-impl', tasks.japiccNonImpl.nonImplFile.getPath(),
                            '-check-annotations', '-s',
                            lastJar.getPath(), jarTask.archiveFile.get().getAsFile().getPath()]
 
-            Process process = new ProcessBuilder(command).directory(project.tasks.japicc.workingDir).start()
+            Process process = new ProcessBuilder(command).directory(tasks.japicc.workingDir).start()
             int returnCode = process.waitFor()
             if (returnCode != 0) {
                 throw new GradleException('Binary or source incompatibilities, code ' + returnCode)
             }
         }
     }
-    project.tasks.japicc.dependsOn(task)
+    tasks.japicc.dependsOn(task)
 }
 
 afterEvaluate {
-    addCheck(project.tasks.jar)
-    if (project.plugins.hasPlugin('com.github.johnrengelman.shadow')) {
-        addCheck(project.tasks.shadowJar)
+    addCheck(tasks.jar)
+    if (plugins.hasPlugin('com.github.johnrengelman.shadow')) {
+        addCheck(tasks.shadowJar)
     }
 }
