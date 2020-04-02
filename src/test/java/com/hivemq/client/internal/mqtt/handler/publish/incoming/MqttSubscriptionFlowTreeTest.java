@@ -120,9 +120,9 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
 
         switch (compactOperation) {
             case "unsubscribe":
-                flows.unsubscribe(MqttTopicFilterImpl.of(filter1), null);
-                flows.unsubscribe(MqttTopicFilterImpl.of(filter2), null);
-                flows.unsubscribe(MqttTopicFilterImpl.of(filter3), null);
+                flows.unsubscribe(MqttTopicFilterImpl.of(filter1));
+                flows.unsubscribe(MqttTopicFilterImpl.of(filter2));
+                flows.unsubscribe(MqttTopicFilterImpl.of(filter3));
                 break;
             case "remove":
                 flows.suback(MqttTopicFilterImpl.of(filter1), 1, true);

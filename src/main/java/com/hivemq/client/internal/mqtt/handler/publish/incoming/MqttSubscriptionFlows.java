@@ -24,8 +24,6 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 /**
  * @author Silvio Giebl
  */
@@ -38,9 +36,7 @@ public interface MqttSubscriptionFlows {
 
     void suback(@NotNull MqttTopicFilterImpl topicFilter, int subscriptionIdentifier, boolean error);
 
-    void unsubscribe(
-            @NotNull MqttTopicFilterImpl topicFilter,
-            @Nullable Consumer<MqttSubscribedPublishFlow> unsubscribedCallback);
+    void unsubscribe(@NotNull MqttTopicFilterImpl topicFilter);
 
     void cancel(@NotNull MqttSubscribedPublishFlow flow);
 
