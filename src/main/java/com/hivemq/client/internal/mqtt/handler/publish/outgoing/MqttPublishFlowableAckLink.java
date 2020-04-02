@@ -70,7 +70,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         private final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber;
         private final @NotNull MqttAckFlowableFlow ackFlow;
         private @Nullable Subscription subscription;
-        private boolean linked;
         private final @NotNull AtomicInteger state = new AtomicInteger();
         private long published;
 
@@ -86,7 +85,7 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         public void onSubscribe(final @NotNull Subscription subscription) {
             this.subscription = subscription;
             subscriber.onSubscribe(this);
-            link();
+            ackFlow.link(this);
         }
 
         @Override
@@ -121,7 +120,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         @Override
         public void request(final long n) {
             assert subscription != null;
-            link();
             subscription.request(n);
         }
 
@@ -130,13 +128,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
             assert subscription != null;
             LOGGER.error("MqttPublishFlowables is global and must never cancel. This must not happen and is a bug.");
             subscription.cancel();
-        }
-
-        private void link() {
-            if (!linked) {
-                linked = true;
-                ackFlow.link(this);
-            }
         }
 
         @Override
