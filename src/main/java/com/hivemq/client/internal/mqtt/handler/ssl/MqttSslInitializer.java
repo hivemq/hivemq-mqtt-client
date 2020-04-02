@@ -30,7 +30,7 @@ import java.net.InetSocketAddress;
  * @author Christoph Schäbel
  * @author Silvio Giebl
  */
-public final class SslInitializer {
+public final class MqttSslInitializer {
 
     private static final @NotNull String SSL_HANDLER_NAME = "ssl";
 
@@ -71,5 +71,5 @@ public final class SslInitializer {
         };
     }
 
-    private SslInitializer() {}
+    private MqttSslInitializer() {}
 }
