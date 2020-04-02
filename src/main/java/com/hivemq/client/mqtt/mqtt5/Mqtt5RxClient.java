@@ -244,11 +244,10 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the {@link Flowable} which
      *         <ul>
      *         <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,</li>
-     *         <li>completes when the given {@link Flowable} completes,</li>
-     *         <li>errors with the same exception when the given {@link Flowable} errors or</li>
-     *         <li>errors with a different exception if an error occurred before all Publish messages of the given
-     *         {@link Flowable} are answered by a {@link Mqtt5PublishResult} (e.g. {@link
-     *         com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException MqttSessionExpiredException}).</li>
+     *         <li>completes if the given {@link Flowable} completes, but not before all {@link Mqtt5PublishResult}s
+     *         were emitted, or</li>
+     *         <li>errors with the same exception if the given {@link Flowable} errors, but not before all
+     *         {@link Mqtt5PublishResult}s were emitted.</li>
      *         </ul>
      */
     @NotNull Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
