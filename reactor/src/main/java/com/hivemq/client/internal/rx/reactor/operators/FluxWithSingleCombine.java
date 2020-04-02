@@ -230,7 +230,7 @@ class FluxWithSingleCombine<F, S> extends Flux<Object> {
         }
 
         private static class Default<F, S>
-                extends FluxWithSingleCombine.SplitSubscriber<F, S, CoreWithSingleSubscriber<? super F, ? super S>> {
+                extends SplitSubscriber<F, S, CoreWithSingleSubscriber<? super F, ? super S>> {
 
             Default(final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber) {
                 super(subscriber);
@@ -243,8 +243,8 @@ class FluxWithSingleCombine<F, S> extends Flux<Object> {
             }
         }
 
-        private static class Conditional<F, S> extends
-                FluxWithSingleCombine.SplitSubscriber<F, S, CoreWithSingleConditionalSubscriber<? super F, ? super S>> {
+        private static class Conditional<F, S>
+                extends SplitSubscriber<F, S, CoreWithSingleConditionalSubscriber<? super F, ? super S>> {
 
             Conditional(final @NotNull CoreWithSingleConditionalSubscriber<? super F, ? super S> subscriber) {
                 super(subscriber);
