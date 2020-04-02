@@ -25,7 +25,7 @@ import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import com.hivemq.client.internal.mqtt.handler.proxy.MqttProxyInitializer;
-import com.hivemq.client.internal.mqtt.handler.ssl.SslInitializer;
+import com.hivemq.client.internal.mqtt.handler.ssl.MqttSslInitializer;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -100,7 +100,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
         }
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
         if (sslConfig != null) {
-            SslInitializer.initChannel(channel, sslConfig, transportConfig.getServerAddress());
+            MqttSslInitializer.initChannel(channel, sslConfig, transportConfig.getServerAddress());
         }
         final MqttWebSocketConfigImpl webSocketConfig = transportConfig.getRawWebSocketConfig();
         if (webSocketConfig != null) {
