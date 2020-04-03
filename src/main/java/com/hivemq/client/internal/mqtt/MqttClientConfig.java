@@ -189,7 +189,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             if (--eventLoopAcquires == 0) {
                 final EventLoop eventLoop = this.eventLoop;
                 final long eventLoopAcquireCount = this.eventLoopAcquireCount;
-                assert eventLoop != null;
+                assert eventLoop != null : "eventLoopAcquires was > 0 -> eventLoop != null";
                 eventLoop.execute(() -> { // release eventLoop after all tasks are finished
                     synchronized (state) {
                         if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired

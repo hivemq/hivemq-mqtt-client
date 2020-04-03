@@ -406,7 +406,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                     if (topicLevelBefore.isSingleLevelWildcard()) {
                         singleLevel = nodeBefore;
                     } else {
-                        assert next != null;
+                        assert next != null : "node must be in next -> next != null";
                         next.put(nodeBefore);
                     }
                     node.parent = nodeBefore;
@@ -482,10 +482,10 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         }
 
         private void fuse(final @NotNull TopicTreeNode child) {
-            assert parent != null;
-            assert topicLevel != null;
-            assert child.parent == this;
-            assert child.topicLevel != null;
+            assert parent != null : "parent = null -> this = root node, root node must not be fused";
+            assert topicLevel != null : "topicLevel = null -> this = root node, root node must not be fused";
+            assert child.parent == this : "this must only be fused with its child";
+            assert child.topicLevel != null : "child.topicLevel = null -> child = root node, root node has no parent";
             final TopicTreeNode parent = this.parent;
             final MqttTopicLevels fusedTopicLevel = MqttTopicLevels.concat(topicLevel, child.topicLevel);
             child.parent = parent;
@@ -493,17 +493,17 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             if (fusedTopicLevel.isSingleLevelWildcard()) {
                 parent.singleLevel = child;
             } else {
-                assert parent.next != null;
+                assert parent.next != null : "this must be in parent.next -> parent.next != null";
                 parent.next.put(child);
             }
         }
 
         private void removeNext(final @NotNull TopicTreeNode node) {
-            assert node.topicLevel != null;
+            assert node.topicLevel != null : "topicLevel = null -> node = root node, root node has no parent";
             if (node.topicLevel.isSingleLevelWildcard()) {
                 singleLevel = null;
             } else {
-                assert next != null;
+                assert next != null : "node must be in next -> next != null";
                 next.remove(node.topicLevel);
                 if (next.size() == 0) {
                     next = null;
@@ -554,13 +554,13 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                     }
                     final MqttTopicFilterImpl topicFilter =
                             topicLevels.toFilter(entry.topicFilterPrefix, multiLevelWildcard);
-                    assert topicFilter != null;
+                    assert topicFilter != null : "reconstructed topic filter must be valid";
                     final MqttQos qos = MqttSubscription.decodeQos(entry.subscriptionOptions);
-                    assert qos != null;
+                    assert qos != null : "reconstructed qos must be valid";
                     final boolean noLocal = MqttSubscription.decodeNoLocal(entry.subscriptionOptions);
                     final Mqtt5RetainHandling retainHandling =
                             MqttSubscription.decodeRetainHandling(entry.subscriptionOptions);
-                    assert retainHandling != null;
+                    assert retainHandling != null : "reconstructed retain handling must be valid";
                     final boolean retainAsPublished =
                             MqttSubscription.decodeRetainAsPublished(entry.subscriptionOptions);
                     final MqttSubscription subscription =
