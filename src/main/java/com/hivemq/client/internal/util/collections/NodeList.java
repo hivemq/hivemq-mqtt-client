@@ -58,6 +58,21 @@ public class NodeList<N extends NodeList.Node<N>> {
         size++;
     }
 
+    public void addFirst(final @NotNull N node) {
+        assert node.prev == null;
+        assert node.next == null;
+
+        final N first = this.first;
+        if (first == null) {
+            this.first = last = node;
+        } else {
+            first.prev = node;
+            node.next = first;
+            this.first = node;
+        }
+        size++;
+    }
+
     public void remove(final @NotNull N node) {
         assert (node.prev != null) || (node == first);
         assert (node.next != null) || (node == last);

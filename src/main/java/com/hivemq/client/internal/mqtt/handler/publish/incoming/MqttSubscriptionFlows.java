@@ -24,6 +24,9 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Silvio Giebl
  */
@@ -43,4 +46,6 @@ public interface MqttSubscriptionFlows {
     void findMatching(@NotNull MqttTopicImpl topic, @NotNull MqttMatchingPublishFlows matchingFlows);
 
     void clear(@NotNull Throwable cause);
+
+    @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> getSubscriptions();
 }

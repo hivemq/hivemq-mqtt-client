@@ -35,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silvio Giebl
@@ -150,13 +152,17 @@ public class MqttIncomingPublishFlows {
     }
 
     private static void add(
-            final @NotNull HandleList<MqttIncomingPublishFlow> target,
-            final @Nullable HandleList<MqttGlobalIncomingPublishFlow> source) {
+            final @NotNull MqttMatchingPublishFlows matchingPublishFlows,
+            final @Nullable HandleList<MqttGlobalIncomingPublishFlow> globalFlows) {
 
-        if (source != null) {
-            for (Handle<MqttGlobalIncomingPublishFlow> h = source.getFirst(); h != null; h = h.getNext()) {
-                target.add(h.getElement());
+        if (globalFlows != null) {
+            for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlows.getFirst(); h != null; h = h.getNext()) {
+                matchingPublishFlows.add(h.getElement());
             }
         }
+    }
+
+    public @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> getSubscriptions() {
+        return subscriptionFlows.getSubscriptions();
     }
 }
