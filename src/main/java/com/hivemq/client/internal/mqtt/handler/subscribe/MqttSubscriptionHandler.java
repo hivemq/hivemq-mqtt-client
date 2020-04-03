@@ -22,6 +22,7 @@ import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
+import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttGlobalIncomingPublishFlow;
@@ -96,14 +97,29 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public void onSessionStartOrResume(
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
-        super.onSessionStartOrResume(connectionConfig, eventLoop);
         subscriptionIdentifiersAvailable = connectionConfig.areSubscriptionIdentifiersAvailable();
+
+        if (!hasSession) {
+            for (MqttSubOrUnsubWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
+                if (current.packetIdentifier == 0) {
+                    break;
+                }
+                packetIdentifiers.returnId(current.packetIdentifier);
+            }
+            incomingPublishFlows.getSubscriptions().forEach((subscriptionIdentifier, subscriptions) -> {
+                final MqttSubscribe subscribe = new MqttSubscribe(ImmutableList.copyOf(subscriptions),
+                        MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                pending.addFirst(new MqttSubscribeWithFlow(subscribe, subscriptionIdentifier, null));
+            });
+        }
 
         pendingIndex.clear();
         if (pending.getFirst() != null) {
             sendPending = pending.getFirst();
             eventLoop.execute(this);
         }
+
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
     }
 
     public void subscribe(
@@ -229,23 +245,25 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
         incomingPublishFlows.subAck(subscribeWithFlow.subscribe, subscribeWithFlow.subscriptionIdentifier, reasonCodes);
 
-        if (!(countNotMatching || allErrors)) {
-            if (!flow.isCancelled()) {
-                flow.onSuccess(subAck);
+        if (flow != null) {
+            if (!(countNotMatching || allErrors)) {
+                if (!flow.isCancelled()) {
+                    flow.onSuccess(subAck);
+                } else {
+                    LOGGER.warn("Subscribe was successful but the SubAck flow has been cancelled");
+                }
             } else {
-                LOGGER.warn("Subscribe was successful but the SubAck flow has been cancelled");
-            }
-        } else {
-            final String errorMessage;
-            if (countNotMatching) {
-                errorMessage = "Count of Reason Codes in SUBACK does not match count of subscriptions in SUBSCRIBE";
-            } else { // allErrors
-                errorMessage = "SUBACK contains only Error Codes";
-            }
-            if (!flow.isCancelled()) {
-                flow.onError(new Mqtt5SubAckException(subAck, errorMessage));
-            } else {
-                LOGGER.warn(errorMessage + " but the SubAck flow has been cancelled");
+                final String errorMessage;
+                if (countNotMatching) {
+                    errorMessage = "Count of Reason Codes in SUBACK does not match count of subscriptions in SUBSCRIBE";
+                } else { // allErrors
+                    errorMessage = "SUBACK contains only Error Codes";
+                }
+                if (!flow.isCancelled()) {
+                    flow.onError(new Mqtt5SubAckException(subAck, errorMessage));
+                } else {
+                    LOGGER.warn(errorMessage + " but the SubAck flow has been cancelled");
+                }
             }
         }
 
@@ -308,12 +326,18 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         if (!(cause instanceof IOException) && (currentPending != null)) {
             pendingIndex.remove(currentPending.packetIdentifier);
-            currentPending.getFlow().onError(cause);
+
+            final MqttSubscriptionFlow<?> flow = currentPending.getFlow();
+            if (flow != null) {
+                flow.onError(cause);
+            }
+
             if (currentPending instanceof MqttSubscribeWithFlow) {
                 final MqttSubscribeWithFlow subscribeWithFlow = (MqttSubscribeWithFlow) currentPending;
                 incomingPublishFlows.subAck(subscribeWithFlow.subscribe, subscribeWithFlow.subscriptionIdentifier,
                         ImmutableList.of(Mqtt5SubAckReasonCode.UNSPECIFIED_ERROR));
             }
+
             completePending(currentPending);
             currentPending = null;
         } else {
@@ -330,8 +354,13 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             incomingPublishFlows.clear(cause);
 
             for (MqttSubOrUnsubWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
-                packetIdentifiers.returnId(current.packetIdentifier);
-                current.getFlow().onError(cause);
+                if (current.packetIdentifier != 0) {
+                    packetIdentifiers.returnId(current.packetIdentifier);
+                }
+                final MqttSubscriptionFlow<?> flow = current.getFlow();
+                if (flow != null) {
+                    flow.onError(cause);
+                }
             }
             pending.clear();
             sendPending = null;

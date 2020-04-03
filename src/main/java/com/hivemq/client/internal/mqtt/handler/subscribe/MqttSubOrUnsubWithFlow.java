@@ -18,7 +18,7 @@
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
 import com.hivemq.client.internal.util.collections.NodeList;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -27,5 +27,5 @@ abstract class MqttSubOrUnsubWithFlow extends NodeList.Node<MqttSubOrUnsubWithFl
 
     int packetIdentifier;
 
-    abstract @NotNull MqttSubscriptionFlow<?> getFlow();
+    abstract @Nullable MqttSubscriptionFlow<?> getFlow();
 }

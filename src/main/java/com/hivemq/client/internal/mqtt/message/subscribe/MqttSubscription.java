@@ -134,7 +134,7 @@ public class MqttSubscription implements Mqtt5Subscription {
     }
 
     public static @Nullable Mqtt5RetainHandling decodeRetainHandling(final byte subscriptionOptions) {
-        return Mqtt5RetainHandling.fromCode(subscriptionOptions & 0b0011_0000);
+        return Mqtt5RetainHandling.fromCode((subscriptionOptions & 0b0011_0000) >> 4);
     }
 
     public static boolean decodeRetainAsPublished(final byte subscriptionOptions) {

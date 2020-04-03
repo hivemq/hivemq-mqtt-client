@@ -28,6 +28,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 /**
  * @author Silvio Giebl
  * @see MqttTopicFilter
@@ -284,6 +286,11 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
 
     public @NotNull String getTopicFilterString() {
         return toString();
+    }
+
+    public @Nullable byte[] getPrefix() {
+        final int filterByteStart = getFilterByteStart();
+        return (filterByteStart == 0) ? null : Arrays.copyOfRange(toBinary(), 0, filterByteStart - 1);
     }
 
     @Override

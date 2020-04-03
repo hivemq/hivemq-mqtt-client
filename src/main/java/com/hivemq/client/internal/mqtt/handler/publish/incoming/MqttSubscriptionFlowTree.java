@@ -23,10 +23,13 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.internal.util.collections.Index;
 import com.hivemq.client.internal.util.collections.NodeList;
+import com.hivemq.client.mqtt.datatypes.MqttQos;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
+import java.util.*;
 
 /**
  * @author Silvio Giebl
@@ -108,6 +111,20 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         rootNode = null;
     }
 
+    @Override
+    public @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> getSubscriptions() {
+        final Map<Integer, List<MqttSubscription>> map = new TreeMap<>(Comparator.reverseOrder());
+        if (rootNode != null) {
+            final Queue<IteratorNode> nodes = new LinkedList<>();
+            nodes.add(new IteratorNode(rootNode, null));
+            while (!nodes.isEmpty()) {
+                final IteratorNode node = nodes.poll();
+                node.node.getSubscriptions(node.parentTopicLevels, map, nodes);
+            }
+        }
+        return map;
+    }
+
     private void compact() {
         if ((rootNode != null) && rootNode.isEmpty()) {
             rootNode = null;
@@ -118,6 +135,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
         final int subscriptionIdentifier;
         final byte subscriptionOptions;
+        final @Nullable byte[] topicFilterPrefix;
         @Nullable MqttSubscribedPublishFlow flow;
         @Nullable Handle<MqttTopicFilterImpl> handle;
         boolean acknowledged;
@@ -128,8 +146,10 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
             this.subscriptionIdentifier = subscriptionIdentifier;
             subscriptionOptions = subscription.encodeSubscriptionOptions();
+            final MqttTopicFilterImpl topicFilter = subscription.getTopicFilter();
+            this.topicFilterPrefix = topicFilter.getPrefix();
             this.flow = flow;
-            handle = (flow == null) ? null : flow.getTopicFilters().add(subscription.getTopicFilter());
+            handle = (flow == null) ? null : flow.getTopicFilters().add(topicFilter);
         }
     }
 
@@ -331,11 +351,11 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
         private static void add(
                 final @NotNull MqttMatchingPublishFlows matchingFlows,
-                final @Nullable NodeList<TopicTreeEntry> source) {
+                final @Nullable NodeList<TopicTreeEntry> entries) {
 
-            if (source != null) {
+            if (entries != null) {
                 matchingFlows.subscriptionFound = true;
-                for (TopicTreeEntry entry = source.getFirst(); entry != null; entry = entry.getNext()) {
+                for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
                     if (entry.flow != null) {
                         matchingFlows.add(entry.flow);
                     }
@@ -493,6 +513,72 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
         boolean isEmpty() {
             return (next == null) && (singleLevel == null) && (entries == null) && (multiLevelEntries == null);
+        }
+
+        public void getSubscriptions(
+                final @Nullable MqttTopicLevel parentTopicLevels,
+                final @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> map,
+                final @NotNull Queue<@NotNull IteratorNode> nodes) {
+
+            final MqttTopicLevel topicLevels = ((parentTopicLevels == null) || (topicLevel == null)) ? topicLevel :
+                    MqttTopicLevels.concat(parentTopicLevels, topicLevel);
+            if (topicLevels != null) {
+                if (entries != null) {
+                    getSubscriptions(entries, topicLevels, false, map);
+                }
+                if (multiLevelEntries != null) {
+                    getSubscriptions(multiLevelEntries, topicLevels, true, map);
+                }
+            }
+            if (next != null) {
+                next.forEach(node -> nodes.add(new IteratorNode(node, topicLevels)));
+            }
+            if (singleLevel != null) {
+                nodes.add(new IteratorNode(singleLevel, topicLevels));
+            }
+        }
+
+        private static void getSubscriptions(
+                final @NotNull NodeList<TopicTreeEntry> entries, final @NotNull MqttTopicLevel topicLevels,
+                final boolean multiLevelWildcard,
+                final @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> map) {
+
+            boolean exactFound = false;
+            for (TopicTreeEntry entry = entries.getLast(); entry != null; entry = entry.getPrev()) {
+                if (entry.acknowledged) {
+                    if (entry.topicFilterPrefix == null) {
+                        if (exactFound) {
+                            continue;
+                        }
+                        exactFound = true;
+                    }
+                    final MqttTopicFilterImpl topicFilter =
+                            topicLevels.toFilter(entry.topicFilterPrefix, multiLevelWildcard);
+                    assert topicFilter != null;
+                    final MqttQos qos = MqttSubscription.decodeQos(entry.subscriptionOptions);
+                    assert qos != null;
+                    final boolean noLocal = MqttSubscription.decodeNoLocal(entry.subscriptionOptions);
+                    final Mqtt5RetainHandling retainHandling =
+                            MqttSubscription.decodeRetainHandling(entry.subscriptionOptions);
+                    assert retainHandling != null;
+                    final boolean retainAsPublished =
+                            MqttSubscription.decodeRetainAsPublished(entry.subscriptionOptions);
+                    final MqttSubscription subscription =
+                            new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
+                    map.computeIfAbsent(entry.subscriptionIdentifier, k -> new LinkedList<>()).add(subscription);
+                }
+            }
+        }
+    }
+
+    private static class IteratorNode {
+
+        final @NotNull TopicTreeNode node;
+        final @Nullable MqttTopicLevel parentTopicLevels;
+
+        IteratorNode(final @NotNull TopicTreeNode node, final @Nullable MqttTopicLevel parentTopicLevels) {
+            this.node = node;
+            this.parentTopicLevels = parentTopicLevels;
         }
     }
 }
