@@ -95,27 +95,6 @@ public class MqttIncomingPublishFlows {
         subscriptionFlows.cancel(flow);
     }
 
-    @NotNull HandleList<MqttIncomingPublishFlow> findMatching(final @NotNull MqttStatefulPublish publish) {
-        final MqttMatchingPublishFlows matchingFlows = new MqttMatchingPublishFlows();
-        findMatching(publish, matchingFlows);
-        return matchingFlows;
-    }
-
-    void findMatching(
-            final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
-
-        subscriptionFlows.findMatching(publish.stateless().getTopic(), matchingFlows);
-        if (matchingFlows.subscriptionFound) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
-        } else {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.UNSOLICITED.ordinal()]);
-        }
-        add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL.ordinal()]);
-        if (matchingFlows.isEmpty()) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.REMAINING.ordinal()]);
-        }
-    }
-
     public void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
         final int filter = flow.getFilter().ordinal();
         HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
@@ -138,16 +117,24 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    public void clear(final @NotNull Throwable cause) {
-        subscriptionFlows.clear(cause);
-        for (int i = 0; i < globalFlows.length; i++) {
-            final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[i];
-            if (globalFlow != null) {
-                for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlow.getFirst(); h != null; h = h.getNext()) {
-                    h.getElement().onError(cause);
-                }
-            }
-            globalFlows[i] = null;
+    @NotNull HandleList<MqttIncomingPublishFlow> findMatching(final @NotNull MqttStatefulPublish publish) {
+        final MqttMatchingPublishFlows matchingFlows = new MqttMatchingPublishFlows();
+        findMatching(publish, matchingFlows);
+        return matchingFlows;
+    }
+
+    void findMatching(
+            final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
+
+        subscriptionFlows.findMatching(publish.stateless().getTopic(), matchingFlows);
+        if (matchingFlows.subscriptionFound) {
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
+        } else {
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.UNSOLICITED.ordinal()]);
+        }
+        add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL.ordinal()]);
+        if (matchingFlows.isEmpty()) {
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.REMAINING.ordinal()]);
         }
     }
 
@@ -159,6 +146,19 @@ public class MqttIncomingPublishFlows {
             for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlows.getFirst(); h != null; h = h.getNext()) {
                 matchingPublishFlows.add(h.getElement());
             }
+        }
+    }
+
+    public void clear(final @NotNull Throwable cause) {
+        subscriptionFlows.clear(cause);
+        for (int i = 0; i < globalFlows.length; i++) {
+            final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[i];
+            if (globalFlow != null) {
+                for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlow.getFirst(); h != null; h = h.getNext()) {
+                    h.getElement().onError(cause);
+                }
+            }
+            globalFlows[i] = null;
         }
     }
 
