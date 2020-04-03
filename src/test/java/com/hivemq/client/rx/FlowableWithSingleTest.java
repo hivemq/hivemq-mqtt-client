@@ -36,6 +36,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -197,6 +198,44 @@ class FlowableWithSingleTest {
                 .await()
                 .assertError(IllegalArgumentException.class)
                 .assertErrorMessage("test");
+
+        executorService.shutdown();
+    }
+
+    @Test
+    void observeOnBoth_delayError_bufferSize_2() {
+        final Flowable<? extends CharSequence> flowable =
+                Flowable.<CharSequence>just(new StringBuilder("single")).concatWith(
+                        Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
+                        .concatWith(Flowable.error(new IllegalArgumentException("test")))
+                        .hide();
+        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
+
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+
+        final AtomicInteger count = new AtomicInteger();
+        final AtomicReference<Throwable> error = new AtomicReference<>();
+        // @formatter:off
+        flowableWithSingle.observeOnBoth(Schedulers.from(executorService), true, 1024)
+                .doOnSingle(stringBuilder -> {
+                    assertEquals("single", stringBuilder.toString());
+                    assertEquals("test_thread", Thread.currentThread().getName());
+                })
+                .doOnNext(string -> {
+                    assertEquals("next" + count.getAndIncrement(), string);
+                    assertEquals("test_thread", Thread.currentThread().getName());
+                })
+                .doOnError(error::set)
+                .ignoreElements()
+                .onErrorComplete()
+                .blockingAwait();
+        // @formatter:on
+
+        assertEquals(1024, count.get());
+        assertTrue(error.get() instanceof IllegalArgumentException);
+        assertEquals("test", error.get().getMessage());
 
         executorService.shutdown();
     }
