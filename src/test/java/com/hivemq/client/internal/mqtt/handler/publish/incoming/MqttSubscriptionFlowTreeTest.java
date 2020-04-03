@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
@@ -118,6 +120,9 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
         flows.findMatching(MqttTopicImpl.of(topic3), matching3);
         assertTrue(matching3.subscriptionFound);
 
+        assertEquals(ImmutableMap.of(1, ImmutableList.of(subscription1), 2, ImmutableList.of(subscription2), 3,
+                ImmutableList.of(subscription3)), flows.getSubscriptions());
+
         switch (compactOperation) {
             case "unsubscribe":
                 flows.unsubscribe(MqttTopicFilterImpl.of(filter1));
@@ -142,5 +147,7 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
         final MqttMatchingPublishFlows matching6 = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic3), matching6);
         assertFalse(matching6.subscriptionFound);
+
+        assertTrue(flows.getSubscriptions().isEmpty());
     }
 }
