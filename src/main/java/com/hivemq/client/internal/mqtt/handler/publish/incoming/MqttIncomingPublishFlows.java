@@ -97,23 +97,23 @@ public class MqttIncomingPublishFlows {
 
     public void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
         final int filter = flow.getFilter().ordinal();
-        HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
-        if (globalFlow == null) {
-            globalFlow = new HandleList<>();
-            globalFlows[filter] = globalFlow;
+        HandleList<MqttGlobalIncomingPublishFlow> globalFlowsForFilter = globalFlows[filter];
+        if (globalFlowsForFilter == null) {
+            globalFlowsForFilter = new HandleList<>();
+            globalFlows[filter] = globalFlowsForFilter;
         }
-        flow.setHandle(globalFlow.add(flow));
+        flow.setHandle(globalFlowsForFilter.add(flow));
     }
 
     void cancelGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
         final int filter = flow.getFilter().ordinal();
-        final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
-        assert globalFlow != null;
+        final HandleList<MqttGlobalIncomingPublishFlow> globalFlowsForFilter = globalFlows[filter];
         final Handle<MqttGlobalIncomingPublishFlow> handle = flow.getHandle();
-        assert handle != null;
-        globalFlow.remove(handle);
-        if (globalFlow.isEmpty()) {
-            globalFlows[filter] = null;
+        if ((globalFlowsForFilter != null) && (handle != null)) {
+            globalFlowsForFilter.remove(handle);
+            if (globalFlowsForFilter.isEmpty()) {
+                globalFlows[filter] = null;
+            }
         }
     }
 

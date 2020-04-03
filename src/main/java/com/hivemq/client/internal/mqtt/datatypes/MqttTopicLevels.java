@@ -60,7 +60,7 @@ public class MqttTopicLevels extends MqttTopicLevel {
         if (index == array.length) {
             return this;
         }
-        assert array[index] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
+        assert array[index] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR : "topic levels must only be split on /";
         if (index == firstEnd) {
             return MqttTopicLevel.of(array, 0, firstEnd);
         }
@@ -68,7 +68,7 @@ public class MqttTopicLevels extends MqttTopicLevel {
     }
 
     public @NotNull MqttTopicLevel after(final int index) {
-        assert array[index] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
+        assert array[index] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR : "topic levels must only be split on /";
         final int start = index + 1;
         final int end = ByteArrayUtil.indexOf(array, start, (byte) MqttTopicImpl.TOPIC_LEVEL_SEPARATOR);
         if (end == array.length) {
