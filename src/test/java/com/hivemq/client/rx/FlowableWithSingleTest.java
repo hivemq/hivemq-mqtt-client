@@ -216,11 +216,12 @@ class FlowableWithSingleTest {
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
         final AtomicInteger count = new AtomicInteger();
+        final AtomicReference<StringBuilder> single = new AtomicReference<>();
         final AtomicReference<Throwable> error = new AtomicReference<>();
         // @formatter:off
         flowableWithSingle.observeOnBoth(Schedulers.from(executorService), true, 1024)
                 .doOnSingle(stringBuilder -> {
-                    assertEquals("single", stringBuilder.toString());
+                    single.set(stringBuilder);
                     assertEquals("test_thread", Thread.currentThread().getName());
                 })
                 .doOnNext(string -> {
@@ -234,6 +235,7 @@ class FlowableWithSingleTest {
         // @formatter:on
 
         assertEquals(1024, count.get());
+        assertEquals("single", single.get().toString());
         assertTrue(error.get() instanceof IllegalArgumentException);
         assertEquals("test", error.get().getMessage());
 
@@ -312,16 +314,15 @@ class FlowableWithSingleTest {
 
         final AtomicInteger nextCounter = new AtomicInteger();
         final AtomicInteger singleCounter = new AtomicInteger();
-        flowableWithSingle //
-                .mapBoth(s -> {
-                    nextCounter.incrementAndGet();
-                    assertNotEquals("test_thread", Thread.currentThread().getName());
-                    return s + "-1";
-                }, stringBuilder -> {
-                    assertEquals(1, singleCounter.incrementAndGet());
-                    assertNotEquals("test_thread", Thread.currentThread().getName());
-                    return stringBuilder.append("-1");
-                }).mapBoth(s -> {
+        flowableWithSingle.mapBoth(s -> {
+            nextCounter.incrementAndGet();
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return s + "-1";
+        }, stringBuilder -> {
+            assertEquals(1, singleCounter.incrementAndGet());
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return stringBuilder.append("-1");
+        }).mapBoth(s -> {
             nextCounter.incrementAndGet();
             assertNotEquals("test_thread", Thread.currentThread().getName());
             return s + "-2";

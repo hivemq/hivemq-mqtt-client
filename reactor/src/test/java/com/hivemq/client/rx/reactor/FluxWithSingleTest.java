@@ -253,16 +253,15 @@ class FluxWithSingleTest {
 
         final AtomicInteger nextCounter = new AtomicInteger();
         final AtomicInteger singleCounter = new AtomicInteger();
-        fluxWithSingle //
-                .mapBoth(s -> {
-                    nextCounter.incrementAndGet();
-                    assertNotEquals("test_thread", Thread.currentThread().getName());
-                    return s + "-1";
-                }, stringBuilder -> {
-                    assertEquals(1, singleCounter.incrementAndGet());
-                    assertNotEquals("test_thread", Thread.currentThread().getName());
-                    return stringBuilder.append("-1");
-                }).mapBoth(s -> {
+        fluxWithSingle.mapBoth(s -> {
+            nextCounter.incrementAndGet();
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return s + "-1";
+        }, stringBuilder -> {
+            assertEquals(1, singleCounter.incrementAndGet());
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return stringBuilder.append("-1");
+        }).mapBoth(s -> {
             nextCounter.incrementAndGet();
             assertNotEquals("test_thread", Thread.currentThread().getName());
             return s + "-2";
