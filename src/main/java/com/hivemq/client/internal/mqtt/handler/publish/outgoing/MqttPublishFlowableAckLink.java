@@ -62,15 +62,15 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(AckLinkSubscriber.class);
 
         static final int STATE_NONE = 0;
-        static final int STATE_EMITTING = 1;
+        static final int STATE_IN_PROGRESS = 1;
         static final int STATE_DONE = 2;
-        static final int STATE_CANCEL = 3;
-        static final int STATE_CANCELLED = 4;
+        static final int STATE_CANCELLED = 3;
 
         private final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber;
         private final @NotNull MqttAckFlowableFlow ackFlow;
         private @Nullable Subscription subscription;
-        private final @NotNull AtomicInteger state = new AtomicInteger();
+        private final @NotNull AtomicInteger state = new AtomicInteger(STATE_NONE);
+        private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NONE);
         private long published;
 
         AckLinkSubscriber(
@@ -90,10 +90,10 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
         @Override
         public void onNext(final @NotNull MqttPublish publish) {
-            if (state.compareAndSet(STATE_NONE, STATE_EMITTING)) {
+            if (state.compareAndSet(STATE_NONE, STATE_IN_PROGRESS)) {
                 subscriber.onNext(new MqttPublishWithFlow(publish, ackFlow));
                 published++;
-                if (!state.compareAndSet(STATE_EMITTING, STATE_NONE)) {
+                if (!state.compareAndSet(STATE_IN_PROGRESS, STATE_NONE)) {
                     cancelActual();
                 }
             }
@@ -120,29 +120,32 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         @Override
         public void request(final long n) {
             assert subscription != null;
-            subscription.request(n);
+            if (requestState.compareAndSet(STATE_NONE, STATE_IN_PROGRESS)) {
+                subscription.request(n);
+                if (!requestState.compareAndSet(STATE_IN_PROGRESS, STATE_NONE)) {
+                    subscription.cancel();
+                }
+            }
         }
 
         @Override
         public void cancel() {
-            assert subscription != null;
             LOGGER.error("MqttPublishFlowables is global and must never cancel. This must not happen and is a bug.");
-            subscription.cancel();
         }
 
         @Override
         public void cancelLink() {
-            if (state.getAndSet(STATE_CANCEL) == STATE_NONE) {
+            if (state.getAndSet(STATE_CANCELLED) == STATE_NONE) {
                 cancelActual();
             }
         }
 
         private void cancelActual() {
-            if (state.compareAndSet(STATE_CANCEL, STATE_CANCELLED)) {
-                assert subscription != null;
+            assert subscription != null;
+            if (requestState.getAndSet(STATE_CANCELLED) == STATE_NONE) {
                 subscription.cancel();
-                subscriber.onComplete();
             }
+            subscriber.onComplete();
         }
     }
 }
