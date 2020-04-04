@@ -60,15 +60,15 @@ public class MqttConnAckFlow {
         return true;
     }
 
-    void onSuccess(final @NotNull Mqtt5ConnAck t) {
+    void onSuccess(final @NotNull Mqtt5ConnAck connAck) {
         if (observer != null) {
-            observer.onSuccess(t);
+            observer.onSuccess(connAck);
         }
     }
 
-    void onError(final @NotNull Throwable t) {
+    void onError(final @NotNull Throwable error) {
         if (observer != null) {
-            observer.onError(t);
+            observer.onError(error);
         }
     }
 

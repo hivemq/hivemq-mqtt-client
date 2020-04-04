@@ -45,12 +45,11 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
     private final @NotNull Subscriber<? super MqttPublishResult> subscriber;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
 
-    private long requestedNettyLocal;
+    private long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
     private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NO_NEW_REQUESTS);
 
     private volatile long acknowledged;
-    private long acknowledgedNettyLocal;
     private final @NotNull AtomicLong published = new AtomicLong();
     private @Nullable Throwable error; // synced over volatile published
 
@@ -106,26 +105,26 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
             }
             requested = addNewRequested();
         }
-        if (requestedNettyLocal != Long.MAX_VALUE) {
-            requestedNettyLocal -= emitted;
+        if (this.requested != Long.MAX_VALUE) {
+            this.requested -= emitted;
         }
         acknowledged(acknowledged);
     }
 
     @CallByThread("Netty EventLoop")
     @Override
-    void acknowledged(final long acknowledged) {
-        if (acknowledged > 0) {
-            final long acknowledgedLocal = this.acknowledgedNettyLocal += acknowledged;
-            this.acknowledged = acknowledgedLocal;
-            if ((acknowledgedLocal == published.get()) && setDone()) {
+    void acknowledged(final long newAcknowledged) {
+        if (newAcknowledged > 0) {
+            final long acknowledged = this.acknowledged + newAcknowledged;
+            this.acknowledged = acknowledged;
+            if ((acknowledged == published.get()) && setDone()) {
                 if (error != null) {
                     subscriber.onError(error);
                 } else {
                     subscriber.onComplete();
                 }
             }
-            outgoingQosHandler.request(acknowledged);
+            outgoingQosHandler.request(newAcknowledged);
         }
     }
 
@@ -138,14 +137,14 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
         }
     }
 
-    void onError(final @NotNull Throwable t, final long published) {
-        error = t;
+    void onError(final @NotNull Throwable error, final long published) {
+        this.error = error;
         if (!this.published.compareAndSet(0, published)) {
-            RxJavaPlugins.onError(t);
+            RxJavaPlugins.onError(error);
             return;
         }
         if ((acknowledged == published) && setDone()) {
-            subscriber.onError(t);
+            subscriber.onError(error);
         }
     }
 
@@ -164,10 +163,7 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
 
     @CallByThread("Netty EventLoop")
     private long requested() {
-        if (requestedNettyLocal <= 0) {
-            return addNewRequested();
-        }
-        return requestedNettyLocal;
+        return (requested > 0) ? requested : addNewRequested();
     }
 
     @CallByThread("Netty EventLoop")
@@ -182,7 +178,7 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
                 // requestState is afterwards set to STATE_NEW_REQUESTS although newRequested is reset to 0.
                 // If request is not called until the next invocation of this method, newRequested may be 0.
                 if (newRequested > 0) {
-                    return requestedNettyLocal = BackpressureHelper.addCap(requestedNettyLocal, newRequested);
+                    return requested = BackpressureHelper.addCap(requested, newRequested);
                 }
             }
         }

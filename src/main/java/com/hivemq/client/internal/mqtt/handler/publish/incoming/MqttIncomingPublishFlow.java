@@ -90,17 +90,18 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
 
     @CallByThread("Netty EventLoop")
     @Override
-    public void onError(final @NotNull Throwable t) {
+    public void onError(final @NotNull Throwable error) {
         if (done) {
-            if (t != error) {
-                RxJavaPlugins.onError(t);
+            // multiple calls with the same error are expected if flow was subscribed with multiple topic filters
+            if (error != this.error) {
+                RxJavaPlugins.onError(error);
             }
             return;
         }
-        error = t;
+        this.error = error;
         done = true;
         if ((referenced == 0) && setDone()) {
-            subscriber.onError(t);
+            subscriber.onError(error);
         } else {
             incomingPublishService.drain();
         }
