@@ -82,14 +82,23 @@ public class MqttAckSingle extends Single<Mqtt5PublishResult> {
         @Override
         void onNext(final @NotNull MqttPublishResult result) {
             if (result.acknowledged()) {
-                onNextUnsafe(result);
+                done(result);
             } else {
                 this.result = result;
             }
         }
 
         @CallByThread("Netty EventLoop")
-        private void onNextUnsafe(final @NotNull MqttPublishResult result) {
+        @Override
+        void acknowledged(final long acknowledged) {
+            final MqttPublishResult result = this.result;
+            assert (acknowledged == 1) && (result != null) : "a single publish must be acknowledged exactly once";
+            this.result = null;
+            done(result);
+        }
+
+        @CallByThread("Netty EventLoop")
+        private void done(final @NotNull MqttPublishResult result) {
             if (setDone()) {
                 final Throwable error = result.getRawError();
                 if (error == null) {
@@ -99,18 +108,6 @@ public class MqttAckSingle extends Single<Mqtt5PublishResult> {
                 }
             }
             outgoingQosHandler.request(1);
-        }
-
-        @CallByThread("Netty EventLoop")
-        @Override
-        void acknowledged(final long acknowledged) {
-            final MqttPublishResult result = this.result;
-            if ((acknowledged != 1) || (result == null)) {
-                throw new IllegalStateException(
-                        "A single publish must be acknowledged exactly once. This must not happen and is a bug.");
-            }
-            this.result = null;
-            onNextUnsafe(result);
         }
     }
 }
