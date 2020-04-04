@@ -59,11 +59,11 @@ allprojects {
 }
 
 ext {
-    rxJavaVersion = '2.2.5'
-    nettyVersion = '4.1.32.Final'
-    daggerVersion = '2.20'
+    rxJavaVersion = '2.2.19'
+    nettyVersion = '4.1.48.Final'
+    daggerVersion = '2.27'
     jcToolsVersion = '2.1.2'
-    slf4jVersion = '1.7.25'
+    slf4jVersion = '1.7.30'
     jetbrainsAnnotationsVersion = '16.0.3'
 }
 
