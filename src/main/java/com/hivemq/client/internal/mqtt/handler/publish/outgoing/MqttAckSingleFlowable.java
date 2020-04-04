@@ -66,6 +66,7 @@ public class MqttAckSingleFlowable extends Flowable<Mqtt5PublishResult> {
         private static final int STATE_NONE = 0;
         private static final int STATE_RESULT = 1;
         private static final int STATE_REQUESTED = 2;
+        private static final int STATE_CANCELLED = 3;
 
         private final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber;
         private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
@@ -87,25 +88,26 @@ public class MqttAckSingleFlowable extends Flowable<Mqtt5PublishResult> {
         @CallByThread("Netty EventLoop")
         @Override
         void onNext(final @NotNull MqttPublishResult result) {
-            if (state.get() == STATE_REQUESTED) {
-                onNextUnsafe(result);
-            } else {
-                this.result = result;
-                if (!state.compareAndSet(STATE_NONE, STATE_RESULT)) {
-                    this.result = null;
-                    onNextUnsafe(result);
-                } else if (isCancelled()) {
-                    this.result = null;
-                    if (result.acknowledged()) {
-                        acknowledged(1);
+            switch (state.get()) {
+                case STATE_NONE:
+                    if (state.compareAndSet(STATE_NONE, STATE_RESULT)) {
+                        this.result = result;
+                    } else {
+                        onNext(result);
                     }
-                }
+                    break;
+                case STATE_REQUESTED:
+                    subscriber.onNext(result);
+                    done(result);
+                    break;
+                case STATE_CANCELLED:
+                    done(result);
+                    break;
             }
         }
 
         @CallByThread("Netty EventLoop")
-        private void onNextUnsafe(final @NotNull MqttPublishResult result) {
-            subscriber.onNext(result);
+        private void done(final @NotNull MqttPublishResult result) {
             if (result.acknowledged()) {
                 acknowledged(1);
             }
@@ -114,10 +116,7 @@ public class MqttAckSingleFlowable extends Flowable<Mqtt5PublishResult> {
         @CallByThread("Netty EventLoop")
         @Override
         void acknowledged(final long acknowledged) {
-            if (acknowledged != 1) {
-                throw new IllegalStateException(
-                        "A single publish must be acknowledged exactly once. This must not happen and is a bug.");
-            }
+            assert acknowledged == 1 : "a single publish must be acknowledged exactly once";
             if (setDone()) {
                 subscriber.onComplete();
             }
@@ -126,14 +125,14 @@ public class MqttAckSingleFlowable extends Flowable<Mqtt5PublishResult> {
 
         @Override
         public void request(final long n) {
-            if ((n > 0) && !isCancelled() && (state.getAndSet(STATE_REQUESTED) == STATE_RESULT)) {
+            if ((n > 0) && (state.getAndSet(STATE_REQUESTED) == STATE_RESULT)) {
                 eventLoop.execute(this);
             }
         }
 
         @Override
         protected void onCancel() {
-            if (state.get() == STATE_RESULT) {
+            if (state.getAndSet(STATE_CANCELLED) == STATE_RESULT) {
                 eventLoop.execute(this);
             }
         }
@@ -144,13 +143,10 @@ public class MqttAckSingleFlowable extends Flowable<Mqtt5PublishResult> {
             final MqttPublishResult result = this.result;
             if (result != null) {
                 this.result = null;
-                if (isCancelled()) {
-                    if (result.acknowledged()) {
-                        acknowledged(1);
-                    }
-                } else {
-                    onNextUnsafe(result);
+                if (!isCancelled()) {
+                    subscriber.onNext(result);
                 }
+                done(result);
             }
         }
     }
