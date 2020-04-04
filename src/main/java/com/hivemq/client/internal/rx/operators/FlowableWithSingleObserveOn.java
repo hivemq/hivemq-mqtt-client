@@ -33,6 +33,7 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Silvio Giebl
@@ -99,6 +100,7 @@ public class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperato
         final @NotNull T subscriber;
         private final @NotNull WithSingleSubscriber<? super F, ? super S> withSingleSubscriber;
         private final @NotNull WorkerScheduler scheduler;
+        private final @NotNull AtomicReference<Object> singleOrTerminal = new AtomicReference<>();
         private @Nullable Subscription subscription;
 
         private AdapterSubscriber(
@@ -119,7 +121,19 @@ public class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperato
 
         @Override
         public void onSingle(final @NotNull S s) {
-            scheduler.worker.schedule(() -> withSingleSubscriber.onSingle(s));
+            singleOrTerminal.set(s);
+            scheduler.worker.schedule(() -> {
+                withSingleSubscriber.onSingle(s);
+                final Object singleOrTerminal = this.singleOrTerminal.getAndSet(null);
+                if (singleOrTerminal instanceof Terminal) {
+                    final Terminal terminal = (Terminal) singleOrTerminal;
+                    if (terminal.error == null) {
+                        subscriber.onComplete();
+                    } else {
+                        subscriber.onError(terminal.error);
+                    }
+                }
+            });
         }
 
         @Override
@@ -129,12 +143,16 @@ public class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperato
 
         @Override
         public void onComplete() {
-            subscriber.onComplete();
+            if (singleOrTerminal.getAndSet(Terminal.COMPLETE) == null) {
+                subscriber.onComplete();
+            }
         }
 
         @Override
         public void onError(final @NotNull Throwable error) {
-            subscriber.onError(error);
+            if (singleOrTerminal.getAndSet(new Terminal(error)) == null) {
+                subscriber.onError(error);
+            }
         }
 
         @Override
@@ -163,6 +181,17 @@ public class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperato
             @Override
             public boolean tryOnNext(final @NotNull F f) {
                 return subscriber.tryOnNext(f);
+            }
+        }
+
+        private static class Terminal {
+
+            static final @NotNull Terminal COMPLETE = new Terminal(null);
+
+            final @Nullable Throwable error;
+
+            private Terminal(final @Nullable Throwable error) {
+                this.error = error;
             }
         }
     }
