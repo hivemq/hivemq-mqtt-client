@@ -29,12 +29,12 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.reactor.Mqtt3ReactorClient;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
+import reactor.adapter.rxjava.RxJava2Adapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,11 +50,11 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     }
 
     public @NotNull Mono<Mqtt3ConnAck> connect(final @NotNull Mqtt3Connect connect) {
-        return Mono.fromDirect(delegate.connect(connect).toFlowable());
+        return RxJava2Adapter.singleToMono(delegate.connect(connect));
     }
 
     public @NotNull Mono<Mqtt3SubAck> subscribe(final @NotNull Mqtt3Subscribe subscribe) {
-        return Mono.fromDirect(delegate.subscribe(subscribe).toFlowable());
+        return RxJava2Adapter.singleToMono(delegate.subscribe(subscribe));
     }
 
     public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(final @NotNull Mqtt3Subscribe subscribe) {
@@ -62,19 +62,19 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     }
 
     public @NotNull Flux<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
-        return Flux.from(delegate.publishes(filter));
+        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter));
     }
 
-    public @NotNull Mono<Mqtt3UnsubAck> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return Mono.fromDirect(delegate.unsubscribe(unsubscribe).toFlowable());
+    public @NotNull Mono<Void> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+        return RxJava2Adapter.completableToMono(delegate.unsubscribe(unsubscribe));
     }
 
     public @NotNull Flux<Mqtt3PublishResult> publish(final @NotNull Publisher<Mqtt3Publish> publisher) {
-        return Flux.from(delegate.publish(Flowable.fromPublisher(publisher)));
+        return RxJava2Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
     public @NotNull Mono<Void> disconnect() {
-        return Mono.fromDirect(delegate.disconnect().toFlowable());
+        return RxJava2Adapter.completableToMono(delegate.disconnect());
     }
 
     @Override

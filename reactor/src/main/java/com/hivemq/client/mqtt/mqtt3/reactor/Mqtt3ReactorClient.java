@@ -35,7 +35,6 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
@@ -220,7 +219,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         received.</li>
      *         </ul>
      */
-    @NotNull Mono<Mqtt3UnsubAck> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    @NotNull Mono<Void> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
@@ -232,7 +231,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Mono<Mqtt3UnsubAck>> unsubscribeWith() {
+    default @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Mono<Void>> unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
     }
 
