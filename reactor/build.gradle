@@ -12,11 +12,12 @@ ext {
 
 dependencies {
     api rootProject
-    api group: 'io.projectreactor', name: 'reactor-core', version: '3.3.1.RELEASE'
+    api group: 'io.projectreactor', name: 'reactor-core', version: '3.3.4.RELEASE'
+    implementation group: 'io.projectreactor.addons', name: 'reactor-adapter', version: '3.3.3.RELEASE'
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
 }
 
 dependencies {
-    testImplementation group: 'io.projectreactor', name: 'reactor-test', version: '3.3.1.RELEASE'
+    testImplementation group: 'io.projectreactor', name: 'reactor-test', version: '3.3.4.RELEASE'
     testImplementation group: 'com.google.guava', name: 'guava', version: '24.1-jre'
 }

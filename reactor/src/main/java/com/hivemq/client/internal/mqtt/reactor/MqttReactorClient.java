@@ -36,6 +36,7 @@ import com.hivemq.client.rx.reactor.FluxWithSingle;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
+import reactor.adapter.rxjava.RxJava2Adapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -51,11 +52,11 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
     }
 
     public @NotNull Mono<Mqtt5ConnAck> connect(final @NotNull Mqtt5Connect connect) {
-        return Mono.fromDirect(delegate.connect(connect).toFlowable());
+        return RxJava2Adapter.singleToMono(delegate.connect(connect));
     }
 
     public @NotNull Mono<Mqtt5SubAck> subscribe(final @NotNull Mqtt5Subscribe subscribe) {
-        return Mono.fromDirect(delegate.subscribe(subscribe).toFlowable());
+        return RxJava2Adapter.singleToMono(delegate.subscribe(subscribe));
     }
 
     public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(final @NotNull Mqtt5Subscribe subscribe) {
@@ -63,23 +64,23 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
     }
 
     public @NotNull Flux<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
-        return Flux.from(delegate.publishes(filter));
+        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter));
     }
 
     public @NotNull Mono<Mqtt5UnsubAck> unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
-        return Mono.fromDirect(delegate.unsubscribe(unsubscribe).toFlowable());
+        return RxJava2Adapter.singleToMono(delegate.unsubscribe(unsubscribe));
     }
 
     public @NotNull Flux<Mqtt5PublishResult> publish(final @NotNull Publisher<Mqtt5Publish> publisher) {
-        return Flux.from(delegate.publish(Flowable.fromPublisher(publisher)));
+        return RxJava2Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
     public @NotNull Mono<Void> reauth() {
-        return Mono.fromDirect(delegate.reauth().toFlowable());
+        return RxJava2Adapter.completableToMono(delegate.reauth());
     }
 
     public @NotNull Mono<Void> disconnect(final @NotNull Mqtt5Disconnect disconnect) {
-        return Mono.fromDirect(delegate.disconnect(disconnect).toFlowable());
+        return RxJava2Adapter.completableToMono(delegate.disconnect(disconnect));
     }
 
     @Override
