@@ -37,8 +37,8 @@ public class CompletableFlow implements Disposable {
         observer.onComplete();
     }
 
-    public void onError(final @NotNull Throwable t) {
-        observer.onError(t);
+    public void onError(final @NotNull Throwable error) {
+        observer.onError(error);
     }
 
     @Override
