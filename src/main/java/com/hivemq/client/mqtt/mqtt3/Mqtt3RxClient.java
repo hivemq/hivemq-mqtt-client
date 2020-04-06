@@ -192,14 +192,14 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     @NotNull Flowable<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
 
     /**
-     * Creates a {@link Single} for unsubscribing this client with the given Unsubscribe message.
+     * Creates a {@link Completable} for unsubscribing this client with the given Unsubscribe message.
      * <p>
-     * The returned {@link Single} represents the source of the UnsubAck message corresponding to the given Unsubscribe
-     * message. Calling this method does not unsubscribe yet. Unsubscribing is performed lazy and asynchronous when
-     * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
+     * The returned {@link Completable} represents the source of the UnsubAck message corresponding to the given
+     * Unsubscribe message. Calling this method does not unsubscribe yet. Unsubscribing is performed lazy and
+     * asynchronous when subscribing (in terms of Reactive Streams) to the returned {@link Completable}.
      *
      * @param unsubscribe the Unsubscribe message sent to the broker during unsubscribe.
-     * @return the {@link Single} which
+     * @return the {@link Completable} which
      *         <ul>
      *         <li>succeeds when the corresponding UnsubAck message was received or</li>
      *         <li>errors if an error occurred before the Unsubscribe message was sent or before a UnsubAck message was
