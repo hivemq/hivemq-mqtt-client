@@ -50,7 +50,8 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
         final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
         final MqttSubscribedPublishFlow flow =
-                new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler);
+                new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler,
+                        subscribe.isManualAcknowledgement());
         subscriber.onSubscribe(flow);
         subscriptionHandler.subscribe(subscribe, flow);
     }

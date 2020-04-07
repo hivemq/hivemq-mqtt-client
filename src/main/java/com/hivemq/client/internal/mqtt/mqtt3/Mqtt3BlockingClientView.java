@@ -82,10 +82,12 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
+    public @NotNull Mqtt3Publishes publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
         Checks.notNull(filter, "Global publish filter");
 
-        return new Mqtt3PublishesView(delegate.publishes(filter));
+        return new Mqtt3PublishesView(delegate.publishes(filter, manualAcknowledgement));
     }
 
     @Override

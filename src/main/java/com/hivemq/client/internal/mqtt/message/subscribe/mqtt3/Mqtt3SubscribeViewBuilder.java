@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuilder<B>> {
 
     private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionsBuilder;
+    private boolean manualAcknowledgement;
     private @Nullable Mqtt3SubscriptionViewBuilder.Default firstSubscriptionBuilder;
 
     protected Mqtt3SubscribeViewBuilder() {
@@ -93,6 +94,11 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
+    public @NotNull B manualAcknowledgement(final boolean manualAcknowledgement) {
+        this.manualAcknowledgement = manualAcknowledgement;
+        return self();
+    }
+
     private @NotNull Mqtt3SubscriptionViewBuilder.Default getFirstSubscriptionBuilder() {
         if (firstSubscriptionBuilder == null) {
             firstSubscriptionBuilder = new Mqtt3SubscriptionViewBuilder.Default();
@@ -135,7 +141,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
     public @NotNull Mqtt3SubscribeView build() {
         buildFirstSubscription();
         ensureAtLeastOneSubscription();
-        return Mqtt3SubscribeView.of(subscriptionsBuilder.build());
+        return Mqtt3SubscribeView.of(subscriptionsBuilder.build(), manualAcknowledgement);
     }
 
     public static class Default extends Mqtt3SubscribeViewBuilder<Default>

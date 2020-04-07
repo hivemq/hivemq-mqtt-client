@@ -104,7 +104,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         if (!hasSession) {
             incomingPublishFlows.getSubscriptions().forEach((subscriptionIdentifier, subscriptions) -> {
                 final MqttSubscribe subscribe = new MqttSubscribe(ImmutableList.copyOf(subscriptions),
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                        MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+                        false); // manual acknowledgement does not matter here
                 pending.addFirst(new MqttSubscribeWithFlow(subscribe, subscriptionIdentifier, null));
             });
         }

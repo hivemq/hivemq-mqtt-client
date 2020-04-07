@@ -112,10 +112,12 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Flowable<Mqtt3Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
+    public @NotNull Flowable<Mqtt3Publish> publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
         Checks.notNull(filter, "Global publish filter");
 
-        return delegate.publishes(filter)
+        return delegate.publishes(filter, manualAcknowledgement)
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
                 .map(Mqtt3PublishView.MAPPER);
     }

@@ -122,8 +122,23 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @param filter the filter with which all incoming Publish messages are filtered.
      * @return a {@link Mqtt5Publishes} instance that can be used to receive the Publish messages on the calling
      *         thread.
+     * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFilter filter);
+    default @NotNull Mqtt5Publishes publishes(final @NotNull MqttGlobalPublishFilter filter) {
+        return publishes(filter, false);
+    }
+
+    /**
+     * Globally consumes all incoming Publish messages matching the given filter.
+     *
+     * @param filter                the filter with which all incoming Publish messages are filtered.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return a {@link Mqtt5Publishes} instance that can be used to receive the Publish messages on the calling
+     *         thread.
+     * @see #publishes(MqttGlobalPublishFilter)
+     * @since 1.2
+     */
+    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
      * Unsubscribes this client with the given Unsubscribe message.

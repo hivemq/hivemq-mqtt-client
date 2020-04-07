@@ -44,6 +44,7 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
 
     final @NotNull Subscriber<? super Mqtt5Publish> subscriber;
     final @NotNull MqttIncomingPublishService incomingPublishService;
+    final boolean manualAcknowledgement;
 
     private long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
@@ -58,11 +59,12 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
 
     MqttIncomingPublishFlow(
             final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+            final @NotNull MqttIncomingQosHandler incomingQosHandler, final boolean manualAcknowledgement) {
 
         super(clientConfig);
         this.subscriber = subscriber;
         incomingPublishService = incomingQosHandler.incomingPublishService;
+        this.manualAcknowledgement = manualAcknowledgement;
     }
 
     @CallByThread("Netty EventLoop")
@@ -189,5 +191,9 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     @CallByThread("Netty EventLoop")
     int dereference() {
         return --referenced;
+    }
+
+    public boolean isManualAcknowledgement() {
+        return manualAcknowledgement;
     }
 }

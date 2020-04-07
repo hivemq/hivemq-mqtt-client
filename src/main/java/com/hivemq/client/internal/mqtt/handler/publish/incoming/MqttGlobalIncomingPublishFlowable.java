@@ -33,12 +33,15 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     private final @NotNull MqttGlobalPublishFilter filter;
     private final @NotNull MqttClientConfig clientConfig;
+    private final boolean manualAcknowledgement;
 
     public MqttGlobalIncomingPublishFlowable(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull MqttClientConfig clientConfig) {
+            final @NotNull MqttGlobalPublishFilter filter, final @NotNull MqttClientConfig clientConfig,
+            final boolean manualAcknowledgement) {
 
         this.filter = filter;
         this.clientConfig = clientConfig;
+        this.manualAcknowledgement = manualAcknowledgement;
     }
 
     @Override
@@ -48,7 +51,8 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
         final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
         final MqttGlobalIncomingPublishFlow flow =
-                new MqttGlobalIncomingPublishFlow(subscriber, clientConfig, incomingQosHandler, filter);
+                new MqttGlobalIncomingPublishFlow(subscriber, clientConfig, incomingQosHandler, filter,
+                        manualAcknowledgement);
         subscriber.onSubscribe(flow);
         subscriptionHandler.subscribeGlobal(flow);
     }

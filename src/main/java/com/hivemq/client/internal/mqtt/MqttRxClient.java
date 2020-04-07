@@ -113,14 +113,19 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull Flowable<Mqtt5Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
+    public @NotNull Flowable<Mqtt5Publish> publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
         Checks.notNull(filter, "Global publish filter");
 
-        return publishesUnsafe(filter).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler(), true);
+        return publishesUnsafe(filter, manualAcknowledgement).observeOn(
+                clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
-    @NotNull Flowable<Mqtt5Publish> publishesUnsafe(final @NotNull MqttGlobalPublishFilter filter) {
-        return new MqttGlobalIncomingPublishFlowable(filter, clientConfig);
+    @NotNull Flowable<Mqtt5Publish> publishesUnsafe(
+            final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
+        return new MqttGlobalIncomingPublishFlowable(filter, clientConfig, manualAcknowledgement);
     }
 
     @Override
