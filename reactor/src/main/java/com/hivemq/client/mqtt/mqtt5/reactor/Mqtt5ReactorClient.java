@@ -201,9 +201,31 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException} when the MQTT session expires.</li>
      *         </ul>
+     * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
     @CheckReturnValue
     @NotNull Flux<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
+
+    /**
+     * Creates a {@link Flux} for globally consuming all incoming Publish messages matching the given filter.
+     * <p>
+     * The returned {@link Flux} represents the source of the incoming Publish messages matching the given type. Calling
+     * this method does not start consuming yet. This is done lazy and asynchronous when subscribing (in terms of
+     * Reactive Streams) to the returned {@link Flux}.
+     *
+     * @param filter                the filter with which all incoming Publish messages are filtered.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return the {@link Flux} which
+     *         <ul>
+     *         <li>emits the incoming Publish messages matching the given filter,</li>
+     *         <li>never completes but</li>
+     *         <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *         MqttSessionExpiredException} when the MQTT session expires.</li>
+     *         </ul>
+     * @see #publishes(MqttGlobalPublishFilter)
+     */
+    @CheckReturnValue
+    @NotNull Flux<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
      * Creates a {@link Mono} for unsubscribing this client with the given Unsubscribe message.
