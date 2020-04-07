@@ -17,13 +17,8 @@
 
 package com.hivemq.client.mqtt.mqtt5.reactor;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.internal.mqtt.reactor.MqttReactorClient;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
@@ -63,6 +58,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param client the client with any API (blocking, async, reactive, reactor).
      * @return a reactor API for the given client.
      */
+    @CheckReturnValue
     static @NotNull Mqtt5ReactorClient from(final @NotNull Mqtt5Client client) {
         if (client instanceof Mqtt5ReactorClient) {
             return (Mqtt5ReactorClient) client;
@@ -76,9 +72,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @return see {@link #connect(Mqtt5Connect)}.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mono<Mqtt5ConnAck> connect() {
-        return connect(MqttConnect.DEFAULT);
-    }
+    @CheckReturnValue
+    @NotNull Mono<Mqtt5ConnAck> connect();
 
     /**
      * Creates a {@link Mono} for connecting this client with the given Connect message.
@@ -98,6 +93,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         the ConnAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
     /**
@@ -109,9 +105,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mqtt5ConnectBuilder.Nested<Mono<Mqtt5ConnAck>> connectWith() {
-        return new MqttConnectBuilder.Nested<>(this::connect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5ConnectBuilder.Nested<Mono<Mqtt5ConnAck>> connectWith();
 
     /**
      * Creates a {@link Mono} for subscribing this client with the given Subscribe message.
@@ -135,6 +130,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         before a SubAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
     /**
@@ -147,9 +143,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<Mono<Mqtt5SubAck>> subscribeWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5SubscribeBuilder.Nested.Start<Mono<Mqtt5SubAck>> subscribeWith();
 
     /**
      * Creates a {@link FluxWithSingle} for subscribing this client with the given Subscribe message.
@@ -175,6 +170,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         MqttSessionExpiredException}).</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
 
     /**
@@ -187,9 +183,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribeStream(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5SubscribeBuilder.Nested.Start<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link Flux} for globally consuming all incoming Publish messages matching the given filter.
@@ -207,6 +202,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         MqttSessionExpiredException} when the MQTT session expires.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Flux<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
 
     /**
@@ -228,6 +224,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         before a UnsubAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
     /**
@@ -240,9 +237,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
-    default @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Mono<Mqtt5UnsubAck>> unsubscribeWith() {
-        return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Mono<Mqtt5UnsubAck>> unsubscribeWith();
 
     /**
      * Creates a {@link Flux} for publishing the Publish messages emitted by the given {@link Publisher}.
@@ -262,6 +258,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         {@link Mqtt5PublishResult}s were emitted.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Flux<Mqtt5PublishResult> publish(@NotNull Publisher<Mqtt5Publish> publisher);
 
     /**
@@ -280,6 +277,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         before the last Auth message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Void> reauth();
 
     /**
@@ -288,9 +286,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @return see {@link #disconnect(Mqtt5Disconnect)}.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mono<Void> disconnect() {
-        return disconnect(MqttDisconnect.DEFAULT);
-    }
+    @CheckReturnValue
+    @NotNull Mono<Void> disconnect();
 
     /**
      * Creates a {@link Mono} for disconnecting this client with the given Disconnect message.
@@ -305,6 +302,7 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         <li>errors if not disconnected gracefully.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Void> disconnect(@NotNull Mqtt5Disconnect disconnect);
 
     /**
@@ -316,7 +314,6 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @return the builder for the Disconnect message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder.Nested<Mono<Void>> disconnectWith() {
-        return new MqttDisconnectBuilder.Nested<>(this::disconnect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5DisconnectBuilder.Nested<Mono<Void>> disconnectWith();
 }

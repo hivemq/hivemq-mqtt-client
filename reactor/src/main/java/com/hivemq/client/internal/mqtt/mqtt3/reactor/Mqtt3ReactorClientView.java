@@ -17,6 +17,10 @@
 
 package com.hivemq.client.internal.mqtt.mqtt3.reactor;
 
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient;
@@ -49,16 +53,36 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         this.delegate = delegate;
     }
 
+    @Override
+    public @NotNull Mono<Mqtt3ConnAck> connect() {
+        return connect(Mqtt3ConnectView.DEFAULT);
+    }
+
     public @NotNull Mono<Mqtt3ConnAck> connect(final @NotNull Mqtt3Connect connect) {
         return RxJava2Adapter.singleToMono(delegate.connect(connect));
+    }
+
+    @Override
+    public @NotNull Mqtt3ConnectViewBuilder.Nested<Mono<Mqtt3ConnAck>> connectWith() {
+        return new Mqtt3ConnectViewBuilder.Nested<>(this::connect);
     }
 
     public @NotNull Mono<Mqtt3SubAck> subscribe(final @NotNull Mqtt3Subscribe subscribe) {
         return RxJava2Adapter.singleToMono(delegate.subscribe(subscribe));
     }
 
+    @Override
+    public @NotNull Mqtt3SubscribeViewBuilder.Nested<Mono<Mqtt3SubAck>> subscribeWith() {
+        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribe);
+    }
+
     public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(final @NotNull Mqtt3Subscribe subscribe) {
         return FluxWithSingle.from(delegate.subscribeStream(subscribe));
+    }
+
+    @Override
+    public @NotNull Mqtt3SubscribeViewBuilder.Nested<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
+        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
     }
 
     public @NotNull Flux<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
@@ -67,6 +91,11 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
 
     public @NotNull Mono<Void> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
         return RxJava2Adapter.completableToMono(delegate.unsubscribe(unsubscribe));
+    }
+
+    @Override
+    public @NotNull Mqtt3UnsubscribeViewBuilder.Nested<Mono<Void>> unsubscribeWith() {
+        return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
     }
 
     public @NotNull Flux<Mqtt3PublishResult> publish(final @NotNull Publisher<Mqtt3Publish> publisher) {

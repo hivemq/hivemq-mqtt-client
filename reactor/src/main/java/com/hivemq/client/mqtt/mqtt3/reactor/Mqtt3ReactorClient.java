@@ -17,11 +17,8 @@
 
 package com.hivemq.client.mqtt.mqtt3.reactor;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.mqtt3.reactor.Mqtt3ReactorClientView;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3Client;
@@ -58,6 +55,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @param client the client with any API (blocking, async, reactive, reactor).
      * @return a reactor API for the given client.
      */
+    @CheckReturnValue
     static @NotNull Mqtt3ReactorClient from(final @NotNull Mqtt3Client client) {
         if (client instanceof Mqtt3ReactorClient) {
             return (Mqtt3ReactorClient) client;
@@ -71,9 +69,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @return see {@link #connect(Mqtt3Connect)}.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mono<Mqtt3ConnAck> connect() {
-        return connect(Mqtt3ConnectView.DEFAULT);
-    }
+    @CheckReturnValue
+    @NotNull Mono<Mqtt3ConnAck> connect();
 
     /**
      * Creates a {@link Mono} for connecting this client with the given Connect message.
@@ -93,6 +90,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         the ConnAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
     /**
@@ -104,9 +102,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mqtt3ConnectBuilder.Nested<Mono<Mqtt3ConnAck>> connectWith() {
-        return new Mqtt3ConnectViewBuilder.Nested<>(this::connect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3ConnectBuilder.Nested<Mono<Mqtt3ConnAck>> connectWith();
 
     /**
      * Creates a {@link Mono} for subscribing this client with the given Subscribe message.
@@ -130,6 +127,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         before a SubAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
 
     /**
@@ -142,9 +140,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder.Nested.Start<Mono<Mqtt3SubAck>> subscribeWith() {
-        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3SubscribeBuilder.Nested.Start<Mono<Mqtt3SubAck>> subscribeWith();
 
     /**
      * Creates a {@link FluxWithSingle} for subscribing this client with the given Subscribe message.
@@ -170,6 +167,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         MqttSessionExpiredException}).</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
 
     /**
@@ -182,9 +180,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribeStream(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder.Nested.Start<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
-        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3SubscribeBuilder.Nested.Start<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link Flux} for globally consuming all incoming Publish messages matching the given filter.
@@ -202,6 +199,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         MqttSessionExpiredException} when the MQTT session expires.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Flux<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
 
     /**
@@ -219,6 +217,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Void> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
@@ -231,9 +230,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Mono<Void>> unsubscribeWith() {
-        return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Mono<Void>> unsubscribeWith();
 
     /**
      * Creates a {@link Flux} for publishing the Publish messages emitted by the given {@link Publisher}.
@@ -253,6 +251,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         {@link Mqtt3PublishResult}s were emitted.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Flux<Mqtt3PublishResult> publish(@NotNull Publisher<Mqtt3Publish> publisher);
 
     /**
@@ -267,5 +266,6 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         <li>errors if not disconnected gracefully.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Mono<Void> disconnect();
 }
