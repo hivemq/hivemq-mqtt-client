@@ -104,9 +104,9 @@ class Mqtt3RxClientViewExceptionsTest {
     void publishes(final @NotNull MqttGlobalPublishFilter filter) {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
-        given(mqtt5Client.publishes(filter)).willReturn(Flowable.error(mqtt5MessageException));
+        given(mqtt5Client.publishes(filter, false)).willReturn(Flowable.error(mqtt5MessageException));
 
-        assertMqtt3Exception(() -> mqtt3Client.publishes(filter).blockingSubscribe(), mqtt5MessageException);
+        assertMqtt3Exception(() -> mqtt3Client.publishes(filter, false).blockingSubscribe(), mqtt5MessageException);
     }
 
     @Test
