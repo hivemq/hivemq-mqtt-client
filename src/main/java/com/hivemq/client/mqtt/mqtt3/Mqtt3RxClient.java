@@ -51,6 +51,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @return see {@link #connect(Mqtt3Connect)}.
      * @see #connect(Mqtt3Connect)
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt3ConnAck> connect();
 
     /**
@@ -71,6 +72,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         the ConnAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
     /**
@@ -107,6 +109,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         before a SubAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
 
     /**
@@ -146,6 +149,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         MqttSessionExpiredException}).</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
 
     /**
@@ -178,6 +182,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
+    @CheckReturnValue
     @NotNull Flowable<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter);
 
     /**
@@ -199,6 +204,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #publishes(MqttGlobalPublishFilter)
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull Flowable<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
@@ -216,6 +222,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Completable unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
@@ -249,6 +256,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         {@link Mqtt3PublishResult}s were emitted.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Flowable<Mqtt3PublishResult> publish(@NotNull Flowable<Mqtt3Publish> publishFlowable);
 
     /**
@@ -263,5 +271,6 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         <li>errors if not disconnected gracefully.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Completable disconnect();
 }

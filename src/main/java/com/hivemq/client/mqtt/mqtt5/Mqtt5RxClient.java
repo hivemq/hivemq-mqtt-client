@@ -54,6 +54,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return see {@link #connect(Mqtt5Connect)}.
      * @see #connect(Mqtt5Connect)
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt5ConnAck> connect();
 
     /**
@@ -74,6 +75,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         the ConnAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
     /**
@@ -110,6 +112,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         before a SubAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
     /**
@@ -149,6 +152,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         MqttSessionExpiredException}).</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
 
     /**
@@ -181,6 +185,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
+    @CheckReturnValue
     @NotNull Flowable<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter);
 
     /**
@@ -202,6 +207,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #publishes(MqttGlobalPublishFilter)
      * @since 1.2
      */
+    @CheckReturnValue
     @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
@@ -223,6 +229,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         before a UnsubAck message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
     /**
@@ -256,6 +263,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         {@link Mqtt5PublishResult}s were emitted.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
 
     /**
@@ -274,6 +282,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         before the last Auth message was received.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Completable reauth();
 
     /**
@@ -282,6 +291,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return see {@link #disconnect(Mqtt5Disconnect)}.
      * @see #disconnect(Mqtt5Disconnect)
      */
+    @CheckReturnValue
     @NotNull Completable disconnect();
 
     /**
@@ -297,6 +307,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         <li>errors if not disconnected gracefully.</li>
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
 
     /**
