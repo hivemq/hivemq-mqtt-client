@@ -80,8 +80,7 @@ class Mqtt3RxClientViewExceptionsTest {
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(
-                () -> mqtt3Client.subscribe(subscribe).ignoreElement().blockingAwait(),
+        assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).ignoreElement().blockingAwait(),
                 mqtt5MessageException);
     }
 
@@ -89,14 +88,15 @@ class Mqtt3RxClientViewExceptionsTest {
     void subscribeWithStream() {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
-        given(mqtt5Client.subscribeStream(any())).willReturn(
+        given(mqtt5Client.subscribeStream(any(), anyBoolean())).willReturn(
                 new FlowableWithSingleSplit<>(Flowable.error(mqtt5MessageException), Mqtt5Publish.class,
                         Mqtt5SubAck.class));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(() -> mqtt3Client.subscribeStream(subscribe).blockingSubscribe(), mqtt5MessageException);
+        assertMqtt3Exception(
+                () -> mqtt3Client.subscribeStream(subscribe, false).blockingSubscribe(), mqtt5MessageException);
     }
 
     @ParameterizedTest
