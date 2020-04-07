@@ -123,16 +123,23 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
             final @Nullable Mqtt3Subscribe subscribe) {
 
+        return subscribeStream(subscribe, false);
+    }
+
+    @Override
+    public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
+            final @Nullable Mqtt3Subscribe subscribe, final boolean manualAcknowledgement) {
+
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
-        return delegate.subscribeStream(mqttSubscribe)
+        return delegate.subscribeStream(mqttSubscribe, manualAcknowledgement)
                 .mapError(Mqtt3ExceptionFactory.MAPPER)
                 .mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
     }
 
     @Override
-    public @NotNull Mqtt3SubscribeViewBuilder.Nested<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
-        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
+    public @NotNull Mqtt3SubscribeViewAndManualAckBuilder subscribeStreamWith() {
+        return new Mqtt3SubscribeViewAndManualAckBuilder();
     }
 
     @Override
@@ -195,5 +202,14 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     @Override
     public @NotNull Mqtt3BlockingClientView toBlocking() {
         return new Mqtt3BlockingClientView(delegate.toBlocking());
+    }
+
+    private class Mqtt3SubscribeViewAndManualAckBuilder
+            extends Mqtt3SubscribeViewBuilder.ManualAck<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> {
+
+        @Override
+        public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> applySubscribe() {
+            return subscribeStream(build(), manualAcknowledgement);
+        }
     }
 }

@@ -43,7 +43,6 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
     private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionsBuilder;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-    private boolean manualAcknowledgement = false;
     private @Nullable MqttSubscriptionBuilder.Default firstSubscriptionBuilder;
 
     protected MqttSubscribeBuilder() {
@@ -107,11 +106,6 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
-    public @NotNull B manualAcknowledgement(final boolean manualAcknowledgement) {
-        this.manualAcknowledgement = manualAcknowledgement;
-        return self();
-    }
-
     private @NotNull MqttSubscriptionBuilder.Default getFirstSubscriptionBuilder() {
         if (firstSubscriptionBuilder == null) {
             firstSubscriptionBuilder = new MqttSubscriptionBuilder.Default();
@@ -169,7 +163,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
     public @NotNull MqttSubscribe build() {
         buildFirstSubscription();
         ensureAtLeastOneSubscription();
-        return new MqttSubscribe(subscriptionsBuilder.build(), userProperties, manualAcknowledgement);
+        return new MqttSubscribe(subscriptionsBuilder.build(), userProperties);
     }
 
     public static class Default extends MqttSubscribeBuilder<Default> implements Mqtt5SubscribeBuilder.Start.Complete {
@@ -181,7 +175,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
 
         @Override
-        protected @NotNull MqttSubscribeBuilder.Default self() {
+        protected @NotNull Default self() {
             return this;
         }
     }
@@ -196,7 +190,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
 
         @Override
-        protected @NotNull MqttSubscribeBuilder.Nested<P> self() {
+        protected @NotNull Nested<P> self() {
             return this;
         }
 
@@ -216,13 +210,30 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
 
         @Override
-        protected @NotNull MqttSubscribeBuilder.Send<P> self() {
+        protected @NotNull Send<P> self() {
             return this;
         }
 
         @Override
         public @NotNull P send() {
             return parentConsumer.apply(build());
+        }
+    }
+
+    public static abstract class ManualAck<P> extends MqttSubscribeBuilder<ManualAck<P>>
+            implements Mqtt5SubscribeBuilder.Nested.Start.Complete<P>, Mqtt5SubscribeBuilder.Nested.ManualAck<P> {
+
+        protected boolean manualAcknowledgement;
+
+        @Override
+        protected @NotNull MqttSubscribeBuilder.ManualAck<P> self() {
+            return this;
+        }
+
+        @Override
+        public @NotNull MqttSubscribeBuilder.ManualAck<P> manualAcknowledgement(final boolean manualAcknowledgement) {
+            this.manualAcknowledgement = manualAcknowledgement;
+            return this;
         }
     }
 }

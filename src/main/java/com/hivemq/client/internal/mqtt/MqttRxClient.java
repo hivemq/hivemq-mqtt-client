@@ -117,23 +117,32 @@ public class MqttRxClient implements Mqtt5RxClient {
     public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
             final @Nullable Mqtt5Subscribe subscribe) {
 
-        return subscribeStream(MqttChecks.subscribe(subscribe));
+        return subscribeStream(subscribe, false);
     }
 
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(final @NotNull MqttSubscribe subscribe) {
-        return subscribeStreamUnsafe(subscribe).observeOnBoth(
+    @Override
+    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+            final @Nullable Mqtt5Subscribe subscribe, final boolean manualAcknowledgement) {
+
+        return subscribeStream(MqttChecks.subscribe(subscribe), manualAcknowledgement);
+    }
+
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+            final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
+
+        return subscribeStreamUnsafe(subscribe, manualAcknowledgement).observeOnBoth(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStreamUnsafe(
-            final @NotNull MqttSubscribe subscribe) {
+            final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
 
-        return new MqttSubscribedPublishFlowable(subscribe, clientConfig);
+        return new MqttSubscribedPublishFlowable(subscribe, clientConfig, manualAcknowledgement);
     }
 
     @Override
-    public @NotNull MqttSubscribeBuilder.Nested<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
+    public @NotNull MqttSubscribeAndManualAckBuilder subscribeStreamWith() {
+        return new MqttSubscribeAndManualAckBuilder();
     }
 
     @Override
@@ -263,5 +272,14 @@ public class MqttRxClient implements Mqtt5RxClient {
     @Override
     public @NotNull MqttBlockingClient toBlocking() {
         return new MqttBlockingClient(this);
+    }
+
+    private class MqttSubscribeAndManualAckBuilder
+            extends MqttSubscribeBuilder.ManualAck<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
+
+        @Override
+        public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> applySubscribe() {
+            return subscribeStream(build(), manualAcknowledgement);
+        }
     }
 }

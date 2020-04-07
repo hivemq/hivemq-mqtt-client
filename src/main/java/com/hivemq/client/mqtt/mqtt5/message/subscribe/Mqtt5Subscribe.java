@@ -56,13 +56,6 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
-    /**
-     * @return whether the Publish messages consumed via a subscription with this Subscribe message are acknowledged
-     *         manually.
-     * @since 1.2
-     */
-    boolean isManualAcknowledgement();
-
     @Override
     default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.SUBSCRIBE;

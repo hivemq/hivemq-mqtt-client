@@ -90,21 +90,6 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
     @CheckReturnValue
     @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt3Subscription> subscriptions);
 
-    @DoNotImplement
-    interface Complete<C extends Mqtt3SubscribeBuilderBase.Complete<C>> extends Mqtt3SubscribeBuilderBase<C> {
-
-        /**
-         * Sets whether the Publish messages consumed via a subscription with the Subscribe message are {@link
-         * Mqtt3Subscribe#isManualAcknowledgement() acknowledged manually}.
-         *
-         * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
-         * @return the builder.
-         * @since 1.2
-         */
-        @CheckReturnValue
-        @NotNull C manualAcknowledgement(boolean manualAcknowledgement);
-    }
-
     /**
      * {@link Mqtt3SubscribeBuilderBase} that provides additional methods for the first subscription.
      *

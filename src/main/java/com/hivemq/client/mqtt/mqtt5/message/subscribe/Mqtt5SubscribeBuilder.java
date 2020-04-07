@@ -113,6 +113,26 @@ public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5Su
                     Mqtt5SubscribeBuilderBase.Start.Complete<Nested.Complete<P>, Nested.Start.Complete<P>> {}
             // @formatter:on
         }
+
+        /**
+         * Builder for a {@link Mqtt5Subscribe} that is applied to a parent with a manual acknowledge flag.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt5Subscribe} is applied to the parent.
+         * @since 1.2
+         */
+        @DoNotImplement
+        interface ManualAck<P> extends Nested.Start<P> {
+
+            /**
+             * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
+             *
+             * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
+             * @return the builder.
+             * @since 1.2
+             */
+            @CheckReturnValue
+            @NotNull ManualAck<P> manualAcknowledgement(boolean manualAcknowledgement);
+        }
     }
 
     /**

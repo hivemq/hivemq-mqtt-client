@@ -62,6 +62,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return connect(MqttConnect.DEFAULT);
     }
 
+    @Override
     public @NotNull Mono<Mqtt5ConnAck> connect(final @NotNull Mqtt5Connect connect) {
         return RxJava2Adapter.singleToMono(delegate.connect(connect));
     }
@@ -71,6 +72,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return new MqttConnectBuilder.Nested<>(this::connect);
     }
 
+    @Override
     public @NotNull Mono<Mqtt5SubAck> subscribe(final @NotNull Mqtt5Subscribe subscribe) {
         return RxJava2Adapter.singleToMono(delegate.subscribe(subscribe));
     }
@@ -80,15 +82,24 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return new MqttSubscribeBuilder.Nested<>(this::subscribe);
     }
 
+    @Override
     public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(final @NotNull Mqtt5Subscribe subscribe) {
-        return FluxWithSingle.from(delegate.subscribeStream(subscribe));
+        return subscribeStream(subscribe, false);
     }
 
     @Override
-    public @NotNull MqttSubscribeBuilder.Nested<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
+    public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+            final @NotNull Mqtt5Subscribe subscribe, final boolean manualAcknowledgement) {
+
+        return FluxWithSingle.from(delegate.subscribeStream(subscribe, manualAcknowledgement));
     }
 
+    @Override
+    public @NotNull MqttSubscribeAndManualAckBuilder subscribeStreamWith() {
+        return new MqttSubscribeAndManualAckBuilder();
+    }
+
+    @Override
     public @NotNull Flux<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
         return publishes(filter, false);
     }
@@ -100,6 +111,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return RxJava2Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
     }
 
+    @Override
     public @NotNull Mono<Mqtt5UnsubAck> unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
         return RxJava2Adapter.singleToMono(delegate.unsubscribe(unsubscribe));
     }
@@ -109,10 +121,12 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
     }
 
+    @Override
     public @NotNull Flux<Mqtt5PublishResult> publish(final @NotNull Publisher<Mqtt5Publish> publisher) {
         return RxJava2Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
+    @Override
     public @NotNull Mono<Void> reauth() {
         return RxJava2Adapter.completableToMono(delegate.reauth());
     }
@@ -122,6 +136,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return disconnect(MqttDisconnect.DEFAULT);
     }
 
+    @Override
     public @NotNull Mono<Void> disconnect(final @NotNull Mqtt5Disconnect disconnect) {
         return RxJava2Adapter.completableToMono(delegate.disconnect(disconnect));
     }
@@ -149,5 +164,14 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
     @Override
     public @NotNull Mqtt5BlockingClient toBlocking() {
         return delegate.toBlocking();
+    }
+
+    private class MqttSubscribeAndManualAckBuilder
+            extends MqttSubscribeBuilder.ManualAck<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
+
+        @Override
+        public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> applySubscribe() {
+            return subscribeStream(build(), manualAcknowledgement);
+        }
     }
 }

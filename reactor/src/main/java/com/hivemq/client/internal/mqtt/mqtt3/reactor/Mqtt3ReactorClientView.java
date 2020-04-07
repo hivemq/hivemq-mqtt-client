@@ -58,6 +58,7 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return connect(Mqtt3ConnectView.DEFAULT);
     }
 
+    @Override
     public @NotNull Mono<Mqtt3ConnAck> connect(final @NotNull Mqtt3Connect connect) {
         return RxJava2Adapter.singleToMono(delegate.connect(connect));
     }
@@ -67,6 +68,7 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return new Mqtt3ConnectViewBuilder.Nested<>(this::connect);
     }
 
+    @Override
     public @NotNull Mono<Mqtt3SubAck> subscribe(final @NotNull Mqtt3Subscribe subscribe) {
         return RxJava2Adapter.singleToMono(delegate.subscribe(subscribe));
     }
@@ -76,15 +78,24 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribe);
     }
 
+    @Override
     public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(final @NotNull Mqtt3Subscribe subscribe) {
-        return FluxWithSingle.from(delegate.subscribeStream(subscribe));
+        return subscribeStream(subscribe, false);
     }
 
     @Override
-    public @NotNull Mqtt3SubscribeViewBuilder.Nested<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
-        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
+    public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
+            final @NotNull Mqtt3Subscribe subscribe, final boolean manualAcknowledgement) {
+
+        return FluxWithSingle.from(delegate.subscribeStream(subscribe, manualAcknowledgement));
     }
 
+    @Override
+    public @NotNull Mqtt3SubscribeViewAndManualAckBuilder subscribeStreamWith() {
+        return new Mqtt3SubscribeViewAndManualAckBuilder();
+    }
+
+    @Override
     public @NotNull Flux<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
         return publishes(filter, false);
     }
@@ -96,6 +107,7 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return RxJava2Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
     }
 
+    @Override
     public @NotNull Mono<Void> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
         return RxJava2Adapter.completableToMono(delegate.unsubscribe(unsubscribe));
     }
@@ -105,10 +117,12 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
     }
 
+    @Override
     public @NotNull Flux<Mqtt3PublishResult> publish(final @NotNull Publisher<Mqtt3Publish> publisher) {
         return RxJava2Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
+    @Override
     public @NotNull Mono<Void> disconnect() {
         return RxJava2Adapter.completableToMono(delegate.disconnect());
     }
@@ -131,5 +145,14 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     @Override
     public @NotNull Mqtt3BlockingClient toBlocking() {
         return delegate.toBlocking();
+    }
+
+    private class Mqtt3SubscribeViewAndManualAckBuilder
+            extends Mqtt3SubscribeViewBuilder.ManualAck<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> {
+
+        @Override
+        public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> applySubscribe() {
+            return subscribeStream(build(), manualAcknowledgement);
+        }
     }
 }

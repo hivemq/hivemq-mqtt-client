@@ -33,25 +33,18 @@ import org.jetbrains.annotations.Nullable;
 public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt5Subscribe {
 
     private final @NotNull ImmutableList<MqttSubscription> subscriptions;
-    private final boolean manualAcknowledgement;
 
     public MqttSubscribe(
             final @NotNull ImmutableList<MqttSubscription> subscriptions,
-            final @NotNull MqttUserPropertiesImpl userProperties, final boolean manualAcknowledgement) {
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.subscriptions = subscriptions;
-        this.manualAcknowledgement = manualAcknowledgement;
     }
 
     @Override
     public @NotNull ImmutableList<MqttSubscription> getSubscriptions() {
         return subscriptions;
-    }
-
-    @Override
-    public boolean isManualAcknowledgement() {
-        return manualAcknowledgement;
     }
 
     public @NotNull MqttStatefulSubscribe createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
