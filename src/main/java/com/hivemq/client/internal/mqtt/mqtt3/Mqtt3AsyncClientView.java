@@ -21,13 +21,17 @@ import com.hivemq.client.internal.mqtt.MqttAsyncClient;
 import com.hivemq.client.internal.mqtt.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -82,6 +86,11 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
+    public @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect() {
+        return connect(Mqtt3ConnectView.DEFAULT);
+    }
+
+    @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(final @Nullable Mqtt3Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
 
@@ -94,6 +103,11 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             }
         });
         return future;
+    }
+
+    @Override
+    public @NotNull Mqtt3ConnectViewBuilder.Send<CompletableFuture<Mqtt3ConnAck>> connectWith() {
+        return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
 
     @Override
@@ -123,6 +137,26 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         Checks.notNull(executor, "Executor");
 
         return handleSubAck(delegate.subscribe(mqttSubscribe, callbackView(callback), executor));
+    }
+
+    @Override
+    public @NotNull Mqtt3SubscribeViewAndCallbackBuilder subscribeWith() {
+        return new Mqtt3SubscribeViewAndCallbackBuilder(this);
+    }
+
+    @Override
+    public void publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
+
+        publishes(filter, callback, false);
+    }
+
+    @Override
+    public void publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
+            final @Nullable Executor executor) {
+
+        publishes(filter, callback, executor, false);
     }
 
     @Override
@@ -164,6 +198,11 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
+    public @NotNull Mqtt3UnsubscribeViewBuilder.Send<CompletableFuture<Void>> unsubscribeWith() {
+        return new Mqtt3UnsubscribeViewBuilder.Send<>(this::unsubscribe);
+    }
+
+    @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(final @Nullable Mqtt3Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
 
@@ -176,6 +215,11 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             }
         });
         return future;
+    }
+
+    @Override
+    public @NotNull Mqtt3PublishViewBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith() {
+        return new Mqtt3PublishViewBuilder.Send<>(this::publish);
     }
 
     @Override
@@ -199,6 +243,11 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     @Override
     public @NotNull Mqtt3RxClient toRx() {
         return new Mqtt3RxClientView(delegate.toRx());
+    }
+
+    @Override
+    public @NotNull Mqtt3AsyncClient toAsync() {
+        return this;
     }
 
     @Override

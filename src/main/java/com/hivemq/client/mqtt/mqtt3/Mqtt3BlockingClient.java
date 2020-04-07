@@ -19,11 +19,6 @@ package com.hivemq.client.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
-import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
@@ -55,9 +50,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return see {@link #connect(Mqtt3Connect)}.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mqtt3ConnAck connect() {
-        return connect(Mqtt3ConnectView.DEFAULT);
-    }
+    @NotNull Mqtt3ConnAck connect();
 
     /**
      * Connects this client with the given Connect message.
@@ -79,9 +72,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3ConnectBuilder.Send<Mqtt3ConnAck> connectWith() {
-        return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
-    }
+    @NotNull Mqtt3ConnectBuilder.Send<Mqtt3ConnAck> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -106,9 +97,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith() {
-        return new Mqtt3SubscribeViewBuilder.Send<>(this::subscribe);
-    }
+    @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -118,9 +107,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      *         thread.
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    default @NotNull Mqtt3Publishes publishes(final @NotNull MqttGlobalPublishFilter filter) {
-        return publishes(filter, false);
-    }
+    @NotNull Mqtt3Publishes publishes(final @NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -151,9 +138,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3UnsubscribeBuilder.SendVoid.Start unsubscribeWith() {
-        return new Mqtt3UnsubscribeViewBuilder.SendVoid(this::unsubscribe);
-    }
+    @NotNull Mqtt3UnsubscribeBuilder.SendVoid.Start unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -172,19 +157,12 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #publish(Mqtt3Publish)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3PublishBuilder.SendVoid publishWith() {
-        return new Mqtt3PublishViewBuilder.SendVoid(this::publish);
-    }
+    @NotNull Mqtt3PublishBuilder.SendVoid publishWith();
 
     /**
      * Disconnects this client with the given Disconnect message.
      */
     void disconnect();
-
-    @Override
-    default @NotNull Mqtt3BlockingClient toBlocking() {
-        return this;
-    }
 
     /**
      * Resource which queues incoming Publish messages until they are received.

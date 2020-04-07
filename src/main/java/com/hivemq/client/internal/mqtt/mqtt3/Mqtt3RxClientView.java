@@ -21,13 +21,17 @@ import com.hivemq.client.internal.mqtt.MqttRxClient;
 import com.hivemq.client.internal.mqtt.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
+import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -83,12 +87,22 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
+    public @NotNull Single<Mqtt3ConnAck> connect() {
+        return connect(Mqtt3ConnectView.DEFAULT);
+    }
+
+    @Override
     public @NotNull Single<Mqtt3ConnAck> connect(final @Nullable Mqtt3Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
 
         return delegate.connect(mqttConnect)
                 .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_CONNACK)
                 .map(Mqtt3ConnAckView.MAPPER);
+    }
+
+    @Override
+    public @NotNull Mqtt3ConnectViewBuilder.Nested<Single<Mqtt3ConnAck>> connectWith() {
+        return new Mqtt3ConnectViewBuilder.Nested<>(this::connect);
     }
 
     @Override
@@ -101,6 +115,11 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
+    public @NotNull Mqtt3SubscribeViewBuilder.Nested<Single<Mqtt3SubAck>> subscribeWith() {
+        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribe);
+    }
+
+    @Override
     public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
             final @Nullable Mqtt3Subscribe subscribe) {
 
@@ -109,6 +128,16 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
         return delegate.subscribeStream(mqttSubscribe)
                 .mapError(Mqtt3ExceptionFactory.MAPPER)
                 .mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
+    }
+
+    @Override
+    public @NotNull Mqtt3SubscribeViewBuilder.Nested<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
+        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
+    }
+
+    @Override
+    public @NotNull Flowable<Mqtt3Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
+        return publishes(filter, false);
     }
 
     @Override
@@ -130,6 +159,11 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
+    public @NotNull Mqtt3UnsubscribeViewBuilder.Nested<Completable> unsubscribeWith() {
+        return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
+    }
+
+    @Override
     public @NotNull Flowable<Mqtt3PublishResult> publish(final @Nullable Flowable<Mqtt3Publish> publishFlowable) {
         Checks.notNull(publishFlowable, "Publish flowable");
 
@@ -146,6 +180,11 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     @Override
     public @NotNull Mqtt3ClientConfigView getConfig() {
         return clientConfig;
+    }
+
+    @Override
+    public @NotNull Mqtt3RxClient toRx() {
+        return this;
     }
 
     @Override
