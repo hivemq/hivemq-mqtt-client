@@ -38,7 +38,6 @@ import java.util.stream.Stream;
 public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuilder<B>> {
 
     private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionsBuilder;
-    private boolean manualAcknowledgement;
     private @Nullable Mqtt3SubscriptionViewBuilder.Default firstSubscriptionBuilder;
 
     protected Mqtt3SubscribeViewBuilder() {
@@ -94,11 +93,6 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull B manualAcknowledgement(final boolean manualAcknowledgement) {
-        this.manualAcknowledgement = manualAcknowledgement;
-        return self();
-    }
-
     private @NotNull Mqtt3SubscriptionViewBuilder.Default getFirstSubscriptionBuilder() {
         if (firstSubscriptionBuilder == null) {
             firstSubscriptionBuilder = new Mqtt3SubscriptionViewBuilder.Default();
@@ -141,7 +135,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
     public @NotNull Mqtt3SubscribeView build() {
         buildFirstSubscription();
         ensureAtLeastOneSubscription();
-        return Mqtt3SubscribeView.of(subscriptionsBuilder.build(), manualAcknowledgement);
+        return Mqtt3SubscribeView.of(subscriptionsBuilder.build());
     }
 
     public static class Default extends Mqtt3SubscribeViewBuilder<Default>
@@ -154,7 +148,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         }
 
         @Override
-        protected @NotNull Mqtt3SubscribeViewBuilder.Default self() {
+        protected @NotNull Default self() {
             return this;
         }
     }
@@ -196,6 +190,25 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         @Override
         public @NotNull P send() {
             return parentConsumer.apply(build());
+        }
+    }
+
+    public static abstract class ManualAck<P> extends Mqtt3SubscribeViewBuilder<ManualAck<P>>
+            implements Mqtt3SubscribeBuilder.Nested.Start.Complete<P>, Mqtt3SubscribeBuilder.Nested.ManualAck<P> {
+
+        protected boolean manualAcknowledgement;
+
+        @Override
+        protected @NotNull Mqtt3SubscribeViewBuilder.ManualAck<P> self() {
+            return this;
+        }
+
+        @Override
+        public @NotNull Mqtt3SubscribeViewBuilder.ManualAck<P> manualAcknowledgement(
+                final boolean manualAcknowledgement) {
+
+            this.manualAcknowledgement = manualAcknowledgement;
+            return this;
         }
     }
 }

@@ -166,9 +166,40 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
+     * @see #subscribeStream(Mqtt3Subscribe, boolean)
      */
     @CheckReturnValue
     @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
+
+    /**
+     * Creates a {@link FluxWithSingle} for subscribing this client with the given Subscribe message.
+     * <p>
+     * The returned {@link FluxWithSingle} represents the source of the SubAck message corresponding to the given
+     * Subscribe message and the source of the incoming Publish messages matching the subscriptions of the Subscribe
+     * message. Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when
+     * subscribing (in terms of Reactive Streams) to the returned {@link FluxWithSingle}.
+     *
+     * @param subscribe the Subscribe message sent to the broker during subscribe.
+     * @return the {@link FluxWithSingle} which
+     *         <ul>
+     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *         Subscribe message was successful (the SubAck message contains at least one Return Code that is not an
+     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
+     *         message,</li>
+     *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
+     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *         Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
+     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *         MqttSessionExpiredException}).</li>
+     *         </ul>
+     * @see #subscribeStream(Mqtt3Subscribe)
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
+            @NotNull Mqtt3Subscribe subscribe, boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribeStream(Mqtt3Subscribe)}.
@@ -181,7 +212,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @see #subscribeStream(Mqtt3Subscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt3SubscribeBuilder.Nested.Start<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
+    @NotNull Mqtt3SubscribeBuilder.Nested.ManualAck<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link Flux} for globally consuming all incoming Publish messages matching the given filter.

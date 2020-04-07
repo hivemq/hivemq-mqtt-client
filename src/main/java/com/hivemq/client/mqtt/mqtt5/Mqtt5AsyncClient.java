@@ -115,6 +115,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      *                  Subscribe message.
      * @return see {@link #subscribe(Mqtt5Subscribe)}.
      * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, boolean)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
      */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
@@ -131,10 +133,51 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @param executor  the executor where the future is completed and the callback is executed on.
      * @return see {@link #subscribe(Mqtt5Subscribe)}.
      * @see #subscribe(Mqtt5Subscribe, Consumer)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, boolean)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
      */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             @NotNull Executor executor);
+
+    /**
+     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
+     * the subscriptions of the Subscribe message with a callback.
+     *
+     * @param subscribe             the Subscribe messages sent to the broker.
+     * @param callback              the callback for consuming the incoming Publish messages matching the subscriptions
+     *                              of the Subscribe message.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return see {@link #subscribe(Mqtt5Subscribe)}.
+     * @see #subscribe(Mqtt5Subscribe, Consumer)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
+     * @since 1.2
+     */
+    @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
+            @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            boolean manualAcknowledgement);
+
+    /**
+     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
+     * the subscriptions of the Subscribe message with a callback.
+     * <p>
+     * The future is completed and the callback is executed on the given executor.
+     *
+     * @param subscribe             the Subscribe messages sent to the broker.
+     * @param callback              the callback for consuming the incoming Publish messages matching the subscriptions
+     *                              of the Subscribe message.
+     * @param executor              the executor where the future is completed and the callback is executed on.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return see {@link #subscribe(Mqtt5Subscribe)}.
+     * @see #subscribe(Mqtt5Subscribe, Consumer)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, boolean)
+     * @since 1.2
+     */
+    @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
+            @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull Executor executor, final boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer)} and {@link
@@ -362,6 +405,16 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
 
                 @CheckReturnValue
                 @NotNull Ex executor(@NotNull Executor executor);
+
+                /**
+                 * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
+                 *
+                 * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
+                 * @return the builder.
+                 * @since 1.2
+                 */
+                @CheckReturnValue
+                @NotNull Ex manualAcknowledgement(boolean manualAcknowledgement);
             }
         }
     }

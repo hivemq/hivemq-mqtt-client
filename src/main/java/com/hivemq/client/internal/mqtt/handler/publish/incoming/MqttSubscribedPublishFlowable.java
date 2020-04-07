@@ -35,12 +35,15 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
 
     private final @NotNull MqttSubscribe subscribe;
     private final @NotNull MqttClientConfig clientConfig;
+    private final boolean manualAcknowledgement;
 
     public MqttSubscribedPublishFlowable(
-            final @NotNull MqttSubscribe subscribe, final @NotNull MqttClientConfig clientConfig) {
+            final @NotNull MqttSubscribe subscribe, final @NotNull MqttClientConfig clientConfig,
+            final boolean manualAcknowledgement) {
 
         this.subscribe = subscribe;
         this.clientConfig = clientConfig;
+        this.manualAcknowledgement = manualAcknowledgement;
     }
 
     @Override
@@ -50,8 +53,7 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
         final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
         final MqttSubscribedPublishFlow flow =
-                new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler,
-                        subscribe.isManualAcknowledgement());
+                new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler, manualAcknowledgement);
         subscriber.onSubscribe(flow);
         subscriptionHandler.subscribe(subscribe, flow);
     }

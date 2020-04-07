@@ -121,10 +121,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
             final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
 
-        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
-        Checks.notNull(callback, "Callback");
-
-        return handleSubAck(delegate.subscribe(mqttSubscribe, callbackView(callback)));
+        return subscribe(subscribe, callback, false);
     }
 
     @Override
@@ -132,16 +129,35 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final @Nullable Executor executor) {
 
+        return subscribe(subscribe, callback, executor, false);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
+            final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
+            final boolean manualAcknowledgement) {
+
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
+        Checks.notNull(callback, "Callback");
+
+        return handleSubAck(delegate.subscribe(mqttSubscribe, callbackView(callback), manualAcknowledgement));
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
+            final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
+            final @Nullable Executor executor, final boolean manualAcknowledgement) {
+
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return handleSubAck(delegate.subscribe(mqttSubscribe, callbackView(callback), executor));
+        return handleSubAck(delegate.subscribe(mqttSubscribe, callbackView(callback), executor, manualAcknowledgement));
     }
 
     @Override
     public @NotNull Mqtt3SubscribeViewAndCallbackBuilder subscribeWith() {
-        return new Mqtt3SubscribeViewAndCallbackBuilder(this);
+        return new Mqtt3SubscribeViewAndCallbackBuilder();
     }
 
     @Override
@@ -255,17 +271,13 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         return new Mqtt3BlockingClientView(delegate.toBlocking());
     }
 
-    public static class Mqtt3SubscribeViewAndCallbackBuilder
+    private class Mqtt3SubscribeViewAndCallbackBuilder
             extends Mqtt3SubscribeViewBuilder<Mqtt3SubscribeViewAndCallbackBuilder>
             implements Mqtt3SubscribeAndCallbackBuilder.Start.Complete, Mqtt3SubscribeAndCallbackBuilder.Call.Ex {
 
-        private final @NotNull Mqtt3AsyncClient client;
         private @Nullable Consumer<Mqtt3Publish> callback;
         private @Nullable Executor executor;
-
-        public Mqtt3SubscribeViewAndCallbackBuilder(final @NotNull Mqtt3AsyncClient client) {
-            this.client = client;
-        }
+        private boolean manualAcknowledgement;
 
         @Override
         protected @NotNull Mqtt3SubscribeViewAndCallbackBuilder self() {
@@ -285,18 +297,25 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         }
 
         @Override
+        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder manualAcknowledgement(
+                final boolean manualAcknowledgement) {
+
+            this.manualAcknowledgement = manualAcknowledgement;
+            return this;
+        }
+
+        @Override
         public @NotNull CompletableFuture<Mqtt3SubAck> send() {
             final Mqtt3Subscribe subscribe = build();
             if (callback == null) {
-                if (executor != null) {
-                    throw new IllegalStateException("Executor must not be given if callback is null.");
-                }
-                return client.subscribe(subscribe);
+                Checks.state(executor == null, "Executor must not be given if callback is null.");
+                Checks.state(!manualAcknowledgement, "Manual acknowledgement must not be true if callback is null.");
+                return subscribe(subscribe);
             }
             if (executor == null) {
-                return client.subscribe(subscribe, callback);
+                return subscribe(subscribe, callback, manualAcknowledgement);
             }
-            return client.subscribe(subscribe, callback, executor);
+            return subscribe(subscribe, callback, executor, manualAcknowledgement);
         }
     }
 }

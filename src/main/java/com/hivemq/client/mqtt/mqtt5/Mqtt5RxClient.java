@@ -151,9 +151,41 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
+     * @see #subscribeStream(Mqtt5Subscribe, boolean)
      */
     @CheckReturnValue
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
+
+    /**
+     * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
+     * <p>
+     * The returned {@link FlowableWithSingle} represents the source of the SubAck message corresponding to the given
+     * Subscribe message and the source of the incoming Publish messages matching the subscriptions of the Subscribe
+     * message. Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when
+     * subscribing (in terms of Reactive Streams) to the returned {@link FlowableWithSingle}.
+     *
+     * @param subscribe             the Subscribe message sent to the broker during subscribe.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return the {@link FlowableWithSingle} which
+     *         <ul>
+     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *         Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
+     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
+     *         message,</li>
+     *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
+     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *         Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
+     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *         MqttSessionExpiredException}).</li>
+     *         </ul>
+     * @see #subscribeStream(Mqtt5Subscribe)
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+            @NotNull Mqtt5Subscribe subscribe, boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribeStream(Mqtt5Subscribe)}.
@@ -166,7 +198,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #subscribeStream(Mqtt5Subscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
+    @NotNull Mqtt5SubscribeBuilder.Nested.ManualAck<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.

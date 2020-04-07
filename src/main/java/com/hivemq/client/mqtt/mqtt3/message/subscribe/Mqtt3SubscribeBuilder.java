@@ -34,8 +34,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
      * {@link Mqtt3SubscribeBuilder} that is complete which means all mandatory fields are set.
      */
     @DoNotImplement
-    interface Complete
-            extends Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilderBase.Complete<Mqtt3SubscribeBuilder.Complete> {
+    interface Complete extends Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt3Subscribe}.
@@ -82,7 +81,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
         @DoNotImplement
-        interface Complete<P> extends Nested<P>, Mqtt3SubscribeBuilderBase.Complete<Nested.Complete<P>> {
+        interface Complete<P> extends Nested<P>, Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
 
             /**
              * Builds the {@link Mqtt3Subscribe} and applies it to the parent.
@@ -113,6 +112,26 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
                     Mqtt3SubscribeBuilderBase.Start.Complete<Nested.Complete<P>, Nested.Start.Complete<P>> {}
             // @formatter:on
         }
+
+        /**
+         * Builder for a {@link Mqtt3Subscribe} that is applied to a parent with a manual acknowledge flag.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+         * @since 1.2
+         */
+        @DoNotImplement
+        interface ManualAck<P> extends Nested.Start<P> {
+
+            /**
+             * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
+             *
+             * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
+             * @return the builder.
+             * @since 1.2
+             */
+            @CheckReturnValue
+            @NotNull ManualAck<P> manualAcknowledgement(boolean manualAcknowledgement);
+        }
     }
 
     /**
@@ -130,7 +149,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
          */
         @DoNotImplement
-        interface Complete<P> extends Send<P>, Mqtt3SubscribeBuilderBase.Complete<Send.Complete<P>> {
+        interface Complete<P> extends Send<P>, Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
 
             /**
              * Builds the {@link Mqtt3Subscribe} and applies it to the parent which then sends the Subscribe message.

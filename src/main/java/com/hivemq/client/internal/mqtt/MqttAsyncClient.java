@@ -133,12 +133,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
 
-        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
-        Checks.notNull(callback, "Callback");
-
-        return handleSubAck(
-                delegate.subscribeStream(mqttSubscribe).subscribeSingleFuture(new CallbackSubscriber(callback)),
-                mqttSubscribe);
+        return subscribe(subscribe, callback, false);
     }
 
     @Override
@@ -146,18 +141,38 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor) {
 
+        return subscribe(subscribe, callback, executor, false);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
+            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final boolean manualAcknowledgement) {
+
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
+        Checks.notNull(callback, "Callback");
+
+        return handleSubAck(delegate.subscribeStream(mqttSubscribe, manualAcknowledgement)
+                .subscribeSingleFuture(new CallbackSubscriber(callback)), mqttSubscribe);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
+            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Executor executor, final boolean manualAcknowledgement) {
+
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return handleSubAck(delegate.subscribeStreamUnsafe(mqttSubscribe)
+        return handleSubAck(delegate.subscribeStreamUnsafe(mqttSubscribe, manualAcknowledgement)
                 .observeOnBoth(Schedulers.from(executor), true)
                 .subscribeSingleFuture(new CallbackSubscriber(callback)), mqttSubscribe);
     }
 
     @Override
     public @NotNull MqttSubscribeAndCallbackBuilder subscribeWith() {
-        return new MqttSubscribeAndCallbackBuilder(this);
+        return new MqttSubscribeAndCallbackBuilder();
     }
 
     @Override
@@ -293,16 +308,12 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         public void onError(final @NotNull Throwable t) {}
     }
 
-    public static class MqttSubscribeAndCallbackBuilder extends MqttSubscribeBuilder<MqttSubscribeAndCallbackBuilder>
+    private class MqttSubscribeAndCallbackBuilder extends MqttSubscribeBuilder<MqttSubscribeAndCallbackBuilder>
             implements Mqtt5SubscribeAndCallbackBuilder.Start.Complete, Mqtt5SubscribeAndCallbackBuilder.Call.Ex {
 
-        private final @NotNull Mqtt5AsyncClient client;
         private @Nullable Consumer<Mqtt5Publish> callback;
         private @Nullable Executor executor;
-
-        public MqttSubscribeAndCallbackBuilder(final @NotNull Mqtt5AsyncClient client) {
-            this.client = client;
-        }
+        private boolean manualAcknowledgement;
 
         @Override
         protected @NotNull MqttSubscribeAndCallbackBuilder self() {
@@ -322,18 +333,23 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         }
 
         @Override
+        public @NotNull MqttSubscribeAndCallbackBuilder manualAcknowledgement(final boolean manualAcknowledgement) {
+            this.manualAcknowledgement = manualAcknowledgement;
+            return this;
+        }
+
+        @Override
         public @NotNull CompletableFuture<Mqtt5SubAck> send() {
             final Mqtt5Subscribe subscribe = build();
             if (callback == null) {
-                if (executor != null) {
-                    throw new IllegalStateException("Executor must not be given if callback is null.");
-                }
-                return client.subscribe(subscribe);
+                Checks.state(executor == null, "Executor must not be given if callback is null.");
+                Checks.state(!manualAcknowledgement, "Manual acknowledgement must not be true if callback is null.");
+                return subscribe(subscribe);
             }
             if (executor == null) {
-                return client.subscribe(subscribe, callback);
+                return subscribe(subscribe, callback, manualAcknowledgement);
             }
-            return client.subscribe(subscribe, callback, executor);
+            return subscribe(subscribe, callback, executor, manualAcknowledgement);
         }
     }
 }
