@@ -127,24 +127,25 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
 
     @Override
     public void publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
+            final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
 
-        delegate.publishes(filter, callbackView(callback));
+        delegate.publishes(filter, callbackView(callback), manualAcknowledgement);
     }
 
     @Override
     public void publishes(
             final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
-            final @Nullable Executor executor) {
+            final @Nullable Executor executor, final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        delegate.publishes(filter, callbackView(callback), executor);
+        delegate.publishes(filter, callbackView(callback), executor, manualAcknowledgement);
     }
 
     @Override

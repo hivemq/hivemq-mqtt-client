@@ -50,6 +50,13 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
      */
     @Immutable @NotNull List<@NotNull ? extends Mqtt3Subscription> getSubscriptions();
 
+    /**
+     * @return whether the Publish messages consumed via a subscription with this Subscribe message are acknowledged
+     *         manually.
+     * @since 1.2
+     */
+    boolean isManualAcknowledgement();
+
     @Override
     default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.SUBSCRIBE;

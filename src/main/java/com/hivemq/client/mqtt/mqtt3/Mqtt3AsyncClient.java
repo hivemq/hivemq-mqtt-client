@@ -170,8 +170,14 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param filter   the filter with which all incoming Publish messages are filtered.
      * @param callback the callback for all incoming Publish messages matching the given filter.
      * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, boolean)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor, boolean)
      */
-    void publishes(@NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback);
+    default void publishes(
+            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback) {
+
+        publishes(filter, callback, false);
+    }
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -180,10 +186,46 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param callback the callback for all incoming Publish messages matching the given filter.
      * @param executor the executor where the callback is executed on.
      * @see #publishes(MqttGlobalPublishFilter, Consumer)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, boolean)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor, boolean)
+     */
+    default void publishes(
+            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            final @NotNull Executor executor) {
+
+        publishes(filter, callback, executor, false);
+    }
+
+    /**
+     * Globally consumes all incoming Publish messages matching the given filter.
+     *
+     * @param filter                the filter with which all incoming Publish messages are filtered.
+     * @param callback              the callback for all incoming Publish messages matching the given filter.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @see #publishes(MqttGlobalPublishFilter, Consumer)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor, boolean)
+     * @since 1.2
      */
     void publishes(
             @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
-            @NotNull Executor executor);
+            boolean manualAcknowledgement);
+
+    /**
+     * Globally consumes all incoming Publish messages matching the given filter.
+     *
+     * @param filter                the filter with which all incoming Publish messages are filtered.
+     * @param callback              the callback for all incoming Publish messages matching the given filter.
+     * @param executor              the executor where the callback is executed on.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @see #publishes(MqttGlobalPublishFilter, Consumer)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor)
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, boolean)
+     * @since 1.2
+     */
+    void publishes(
+            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull Executor executor, boolean manualAcknowledgement);
 
     /**
      * Unsubscribes this client with the given Unsubscribe message.
@@ -266,7 +308,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         @DoNotImplement
         interface Complete extends
                 Mqtt3SubscribeAndCallbackBuilder, Mqtt3SubscribeAndCallbackBuilder.Call,
-                Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {}
+                Mqtt3SubscribeBuilderBase.Complete<Mqtt3SubscribeAndCallbackBuilder.Complete> {}
         // @formatter:on
 
         // @formatter:off

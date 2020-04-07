@@ -32,12 +32,16 @@ import org.jetbrains.annotations.Nullable;
 @Immutable
 public class Mqtt3SubscribeView implements Mqtt3Subscribe {
 
-    private static @NotNull MqttSubscribe delegate(final @NotNull ImmutableList<MqttSubscription> subscriptions) {
-        return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+    private static @NotNull MqttSubscribe delegate(
+            final @NotNull ImmutableList<MqttSubscription> subscriptions, final boolean manualAcknowledgement) {
+
+        return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES, manualAcknowledgement);
     }
 
-    static @NotNull Mqtt3SubscribeView of(final @NotNull ImmutableList<MqttSubscription> subscriptions) {
-        return new Mqtt3SubscribeView(delegate(subscriptions));
+    static @NotNull Mqtt3SubscribeView of(
+            final @NotNull ImmutableList<MqttSubscription> subscriptions, final boolean manualAcknowledgement) {
+
+        return new Mqtt3SubscribeView(delegate(subscriptions, manualAcknowledgement));
     }
 
     public static @NotNull Mqtt3SubscribeView of(final @NotNull MqttSubscribe delegate) {
@@ -59,6 +63,11 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
             builder.add(Mqtt3SubscriptionView.of(subscriptions.get(i)));
         }
         return builder.build();
+    }
+
+    @Override
+    public boolean isManualAcknowledgement() {
+        return delegate.isManualAcknowledgement();
     }
 
     public @NotNull MqttSubscribe getDelegate() {

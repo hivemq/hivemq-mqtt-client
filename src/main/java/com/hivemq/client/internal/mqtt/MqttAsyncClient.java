@@ -143,24 +143,25 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public void publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
 
-        delegate.publishes(filter).subscribe(new CallbackSubscriber(callback));
+        delegate.publishes(filter, manualAcknowledgement).subscribe(new CallbackSubscriber(callback));
     }
 
     @Override
     public void publishes(
             final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
-            final @Nullable Executor executor) {
+            final @Nullable Executor executor, final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        delegate.publishesUnsafe(filter)
+        delegate.publishesUnsafe(filter, manualAcknowledgement)
                 .observeOn(Schedulers.from(executor), true)
                 .subscribe(new CallbackSubscriber(callback));
     }

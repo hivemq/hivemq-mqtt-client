@@ -107,10 +107,12 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt5Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
+    public @NotNull Mqtt5Publishes publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
         Checks.notNull(filter, "Global publish filter");
 
-        return new MqttPublishes(delegate.publishesUnsafe(filter));
+        return new MqttPublishes(delegate.publishesUnsafe(filter, manualAcknowledgement));
     }
 
     @Override

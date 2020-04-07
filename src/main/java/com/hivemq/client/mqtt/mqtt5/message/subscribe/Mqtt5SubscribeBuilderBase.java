@@ -120,6 +120,17 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
          */
         @CheckReturnValue
         @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
+
+        /**
+         * Sets whether the Publish messages consumed via a subscription with the Subscribe message are {@link
+         * Mqtt5Subscribe#isManualAcknowledgement() acknowledged manually}.
+         *
+         * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
+         * @return the builder.
+         * @since 1.2
+         */
+        @CheckReturnValue
+        @NotNull C manualAcknowledgement(boolean manualAcknowledgement);
     }
 
     /**
