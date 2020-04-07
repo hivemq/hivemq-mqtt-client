@@ -86,7 +86,14 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     }
 
     public @NotNull Flux<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
-        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter));
+        return publishes(filter, false);
+    }
+
+    @Override
+    public @NotNull Flux<Mqtt3Publish> publishes(
+            final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
+        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
     }
 
     public @NotNull Mono<Void> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {

@@ -90,7 +90,14 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
     }
 
     public @NotNull Flux<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
-        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter));
+        return publishes(filter, false);
+    }
+
+    @Override
+    public @NotNull Flux<Mqtt5Publish> publishes(
+            final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
+        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
     }
 
     public @NotNull Mono<Mqtt5UnsubAck> unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
