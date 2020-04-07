@@ -19,10 +19,6 @@ package com.hivemq.client.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
@@ -55,9 +51,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @return see {@link #connect(Mqtt3Connect)}.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Single<Mqtt3ConnAck> connect() {
-        return connect(Mqtt3ConnectView.DEFAULT);
-    }
+    @NotNull Single<Mqtt3ConnAck> connect();
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -89,9 +83,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3ConnectBuilder.Nested<Single<Mqtt3ConnAck>> connectWith() {
-        return new Mqtt3ConnectViewBuilder.Nested<>(this::connect);
-    }
+    @NotNull Mqtt3ConnectBuilder.Nested<Single<Mqtt3ConnAck>> connectWith();
 
     /**
      * Creates a {@link Single} for subscribing this client with the given Subscribe message.
@@ -128,9 +120,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3SubscribeBuilder.Nested.Start<Single<Mqtt3SubAck>> subscribeWith() {
-        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribe);
-    }
+    @NotNull Mqtt3SubscribeBuilder.Nested.Start<Single<Mqtt3SubAck>> subscribeWith();
 
     /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
@@ -169,9 +159,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #subscribeStream(Mqtt3Subscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
-        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
-    }
+    @NotNull Mqtt3SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
@@ -190,9 +178,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    default @NotNull Flowable<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
-        return publishes(filter, false);
-    }
+    @NotNull Flowable<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
@@ -243,9 +229,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Completable> unsubscribeWith() {
-        return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
-    }
+    @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Completable> unsubscribeWith();
 
     /**
      * Creates a {@link Flowable} for publishing the Publish messages emitted by the given {@link Flowable}.
@@ -280,9 +264,4 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         </ul>
      */
     @NotNull Completable disconnect();
-
-    @Override
-    default @NotNull Mqtt3RxClient toRx() {
-        return this;
-    }
 }

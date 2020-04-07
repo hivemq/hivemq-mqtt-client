@@ -19,11 +19,6 @@ package com.hivemq.client.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
-import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
-import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3AsyncClientView;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
@@ -56,9 +51,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @return see {@link #connect(Mqtt3Connect)}.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect() {
-        return connect(Mqtt3ConnectView.DEFAULT);
-    }
+    @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect();
 
     /**
      * Connects this client with the given Connect message.
@@ -86,9 +79,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3ConnectBuilder.Send<CompletableFuture<Mqtt3ConnAck>> connectWith() {
-        return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
-    }
+    @NotNull Mqtt3ConnectBuilder.Send<CompletableFuture<Mqtt3ConnAck>> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -160,9 +151,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3SubscribeAndCallbackBuilder.Start subscribeWith() {
-        return new Mqtt3AsyncClientView.Mqtt3SubscribeViewAndCallbackBuilder(this);
-    }
+    @NotNull Mqtt3SubscribeAndCallbackBuilder.Start subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -173,11 +162,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #publishes(MqttGlobalPublishFilter, Consumer, boolean)
      * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor, boolean)
      */
-    default void publishes(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback) {
-
-        publishes(filter, callback, false);
-    }
+    void publishes(@NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback);
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -189,12 +174,9 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #publishes(MqttGlobalPublishFilter, Consumer, boolean)
      * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor, boolean)
      */
-    default void publishes(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback,
-            final @NotNull Executor executor) {
-
-        publishes(filter, callback, executor, false);
-    }
+    void publishes(
+            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull Executor executor);
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -250,9 +232,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3UnsubscribeBuilder.Send.Start<CompletableFuture<Void>> unsubscribeWith() {
-        return new Mqtt3UnsubscribeViewBuilder.Send<>(this::unsubscribe);
-    }
+    @NotNull Mqtt3UnsubscribeBuilder.Send.Start<CompletableFuture<Void>> unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -278,9 +258,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #publish(Mqtt3Publish)
      */
     @CheckReturnValue
-    default @NotNull Mqtt3PublishBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith() {
-        return new Mqtt3PublishViewBuilder.Send<>(this::publish);
-    }
+    @NotNull Mqtt3PublishBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith();
 
     /**
      * Disconnects this client.
@@ -292,11 +270,6 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      *         </ul>
      */
     @NotNull CompletableFuture<Void> disconnect();
-
-    @Override
-    default @NotNull Mqtt3AsyncClient toAsync() {
-        return this;
-    }
 
     // @formatter:off
     @DoNotImplement

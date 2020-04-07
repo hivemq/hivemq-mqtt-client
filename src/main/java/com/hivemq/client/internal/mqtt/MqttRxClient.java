@@ -28,10 +28,14 @@ import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckSingleFlo
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubAckSingle;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttUnsubAckSingle;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -69,6 +73,11 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
+    public @NotNull Single<Mqtt5ConnAck> connect() {
+        return connect(MqttConnect.DEFAULT);
+    }
+
+    @Override
     public @NotNull Single<Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
         return connect(MqttChecks.connect(connect));
     }
@@ -82,6 +91,11 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
+    public @NotNull MqttConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith() {
+        return new MqttConnectBuilder.Nested<>(this::connect);
+    }
+
+    @Override
     public @NotNull Single<Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         return subscribe(MqttChecks.subscribe(subscribe));
     }
@@ -92,6 +106,11 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @NotNull Single<Mqtt5SubAck> subscribeUnsafe(final @NotNull MqttSubscribe subscribe) {
         return new MqttSubAckSingle(subscribe, clientConfig);
+    }
+
+    @Override
+    public @NotNull MqttSubscribeBuilder.Nested<Single<Mqtt5SubAck>> subscribeWith() {
+        return new MqttSubscribeBuilder.Nested<>(this::subscribe);
     }
 
     @Override
@@ -110,6 +129,16 @@ public class MqttRxClient implements Mqtt5RxClient {
             final @NotNull MqttSubscribe subscribe) {
 
         return new MqttSubscribedPublishFlowable(subscribe, clientConfig);
+    }
+
+    @Override
+    public @NotNull MqttSubscribeBuilder.Nested<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
+        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
+    }
+
+    @Override
+    public @NotNull Flowable<Mqtt5Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
+        return publishes(filter, false);
     }
 
     @Override
@@ -139,6 +168,11 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @NotNull Single<Mqtt5UnsubAck> unsubscribeUnsafe(final @NotNull MqttUnsubscribe unsubscribe) {
         return new MqttUnsubAckSingle(unsubscribe, clientConfig);
+    }
+
+    @Override
+    public @NotNull MqttUnsubscribeBuilder.Nested<Single<Mqtt5UnsubAck>> unsubscribeWith() {
+        return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
     }
 
     @NotNull Single<Mqtt5PublishResult> publish(final @NotNull MqttPublish publish) {
@@ -189,6 +223,11 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
+    public @NotNull Completable disconnect() {
+        return disconnect(MqttDisconnect.DEFAULT);
+    }
+
+    @Override
     public @NotNull Completable disconnect(final @Nullable Mqtt5Disconnect disconnect) {
         return disconnect(MqttChecks.disconnect(disconnect));
     }
@@ -202,8 +241,18 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
+    public @NotNull MqttDisconnectBuilder.Nested<Completable> disconnectWith() {
+        return new MqttDisconnectBuilder.Nested<>(this::disconnect);
+    }
+
+    @Override
     public @NotNull MqttClientConfig getConfig() {
         return clientConfig;
+    }
+
+    @Override
+    public @NotNull Mqtt5RxClient toRx() {
+        return this;
     }
 
     @Override

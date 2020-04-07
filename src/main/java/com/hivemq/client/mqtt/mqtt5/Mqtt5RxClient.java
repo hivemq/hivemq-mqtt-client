@@ -19,12 +19,6 @@ package com.hivemq.client.mqtt.mqtt5;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
@@ -60,9 +54,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return see {@link #connect(Mqtt5Connect)}.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Single<Mqtt5ConnAck> connect() {
-        return connect(MqttConnect.DEFAULT);
-    }
+    @NotNull Single<Mqtt5ConnAck> connect();
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -94,9 +86,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #connect(Mqtt5Connect)
      */
     @CheckReturnValue
-    default @NotNull Mqtt5ConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith() {
-        return new MqttConnectBuilder.Nested<>(this::connect);
-    }
+    @NotNull Mqtt5ConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith();
 
     /**
      * Creates a {@link Single} for subscribing this client with the given Subscribe message.
@@ -133,9 +123,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribe);
-    }
+    @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith();
 
     /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
@@ -174,9 +162,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #subscribeStream(Mqtt5Subscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
-    }
+    @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
@@ -195,9 +181,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    default @NotNull Flowable<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
-        return publishes(filter, false);
-    }
+    @NotNull Flowable<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
@@ -252,9 +236,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
     @CheckReturnValue
-    default @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Single<Mqtt5UnsubAck>> unsubscribeWith() {
-        return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
-    }
+    @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Single<Mqtt5UnsubAck>> unsubscribeWith();
 
     /**
      * Creates a {@link Flowable} for publishing the Publish messages emitted by the given {@link Flowable}.
@@ -300,9 +282,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return see {@link #disconnect(Mqtt5Disconnect)}.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Completable disconnect() {
-        return disconnect(MqttDisconnect.DEFAULT);
-    }
+    @NotNull Completable disconnect();
 
     /**
      * Creates a {@link Completable} for disconnecting this client with the given Disconnect message.
@@ -329,12 +309,5 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #disconnect(Mqtt5Disconnect)
      */
     @CheckReturnValue
-    default @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith() {
-        return new MqttDisconnectBuilder.Nested<>(this::disconnect);
-    }
-
-    @Override
-    default @NotNull Mqtt5RxClient toRx() {
-        return this;
-    }
+    @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith();
 }

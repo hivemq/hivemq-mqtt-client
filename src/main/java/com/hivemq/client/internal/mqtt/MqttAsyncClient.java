@@ -18,11 +18,15 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.rx.RxFutureConverter;
 import com.hivemq.client.internal.util.Checks;
@@ -102,10 +106,20 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
+    public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect() {
+        return connect(MqttConnect.DEFAULT);
+    }
+
+    @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
 
         return RxFutureConverter.toFuture(delegate.connect(mqttConnect));
+    }
+
+    @Override
+    public @NotNull MqttConnectBuilder.Send<CompletableFuture<Mqtt5ConnAck>> connectWith() {
+        return new MqttConnectBuilder.Send<>(this::connect);
     }
 
     @Override
@@ -139,6 +153,26 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         return handleSubAck(delegate.subscribeStreamUnsafe(mqttSubscribe)
                 .observeOnBoth(Schedulers.from(executor), true)
                 .subscribeSingleFuture(new CallbackSubscriber(callback)), mqttSubscribe);
+    }
+
+    @Override
+    public @NotNull MqttSubscribeAndCallbackBuilder subscribeWith() {
+        return new MqttSubscribeAndCallbackBuilder(this);
+    }
+
+    @Override
+    public void publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
+
+        publishes(filter, callback, false);
+    }
+
+    @Override
+    public void publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Executor executor) {
+
+        publishes(filter, callback, executor, false);
     }
 
     @Override
@@ -176,6 +210,11 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
+    public @NotNull MqttUnsubscribeBuilder.Send<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith() {
+        return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
+    }
+
+    @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @Nullable Mqtt5Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
 
@@ -183,8 +222,18 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
+    public @NotNull MqttPublishBuilder.Send<CompletableFuture<Mqtt5PublishResult>> publishWith() {
+        return new MqttPublishBuilder.Send<>(this::publish);
+    }
+
+    @Override
     public @NotNull CompletableFuture<Void> reauth() {
         return RxFutureConverter.toFuture(delegate.reauth());
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Void> disconnect() {
+        return disconnect(MqttDisconnect.DEFAULT);
     }
 
     @Override
@@ -195,6 +244,11 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
+    public @NotNull MqttDisconnectBuilder.Send<CompletableFuture<Void>> disconnectWith() {
+        return new MqttDisconnectBuilder.Send<>(this::disconnect);
+    }
+
+    @Override
     public @NotNull MqttClientConfig getConfig() {
         return delegate.getConfig();
     }
@@ -202,6 +256,11 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull MqttRxClient toRx() {
         return delegate;
+    }
+
+    @Override
+    public @NotNull Mqtt5AsyncClient toAsync() {
+        return this;
     }
 
     @Override
