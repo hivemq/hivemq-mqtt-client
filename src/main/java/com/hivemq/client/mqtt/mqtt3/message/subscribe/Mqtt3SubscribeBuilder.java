@@ -48,20 +48,16 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
     /**
      * {@link Mqtt3SubscribeBuilder} that provides additional methods for the first subscription.
      */
-    // @formatter:off
     @DoNotImplement
-    interface Start extends
-            Mqtt3SubscribeBuilder,
+    interface Start extends Mqtt3SubscribeBuilder,
             Mqtt3SubscribeBuilderBase.Start<Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.Start.Complete> {
-    // @formatter:on
 
         /**
          * {@link Mqtt3SubscribeBuilder.Start} that is complete which means all mandatory fields are set.
          */
         // @formatter:off
         @DoNotImplement
-        interface Complete extends
-                Mqtt3SubscribeBuilder.Start, Mqtt3SubscribeBuilder.Complete,
+        interface Complete extends Mqtt3SubscribeBuilder.Start, Mqtt3SubscribeBuilder.Complete,
                 Mqtt3SubscribeBuilderBase.Start.Complete<
                         Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.Start.Complete> {}
         // @formatter:on
@@ -105,38 +101,15 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
              *
              * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
              */
-            // @formatter:off
             @DoNotImplement
-            interface Complete<P> extends
-                    Nested.Start<P>, Nested.Complete<P>,
+            interface Complete<P> extends Nested.Start<P>, Nested.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<Nested.Complete<P>, Nested.Start.Complete<P>> {}
-            // @formatter:on
-        }
-
-        /**
-         * Builder for a {@link Mqtt3Subscribe} that is applied to a parent with a manual acknowledge flag.
-         *
-         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
-         * @since 1.2
-         */
-        @DoNotImplement
-        interface ManualAck<P> extends Nested.Start<P> {
-
-            /**
-             * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
-             *
-             * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
-             * @return the builder.
-             * @since 1.2
-             */
-            @CheckReturnValue
-            @NotNull ManualAck<P> manualAcknowledgement(boolean manualAcknowledgement);
         }
     }
 
     /**
-     * Builder for a {@link Mqtt3Subscribe} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client}
-     * which then sends the Subscribe message.
+     * Builder for a {@link Mqtt3Subscribe} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
+     * Mqtt3Client} which then sends the Subscribe message.
      *
      * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
      */
@@ -172,12 +145,74 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
              *
              * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
              */
-            // @formatter:off
             @DoNotImplement
-            interface Complete<P> extends
-                    Send.Start<P>, Send.Complete<P>,
+            interface Complete<P> extends Send.Start<P>, Send.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<Send.Complete<P>, Send.Start.Complete<P>> {}
-            // @formatter:on
+        }
+    }
+
+    /**
+     * Builder for a {@link Mqtt3Subscribe} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
+     * Mqtt3Client} subscribePublishes call.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+     * @since 1.2
+     */
+    @DoNotImplement
+    interface Publishes<P> extends Mqtt3SubscribeBuilderBase<Publishes.Complete<P>> {
+
+        /**
+         * {@link Publishes} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+         */
+        @DoNotImplement
+        interface Complete<P>
+                extends Publishes<P>, Publishes.Args<P>, Mqtt3SubscribeBuilderBase<Publishes.Complete<P>> {}
+
+        /**
+         * {@link Publishes} that provides additional methods for the first subscription.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+         */
+        @DoNotImplement
+        interface Start<P> extends Publishes<P>,
+                Mqtt3SubscribeBuilderBase.Start<Publishes.Complete<P>, Publishes.Start.Complete<P>> {
+
+            /**
+             * {@link Publishes.Start} that is complete which means all mandatory fields are set.
+             *
+             * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+             */
+            @DoNotImplement
+            interface Complete<P> extends Publishes.Start<P>, Publishes.Complete<P>,
+                    Mqtt3SubscribeBuilderBase.Start.Complete<Publishes.Complete<P>, Publishes.Start.Complete<P>> {}
+        }
+
+        /**
+         * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a parent {@link
+         * com.hivemq.client.mqtt.mqtt3.Mqtt3Client Mqtt5Client} subscribePublishes call.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+         */
+        @DoNotImplement
+        interface Args<P> {
+
+            /**
+             * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
+             *
+             * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
+             * @return the builder.
+             */
+            @CheckReturnValue
+            @NotNull Args<P> manualAcknowledgement(boolean manualAcknowledgement);
+
+            /**
+             * Builds the {@link Mqtt3Subscribe} and applies it and additional arguments to the parent.
+             *
+             * @return the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+             */
+            @NotNull P applySubscribe();
         }
     }
 }

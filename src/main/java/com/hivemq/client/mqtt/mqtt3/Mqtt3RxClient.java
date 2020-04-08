@@ -95,8 +95,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
      * See {@link #publishes(MqttGlobalPublishFilter)} to consume the incoming Publish messages. Alternatively, call
-     * {@link #subscribeStream(Mqtt3Subscribe)} to consume the incoming Publish messages matching the subscriptions of
-     * the Subscribe message directly.
+     * {@link #subscribePublishes(Mqtt3Subscribe)} to consume the incoming Publish messages matching the subscriptions
+     * of the Subscribe message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Single} which
@@ -126,6 +126,18 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     @NotNull Mqtt3SubscribeBuilder.Nested.Start<Single<Mqtt3SubAck>> subscribeWith();
 
     /**
+     * @deprecated use {@link #subscribePublishes(Mqtt3Subscribe)}.
+     */
+    @Deprecated
+    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
+
+    /**
+     * @deprecated use {@link #subscribePublishesWith()}.
+     */
+    @Deprecated
+    @NotNull Mqtt3SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
+
+    /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
      * <p>
      * The returned {@link FlowableWithSingle} represents the source of the SubAck message corresponding to the given
@@ -148,10 +160,11 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
-     * @see #subscribeStream(Mqtt3Subscribe, boolean)
+     * @see #subscribePublishes(Mqtt3Subscribe, boolean)
+     * @since 1.2
      */
     @CheckReturnValue
-    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
+    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(@NotNull Mqtt3Subscribe subscribe);
 
     /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
@@ -177,25 +190,26 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
-     * @see #subscribeStream(Mqtt3Subscribe)
+     * @see #subscribePublishes(Mqtt3Subscribe)
      * @since 1.2
      */
     @CheckReturnValue
-    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
+    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
             @NotNull Mqtt3Subscribe subscribe, boolean manualAcknowledgement);
 
     /**
-     * Fluent counterpart of {@link #subscribeStream(Mqtt3Subscribe)}.
+     * Fluent counterpart of {@link #subscribePublishes(Mqtt3Subscribe, boolean)}.
      * <p>
      * Calling {@link Mqtt3SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribeStream(Mqtt3Subscribe)} with the result of {@link
+     * effect as calling {@link #subscribePublishes(Mqtt3Subscribe)} with the result of {@link
      * Mqtt3SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
-     * @see #subscribeStream(Mqtt3Subscribe)
+     * @see #subscribePublishes(Mqtt3Subscribe, boolean)
+     * @since 1.2
      */
     @CheckReturnValue
-    @NotNull Mqtt3SubscribeBuilder.Nested.ManualAck<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
+    @NotNull Mqtt3SubscribeBuilder.Publishes.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribePublishesWith();
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.

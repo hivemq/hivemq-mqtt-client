@@ -176,8 +176,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             @NotNull Executor executor, boolean manualAcknowledgement);
 
     /**
-     * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer)} and {@link
-     * #subscribe(Mqtt3Subscribe, Consumer, Executor)}.
+     * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)}
+     * and {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)}.
      * <p>
      * Calling {@link Mqtt3SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
      * calling one of the following methods:
@@ -190,8 +190,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
-     * @see #subscribe(Mqtt3Subscribe, Consumer)
-     * @see #subscribe(Mqtt3Subscribe, Consumer, Executor)
+     * @see #subscribe(Mqtt3Subscribe, Consumer, boolean)
+     * @see #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)
      */
     @CheckReturnValue
     @NotNull Mqtt3SubscribeAndCallbackBuilder.Start subscribeWith();

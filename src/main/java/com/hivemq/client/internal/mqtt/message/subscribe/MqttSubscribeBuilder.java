@@ -218,18 +218,18 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
     }
 
-    public static abstract class ManualAck<P> extends MqttSubscribeBuilder<ManualAck<P>>
-            implements Mqtt5SubscribeBuilder.Nested.Start.Complete<P>, Mqtt5SubscribeBuilder.Nested.ManualAck<P> {
+    public static abstract class Publishes<P> extends MqttSubscribeBuilder<Publishes<P>>
+            implements Mqtt5SubscribeBuilder.Publishes.Start.Complete<P>, Mqtt5SubscribeBuilder.Publishes.Args<P> {
 
         protected boolean manualAcknowledgement;
 
         @Override
-        protected @NotNull MqttSubscribeBuilder.ManualAck<P> self() {
+        protected @NotNull Publishes<P> self() {
             return this;
         }
 
         @Override
-        public @NotNull MqttSubscribeBuilder.ManualAck<P> manualAcknowledgement(final boolean manualAcknowledgement) {
+        public @NotNull Publishes<P> manualAcknowledgement(final boolean manualAcknowledgement) {
             this.manualAcknowledgement = manualAcknowledgement;
             return this;
         }

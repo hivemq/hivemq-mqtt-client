@@ -180,8 +180,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             @NotNull Executor executor, final boolean manualAcknowledgement);
 
     /**
-     * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer)} and {@link
-     * #subscribe(Mqtt5Subscribe, Consumer, Executor)}.
+     * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)}
+     * and {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)}.
      * <p>
      * Calling {@link Mqtt5SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
      * calling one of the following methods:
@@ -194,8 +194,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
-     * @see #subscribe(Mqtt5Subscribe, Consumer)
-     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, boolean)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
      */
     @CheckReturnValue
     @NotNull Mqtt5SubscribeAndCallbackBuilder.Start subscribeWith();

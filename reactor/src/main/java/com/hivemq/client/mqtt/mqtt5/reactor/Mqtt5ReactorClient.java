@@ -116,8 +116,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * subscribing (in terms of Reactive Streams) to the returned {@link Mono}.
      * <p>
      * See {@link #publishes(MqttGlobalPublishFilter)} to consume the incoming Publish messages. Alternatively, call
-     * {@link #subscribeStream(Mqtt5Subscribe)} to consume the incoming Publish messages matching the subscriptions of
-     * the Subscribe message directly.
+     * {@link #subscribePublishes(Mqtt5Subscribe)} to consume the incoming Publish messages matching the subscriptions
+     * of the Subscribe message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Mono} which
@@ -169,10 +169,10 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
-     * @see #subscribeStream(Mqtt5Subscribe, boolean)
+     * @see #subscribePublishes(Mqtt5Subscribe, boolean)
      */
     @CheckReturnValue
-    @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
+    @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(@NotNull Mqtt5Subscribe subscribe);
 
     /**
      * Creates a {@link FluxWithSingle} for subscribing this client with the given Subscribe message.
@@ -198,25 +198,24 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
-     * @see #subscribeStream(Mqtt5Subscribe)
-     * @since 1.2
+     * @see #subscribePublishes(Mqtt5Subscribe)
      */
     @CheckReturnValue
-    @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+    @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
             @NotNull Mqtt5Subscribe subscribe, boolean manualAcknowledgement);
 
     /**
-     * Fluent counterpart of {@link #subscribeStream(Mqtt5Subscribe)}.
+     * Fluent counterpart of {@link #subscribePublishes(Mqtt5Subscribe, boolean)}.
      * <p>
      * Calling {@link Mqtt5SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribeStream(Mqtt5Subscribe)} with the result of {@link
+     * effect as calling {@link #subscribePublishes(Mqtt5Subscribe)} with the result of {@link
      * Mqtt5SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
-     * @see #subscribeStream(Mqtt5Subscribe)
+     * @see #subscribePublishes(Mqtt5Subscribe, boolean)
      */
     @CheckReturnValue
-    @NotNull Mqtt5SubscribeBuilder.Nested.ManualAck<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
+    @NotNull Mqtt5SubscribeBuilder.Publishes.Start<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribePublishesWith();
 
     /**
      * Creates a {@link Flux} for globally consuming all incoming Publish messages matching the given filter.
