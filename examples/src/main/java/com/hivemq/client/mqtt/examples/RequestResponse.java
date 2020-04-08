@@ -36,8 +36,7 @@ public class RequestResponse {
         responder.toBlocking().connect();
 
         responder.toRx()
-                .publish(responder.toRx()
-                        .subscribeStreamWith()
+                .publish(responder.toRx().subscribePublishesWith()
                         .topicFilter("request/topic")
                         .applySubscribe()
                         .map(requestPublish -> Mqtt5Publish.builder()

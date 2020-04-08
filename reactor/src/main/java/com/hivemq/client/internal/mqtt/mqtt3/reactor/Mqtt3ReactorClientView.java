@@ -79,20 +79,22 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     }
 
     @Override
-    public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(final @NotNull Mqtt3Subscribe subscribe) {
-        return subscribeStream(subscribe, false);
+    public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
+            final @NotNull Mqtt3Subscribe subscribe) {
+
+        return subscribePublishes(subscribe, false);
     }
 
     @Override
-    public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
+    public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
             final @NotNull Mqtt3Subscribe subscribe, final boolean manualAcknowledgement) {
 
-        return FluxWithSingle.from(delegate.subscribeStream(subscribe, manualAcknowledgement));
+        return FluxWithSingle.from(delegate.subscribePublishes(subscribe, manualAcknowledgement));
     }
 
     @Override
-    public @NotNull Mqtt3SubscribeViewAndManualAckBuilder subscribeStreamWith() {
-        return new Mqtt3SubscribeViewAndManualAckBuilder();
+    public @NotNull Mqtt3SubscribeViewPublishesBuilder subscribePublishesWith() {
+        return new Mqtt3SubscribeViewPublishesBuilder();
     }
 
     @Override
@@ -147,12 +149,12 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return delegate.toBlocking();
     }
 
-    private class Mqtt3SubscribeViewAndManualAckBuilder
-            extends Mqtt3SubscribeViewBuilder.ManualAck<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> {
+    private class Mqtt3SubscribeViewPublishesBuilder
+            extends Mqtt3SubscribeViewBuilder.Publishes<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> {
 
         @Override
         public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> applySubscribe() {
-            return subscribeStream(build(), manualAcknowledgement);
+            return subscribePublishes(build(), manualAcknowledgement);
         }
     }
 }

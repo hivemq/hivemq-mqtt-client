@@ -83,20 +83,22 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
     }
 
     @Override
-    public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(final @NotNull Mqtt5Subscribe subscribe) {
-        return subscribeStream(subscribe, false);
+    public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
+            final @NotNull Mqtt5Subscribe subscribe) {
+
+        return subscribePublishes(subscribe, false);
     }
 
     @Override
-    public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+    public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
             final @NotNull Mqtt5Subscribe subscribe, final boolean manualAcknowledgement) {
 
-        return FluxWithSingle.from(delegate.subscribeStream(subscribe, manualAcknowledgement));
+        return FluxWithSingle.from(delegate.subscribePublishes(subscribe, manualAcknowledgement));
     }
 
     @Override
-    public @NotNull MqttSubscribeAndManualAckBuilder subscribeStreamWith() {
-        return new MqttSubscribeAndManualAckBuilder();
+    public @NotNull MqttSubscribePublishesBuilder subscribePublishesWith() {
+        return new MqttSubscribePublishesBuilder();
     }
 
     @Override
@@ -166,12 +168,12 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return delegate.toBlocking();
     }
 
-    private class MqttSubscribeAndManualAckBuilder
-            extends MqttSubscribeBuilder.ManualAck<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
+    private class MqttSubscribePublishesBuilder
+            extends MqttSubscribeBuilder.Publishes<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
 
         @Override
         public @NotNull FluxWithSingle<Mqtt5Publish, Mqtt5SubAck> applySubscribe() {
-            return subscribeStream(build(), manualAcknowledgement);
+            return subscribePublishes(build(), manualAcknowledgement);
         }
     }
 }

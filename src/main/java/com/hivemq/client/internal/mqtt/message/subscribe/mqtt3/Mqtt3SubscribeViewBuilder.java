@@ -191,20 +191,18 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         }
     }
 
-    public static abstract class ManualAck<P> extends Mqtt3SubscribeViewBuilder<ManualAck<P>>
-            implements Mqtt3SubscribeBuilder.Nested.Start.Complete<P>, Mqtt3SubscribeBuilder.Nested.ManualAck<P> {
+    public static abstract class Publishes<P> extends Mqtt3SubscribeViewBuilder<Publishes<P>>
+            implements Mqtt3SubscribeBuilder.Publishes.Start.Complete<P>, Mqtt3SubscribeBuilder.Publishes.Args<P> {
 
         protected boolean manualAcknowledgement;
 
         @Override
-        protected @NotNull Mqtt3SubscribeViewBuilder.ManualAck<P> self() {
+        protected @NotNull Publishes<P> self() {
             return this;
         }
 
         @Override
-        public @NotNull Mqtt3SubscribeViewBuilder.ManualAck<P> manualAcknowledgement(
-                final boolean manualAcknowledgement) {
-
+        public @NotNull Publishes<P> manualAcknowledgement(final boolean manualAcknowledgement) {
             this.manualAcknowledgement = manualAcknowledgement;
             return this;
         }

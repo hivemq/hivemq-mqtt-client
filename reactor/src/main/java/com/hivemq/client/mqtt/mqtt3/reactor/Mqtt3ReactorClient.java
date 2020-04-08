@@ -113,8 +113,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * subscribing (in terms of Reactive Streams) to the returned {@link Mono}.
      * <p>
      * See {@link #publishes(MqttGlobalPublishFilter)} to consume the incoming Publish messages. Alternatively, call
-     * {@link #subscribeStream(Mqtt3Subscribe)} to consume the incoming Publish messages matching the subscriptions of
-     * the Subscribe message directly.
+     * {@link #subscribePublishes(Mqtt3Subscribe)} to consume the incoming Publish messages matching the subscriptions
+     * of the Subscribe message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Mono} which
@@ -166,10 +166,10 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
-     * @see #subscribeStream(Mqtt3Subscribe, boolean)
+     * @see #subscribePublishes(Mqtt3Subscribe, boolean)
      */
     @CheckReturnValue
-    @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
+    @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(@NotNull Mqtt3Subscribe subscribe);
 
     /**
      * Creates a {@link FluxWithSingle} for subscribing this client with the given Subscribe message.
@@ -194,25 +194,24 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
      *         MqttSessionExpiredException}).</li>
      *         </ul>
-     * @see #subscribeStream(Mqtt3Subscribe)
-     * @since 1.2
+     * @see #subscribePublishes(Mqtt3Subscribe)
      */
     @CheckReturnValue
-    @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
+    @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
             @NotNull Mqtt3Subscribe subscribe, boolean manualAcknowledgement);
 
     /**
-     * Fluent counterpart of {@link #subscribeStream(Mqtt3Subscribe)}.
+     * Fluent counterpart of {@link #subscribePublishes(Mqtt3Subscribe, boolean)}.
      * <p>
      * Calling {@link Mqtt3SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribeStream(Mqtt3Subscribe)} with the result of {@link
+     * effect as calling {@link #subscribePublishes(Mqtt3Subscribe)} with the result of {@link
      * Mqtt3SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
-     * @see #subscribeStream(Mqtt3Subscribe)
+     * @see #subscribePublishes(Mqtt3Subscribe, boolean)
      */
     @CheckReturnValue
-    @NotNull Mqtt3SubscribeBuilder.Nested.ManualAck<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
+    @NotNull Mqtt3SubscribeBuilder.Publishes.Start<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribePublishesWith();
 
     /**
      * Creates a {@link Flux} for globally consuming all incoming Publish messages matching the given filter.

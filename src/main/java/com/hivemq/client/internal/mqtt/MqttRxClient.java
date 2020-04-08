@@ -115,34 +115,46 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @Override
     public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
-            final @Nullable Mqtt5Subscribe subscribe) {
+            final @NotNull Mqtt5Subscribe subscribe) {
 
-        return subscribeStream(subscribe, false);
+        return subscribePublishes(subscribe);
     }
 
     @Override
-    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
-            final @Nullable Mqtt5Subscribe subscribe, final boolean manualAcknowledgement) {
-
-        return subscribeStream(MqttChecks.subscribe(subscribe), manualAcknowledgement);
+    public @NotNull MqttSubscribeBuilder.Nested<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
+        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
     }
 
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+    @Override
+    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
+            final @Nullable Mqtt5Subscribe subscribe) {
+
+        return subscribePublishes(subscribe, false);
+    }
+
+    @Override
+    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
+            final @Nullable Mqtt5Subscribe subscribe, final boolean manualAcknowledgement) {
+
+        return subscribePublishes(MqttChecks.subscribe(subscribe), manualAcknowledgement);
+    }
+
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
             final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
 
-        return subscribeStreamUnsafe(subscribe, manualAcknowledgement).observeOnBoth(
+        return subscribePublishesUnsafe(subscribe, manualAcknowledgement).observeOnBoth(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStreamUnsafe(
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishesUnsafe(
             final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
 
         return new MqttSubscribedPublishFlowable(subscribe, clientConfig, manualAcknowledgement);
     }
 
     @Override
-    public @NotNull MqttSubscribeAndManualAckBuilder subscribeStreamWith() {
-        return new MqttSubscribeAndManualAckBuilder();
+    public @NotNull MqttSubscribePublishesBuilder subscribePublishesWith() {
+        return new MqttSubscribePublishesBuilder();
     }
 
     @Override
@@ -274,12 +286,12 @@ public class MqttRxClient implements Mqtt5RxClient {
         return new MqttBlockingClient(this);
     }
 
-    private class MqttSubscribeAndManualAckBuilder
-            extends MqttSubscribeBuilder.ManualAck<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
+    private class MqttSubscribePublishesBuilder
+            extends MqttSubscribeBuilder.Publishes<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
 
         @Override
         public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> applySubscribe() {
-            return subscribeStream(build(), manualAcknowledgement);
+            return subscribePublishes(build(), manualAcknowledgement);
         }
     }
 }
