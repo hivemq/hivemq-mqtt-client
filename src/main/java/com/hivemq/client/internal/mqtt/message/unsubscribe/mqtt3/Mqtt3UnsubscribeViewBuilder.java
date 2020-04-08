@@ -113,9 +113,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
     }
 
     private void ensureAtLeastOneSubscription() {
-        if (topicFiltersBuilder.getSize() == 0) {
-            throw new IllegalStateException("At least one topic filter must be added.");
-        }
+        Checks.state(topicFiltersBuilder.getSize() > 0, "At least one topic filter must be added.");
     }
 
     public @NotNull Mqtt3UnsubscribeView build() {

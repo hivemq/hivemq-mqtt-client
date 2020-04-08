@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.message.auth;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -58,9 +59,7 @@ public abstract class MqttSimpleAuthBuilder<B extends MqttSimpleAuthBuilder<B>> 
     }
 
     public @NotNull MqttSimpleAuth build() {
-        if (username == null && password == null) {
-            throw new IllegalStateException("Either user name or password must be given.");
-        }
+        Checks.state((username != null) || (password != null), "Either user name or password must be given.");
         return new MqttSimpleAuth(username, password);
     }
 

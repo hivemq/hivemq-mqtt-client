@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.message.auth.mqtt3;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -58,9 +59,7 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
     }
 
     public @NotNull Mqtt3SimpleAuthView build() {
-        if (username == null) {
-            throw new IllegalStateException("Username must be given.");
-        }
+        Checks.state(username != null, "Username must be given.");
         return Mqtt3SimpleAuthView.of(username, password);
     }
 

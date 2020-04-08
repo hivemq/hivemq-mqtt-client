@@ -127,9 +127,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
     }
 
     private void ensureAtLeastOneSubscription() {
-        if (subscriptionsBuilder.getSize() == 0) {
-            throw new IllegalStateException("At least one subscription must be added.");
-        }
+        Checks.state(subscriptionsBuilder.getSize() > 0, "At least one subscription must be added.");
     }
 
     public @NotNull Mqtt3SubscribeView build() {
