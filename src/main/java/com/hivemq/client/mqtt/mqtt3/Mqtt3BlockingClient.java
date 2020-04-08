@@ -164,6 +164,12 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      */
     void disconnect();
 
+    @Override
+    @CheckReturnValue
+    default @NotNull Mqtt3BlockingClient toBlocking() {
+        return this;
+    }
+
     /**
      * Resource which queues incoming Publish messages until they are received.
      */

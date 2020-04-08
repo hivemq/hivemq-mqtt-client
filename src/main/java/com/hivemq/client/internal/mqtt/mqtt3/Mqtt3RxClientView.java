@@ -110,7 +110,8 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
         return delegate.subscribe(mqttSubscribe)
-                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK).map(Mqtt3SubAckView.MAPPER);
+                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK)
+                .map(Mqtt3SubAckView.MAPPER);
     }
 
     @Override
@@ -198,11 +199,6 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     @Override
     public @NotNull Mqtt3ClientConfigView getConfig() {
         return clientConfig;
-    }
-
-    @Override
-    public @NotNull Mqtt3RxClient toRx() {
-        return this;
     }
 
     @Override

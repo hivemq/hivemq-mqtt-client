@@ -262,11 +262,6 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull Mqtt3AsyncClient toAsync() {
-        return this;
-    }
-
-    @Override
     public @NotNull Mqtt3BlockingClient toBlocking() {
         return new Mqtt3BlockingClientView(delegate.toBlocking());
     }

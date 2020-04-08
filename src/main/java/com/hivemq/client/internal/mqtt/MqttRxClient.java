@@ -272,11 +272,6 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull Mqtt5RxClient toRx() {
-        return this;
-    }
-
-    @Override
     public @NotNull MqttAsyncClient toAsync() {
         return new MqttAsyncClient(this);
     }
