@@ -40,8 +40,7 @@ public interface MqttTopicFilterBuilder extends
      */
     // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            MqttTopicFilterBuilder, MqttTopicFilterBuilder.End,
+    interface Complete extends MqttTopicFilterBuilder, MqttTopicFilterBuilder.End,
             MqttTopicFilterBuilderBase.Complete<
                     MqttTopicFilterBuilder.Complete, MqttTopicFilterBuilder.End, MqttSharedTopicFilterBuilder,
                     MqttSharedTopicFilterBuilder.Complete, MqttSharedTopicFilterBuilder.End> {}
@@ -82,8 +81,7 @@ public interface MqttTopicFilterBuilder extends
          */
         // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>, Nested.End<P>,
+        interface Complete<P> extends Nested<P>, Nested.End<P>,
                 MqttTopicFilterBuilderBase.Complete<
                         Nested.Complete<P>, Nested.End<P>, MqttSharedTopicFilterBuilder.Nested<P>,
                         MqttSharedTopicFilterBuilder.Nested.Complete<P>, MqttSharedTopicFilterBuilder.Nested.End<P>> {}
