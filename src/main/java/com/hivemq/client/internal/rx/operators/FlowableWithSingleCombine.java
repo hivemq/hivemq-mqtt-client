@@ -96,9 +96,9 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
             synchronized (this) {
                 if (queued != null) {
                     done = COMPLETE;
-                    return;
+                } else {
+                    subscriber.onComplete();
                 }
-                subscriber.onComplete();
             }
         }
 
@@ -107,9 +107,9 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
             synchronized (this) {
                 if (queued != null) {
                     done = error;
-                    return;
+                } else {
+                    subscriber.onError(error);
                 }
-                subscriber.onError(error);
             }
         }
 
@@ -133,6 +133,7 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
                                 } else {
                                     subscriber.onComplete();
                                 }
+                                return;
                             }
                         }
                         if (n > 0) {
