@@ -169,11 +169,6 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         return new Mqtt3AsyncClientView(delegate.toAsync());
     }
 
-    @Override
-    public @NotNull Mqtt3BlockingClient toBlocking() {
-        return this;
-    }
-
     private static class Mqtt3PublishesView implements Mqtt3Publishes {
 
         private final @NotNull Mqtt5BlockingClient.Mqtt5Publishes delegate;

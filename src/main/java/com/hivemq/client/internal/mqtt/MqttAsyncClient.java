@@ -274,11 +274,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull Mqtt5AsyncClient toAsync() {
-        return this;
-    }
-
-    @Override
     public @NotNull MqttBlockingClient toBlocking() {
         return delegate.toBlocking();
     }

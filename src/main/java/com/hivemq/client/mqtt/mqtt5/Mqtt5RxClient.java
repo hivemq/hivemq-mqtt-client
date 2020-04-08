@@ -367,4 +367,10 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      */
     @CheckReturnValue
     @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith();
+
+    @Override
+    @CheckReturnValue
+    default @NotNull Mqtt5RxClient toRx() {
+        return this;
+    }
 }

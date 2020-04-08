@@ -207,6 +207,12 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     @CheckReturnValue
     @NotNull Mqtt5DisconnectBuilder.SendVoid disconnectWith();
 
+    @Override
+    @CheckReturnValue
+    default @NotNull Mqtt5BlockingClient toBlocking() {
+        return this;
+    }
+
     /**
      * Resource which queues incoming Publish messages until they are received.
      */

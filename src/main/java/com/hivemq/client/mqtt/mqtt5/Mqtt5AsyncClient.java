@@ -361,6 +361,12 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     @CheckReturnValue
     @NotNull Mqtt5DisconnectBuilder.Send<CompletableFuture<Void>> disconnectWith();
 
+    @Override
+    @CheckReturnValue
+    default @NotNull Mqtt5AsyncClient toAsync() {
+        return this;
+    }
+
     // @formatter:off
     @DoNotImplement
     interface Mqtt5SubscribeAndCallbackBuilder extends

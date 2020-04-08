@@ -319,4 +319,10 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      */
     @CheckReturnValue
     @NotNull Completable disconnect();
+
+    @Override
+    @CheckReturnValue
+    default @NotNull Mqtt3RxClient toRx() {
+        return this;
+    }
 }
