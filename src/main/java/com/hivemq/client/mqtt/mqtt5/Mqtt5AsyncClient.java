@@ -367,14 +367,25 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         return this;
     }
 
+    /**
+     * Builder for a {@link Mqtt5Subscribe} and additional arguments that are applied to a {@link
+     * #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link
+     * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
+     */
     @DoNotImplement
     interface Mqtt5SubscribeAndCallbackBuilder
             extends Mqtt5SubscribeBuilderBase<Mqtt5SubscribeAndCallbackBuilder.Complete> {
 
+        /**
+         * {@link Mqtt5SubscribeAndCallbackBuilder} that is complete which means all mandatory fields are set.
+         */
         @DoNotImplement
         interface Complete extends Mqtt5SubscribeAndCallbackBuilder, Mqtt5SubscribeAndCallbackBuilder.Call,
                 Mqtt5SubscribeBuilderBase.Complete<Mqtt5SubscribeAndCallbackBuilder.Complete> {}
 
+        /**
+         * {@link Mqtt5SubscribeAndCallbackBuilder} that provides additional methods for the first subscription.
+         */
         // @formatter:off
         @DoNotImplement
         interface Start extends Mqtt5SubscribeAndCallbackBuilder,
@@ -382,6 +393,10 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
                         Mqtt5SubscribeAndCallbackBuilder.Complete, Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
         // @formatter:on
 
+            /**
+             * {@link Mqtt5SubscribeAndCallbackBuilder.Start} that is complete which means all mandatory fields are
+             * set.
+             */
             // @formatter:off
             @DoNotImplement
             interface Complete extends
@@ -392,17 +407,47 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             // @formatter:on
         }
 
+        /**
+         * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a {@link
+         * #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link #subscribe(Mqtt5Subscribe, Consumer, Executor,
+         * boolean)} call.
+         */
         @DoNotImplement
         interface Call {
 
+            /**
+             * Sets a callback for the matching Publish messages consumed via the subscriptions.
+             *
+             * @param callback the callback for the matching Publish messages.
+             * @return the builder.
+             */
             @CheckReturnValue
             @NotNull Ex callback(@NotNull Consumer<Mqtt5Publish> callback);
 
+            /**
+             * Builds the {@link Mqtt5Subscribe} and applies it and additional arguments to a {@link
+             * #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link
+             * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call which then sends the Subscribe message.
+             *
+             * @return see {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or
+             *         {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)}.
+             */
             @NotNull CompletableFuture<Mqtt5SubAck> send();
 
+            /**
+             * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a {@link
+             * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
+             */
             @DoNotImplement
             interface Ex extends Call {
 
+                /**
+                 * Sets an executor to execute the callback for the matching Publish messages consumed via the
+                 * subscriptions.
+                 *
+                 * @param executor the executor to execute the callback for the matching Publish messages.
+                 * @return the builder.
+                 */
                 @CheckReturnValue
                 @NotNull Ex executor(@NotNull Executor executor);
 
