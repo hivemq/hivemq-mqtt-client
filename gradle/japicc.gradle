@@ -177,6 +177,7 @@ def addCheck(Jar jarTask) {
             def command = ['perl', rootProject.tasks.japiccDownload.executable.getPath(), '-lib', archiveName,
                            '-skip-internal-packages', 'com.hivemq.client.internal',
                            '-skip-internal-packages', 'com.hivemq.shaded',
+                           '-skip-internal-types', 'com.hivemq.client.mqtt.mqtt(5|3).Mqtt(5|3)(Rx|Async|Blocking)Client',
                            '-non-impl', tasks.japiccNonImpl.nonImplFile.getPath(),
                            '-check-annotations', '-s',
                            lastJar.getPath(), jarTask.archiveFile.get().getAsFile().getPath()]
