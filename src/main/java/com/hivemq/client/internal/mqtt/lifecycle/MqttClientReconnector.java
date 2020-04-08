@@ -184,9 +184,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     private void checkInEventLoop() {
-        if (!eventLoop.inEventLoop()) {
-            throw new IllegalStateException("MqttClientReconnector must be called from the eventLoop.");
-        }
+        Checks.state(eventLoop.inEventLoop(), "MqttClientReconnector must be called from the eventLoop.");
     }
 
     private void checkInOnDisconnected(final @NotNull String method) {

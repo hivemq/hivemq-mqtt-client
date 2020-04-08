@@ -90,9 +90,9 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
 
     public @NotNull MqttSubscription build() {
         Checks.notNull(topicFilter, "Topic filter");
-        if (topicFilter.isShared() && noLocal) {
-            throw new IllegalStateException("It is a Protocol Error to set no local to true on a Shared Subscription.");
-        }
+        Checks.state(
+                !(topicFilter.isShared() && noLocal),
+                "It is a Protocol Error to set no local to true on a Shared Subscription.");
         return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
     }
 
