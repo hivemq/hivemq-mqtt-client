@@ -320,23 +320,17 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         return this;
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Mqtt3SubscribeAndCallbackBuilder extends
-            Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {
-    // @formatter:on
+    interface Mqtt3SubscribeAndCallbackBuilder
+            extends Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete extends
-                Mqtt3SubscribeAndCallbackBuilder, Mqtt3SubscribeAndCallbackBuilder.Call,
+        interface Complete extends Mqtt3SubscribeAndCallbackBuilder, Mqtt3SubscribeAndCallbackBuilder.Call,
                 Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {}
-        // @formatter:on
 
         // @formatter:off
         @DoNotImplement
-        interface Start extends
-                Mqtt3SubscribeAndCallbackBuilder,
+        interface Start extends Mqtt3SubscribeAndCallbackBuilder,
                 Mqtt3SubscribeBuilderBase.Start<
                         Mqtt3SubscribeAndCallbackBuilder.Complete, Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {
         // @formatter:on

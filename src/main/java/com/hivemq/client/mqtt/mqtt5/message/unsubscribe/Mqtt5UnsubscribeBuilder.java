@@ -33,12 +33,9 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
     /**
      * {@link Mqtt5UnsubscribeBuilder} that is complete which means all mandatory fields are set.
      */
-    // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            Mqtt5UnsubscribeBuilder,
-            Mqtt5UnsubscribeBuilderBase.Complete<Mqtt5UnsubscribeBuilder.Complete> {
-    // @formatter:on
+    interface Complete
+            extends Mqtt5UnsubscribeBuilder, Mqtt5UnsubscribeBuilderBase.Complete<Mqtt5UnsubscribeBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt5Unsubscribe}.
@@ -52,12 +49,9 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
     /**
      * {@link Mqtt5UnsubscribeBuilder} that provides additional methods for the first Topic Filter.
      */
-    // @formatter:off
     @DoNotImplement
-    interface Start extends
-            Mqtt5UnsubscribeBuilder,
-            Mqtt5UnsubscribeBuilderBase.Start<Mqtt5UnsubscribeBuilder.Complete> {}
-    // @formatter:on
+    interface Start
+            extends Mqtt5UnsubscribeBuilder, Mqtt5UnsubscribeBuilderBase.Start<Mqtt5UnsubscribeBuilder.Complete> {}
 
     /**
      * Builder for a {@link Mqtt5Unsubscribe} that is applied to a parent.

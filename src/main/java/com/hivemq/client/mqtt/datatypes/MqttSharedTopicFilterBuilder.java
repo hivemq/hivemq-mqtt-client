@@ -39,8 +39,7 @@ public interface MqttSharedTopicFilterBuilder extends
      */
     // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.End,
+    interface Complete extends MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.End,
             MqttTopicFilterBuilderBase.SharedBase.Complete<
                     MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.Complete,
                     MqttSharedTopicFilterBuilder.End> {}
@@ -74,12 +73,9 @@ public interface MqttSharedTopicFilterBuilder extends
          *
          * @param <P> the type of the result when the built {@link MqttTopicFilter} is applied to the parent.
          */
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>, Nested.End<P>,
+        interface Complete<P> extends Nested<P>, Nested.End<P>,
                 MqttTopicFilterBuilderBase.SharedBase.Complete<Nested<P>, Nested.Complete<P>, Nested.End<P>> {}
-        // @formatter:on
 
         /**
          * End of a {@link Nested} that does not allow to add any more levels or wildcards.

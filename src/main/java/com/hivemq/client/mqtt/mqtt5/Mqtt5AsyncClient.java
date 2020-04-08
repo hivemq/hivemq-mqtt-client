@@ -367,23 +367,17 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         return this;
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Mqtt5SubscribeAndCallbackBuilder extends
-            Mqtt5SubscribeBuilderBase<Mqtt5SubscribeAndCallbackBuilder.Complete> {
-    // @formatter:on
+    interface Mqtt5SubscribeAndCallbackBuilder
+            extends Mqtt5SubscribeBuilderBase<Mqtt5SubscribeAndCallbackBuilder.Complete> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete extends
-                Mqtt5SubscribeAndCallbackBuilder, Mqtt5SubscribeAndCallbackBuilder.Call,
+        interface Complete extends Mqtt5SubscribeAndCallbackBuilder, Mqtt5SubscribeAndCallbackBuilder.Call,
                 Mqtt5SubscribeBuilderBase.Complete<Mqtt5SubscribeAndCallbackBuilder.Complete> {}
-        // @formatter:on
 
         // @formatter:off
         @DoNotImplement
-        interface Start extends
-                Mqtt5SubscribeAndCallbackBuilder,
+        interface Start extends Mqtt5SubscribeAndCallbackBuilder,
                 Mqtt5SubscribeBuilderBase.Start<
                         Mqtt5SubscribeAndCallbackBuilder.Complete, Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
         // @formatter:on
