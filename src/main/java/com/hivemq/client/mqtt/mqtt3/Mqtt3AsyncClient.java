@@ -320,14 +320,25 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         return this;
     }
 
+    /**
+     * Builder for a {@link Mqtt3Subscribe} and additional arguments that are applied to a {@link
+     * #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link
+     * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
+     */
     @DoNotImplement
     interface Mqtt3SubscribeAndCallbackBuilder
             extends Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {
 
+        /**
+         * {@link Mqtt3SubscribeAndCallbackBuilder} that is complete which means all mandatory fields are set.
+         */
         @DoNotImplement
         interface Complete extends Mqtt3SubscribeAndCallbackBuilder, Mqtt3SubscribeAndCallbackBuilder.Call,
                 Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {}
 
+        /**
+         * {@link Mqtt3SubscribeAndCallbackBuilder} that provides additional methods for the first subscription.
+         */
         // @formatter:off
         @DoNotImplement
         interface Start extends Mqtt3SubscribeAndCallbackBuilder,
@@ -335,6 +346,10 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
                         Mqtt3SubscribeAndCallbackBuilder.Complete, Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {
         // @formatter:on
 
+            /**
+             * {@link Mqtt3SubscribeAndCallbackBuilder.Start} that is complete which means all mandatory fields are
+             * set.
+             */
             // @formatter:off
             @DoNotImplement
             interface Complete extends
@@ -345,17 +360,47 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             // @formatter:on
         }
 
+        /**
+         * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a {@link
+         * #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link #subscribe(Mqtt3Subscribe, Consumer, Executor,
+         * boolean)} call.
+         */
         @DoNotImplement
         interface Call {
 
+            /**
+             * Sets a callback for the matching Publish messages consumed via the subscriptions.
+             *
+             * @param callback the callback for the matching Publish messages.
+             * @return the builder.
+             */
             @CheckReturnValue
             @NotNull Ex callback(@NotNull Consumer<Mqtt3Publish> callback);
 
+            /**
+             * Builds the {@link Mqtt3Subscribe} and applies it and additional arguments to a {@link
+             * #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link
+             * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call which then sends the Subscribe message.
+             *
+             * @return see {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or
+             *         {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)}.
+             */
             @NotNull CompletableFuture<Mqtt3SubAck> send();
 
+            /**
+             * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a {@link
+             * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
+             */
             @DoNotImplement
             interface Ex extends Call {
 
+                /**
+                 * Sets an executor to execute the callback for the matching Publish messages consumed via the
+                 * subscriptions.
+                 *
+                 * @param executor the executor to execute the callback for the matching Publish messages.
+                 * @return the builder.
+                 */
                 @CheckReturnValue
                 @NotNull Ex executor(@NotNull Executor executor);
 

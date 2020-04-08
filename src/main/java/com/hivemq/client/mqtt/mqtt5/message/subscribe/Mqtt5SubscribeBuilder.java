@@ -153,8 +153,8 @@ public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5Su
     }
 
     /**
-     * Builder for a {@link Mqtt5Subscribe} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
-     * Mqtt5Client} subscribePublishes call.
+     * Builder for a {@link Mqtt5Subscribe} and additional arguments that are applied to a parent {@link
+     * com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client} <code>subscribePublishes</code> call.
      *
      * @param <P> the type of the result when the built {@link Mqtt5Subscribe} is applied to the parent.
      * @since 1.2
@@ -192,7 +192,7 @@ public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5Su
 
         /**
          * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a parent {@link
-         * com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client} subscribePublishes call.
+         * com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client} <code>subscribePublishes</code> call.
          *
          * @param <P> the type of the result when the built {@link Mqtt5Subscribe} is applied to the parent.
          */
