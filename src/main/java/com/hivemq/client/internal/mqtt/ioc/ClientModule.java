@@ -17,8 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.ioc;
 
-import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscriptionFlowTree;
-import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscriptionFlows;
+import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlowTree;
+import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlows;
 import dagger.Binds;
 import dagger.Module;
 import org.jetbrains.annotations.NotNull;
@@ -30,5 +30,6 @@ import org.jetbrains.annotations.NotNull;
 abstract class ClientModule {
 
     @Binds
-    abstract @NotNull MqttSubscriptionFlows provideSubscriptionFlows(final @NotNull MqttSubscriptionFlowTree tree);
+    abstract @NotNull MqttSubscribedPublishFlows provideSubscribedPublishFlows(
+            final @NotNull MqttSubscribedPublishFlowTree tree);
 }
