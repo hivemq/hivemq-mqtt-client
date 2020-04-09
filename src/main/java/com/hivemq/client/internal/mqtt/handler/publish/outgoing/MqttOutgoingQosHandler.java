@@ -25,6 +25,7 @@ import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
+import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2CompleteWithFlow;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2IntermediateWithFlow;
@@ -88,16 +89,19 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttPublishFlowables publishFlowables;
 
+    // valid for session
     private final @NotNull SpscUnboundedArrayQueue<MqttPublishWithFlow> queue = new SpscUnboundedArrayQueue<>(32);
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntIndex<MqttPubOrRelWithFlow> pendingIndex = new IntIndex<>(INDEX_SPEC);
     private final @NotNull NodeList<MqttPubOrRelWithFlow> pending = new NodeList<>();
     private final @NotNull Ranges packetIdentifiers = new Ranges(1, 0);
 
-    private int sendMaximum;
+    // valid for connection
+    private final @NotNull IntIndex<MqttPubOrRelWithFlow> pendingIndex = new IntIndex<>(INDEX_SPEC);
     private @Nullable MqttPubOrRelWithFlow resendPending;
     private @Nullable MqttPublishWithFlow currentPending;
+    private int sendMaximum;
     private @Nullable MqttTopicAliasMapping topicAliasMapping;
+
     private @Nullable Subscription subscription;
     private int shrinkRequests;
 
@@ -112,8 +116,6 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     @Override
     public void onSessionStartOrResume(
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
-
-        super.onSessionStartOrResume(connectionConfig, eventLoop);
 
         final int oldSendMaximum = sendMaximum;
         final int newSendMaximum = Math.min(connectionConfig.getSendMaximum(),
@@ -138,11 +140,12 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
         topicAliasMapping = connectionConfig.getSendTopicAliasMapping();
 
-        pendingIndex.clear();
-        if ((pending.getFirst() != null) || (queuedCounter.get() > 0)) {
-            resendPending = pending.getFirst();
+        resendPending = pending.getFirst();
+        if ((resendPending != null) || (queuedCounter.get() > 0)) {
             eventLoop.execute(this);
         }
+
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
     }
 
     @Override
@@ -470,6 +473,14 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
+        pendingIndex.clear();
+        resendPending = null;
+    }
+
+    @Override
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
 
@@ -489,9 +500,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                 }
             }
         }
-        pendingIndex.clear();
         pending.clear();
-        resendPending = null;
 
         clearQueued(cause);
     }
