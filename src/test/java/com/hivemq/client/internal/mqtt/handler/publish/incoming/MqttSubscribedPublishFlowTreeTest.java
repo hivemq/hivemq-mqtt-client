@@ -32,10 +32,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
+class MqttSubscribedPublishFlowTreeTest extends MqttSubscribedPublishFlowsTest {
 
-    MqttSubscriptionFlowTreeTest() {
-        super(MqttSubscriptionFlowTree::new);
+    MqttSubscribedPublishFlowTreeTest() {
+        super(MqttSubscribedPublishFlowTree::new);
     }
 
     @ParameterizedTest

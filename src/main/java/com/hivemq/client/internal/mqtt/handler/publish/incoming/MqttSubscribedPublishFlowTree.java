@@ -35,12 +35,12 @@ import java.util.*;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
+public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows {
 
     private @Nullable TopicTreeNode rootNode;
 
     @Inject
-    MqttSubscriptionFlowTree() {}
+    MqttSubscribedPublishFlowTree() {}
 
     @Override
     public void subscribe(

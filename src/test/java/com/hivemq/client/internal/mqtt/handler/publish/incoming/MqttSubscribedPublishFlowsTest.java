@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 /**
  * @author Silvio Giebl
  */
-abstract class MqttSubscriptionFlowsTest {
+abstract class MqttSubscribedPublishFlowsTest {
 
     public static class CsvToArray extends SimpleArgumentConverter {
 
@@ -52,10 +52,10 @@ abstract class MqttSubscriptionFlowsTest {
         }
     }
 
-    private final @NotNull Supplier<MqttSubscriptionFlows> flowsSupplier;
-    @NotNull MqttSubscriptionFlows flows;
+    private final @NotNull Supplier<MqttSubscribedPublishFlows> flowsSupplier;
+    @NotNull MqttSubscribedPublishFlows flows;
 
-    MqttSubscriptionFlowsTest(final @NotNull Supplier<MqttSubscriptionFlows> flowsSupplier) {
+    MqttSubscribedPublishFlowsTest(final @NotNull Supplier<MqttSubscribedPublishFlows> flowsSupplier) {
         this.flowsSupplier = flowsSupplier;
     }
 

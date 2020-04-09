@@ -31,7 +31,7 @@ import java.util.Map;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public interface MqttSubscriptionFlows {
+public interface MqttSubscribedPublishFlows {
 
     void subscribe(
             @NotNull MqttSubscription subscription, int subscriptionIdentifier,
