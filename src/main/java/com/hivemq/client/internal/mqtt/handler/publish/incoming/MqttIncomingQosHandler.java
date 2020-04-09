@@ -22,7 +22,6 @@ import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
-import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.MqttMessage;
@@ -234,10 +233,6 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     private void writePubComp(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubComp pubComp) {
         ctx.writeAndFlush(pubComp, ctx.voidPromise());
     }
-
-    @Override
-    protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {}
 
     @Override
     public void onSessionEnd(final @NotNull Throwable cause) {
