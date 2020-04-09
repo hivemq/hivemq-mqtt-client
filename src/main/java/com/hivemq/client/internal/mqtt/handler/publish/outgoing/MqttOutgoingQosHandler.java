@@ -25,7 +25,6 @@ import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
-import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2CompleteWithFlow;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2IntermediateWithFlow;
@@ -140,6 +139,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
         topicAliasMapping = connectionConfig.getSendTopicAliasMapping();
 
+        pendingIndex.clear();
         resendPending = pending.getFirst();
         if ((resendPending != null) || (queuedCounter.get() > 0)) {
             eventLoop.execute(this);
@@ -473,16 +473,11 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
-    protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+    public void onSessionEnd(final @NotNull Throwable cause) {
+        super.onSessionEnd(cause);
 
         pendingIndex.clear();
         resendPending = null;
-    }
-
-    @Override
-    public void onSessionEnd(final @NotNull Throwable cause) {
-        super.onSessionEnd(cause);
 
         for (MqttPubOrRelWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
             packetIdentifiers.returnId(current.packetIdentifier);

@@ -24,7 +24,6 @@ import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
-import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttGlobalIncomingPublishFlow;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttIncomingPublishFlows;
@@ -110,6 +109,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             });
         }
 
+        pendingIndex.clear();
         sendPending = pending.getFirst();
         if (sendPending != null) {
             eventLoop.execute(this);
@@ -164,21 +164,24 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         if (ctx == null) {
             return;
         }
-        for (; (sendPending != null) && (pendingIndex.size() < MAX_SUB_PENDING); sendPending = sendPending.getNext()) {
-            if (sendPending.packetIdentifier == 0) {
+        for (MqttSubOrUnsubWithFlow subOrUnsubWithFlow = sendPending;
+             (subOrUnsubWithFlow != null) && (pendingIndex.size() < MAX_SUB_PENDING);
+             sendPending = subOrUnsubWithFlow = subOrUnsubWithFlow.getNext()) {
+
+            if (subOrUnsubWithFlow.packetIdentifier == 0) {
                 final int packetIdentifier = packetIdentifiers.getId();
                 if (packetIdentifier == -1) {
                     LOGGER.error(
                             "No Packet Identifier available for (UN)SUBSCRIBE. This must not happen and is a bug.");
                     return;
                 }
-                sendPending.packetIdentifier = packetIdentifier;
+                subOrUnsubWithFlow.packetIdentifier = packetIdentifier;
             }
-            pendingIndex.put(sendPending);
+            pendingIndex.put(subOrUnsubWithFlow);
             if (sendPending instanceof MqttSubscribeWithFlow) {
-                writeSubscribe(ctx, (MqttSubscribeWithFlow) sendPending);
+                writeSubscribe(ctx, (MqttSubscribeWithFlow) subOrUnsubWithFlow);
             } else {
-                writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow) sendPending);
+                writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow) subOrUnsubWithFlow);
             }
         }
     }
@@ -342,16 +345,11 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     @Override
-    protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+    public void onSessionEnd(final @NotNull Throwable cause) {
+        super.onSessionEnd(cause);
 
         pendingIndex.clear();
         sendPending = null;
-    }
-
-    @Override
-    public void onSessionEnd(final @NotNull Throwable cause) {
-        super.onSessionEnd(cause);
 
         for (MqttSubOrUnsubWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
             if (current.packetIdentifier == 0) {

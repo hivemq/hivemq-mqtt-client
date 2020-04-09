@@ -18,6 +18,8 @@
 package com.hivemq.client.internal.mqtt.handler;
 
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
+import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +39,10 @@ public abstract class MqttSessionAwareHandler extends MqttConnectionAwareHandler
     public void onSessionEnd(final @NotNull Throwable cause) {
         hasSession = false;
     }
+
+    @Override
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {}
 
     @Override
     public boolean isSharable() {
