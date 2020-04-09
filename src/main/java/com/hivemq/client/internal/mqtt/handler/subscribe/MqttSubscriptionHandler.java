@@ -164,6 +164,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         if (ctx == null) {
             return;
         }
+        int written = 0;
         for (MqttSubOrUnsubWithFlow subOrUnsubWithFlow = sendPending;
              (subOrUnsubWithFlow != null) && (pendingIndex.size() < MAX_SUB_PENDING);
              sendPending = subOrUnsubWithFlow = subOrUnsubWithFlow.getNext()) {
@@ -183,6 +184,10 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             } else {
                 writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow) subOrUnsubWithFlow);
             }
+            written++;
+        }
+        if (written > 0) {
+            ctx.flush();
         }
     }
 
@@ -195,7 +200,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                 subscribeWithFlow.subscribe.createStateful(subscribeWithFlow.packetIdentifier, subscriptionIdentifier);
 
         currentPending = subscribeWithFlow;
-        ctx.writeAndFlush(statefulSubscribe, ctx.voidPromise());
+        ctx.write(statefulSubscribe, ctx.voidPromise());
         currentPending = null;
     }
 
@@ -206,7 +211,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                 unsubscribeWithFlow.unsubscribe.createStateful(unsubscribeWithFlow.packetIdentifier);
 
         currentPending = unsubscribeWithFlow;
-        ctx.writeAndFlush(statefulUnsubscribe, ctx.voidPromise());
+        ctx.write(statefulUnsubscribe, ctx.voidPromise());
         currentPending = null;
     }
 
