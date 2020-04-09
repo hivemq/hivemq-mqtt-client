@@ -22,6 +22,7 @@ import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
+import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.MqttMessage;
@@ -61,9 +62,11 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     private final @NotNull MqttClientConfig clientConfig;
     final @NotNull MqttIncomingPublishService incomingPublishService;
 
+    // valid for session
     private final @NotNull IntIndex<MqttMessage.WithId> messages = new IntIndex<>(INDEX_SPEC);
     // contains StatefulPublish with AT_LEAST_ONCE/EXACTLY_ONCE, MqttPubAck or MqttPubRec
 
+    // valid for connection
     private int receiveMaximum;
 
     @Inject
@@ -79,8 +82,8 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     public void onSessionStartOrResume(
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
-        super.onSessionStartOrResume(connectionConfig, eventLoop);
         receiveMaximum = connectionConfig.getReceiveMaximum();
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
     }
 
     @Override
@@ -231,6 +234,10 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     private void writePubComp(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubComp pubComp) {
         ctx.writeAndFlush(pubComp, ctx.voidPromise());
     }
+
+    @Override
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {}
 
     @Override
     public void onSessionEnd(final @NotNull Throwable cause) {
