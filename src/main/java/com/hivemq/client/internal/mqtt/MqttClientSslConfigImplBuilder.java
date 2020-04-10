@@ -19,11 +19,11 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttClientSslConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.Collection;
@@ -39,7 +39,8 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
     private @Nullable TrustManagerFactory trustManagerFactory;
     private @Nullable ImmutableList<String> cipherSuites;
     private @Nullable ImmutableList<String> protocols;
-    private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private long handshakeTimeoutMs = MqttClientSslConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @Nullable HostnameVerifier hostnameVerifier = MqttClientSslConfigImpl.DEFAULT_HOSTNAME_VERIFIER;
 
     MqttClientSslConfigImplBuilder() {}
 
@@ -81,9 +82,15 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
         return self();
     }
 
+    public @NotNull B hostnameVerifier(final @Nullable HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier =
+                (hostnameVerifier == null) ? MqttClientSslConfigImpl.DEFAULT_HOSTNAME_VERIFIER : hostnameVerifier;
+        return self();
+    }
+
     public @NotNull MqttClientSslConfigImpl build() {
         return new MqttClientSslConfigImpl(
-                keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
+                keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs, hostnameVerifier);
     }
 
     public static class Default extends MqttClientSslConfigImplBuilder<Default> implements MqttClientSslConfigBuilder {

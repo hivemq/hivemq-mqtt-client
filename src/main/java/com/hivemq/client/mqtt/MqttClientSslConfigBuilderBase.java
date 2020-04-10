@@ -22,6 +22,7 @@ import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.Collection;
@@ -86,4 +87,14 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      */
     @CheckReturnValue
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
+
+    /**
+     * Sets the optional user defined {@link MqttClientSslConfig#getHostnameVerifier() hostname verifier}.
+     *
+     * @param hostnameVerifier the hostname verifier or <code>null</code> to use https hostname verification.
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B hostnameVerifier(@Nullable HostnameVerifier hostnameVerifier);
 }

@@ -21,8 +21,7 @@ import com.hivemq.client.mqtt.MqttClientSslConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,25 +32,41 @@ import java.util.Optional;
  */
 public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
+    static final @Nullable HostnameVerifier DEFAULT_HOSTNAME_VERIFIER;
+
+    static {
+        HostnameVerifier hostnameVerifier = null;
+        try {
+            new SSLParameters().setEndpointIdentificationAlgorithm("HTTPS");
+        } catch (final NoSuchMethodError e) { // Android API < 24 compatibility
+            hostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
+        }
+        DEFAULT_HOSTNAME_VERIFIER = hostnameVerifier;
+    }
+
     static final @NotNull MqttClientSslConfigImpl DEFAULT =
-            new MqttClientSslConfigImpl(null, null, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+            new MqttClientSslConfigImpl(null, null, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS,
+                    DEFAULT_HOSTNAME_VERIFIER);
 
     private final @Nullable KeyManagerFactory keyManagerFactory;
     private final @Nullable TrustManagerFactory trustManagerFactory;
     private final @Nullable ImmutableList<String> cipherSuites;
     private final @Nullable ImmutableList<String> protocols;
     private final long handshakeTimeoutMs;
+    private final @Nullable HostnameVerifier hostnameVerifier;
 
     MqttClientSslConfigImpl(
             final @Nullable KeyManagerFactory keyManagerFactory,
             final @Nullable TrustManagerFactory trustManagerFactory, final @Nullable ImmutableList<String> cipherSuites,
-            final @Nullable ImmutableList<String> protocols, final long handshakeTimeoutMs) {
+            final @Nullable ImmutableList<String> protocols, final long handshakeTimeoutMs,
+            final @Nullable HostnameVerifier hostnameVerifier) {
 
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
         this.cipherSuites = cipherSuites;
         this.protocols = protocols;
         this.handshakeTimeoutMs = handshakeTimeoutMs;
+        this.hostnameVerifier = hostnameVerifier;
     }
 
     @Override
@@ -96,6 +111,15 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     }
 
     @Override
+    public @NotNull Optional<HostnameVerifier> getHostnameVerifier() {
+        return Optional.ofNullable(hostnameVerifier);
+    }
+
+    public @Nullable HostnameVerifier getRawHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    @Override
     public @NotNull MqttClientSslConfigImplBuilder.Default extend() {
         return new MqttClientSslConfigImplBuilder.Default(this);
     }
@@ -113,7 +137,8 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         return Objects.equals(keyManagerFactory, that.keyManagerFactory) &&
                 Objects.equals(trustManagerFactory, that.trustManagerFactory) &&
                 Objects.equals(cipherSuites, that.cipherSuites) && Objects.equals(protocols, that.protocols) &&
-                (handshakeTimeoutMs == that.handshakeTimeoutMs);
+                (handshakeTimeoutMs == that.handshakeTimeoutMs) &&
+                Objects.equals(hostnameVerifier, that.hostnameVerifier);
     }
 
     @Override
@@ -123,6 +148,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         result = 31 * result + Objects.hashCode(cipherSuites);
         result = 31 * result + Objects.hashCode(protocols);
         result = 31 * result + Long.hashCode(handshakeTimeoutMs);
+        result = 31 * result + Objects.hashCode(hostnameVerifier);
         return result;
     }
 }

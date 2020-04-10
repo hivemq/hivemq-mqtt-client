@@ -22,9 +22,10 @@ import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLException;
+import javax.net.ssl.*;
 import java.net.InetSocketAddress;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * @author Christoph Schäbel
@@ -36,20 +37,36 @@ public final class MqttSslInitializer {
 
     public static void initChannel(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
-            final @NotNull InetSocketAddress address) throws SSLException {
+            final @NotNull InetSocketAddress address, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull BiConsumer<Channel, Throwable> onError) {
 
-        channel.pipeline().addLast(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig, address));
-    }
+        final SslHandler sslHandler;
+        try {
+            final SslContext sslContext = createSslContext(sslConfig);
+            sslHandler = sslContext.newHandler(channel.alloc(), address.getHostString(), address.getPort());
+        } catch (final SSLException e) {
+            onError.accept(channel, e);
+            return;
+        }
 
-    private static @NotNull SslHandler createSslHandler(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
-            final @NotNull InetSocketAddress address) throws SSLException {
+        channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler);
 
-        return createSslContext(sslConfig).newHandler(channel.alloc(), address.getHostString(), address.getPort());
+        final HostnameVerifier hostnameVerifier = sslConfig.getRawHostnameVerifier();
+        sslHandler.handshakeFuture().addListener(future -> {
+            if (future.isSuccess()) {
+                if ((hostnameVerifier != null) &&
+                        !hostnameVerifier.verify(address.getHostString(), sslHandler.engine().getSession())) {
+                    onError.accept(channel, new SSLHandshakeException("Hostname verification failed"));
+                } else {
+                    onSuccess.accept(channel);
+                }
+            } else {
+                onError.accept(channel, future.cause());
+            }
+        });
     }
 
     static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-
         final ImmutableList<String> protocols = sslConfig.getRawProtocols();
 
         final SslContext sslContext = SslContextBuilder.forClient()
@@ -61,12 +78,16 @@ public final class MqttSslInitializer {
 
         return new DelegatingSslContext(sslContext) {
             @Override
-            protected void initEngine(@NotNull final SSLEngine engine) {
-            }
+            protected void initEngine(final @NotNull SSLEngine engine) {}
 
             @Override
-            protected void initHandler(@NotNull final SslHandler handler) {
+            protected void initHandler(final @NotNull SslHandler handler) {
                 handler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
+                if (sslConfig.getRawHostnameVerifier() == null) {
+                    final SSLParameters sslParameters = handler.engine().getSSLParameters();
+                    sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+                    handler.engine().setSSLParameters(sslParameters);
+                }
             }
         };
     }
