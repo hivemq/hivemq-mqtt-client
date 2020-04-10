@@ -21,6 +21,7 @@ import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.List;
@@ -80,6 +81,12 @@ public interface MqttClientSslConfig {
      * @return the handshake timeout in milliseconds.
      */
     long getHandshakeTimeoutMs();
+
+    /**
+     * @return the optional user defined hostname verifier. If absent, the https hostname verification is performed.
+     * @since 1.2
+     */
+    @NotNull Optional<HostnameVerifier> getHostnameVerifier();
 
     /**
      * Creates a builder for extending this secure transport configuration.

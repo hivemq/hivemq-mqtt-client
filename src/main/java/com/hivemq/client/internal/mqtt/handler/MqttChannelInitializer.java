@@ -84,33 +84,42 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
-        try {
-            initChannel(ctx.channel());
-            ctx.pipeline().remove(this);
-        } catch (final Throwable cause) {
-            exceptionCaught(ctx, cause);
+        ctx.pipeline().remove(this);
+        initProxy(ctx.channel());
+    }
+
+    private void initProxy(final @NotNull Channel channel) {
+        final MqttProxyConfigImpl proxyConfig = connAckFlow.getTransportConfig().getRawProxyConfig();
+        if (proxyConfig != null) {
+            MqttProxyInitializer.initChannel(channel, proxyConfig, this::initSsl, this::onError);
+        } else {
+            initSsl(channel);
         }
     }
 
-    void initChannel(final @NotNull Channel channel) throws Exception {
+    private void initSsl(final @NotNull Channel channel) {
         final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
-        final MqttProxyConfigImpl proxyConfig = transportConfig.getRawProxyConfig();
-        if (proxyConfig != null) {
-            MqttProxyInitializer.initChannel(channel, proxyConfig);
-        }
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
         if (sslConfig != null) {
-            MqttSslInitializer.initChannel(channel, sslConfig, transportConfig.getServerAddress());
+            MqttSslInitializer.initChannel(
+                    channel, sslConfig, transportConfig.getServerAddress(), this::initWebsocket, this::onError);
+        } else {
+            initWebsocket(channel);
         }
+    }
+
+    private void initWebsocket(final @NotNull Channel channel) {
+        final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
         final MqttWebSocketConfigImpl webSocketConfig = transportConfig.getRawWebSocketConfig();
         if (webSocketConfig != null) {
-            webSocketInitializer.get().initChannel(channel, webSocketConfig);
+            webSocketInitializer.get()
+                    .initChannel(channel, webSocketConfig, transportConfig, this::initMqtt, this::onError);
         } else {
             initMqtt(channel);
         }
     }
 
-    public void initMqtt(final @NotNull Channel channel) {
+    private void initMqtt(final @NotNull Channel channel) {
         channel.pipeline()
                 .addLast(MqttEncoder.NAME, encoder)
                 .addLast(MqttAuthHandler.NAME, authHandler)
@@ -118,14 +127,10 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
                 .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
     }
 
-    @Override
-    public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        if (ctx.pipeline().get(MqttDisconnectHandler.NAME) != null) {
-            ctx.pipeline().remove(MqttDisconnectHandler.NAME);
-        }
-        ctx.close();
+    private void onError(final @NotNull Channel channel, final @NotNull Throwable cause) {
+        channel.close();
         MqttConnAckSingle.reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause),
-                connect, connAckFlow, ctx.channel().eventLoop());
+                connect, connAckFlow, channel.eventLoop());
     }
 
     @Override

@@ -26,6 +26,8 @@ import io.netty.handler.proxy.Socks5ProxyHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * @author Silvio Giebl
@@ -34,7 +36,10 @@ public class MqttProxyInitializer {
 
     private static final @NotNull String PROXY_HANDLER_NAME = "proxy";
 
-    public static void initChannel(final @NotNull Channel channel, final @NotNull MqttProxyConfigImpl proxyConfig) {
+    public static void initChannel(
+            final @NotNull Channel channel, final @NotNull MqttProxyConfigImpl proxyConfig,
+            final @NotNull Consumer<Channel> onSuccess, final @NotNull BiConsumer<Channel, Throwable> onError) {
+
         final InetSocketAddress address = proxyConfig.getProxyAddress();
         final String username = proxyConfig.getRawProxyUsername();
         final String password = proxyConfig.getRawProxyPassword();
@@ -56,8 +61,18 @@ public class MqttProxyInitializer {
                 }
                 break;
             default:
+                onError.accept(
+                        channel, new IllegalStateException("Unknown proxy protocol " + proxyConfig.getProxyProtocol()));
                 return;
         }
         channel.pipeline().addLast(PROXY_HANDLER_NAME, proxyHandler);
+
+        proxyHandler.connectFuture().addListener(future -> {
+            if (future.isSuccess()) {
+                onSuccess.accept(channel);
+            } else {
+                onError.accept(channel, future.cause());
+            }
+        });
     }
 }
