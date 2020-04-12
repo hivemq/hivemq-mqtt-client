@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-public class MqttProxyInitializer {
+public final class MqttProxyInitializer {
 
     private static final @NotNull String PROXY_HANDLER_NAME = "proxy";
 
@@ -65,6 +65,7 @@ public class MqttProxyInitializer {
                         channel, new IllegalStateException("Unknown proxy protocol " + proxyConfig.getProxyProtocol()));
                 return;
         }
+        proxyHandler.setConnectTimeoutMillis(proxyConfig.getHandshakeTimeoutMs());
         channel.pipeline().addLast(PROXY_HANDLER_NAME, proxyHandler);
 
         proxyHandler.connectFuture().addListener(future -> {
@@ -75,4 +76,6 @@ public class MqttProxyInitializer {
             }
         });
     }
+
+    private MqttProxyInitializer() {}
 }

@@ -45,20 +45,20 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     }
 
     static final @NotNull MqttClientSslConfigImpl DEFAULT =
-            new MqttClientSslConfigImpl(null, null, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS,
+            new MqttClientSslConfigImpl(null, null, null, null, (int) DEFAULT_HANDSHAKE_TIMEOUT_MS,
                     DEFAULT_HOSTNAME_VERIFIER);
 
     private final @Nullable KeyManagerFactory keyManagerFactory;
     private final @Nullable TrustManagerFactory trustManagerFactory;
     private final @Nullable ImmutableList<String> cipherSuites;
     private final @Nullable ImmutableList<String> protocols;
-    private final long handshakeTimeoutMs;
+    private final int handshakeTimeoutMs;
     private final @Nullable HostnameVerifier hostnameVerifier;
 
     MqttClientSslConfigImpl(
             final @Nullable KeyManagerFactory keyManagerFactory,
             final @Nullable TrustManagerFactory trustManagerFactory, final @Nullable ImmutableList<String> cipherSuites,
-            final @Nullable ImmutableList<String> protocols, final long handshakeTimeoutMs,
+            final @Nullable ImmutableList<String> protocols, final int handshakeTimeoutMs,
             final @Nullable HostnameVerifier hostnameVerifier) {
 
         this.keyManagerFactory = keyManagerFactory;
@@ -147,7 +147,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         result = 31 * result + Objects.hashCode(trustManagerFactory);
         result = 31 * result + Objects.hashCode(cipherSuites);
         result = 31 * result + Objects.hashCode(protocols);
-        result = 31 * result + Long.hashCode(handshakeTimeoutMs);
+        result = 31 * result + Integer.hashCode(handshakeTimeoutMs);
         result = 31 * result + Objects.hashCode(hostnameVerifier);
         return result;
     }

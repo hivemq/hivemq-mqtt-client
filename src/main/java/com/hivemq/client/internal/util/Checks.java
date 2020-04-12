@@ -100,6 +100,16 @@ public final class Checks {
         return (ImmutableList<T>) list;
     }
 
+    public static long range(final long value, final long min, final long max, final @NotNull String name) {
+        if (value < min) {
+            throw new IllegalArgumentException(name + " must not be smaller than " + min);
+        }
+        if (value > max) {
+            throw new IllegalArgumentException(name + " must not be greater than " + max);
+        }
+        return value;
+    }
+
     public static int unsignedShort(final int value, final @NotNull String name) {
         if (!UnsignedDataTypes.isUnsignedShort(value)) {
             throw new IllegalArgumentException(name + " must not exceed the value range of unsigned short [0, " +

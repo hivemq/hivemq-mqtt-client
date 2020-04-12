@@ -90,12 +90,9 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
      */
     @CallByThread("Netty EventLoop")
     protected void scheduleTimeout(final @NotNull Channel channel) {
-        if (timeoutFuture != null) {
-            timeoutFuture.cancel(false);
-            timeoutFuture = null;
-            run();
-        } else {
-            timeoutFuture = channel.eventLoop().schedule(this, getTimeout(), TimeUnit.SECONDS);
+        final long timeoutMs = getTimeoutMs();
+        if (timeoutMs > 0) {
+            timeoutFuture = channel.eventLoop().schedule(this, timeoutMs, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -122,7 +119,7 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
      *
      * @return the timeout interval in seconds.
      */
-    protected abstract long getTimeout();
+    protected abstract long getTimeoutMs();
 
     /**
      * @return the Reason Code that will be used in the DISCONNECT message if a timeout happens and the channel is still

@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.MqttWebSocketConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -32,6 +33,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     private @NotNull String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
     private @NotNull String queryString = MqttWebSocketConfigImpl.DEFAULT_QUERY_STRING;
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
+    private int handshakeTimeoutMs = MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     MqttWebSocketConfigImplBuilder() {}
 
@@ -40,6 +42,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
             serverPath = webSocketConfig.getServerPath();
             queryString = webSocketConfig.getQueryString();
             subprotocol = webSocketConfig.getSubprotocol();
+            handshakeTimeoutMs = webSocketConfig.getHandshakeTimeoutMs();
         }
     }
 
@@ -61,8 +64,15 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
         return self();
     }
 
+    public @NotNull B handshakeTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
+        this.handshakeTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "Handshake timeout in milliseconds");
+        return self();
+    }
+
     public @NotNull MqttWebSocketConfigImpl build() {
-        return new MqttWebSocketConfigImpl(serverPath, queryString, subprotocol);
+        return new MqttWebSocketConfigImpl(serverPath, queryString, subprotocol, handshakeTimeoutMs);
     }
 
     public static class Default extends MqttWebSocketConfigImplBuilder<Default> implements MqttWebSocketConfigBuilder {

@@ -22,8 +22,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketHandshakeException;
+import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -32,20 +36,25 @@ import java.util.function.Consumer;
  */
 class MqttWebsocketHandshakeHandler extends ChannelInboundHandlerAdapter {
 
-    public static final @NotNull String NAME = "ws.init";
+    public static final @NotNull String NAME = "ws.handshake";
 
     private final @NotNull WebSocketClientHandshaker handshaker;
     private final @NotNull Consumer<Channel> onSuccess;
     private final @NotNull BiConsumer<Channel, Throwable> onError;
+    private final int handshakeTimeoutMs;
+
     private boolean handshakeStarted = false;
+    private boolean handshakeDone = false;
+    private @Nullable ScheduledFuture<?> timeoutFuture;
 
     MqttWebsocketHandshakeHandler(
             final @NotNull WebSocketClientHandshaker handshaker, final @NotNull Consumer<Channel> onSuccess,
-            final @NotNull BiConsumer<Channel, Throwable> onError) {
+            final @NotNull BiConsumer<Channel, Throwable> onError, final int handshakeTimeoutMs) {
 
         this.handshaker = handshaker;
         this.onSuccess = onSuccess;
         this.onError = onError;
+        this.handshakeTimeoutMs = handshakeTimeoutMs;
     }
 
     @Override
@@ -64,8 +73,17 @@ class MqttWebsocketHandshakeHandler extends ChannelInboundHandlerAdapter {
     private void startHandshake(final @NotNull ChannelHandlerContext ctx) {
         if (!handshakeStarted) {
             handshakeStarted = true;
+
+            if (handshakeTimeoutMs > 0) {
+                timeoutFuture = ctx.channel().eventLoop().schedule(() -> {
+                    if (setHandshakeDone(ctx)) {
+                        onError.accept(ctx.channel(), new WebSocketHandshakeException(
+                                "handshake timed out after " + handshakeTimeoutMs + "ms"));
+                    }
+                }, handshakeTimeoutMs, TimeUnit.MILLISECONDS);
+            }
+
             handshaker.handshake(ctx.channel(), ctx.voidPromise());
-            // TODO timeout
         }
     }
 
@@ -79,22 +97,45 @@ class MqttWebsocketHandshakeHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void finishHandshake(final @NotNull ChannelHandlerContext ctx, final @NotNull FullHttpResponse response) {
-        try {
-            if (handshaker.isHandshakeComplete()) {
-                throw new IllegalStateException(
-                        "Must not receive http response if websocket handshake is already finished.");
+        if (setHandshakeDone(ctx)) {
+            try {
+                handshaker.finishHandshake(ctx.channel(), response);
+                onSuccess.accept(ctx.channel());
+            } catch (final Throwable t) {
+                onError.accept(ctx.channel(), t);
             }
-            handshaker.finishHandshake(ctx.channel(), response);
-            onSuccess.accept(ctx.channel());
-            ctx.pipeline().remove(this);
-        } finally {
-            response.release();
         }
+        response.release();
+    }
+
+    @Override
+    public void channelInactive(final @NotNull ChannelHandlerContext ctx) {
+        if (setHandshakeDone(ctx)) {
+            onError.accept(ctx.channel(), new WebSocketHandshakeException("connection was closed during handshake"));
+        }
+        ctx.fireChannelInactive();
     }
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        onError.accept(ctx.channel(), cause);
+        if (setHandshakeDone(ctx)) {
+            onError.accept(ctx.channel(), cause);
+        } else {
+            ctx.fireExceptionCaught(cause);
+        }
+    }
+
+    private boolean setHandshakeDone(final @NotNull ChannelHandlerContext ctx) {
+        if (!handshakeDone) {
+            handshakeDone = true;
+            ctx.pipeline().remove(this);
+            if (timeoutFuture != null) {
+                timeoutFuture.cancel(false);
+                timeoutFuture = null;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

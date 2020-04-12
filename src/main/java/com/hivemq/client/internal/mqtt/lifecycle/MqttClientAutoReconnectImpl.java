@@ -32,9 +32,8 @@ import java.util.concurrent.TimeUnit;
 public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
 
     static final long DEFAULT_START_DELAY_NANOS =
-            TimeUnit.NANOSECONDS.convert(MqttClientAutoReconnect.DEFAULT_START_DELAY_S, TimeUnit.SECONDS);
-    static final long DEFAULT_MAX_DELAY_NANOS =
-            TimeUnit.NANOSECONDS.convert(MqttClientAutoReconnect.DEFAULT_MAX_DELAY_S, TimeUnit.SECONDS);
+            TimeUnit.SECONDS.toNanos(MqttClientAutoReconnect.DEFAULT_START_DELAY_S);
+    static final long DEFAULT_MAX_DELAY_NANOS = TimeUnit.SECONDS.toNanos(MqttClientAutoReconnect.DEFAULT_MAX_DELAY_S);
     public static final @NotNull MqttClientAutoReconnectImpl DEFAULT =
             new MqttClientAutoReconnectImpl(DEFAULT_START_DELAY_NANOS, DEFAULT_MAX_DELAY_NANOS);
 

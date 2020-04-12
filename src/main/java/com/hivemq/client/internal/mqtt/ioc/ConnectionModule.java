@@ -27,8 +27,6 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelOption;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -40,9 +38,6 @@ abstract class ConnectionModule {
     @Provides
     static @NotNull Bootstrap provideBootstrap(final @NotNull MqttChannelInitializer channelInitializer) {
         return new Bootstrap().channelFactory(NettyEventLoopProvider.INSTANCE.getChannelFactory())
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                 .handler(channelInitializer);
     }
 

@@ -19,10 +19,16 @@ package com.hivemq.client.internal.mqtt.handler.ssl;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.channel.Channel;
-import io.netty.handler.ssl.*;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.ssl.SupportedCipherSuiteFilter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLParameters;
 import java.net.InetSocketAddress;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -44,14 +50,20 @@ public final class MqttSslInitializer {
         try {
             final SslContext sslContext = createSslContext(sslConfig);
             sslHandler = sslContext.newHandler(channel.alloc(), address.getHostString(), address.getPort());
-        } catch (final SSLException e) {
-            onError.accept(channel, e);
+        } catch (final Throwable t) {
+            onError.accept(channel, t);
             return;
         }
 
-        channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler);
+        sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
 
         final HostnameVerifier hostnameVerifier = sslConfig.getRawHostnameVerifier();
+        if (hostnameVerifier == null) {
+            final SSLParameters sslParameters = sslHandler.engine().getSSLParameters();
+            sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+            sslHandler.engine().setSSLParameters(sslParameters);
+        }
+
         sslHandler.handshakeFuture().addListener(future -> {
             if (future.isSuccess()) {
                 if ((hostnameVerifier != null) &&
@@ -64,32 +76,19 @@ public final class MqttSslInitializer {
                 onError.accept(channel, future.cause());
             }
         });
+
+        channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler);
     }
 
     static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
         final ImmutableList<String> protocols = sslConfig.getRawProtocols();
 
-        final SslContext sslContext = SslContextBuilder.forClient()
+        return SslContextBuilder.forClient()
                 .trustManager(sslConfig.getRawTrustManagerFactory())
                 .keyManager(sslConfig.getRawKeyManagerFactory())
                 .protocols((protocols == null) ? null : protocols.toArray(new String[0]))
                 .ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE)
                 .build();
-
-        return new DelegatingSslContext(sslContext) {
-            @Override
-            protected void initEngine(final @NotNull SSLEngine engine) {}
-
-            @Override
-            protected void initHandler(final @NotNull SslHandler handler) {
-                handler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
-                if (sslConfig.getRawHostnameVerifier() == null) {
-                    final SSLParameters sslParameters = handler.engine().getSSLParameters();
-                    sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
-                    handler.engine().setSSLParameters(sslParameters);
-                }
-            }
-        };
     }
 
     private MqttSslInitializer() {}

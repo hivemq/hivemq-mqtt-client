@@ -79,10 +79,12 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B protocols(@Nullable Collection<@NotNull String> protocols);
 
     /**
-     * Sets the {@link MqttClientSslConfig#getHandshakeTimeoutMs() handshake timeout}.
+     * Sets the {@link MqttClientSslConfig#getHandshakeTimeoutMs() ssl handshake timeout}.
+     * <p>
+     * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
      *
-     * @param timeout  the handshake timeout.
-     * @param timeUnit the time unit of the given timeout.
+     * @param timeout  the ssl handshake timeout or <code>0</code> to disable the timeout.
+     * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
      * @return the builder.
      */
     @CheckReturnValue

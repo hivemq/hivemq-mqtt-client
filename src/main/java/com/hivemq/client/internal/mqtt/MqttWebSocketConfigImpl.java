@@ -27,18 +27,22 @@ import org.jetbrains.annotations.Nullable;
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     static final @NotNull MqttWebSocketConfigImpl DEFAULT =
-            new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_QUERY_STRING, DEFAULT_MQTT_SUBPROTOCOL);
+            new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_QUERY_STRING, DEFAULT_MQTT_SUBPROTOCOL,
+                    DEFAULT_HANDSHAKE_TIMEOUT_MS);
 
     private final @NotNull String serverPath;
     private final @NotNull String queryString;
     private final @NotNull String subprotocol;
+    private final int handshakeTimeoutMs;
 
     MqttWebSocketConfigImpl(
-            final @NotNull String serverPath, final @NotNull String queryString, final @NotNull String subprotocol) {
+            final @NotNull String serverPath, final @NotNull String queryString, final @NotNull String subprotocol,
+            final int handshakeTimeoutMs) {
 
         this.serverPath = serverPath;
         this.queryString = queryString;
         this.subprotocol = subprotocol;
+        this.handshakeTimeoutMs = handshakeTimeoutMs;
     }
 
     @Override
@@ -57,6 +61,11 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     }
 
     @Override
+    public int getHandshakeTimeoutMs() {
+        return handshakeTimeoutMs;
+    }
+
+    @Override
     public @NotNull MqttWebSocketConfigImplBuilder.Default extend() {
         return new MqttWebSocketConfigImplBuilder.Default(this);
     }
@@ -72,7 +81,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
 
         return serverPath.equals(that.serverPath) && queryString.equals(that.queryString) &&
-                subprotocol.equals(that.subprotocol);
+                subprotocol.equals(that.subprotocol) && (handshakeTimeoutMs == that.handshakeTimeoutMs);
     }
 
     @Override
@@ -80,6 +89,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         int result = serverPath.hashCode();
         result = 31 * result + queryString.hashCode();
         result = 31 * result + subprotocol.hashCode();
+        result = 31 * result + Integer.hashCode(handshakeTimeoutMs);
         return result;
     }
 }

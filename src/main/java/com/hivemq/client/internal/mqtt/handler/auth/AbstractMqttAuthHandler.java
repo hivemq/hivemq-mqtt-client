@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -229,8 +230,8 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     }
 
     @Override
-    protected final long getTimeout() {
-        return authMechanism.getTimeout();
+    protected final long getTimeoutMs() {
+        return TimeUnit.SECONDS.toMillis(authMechanism.getTimeout());
     }
 
     @Override

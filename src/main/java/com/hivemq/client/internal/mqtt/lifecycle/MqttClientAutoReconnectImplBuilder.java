@@ -49,7 +49,7 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
             throw new IllegalArgumentException("Initial delay must be positive.");
         }
         Checks.notNull(timeUnit, "Time unit");
-        this.initialDelayNanos = TimeUnit.NANOSECONDS.convert(initialDelay, timeUnit);
+        this.initialDelayNanos = timeUnit.toNanos(initialDelay);
         return self();
     }
 
@@ -58,7 +58,7 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
             throw new IllegalArgumentException("Maximum delay must be positive or zero.");
         }
         Checks.notNull(timeUnit, "Time unit");
-        this.maxDelayNanos = TimeUnit.NANOSECONDS.convert(maxDelay, timeUnit);
+        this.maxDelayNanos = timeUnit.toNanos(maxDelay);
         return self();
     }
 

@@ -21,6 +21,8 @@ import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Builder base for a {@link MqttWebSocketConfig}.
  *
@@ -57,4 +59,17 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
      */
     @CheckReturnValue
     @NotNull B subprotocol(@NotNull String subprotocol);
+
+    /**
+     * Sets the {@link MqttWebSocketConfig#getHandshakeTimeoutMs() websocket handshake timeout}.
+     * <p>
+     * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
+     *
+     * @param timeout  the websocket handshake timeout or <code>0</code> to disable the timeout.
+     * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 }

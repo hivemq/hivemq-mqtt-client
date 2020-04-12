@@ -24,10 +24,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Builder base for a {@link MqttProxyConfig}.
  *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.2
  */
@@ -96,4 +98,16 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      */
     @CheckReturnValue
     @NotNull B proxyPassword(@Nullable String password);
+
+    /**
+     * Sets the {@link MqttProxyConfig#getHandshakeTimeoutMs() proxy handshake timeout}.
+     * <p>
+     * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
+     *
+     * @param timeout  the proxy handshake timeout or <code>0</code> to disable the timeout.
+     * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 }
