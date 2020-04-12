@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -38,6 +39,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
     private int port = -1;
     private @Nullable String username;
     private @Nullable String password;
+    private int handshakeTimeoutMs = MqttProxyConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     MqttProxyConfigImplBuilder() {}
 
@@ -47,6 +49,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
             address = proxyConfig.getProxyAddress();
             username = proxyConfig.getRawProxyUsername();
             password = proxyConfig.getRawProxyPassword();
+            handshakeTimeoutMs = proxyConfig.getHandshakeTimeoutMs();
         }
     }
 
@@ -104,6 +107,13 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
         return self();
     }
 
+    public @NotNull B handshakeTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
+        this.handshakeTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "Handshake timeout in milliseconds");
+        return self();
+    }
+
     private @NotNull InetSocketAddress getProxyAddress() {
         if (address != null) {
             return address;
@@ -129,7 +139,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
     }
 
     public @NotNull MqttProxyConfigImpl build() {
-        return new MqttProxyConfigImpl(protocol, getProxyAddress(), username, password);
+        return new MqttProxyConfigImpl(protocol, getProxyAddress(), username, password, handshakeTimeoutMs);
     }
 
     public static class Default extends MqttProxyConfigImplBuilder<Default> implements MqttProxyConfigBuilder {

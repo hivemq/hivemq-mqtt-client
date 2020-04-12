@@ -24,10 +24,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Builder base for a {@link MqttClientTransportConfig}.
  *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.1
  */
@@ -201,4 +203,33 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      */
     @CheckReturnValue
     @NotNull MqttProxyConfigBuilder.Nested<? extends B> proxyConfig();
+
+    /**
+     * Sets the {@link MqttClientTransportConfig#getSocketConnectTimeoutMs() timeout for connecting the socket to the
+     * server}.
+     * <p>
+     * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
+     *
+     * @param timeout  the timeout for connecting the socket to the server or <code>0</code> to disable the timeout.
+     * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B socketConnectTimeout(long timeout, @NotNull TimeUnit timeUnit);
+
+    /**
+     * Sets the {@link MqttClientTransportConfig#getMqttConnectTimeoutMs() timeout between sending the Connect and
+     * receiving the ConnAck message}.
+     * <p>
+     * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
+     *
+     * @param timeout  the timeout between sending the Connect and receiving the ConnAck message or <code>0</code> to
+     *                 disable the timeout.
+     * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B mqttConnectTimeout(long timeout, @NotNull TimeUnit timeUnit);
 }

@@ -34,6 +34,19 @@ import java.util.Optional;
 public interface MqttClientTransportConfig {
 
     /**
+     * The default timeout for connecting the socket to the server in milliseconds.
+     *
+     * @since 1.2
+     */
+    int DEFAULT_SOCKET_CONNECT_TIMEOUT_MS = 10_000;
+    /**
+     * The default timeout between sending the Connect and receiving the ConnAck message in milliseconds.
+     *
+     * @since 1.2
+     */
+    int DEFAULT_MQTT_CONNECT_TIMEOUT_MS = 60_000;
+
+    /**
      * Creates a builder for a transport configuration.
      *
      * @return the created builder for a transport configuration.
@@ -68,6 +81,18 @@ public interface MqttClientTransportConfig {
      * @since 1.2
      */
     @NotNull Optional<MqttProxyConfig> getProxyConfig();
+
+    /**
+     * @return the timeout for connecting the socket to the server in milliseconds.
+     * @since 1.2
+     */
+    int getSocketConnectTimeoutMs();
+
+    /**
+     * @return the timeout between sending the Connect and receiving the ConnAck message in milliseconds.
+     * @since 1.2
+     */
+    int getMqttConnectTimeoutMs();
 
     /**
      * Creates a builder for extending this transport configuration.

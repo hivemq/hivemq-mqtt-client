@@ -35,15 +35,17 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
     private final @NotNull InetSocketAddress address;
     private final @Nullable String username;
     private final @Nullable String password;
+    private final int handshakeTimeoutMs;
 
     MqttProxyConfigImpl(
             final @NotNull MqttProxyProtocol protocol, final @NotNull InetSocketAddress address,
-            final @Nullable String username, final @Nullable String password) {
+            final @Nullable String username, final @Nullable String password, final int handshakeTimeoutMs) {
 
         this.protocol = protocol;
         this.address = address;
         this.username = username;
         this.password = password;
+        this.handshakeTimeoutMs = handshakeTimeoutMs;
     }
 
     @Override
@@ -75,6 +77,11 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
     }
 
     @Override
+    public int getHandshakeTimeoutMs() {
+        return handshakeTimeoutMs;
+    }
+
+    @Override
     public @NotNull MqttProxyConfigImplBuilder.Default extend() {
         return new MqttProxyConfigImplBuilder.Default(this);
     }
@@ -90,7 +97,7 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
         final MqttProxyConfigImpl that = (MqttProxyConfigImpl) o;
 
         return (protocol == that.protocol) && address.equals(that.address) && Objects.equals(username, that.username) &&
-                Objects.equals(password, that.password);
+                Objects.equals(password, that.password) && (handshakeTimeoutMs == that.handshakeTimeoutMs);
     }
 
     @Override
@@ -99,6 +106,7 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
         result = 31 * result + address.hashCode();
         result = 31 * result + Objects.hashCode(username);
         result = 31 * result + Objects.hashCode(password);
+        result = 31 * result + Integer.hashCode(handshakeTimeoutMs);
         return result;
     }
 }

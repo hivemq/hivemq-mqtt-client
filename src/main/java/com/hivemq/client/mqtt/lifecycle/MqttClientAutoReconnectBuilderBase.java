@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Builder base for a {@link MqttClientAutoReconnect}.
  *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.1
  */

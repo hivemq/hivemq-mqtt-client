@@ -49,6 +49,10 @@ public interface MqttProxyConfig {
      * The default HTTP proxy port.
      */
     int DEFAULT_HTTP_PROXY_PORT = 80;
+    /**
+     * The default proxy handshake timeout in milliseconds.
+     */
+    int DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     /**
      * Creates a builder for a proxy configuration.
@@ -78,6 +82,11 @@ public interface MqttProxyConfig {
      * @return the optional proxy password.
      */
     @NotNull Optional<String> getProxyPassword();
+
+    /**
+     * @return the proxy handshake timeout in milliseconds.
+     */
+    int getHandshakeTimeoutMs();
 
     /**
      * Creates a builder for extending this proxy configuration.

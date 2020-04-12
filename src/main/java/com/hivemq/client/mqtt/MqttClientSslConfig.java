@@ -38,7 +38,7 @@ import java.util.Optional;
 public interface MqttClientSslConfig {
 
     /**
-     * The default handshake timeout in milliseconds.
+     * The default ssl handshake timeout in milliseconds.
      */
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
@@ -78,7 +78,7 @@ public interface MqttClientSslConfig {
     @NotNull Optional<@Immutable List<@NotNull String>> getProtocols();
 
     /**
-     * @return the handshake timeout in milliseconds.
+     * @return the ssl handshake timeout in milliseconds.
      */
     long getHandshakeTimeoutMs();
 

@@ -45,6 +45,12 @@ public interface MqttWebSocketConfig {
      * Name Registry</a>
      */
     @NotNull String DEFAULT_MQTT_SUBPROTOCOL = "mqtt";
+    /**
+     * The default websocket handshake timeout in milliseconds.
+     *
+     * @since 1.2
+     */
+    int DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     /**
      * Creates a builder for a WebSocket configuration.
@@ -69,6 +75,12 @@ public interface MqttWebSocketConfig {
      * @return the WebSocket subprotocol.
      */
     @NotNull String getSubprotocol();
+
+    /**
+     * @return the websocket handshake timeout in milliseconds.
+     * @since 1.2
+     */
+    int getHandshakeTimeoutMs();
 
     /**
      * Creates a builder for extending this WebSocket configuration.

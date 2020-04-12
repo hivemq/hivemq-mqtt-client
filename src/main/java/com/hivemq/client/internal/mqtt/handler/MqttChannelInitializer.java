@@ -35,6 +35,7 @@ import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.SocketChannel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -42,9 +43,10 @@ import javax.inject.Inject;
 /**
  * Initializes:
  * <ul>
- * <li>the SSL handlers (optional)</li>
- * <li>the WebSocket handlers (optional)</li>
- * <li>the basic MQTT handlers: Encoder, AuthHandler, ConnectHandler, DisconnectHandler</li>
+ *   <li>the proxy handlers (optional)
+ *   <li>the SSL/TLS handlers (optional)
+ *   <li>the WebSocket handlers (optional)
+ *   <li>the basic MQTT handlers: Encoder, AuthHandler, ConnectHandler, DisconnectHandler
  * </ul>
  *
  * @author Silvio Giebl
@@ -85,37 +87,43 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         ctx.pipeline().remove(this);
+
+        ((SocketChannel) ctx.channel()).config()
+                .setKeepAlive(true)
+                .setTcpNoDelay(true)
+                .setConnectTimeoutMillis(connAckFlow.getTransportConfig().getSocketConnectTimeoutMs());
+
         initProxy(ctx.channel());
     }
 
     private void initProxy(final @NotNull Channel channel) {
         final MqttProxyConfigImpl proxyConfig = connAckFlow.getTransportConfig().getRawProxyConfig();
-        if (proxyConfig != null) {
-            MqttProxyInitializer.initChannel(channel, proxyConfig, this::initSsl, this::onError);
-        } else {
+        if (proxyConfig == null) {
             initSsl(channel);
+        } else {
+            MqttProxyInitializer.initChannel(channel, proxyConfig, this::initSsl, this::onError);
         }
     }
 
     private void initSsl(final @NotNull Channel channel) {
         final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
-        if (sslConfig != null) {
+        if (sslConfig == null) {
+            initWebsocket(channel);
+        } else {
             MqttSslInitializer.initChannel(
                     channel, sslConfig, transportConfig.getServerAddress(), this::initWebsocket, this::onError);
-        } else {
-            initWebsocket(channel);
         }
     }
 
     private void initWebsocket(final @NotNull Channel channel) {
         final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
         final MqttWebSocketConfigImpl webSocketConfig = transportConfig.getRawWebSocketConfig();
-        if (webSocketConfig != null) {
+        if (webSocketConfig == null) {
+            initMqtt(channel);
+        } else {
             webSocketInitializer.get()
                     .initChannel(channel, webSocketConfig, transportConfig, this::initMqtt, this::onError);
-        } else {
-            initMqtt(channel);
         }
     }
 

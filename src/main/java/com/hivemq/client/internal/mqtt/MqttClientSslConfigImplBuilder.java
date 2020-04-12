@@ -39,7 +39,7 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
     private @Nullable TrustManagerFactory trustManagerFactory;
     private @Nullable ImmutableList<String> cipherSuites;
     private @Nullable ImmutableList<String> protocols;
-    private long handshakeTimeoutMs = MqttClientSslConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private int handshakeTimeoutMs = (int) MqttClientSslConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
     private @Nullable HostnameVerifier hostnameVerifier = MqttClientSslConfigImpl.DEFAULT_HOSTNAME_VERIFIER;
 
     MqttClientSslConfigImplBuilder() {}
@@ -50,7 +50,8 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
             trustManagerFactory = sslConfig.getRawTrustManagerFactory();
             cipherSuites = sslConfig.getRawCipherSuites();
             protocols = sslConfig.getRawProtocols();
-            handshakeTimeoutMs = sslConfig.getHandshakeTimeoutMs();
+            handshakeTimeoutMs = (int) sslConfig.getHandshakeTimeoutMs();
+            hostnameVerifier = sslConfig.getRawHostnameVerifier();
         }
     }
 
@@ -78,7 +79,8 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
     public @NotNull B handshakeTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
         Checks.notNull(timeUnit, "Time unit");
-        this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
+        this.handshakeTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "Handshake timeout in milliseconds");
         return self();
     }
 

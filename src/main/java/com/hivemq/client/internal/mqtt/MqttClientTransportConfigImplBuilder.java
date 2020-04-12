@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static com.hivemq.client.mqtt.MqttClient.*;
@@ -43,6 +44,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     private @Nullable MqttClientSslConfigImpl sslConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private @Nullable MqttProxyConfigImpl proxyConfig;
+    private int socketConnectTimeoutMs;
+    private int mqttConnectTimeoutMs;
 
     MqttClientTransportConfigImplBuilder() {}
 
@@ -58,6 +61,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         sslConfig = builder.sslConfig;
         webSocketConfig = builder.webSocketConfig;
         proxyConfig = builder.proxyConfig;
+        socketConnectTimeoutMs = builder.socketConnectTimeoutMs;
+        mqttConnectTimeoutMs = builder.mqttConnectTimeoutMs;
     }
 
     void set(final @NotNull MqttClientTransportConfigImpl transportConfig) {
@@ -66,6 +71,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         sslConfig = transportConfig.getRawSslConfig();
         webSocketConfig = transportConfig.getRawWebSocketConfig();
         proxyConfig = transportConfig.getRawProxyConfig();
+        socketConnectTimeoutMs = transportConfig.getSocketConnectTimeoutMs();
+        mqttConnectTimeoutMs = transportConfig.getMqttConnectTimeoutMs();
     }
 
     abstract @NotNull B self();
@@ -208,6 +215,20 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return new MqttProxyConfigImplBuilder.Nested<>(proxyConfig, this::proxyConfig);
     }
 
+    public @NotNull B socketConnectTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
+        this.socketConnectTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "Socket connect timeout in milliseconds");
+        return self();
+    }
+
+    public @NotNull B mqttConnectTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
+        this.mqttConnectTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "MQTT connect timeout in milliseconds");
+        return self();
+    }
+
     private @NotNull InetSocketAddress getServerAddress() {
         if (serverAddress != null) {
             return serverAddress;
@@ -235,8 +256,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     }
 
     @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
-        return new MqttClientTransportConfigImpl(
-                getServerAddress(), localAddress, sslConfig, webSocketConfig, proxyConfig);
+        return new MqttClientTransportConfigImpl(getServerAddress(), localAddress, sslConfig, webSocketConfig,
+                proxyConfig, socketConnectTimeoutMs, mqttConnectTimeoutMs);
     }
 
     public static class Default extends MqttClientTransportConfigImplBuilder<Default>
