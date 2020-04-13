@@ -66,22 +66,22 @@ public interface MqttProxyConfig {
     /**
      * @return the proxy protocol.
      */
-    @NotNull MqttProxyProtocol getProxyProtocol();
+    @NotNull MqttProxyProtocol getProtocol();
 
     /**
      * @return the proxy address to connect to.
      */
-    @NotNull InetSocketAddress getProxyAddress();
+    @NotNull InetSocketAddress getAddress();
 
     /**
      * @return the optional proxy username.
      */
-    @NotNull Optional<String> getProxyUsername();
+    @NotNull Optional<String> getUsername();
 
     /**
      * @return the optional proxy password.
      */
-    @NotNull Optional<String> getProxyPassword();
+    @NotNull Optional<String> getPassword();
 
     /**
      * @return the proxy handshake timeout in milliseconds.

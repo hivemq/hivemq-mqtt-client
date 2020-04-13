@@ -49,30 +49,30 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
     }
 
     @Override
-    public @NotNull MqttProxyProtocol getProxyProtocol() {
+    public @NotNull MqttProxyProtocol getProtocol() {
         return protocol;
     }
 
     @Override
-    public @NotNull InetSocketAddress getProxyAddress() {
+    public @NotNull InetSocketAddress getAddress() {
         return address;
     }
 
     @Override
-    public @NotNull Optional<String> getProxyUsername() {
+    public @NotNull Optional<String> getUsername() {
         return Optional.ofNullable(username);
     }
 
-    public @Nullable String getRawProxyUsername() {
+    public @Nullable String getRawUsername() {
         return username;
     }
 
     @Override
-    public @NotNull Optional<String> getProxyPassword() {
+    public @NotNull Optional<String> getPassword() {
         return Optional.ofNullable(password);
     }
 
-    public @Nullable String getRawProxyPassword() {
+    public @Nullable String getRawPassword() {
         return password;
     }
 

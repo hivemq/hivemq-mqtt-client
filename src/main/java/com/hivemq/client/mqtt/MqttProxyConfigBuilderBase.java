@@ -37,22 +37,22 @@ import java.util.concurrent.TimeUnit;
 public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase<B>> {
 
     /**
-     * Sets the {@link MqttProxyConfig#getProxyProtocol() proxy protocol}.
+     * Sets the {@link MqttProxyConfig#getProtocol() proxy protocol}.
      *
      * @param protocol the proxy protocol.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B proxyProtocol(@NotNull MqttProxyProtocol protocol);
+    @NotNull B protocol(@NotNull MqttProxyProtocol protocol);
 
     /**
-     * Sets the {@link MqttProxyConfig#getProxyAddress() proxy address} to connect to.
+     * Sets the {@link MqttProxyConfig#getAddress() proxy address} to connect to.
      *
      * @param address the proxy address.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B proxyAddress(@NotNull InetSocketAddress address);
+    @NotNull B address(@NotNull InetSocketAddress address);
 
     /**
      * Sets the proxy host to connect to.
@@ -61,7 +61,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B proxyHost(@NotNull String host);
+    @NotNull B host(@NotNull String host);
 
     /**
      * Sets the proxy host to connect to.
@@ -70,7 +70,7 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B proxyHost(@NotNull InetAddress host);
+    @NotNull B host(@NotNull InetAddress host);
 
     /**
      * Sets the proxy port to connect to.
@@ -79,25 +79,25 @@ public interface MqttProxyConfigBuilderBase<B extends MqttProxyConfigBuilderBase
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B proxyPort(int port);
+    @NotNull B port(int port);
 
     /**
-     * Sets the {@link MqttProxyConfig#getProxyUsername() proxy username}.
+     * Sets the {@link MqttProxyConfig#getUsername() proxy username}.
      *
      * @param username the proxy username.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B proxyUsername(@Nullable String username);
+    @NotNull B username(@Nullable String username);
 
     /**
-     * Sets the {@link MqttProxyConfig#getProxyPassword() proxy password}.
+     * Sets the {@link MqttProxyConfig#getPassword() proxy password}.
      *
      * @param password the proxy username.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B proxyPassword(@Nullable String password);
+    @NotNull B password(@Nullable String password);
 
     /**
      * Sets the {@link MqttProxyConfig#getHandshakeTimeoutMs() proxy handshake timeout}.

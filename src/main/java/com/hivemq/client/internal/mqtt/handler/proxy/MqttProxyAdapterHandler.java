@@ -63,13 +63,13 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
             final @Nullable SocketAddress localAddress, final @NotNull ChannelPromise promise) {
 
         final Channel channel = ctx.channel();
-        final String username = proxyConfig.getRawProxyUsername();
-        final String password = proxyConfig.getRawProxyPassword();
+        final String username = proxyConfig.getRawUsername();
+        final String password = proxyConfig.getRawPassword();
         final Consumer<Channel> onSuccess = this.onSuccess;
         final BiConsumer<Channel, Throwable> onError = this.onError;
 
         final ProxyHandler proxyHandler;
-        switch (proxyConfig.getProxyProtocol()) {
+        switch (proxyConfig.getProtocol()) {
             case SOCKS_4:
                 proxyHandler = new Socks4ProxyHandler(remoteAddress, username);
                 break;
@@ -86,7 +86,7 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
                 break;
             default:
                 onError.accept(
-                        channel, new IllegalStateException("Unknown proxy protocol " + proxyConfig.getProxyProtocol()));
+                        channel, new IllegalStateException("Unknown proxy protocol " + proxyConfig.getProtocol()));
                 return;
         }
 

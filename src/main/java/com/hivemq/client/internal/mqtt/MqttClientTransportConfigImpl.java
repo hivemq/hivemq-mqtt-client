@@ -64,7 +64,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     }
 
     public @NotNull InetSocketAddress getRemoteAddress() {
-        return (proxyConfig == null) ? serverAddress : proxyConfig.getProxyAddress();
+        return (proxyConfig == null) ? serverAddress : proxyConfig.getAddress();
     }
 
     @Override
