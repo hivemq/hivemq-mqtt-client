@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.InetSocketAddressUtil;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
 import com.hivemq.client.mqtt.MqttProxyConfig;
@@ -236,7 +237,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         if (serverHost instanceof InetAddress) {
             return new InetSocketAddress((InetAddress) serverHost, getServerPort());
         }
-        return InetSocketAddress.createUnresolved((String) serverHost, getServerPort());
+        return InetSocketAddressUtil.create((String) serverHost, getServerPort());
     }
 
     private int getServerPort() {
