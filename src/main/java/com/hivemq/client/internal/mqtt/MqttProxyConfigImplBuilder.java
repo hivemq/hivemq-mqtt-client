@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.InetSocketAddressUtil;
 import com.hivemq.client.mqtt.MqttProxyConfigBuilder;
 import com.hivemq.client.mqtt.MqttProxyProtocol;
 import org.jetbrains.annotations.NotNull;
@@ -121,7 +122,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
         if (host instanceof InetAddress) {
             return new InetSocketAddress((InetAddress) host, getProxyPort());
         }
-        return InetSocketAddress.createUnresolved((String) host, getProxyPort());
+        return InetSocketAddressUtil.create((String) host, getProxyPort());
     }
 
     private int getProxyPort() {
