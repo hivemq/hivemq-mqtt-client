@@ -97,11 +97,13 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     }
 
     private void initProxy(final @NotNull Channel channel) {
-        final MqttProxyConfigImpl proxyConfig = connAckFlow.getTransportConfig().getRawProxyConfig();
+        final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
+        final MqttProxyConfigImpl proxyConfig = transportConfig.getRawProxyConfig();
         if (proxyConfig == null) {
             initSsl(channel);
         } else {
-            MqttProxyInitializer.initChannel(channel, proxyConfig, this::initSsl, this::onError);
+            MqttProxyInitializer.initChannel(
+                    channel, proxyConfig, transportConfig.getServerAddress(), this::initSsl, this::onError);
         }
     }
 

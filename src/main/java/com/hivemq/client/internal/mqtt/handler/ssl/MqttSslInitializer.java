@@ -43,13 +43,13 @@ public final class MqttSslInitializer {
 
     public static void initChannel(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
-            final @NotNull InetSocketAddress address, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull InetSocketAddress serverAddress, final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
         final SslHandler sslHandler;
         try {
             final SslContext sslContext = createSslContext(sslConfig);
-            sslHandler = sslContext.newHandler(channel.alloc(), address.getHostString(), address.getPort());
+            sslHandler = sslContext.newHandler(channel.alloc(), serverAddress.getHostString(), serverAddress.getPort());
         } catch (final Throwable t) {
             onError.accept(channel, t);
             return;
@@ -67,7 +67,7 @@ public final class MqttSslInitializer {
         sslHandler.handshakeFuture().addListener(future -> {
             if (future.isSuccess()) {
                 if ((hostnameVerifier != null) &&
-                        !hostnameVerifier.verify(address.getHostString(), sslHandler.engine().getSession())) {
+                        !hostnameVerifier.verify(serverAddress.getHostString(), sslHandler.engine().getSession())) {
                     onError.accept(channel, new SSLHandshakeException("Hostname verification failed"));
                 } else {
                     onSuccess.accept(channel);

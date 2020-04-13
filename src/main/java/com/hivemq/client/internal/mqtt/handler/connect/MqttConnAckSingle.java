@@ -86,9 +86,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
             final MqttClientTransportConfigImpl transportConfig = flow.getTransportConfig();
 
-            bootstrap.group(eventLoop)
-                    .localAddress(transportConfig.getRawLocalAddress())
-                    .connect(transportConfig.getServerAddress())
+            bootstrap.group(eventLoop).connect(transportConfig.getRemoteAddress(), transportConfig.getRawLocalAddress())
                     .addListener(future -> {
                         final Throwable cause = future.cause();
                         if (cause != null) {
