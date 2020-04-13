@@ -46,32 +46,32 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
 
     MqttProxyConfigImplBuilder(final @Nullable MqttProxyConfigImpl proxyConfig) {
         if (proxyConfig != null) {
-            protocol = proxyConfig.getProxyProtocol();
-            address = proxyConfig.getProxyAddress();
-            username = proxyConfig.getRawProxyUsername();
-            password = proxyConfig.getRawProxyPassword();
+            protocol = proxyConfig.getProtocol();
+            address = proxyConfig.getAddress();
+            username = proxyConfig.getRawUsername();
+            password = proxyConfig.getRawPassword();
             handshakeTimeoutMs = proxyConfig.getHandshakeTimeoutMs();
         }
     }
 
     abstract @NotNull B self();
 
-    public @NotNull B proxyProtocol(final @Nullable MqttProxyProtocol protocol) {
+    public @NotNull B protocol(final @Nullable MqttProxyProtocol protocol) {
         this.protocol = Checks.notNull(protocol, "Proxy protocol");
         return self();
     }
 
-    public @NotNull B proxyAddress(final @Nullable InetSocketAddress address) {
+    public @NotNull B address(final @Nullable InetSocketAddress address) {
         this.address = Checks.notNull(address, "Proxy address");
         return self();
     }
 
-    public @NotNull B proxyHost(final @Nullable String host) {
+    public @NotNull B host(final @Nullable String host) {
         setProxyHost(Checks.notEmpty(host, "Proxy host"));
         return self();
     }
 
-    public @NotNull B proxyHost(final @Nullable InetAddress host) {
+    public @NotNull B host(final @Nullable InetAddress host) {
         setProxyHost(Checks.notNull(host, "Proxy host"));
         return self();
     }
@@ -84,7 +84,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
         }
     }
 
-    public @NotNull B proxyPort(final int port) {
+    public @NotNull B port(final int port) {
         this.port = Checks.unsignedShort(port, "Proxy port");
         if (address != null) {
             final InetAddress inetAddress = address.getAddress();
@@ -98,12 +98,12 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
         return self();
     }
 
-    public @NotNull B proxyUsername(final @Nullable String username) {
+    public @NotNull B username(final @Nullable String username) {
         this.username = username;
         return self();
     }
 
-    public @NotNull B proxyPassword(final @Nullable String password) {
+    public @NotNull B password(final @Nullable String password) {
         this.password = password;
         return self();
     }
@@ -115,17 +115,17 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
         return self();
     }
 
-    private @NotNull InetSocketAddress getProxyAddress() {
+    private @NotNull InetSocketAddress getAddress() {
         if (address != null) {
             return address;
         }
         if (host instanceof InetAddress) {
-            return new InetSocketAddress((InetAddress) host, getProxyPort());
+            return new InetSocketAddress((InetAddress) host, getPort());
         }
-        return InetSocketAddressUtil.create((String) host, getProxyPort());
+        return InetSocketAddressUtil.create((String) host, getPort());
     }
 
-    private int getProxyPort() {
+    private int getPort() {
         if (port != -1) {
             return port;
         }
@@ -140,7 +140,7 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
     }
 
     public @NotNull MqttProxyConfigImpl build() {
-        return new MqttProxyConfigImpl(protocol, getProxyAddress(), username, password, handshakeTimeoutMs);
+        return new MqttProxyConfigImpl(protocol, getAddress(), username, password, handshakeTimeoutMs);
     }
 
     public static class Default extends MqttProxyConfigImplBuilder<Default> implements MqttProxyConfigBuilder {
