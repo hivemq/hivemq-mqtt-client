@@ -17,6 +17,7 @@
 
 package com.hivemq.client.internal.mqtt.handler.websocket;
 
+import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
@@ -30,6 +31,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.function.BiConsumer;
@@ -52,15 +54,17 @@ public class MqttWebSocketInitializer {
     }
 
     public void initChannel(
-            final @NotNull Channel channel, final @NotNull MqttWebSocketConfigImpl webSocketConfig,
-            final @NotNull MqttClientTransportConfigImpl transportConfig, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull Channel channel, final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttWebSocketConfigImpl webSocketConfig, final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
         final URI uri;
         try {
+            final MqttClientTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
+            final InetSocketAddress serverAddress = transportConfig.getServerAddress();
             uri = new URI((transportConfig.getRawSslConfig() == null) ? "ws" : "wss", null,
-                    transportConfig.getServerAddress().getHostString(), transportConfig.getServerAddress().getPort(),
-                    "/" + webSocketConfig.getServerPath(), webSocketConfig.getQueryString(), null);
+                    serverAddress.getHostString(), serverAddress.getPort(), "/" + webSocketConfig.getServerPath(),
+                    webSocketConfig.getQueryString(), null);
         } catch (final URISyntaxException e) {
             onError.accept(channel, e);
             return;

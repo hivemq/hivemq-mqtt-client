@@ -247,8 +247,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
                 connectDefaults.getWillPublish(),
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         // @formatter:on
-        MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
-                connectionConfig.getTransportConfig(), eventLoop);
+        MqttConnAckSingle.reconnect(
+                clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect, eventLoop);
     }
 
     @Override

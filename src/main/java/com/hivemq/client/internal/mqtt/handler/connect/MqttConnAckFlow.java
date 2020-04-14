@@ -17,7 +17,6 @@
 
 package com.hivemq.client.internal.mqtt.handler.connect;
 
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
@@ -31,23 +30,17 @@ public class MqttConnAckFlow {
 
     private final @Nullable SingleObserver<? super Mqtt5ConnAck> observer;
     private final @NotNull Disposable disposable;
-    private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final int attempts;
     private boolean done;
 
-    MqttConnAckFlow(
-            final @NotNull SingleObserver<? super Mqtt5ConnAck> observer,
-            final @NotNull MqttClientTransportConfigImpl transportConfig) {
-
+    MqttConnAckFlow(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
         this.observer = observer;
         disposable = new MqttConnAckDisposable();
-        this.transportConfig = transportConfig;
         attempts = 0;
     }
 
-    MqttConnAckFlow(
-            final @Nullable MqttConnAckFlow oldFlow, final @NotNull MqttClientTransportConfigImpl transportConfig) {
-
+    @SuppressWarnings("CopyConstructorMissesField")
+    MqttConnAckFlow(final @Nullable MqttConnAckFlow oldFlow) {
         if (oldFlow == null) {
             observer = null;
             disposable = new MqttConnAckDisposable();
@@ -57,7 +50,6 @@ public class MqttConnAckFlow {
             disposable = oldFlow.disposable;
             attempts = oldFlow.attempts + 1;
         }
-        this.transportConfig = transportConfig;
     }
 
     boolean setDone() {
@@ -82,10 +74,6 @@ public class MqttConnAckFlow {
 
     @NotNull Disposable getDisposable() {
         return disposable;
-    }
-
-    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
-        return transportConfig;
     }
 
     int getAttempts() {
