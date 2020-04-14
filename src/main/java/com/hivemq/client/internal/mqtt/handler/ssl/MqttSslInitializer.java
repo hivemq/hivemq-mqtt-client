@@ -16,6 +16,7 @@
 
 package com.hivemq.client.internal.mqtt.handler.ssl;
 
+import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.channel.Channel;
@@ -42,13 +43,19 @@ public final class MqttSslInitializer {
     private static final @NotNull String SSL_HANDLER_NAME = "ssl";
 
     public static void initChannel(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig,
-            final @NotNull InetSocketAddress serverAddress, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull Channel channel, final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttClientSslConfigImpl sslConfig, final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
+
+        final InetSocketAddress serverAddress = clientConfig.getCurrentTransportConfig().getServerAddress();
 
         final SslHandler sslHandler;
         try {
-            final SslContext sslContext = createSslContext(sslConfig);
+            SslContext sslContext = clientConfig.getCurrentSslContext();
+            if (sslContext == null) {
+                sslContext = createSslContext(sslConfig);
+                clientConfig.setCurrentSslContext(sslContext);
+            }
             sslHandler = sslContext.newHandler(channel.alloc(), serverAddress.getHostString(), serverAddress.getPort());
         } catch (final Throwable t) {
             onError.accept(channel, t);

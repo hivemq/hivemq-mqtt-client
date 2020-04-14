@@ -261,7 +261,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
         // @formatter:off
         final MqttClientConnectionConfig connectionConfig = new MqttClientConnectionConfig(
-                connAckFlow.getTransportConfig(),
+                clientConfig.getCurrentTransportConfig(),
                 keepAlive,
                 connect.isCleanStart(),
                 connect.getSessionExpiryInterval() == 0,
@@ -301,7 +301,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     @Override
     protected long getTimeoutMs() {
-        return connAckFlow.getTransportConfig().getMqttConnectTimeoutMs();
+        return clientConfig.getCurrentTransportConfig().getMqttConnectTimeoutMs();
     }
 
     @Override

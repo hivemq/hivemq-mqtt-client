@@ -38,6 +38,7 @@ import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import io.netty.channel.EventLoop;
+import io.netty.handler.ssl.SslContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,6 +67,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull AtomicReference<@NotNull MqttClientState> state;
     private volatile @Nullable MqttClientConnectionConfig connectionConfig;
+    private @NotNull MqttClientTransportConfigImpl currentTransportConfig;
+    private @Nullable SslContext currentSslContext;
 
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
@@ -87,6 +90,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
 
         state = new AtomicReference<>(MqttClientState.DISCONNECTED);
+        currentTransportConfig = transportConfig;
     }
 
     @Override
@@ -226,6 +230,25 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public void setConnectionConfig(final @Nullable MqttClientConnectionConfig connectionConfig) {
         this.connectionConfig = connectionConfig;
+    }
+
+    public @NotNull MqttClientTransportConfigImpl getCurrentTransportConfig() {
+        return currentTransportConfig;
+    }
+
+    public void setCurrentTransportConfig(final @NotNull MqttClientTransportConfigImpl currentTransportConfig) {
+        if (!this.currentTransportConfig.equals(currentTransportConfig)) {
+            this.currentTransportConfig = currentTransportConfig;
+            currentSslContext = null;
+        }
+    }
+
+    public @Nullable SslContext getCurrentSslContext() {
+        return currentSslContext;
+    }
+
+    public void setCurrentSslContext(final @Nullable SslContext currentSslContext) {
+        this.currentSslContext = currentSslContext;
     }
 
     public static class ConnectDefaults {

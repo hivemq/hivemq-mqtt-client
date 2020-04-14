@@ -17,11 +17,11 @@
 
 package com.hivemq.client.internal.mqtt.handler.proxy;
 
+import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttProxyConfigImpl;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetSocketAddress;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -31,13 +31,15 @@ import java.util.function.Consumer;
 public final class MqttProxyInitializer {
 
     public static void initChannel(
-            final @NotNull Channel channel, final @NotNull MqttProxyConfigImpl proxyConfig,
-            final @NotNull InetSocketAddress serverAddress, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull Channel channel, final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttProxyConfigImpl proxyConfig, final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
-        channel.pipeline().addLast(
-                MqttProxyAdapterHandler.NAME,
-                new MqttProxyAdapterHandler(proxyConfig, serverAddress, onSuccess, onError));
+        final MqttProxyAdapterHandler proxyAdapterHandler =
+                new MqttProxyAdapterHandler(proxyConfig, clientConfig.getCurrentTransportConfig().getServerAddress(),
+                        onSuccess, onError);
+
+        channel.pipeline().addLast(MqttProxyAdapterHandler.NAME, proxyAdapterHandler);
     }
 
     private MqttProxyInitializer() {}
