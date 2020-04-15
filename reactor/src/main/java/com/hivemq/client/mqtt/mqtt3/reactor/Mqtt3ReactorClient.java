@@ -179,7 +179,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * message. Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when
      * subscribing (in terms of Reactive Streams) to the returned {@link FluxWithSingle}.
      *
-     * @param subscribe the Subscribe message sent to the broker during subscribe.
+     * @param subscribe             the Subscribe message sent to the broker during subscribe.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
      * @return the {@link FluxWithSingle} which
      *         <ul>
      *         <li>emits the SubAck message as the single and first element if at least one subscription of the
