@@ -209,7 +209,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         final MqttPublish publish =
                 new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
-                        responseTopic, correlationData, userProperties);
+                        responseTopic, correlationData, userProperties, null);
 
         final ImmutableIntList subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :

@@ -110,6 +110,14 @@ public interface Mqtt5Publish extends Mqtt5Message {
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
+    /**
+     * Acknowledges this Publish message.
+     *
+     * @throws IllegalStateException if the message is acknowledged more than once.
+     * @since 1.2
+     */
+    void acknowledge();
+
     @Override
     default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBLISH;

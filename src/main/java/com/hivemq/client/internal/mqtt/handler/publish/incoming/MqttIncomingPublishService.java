@@ -24,8 +24,8 @@ import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.util.collections.ChunkedArrayQueue;
-import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
+import com.hivemq.client.mqtt.datatypes.MqttQos;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -46,6 +46,8 @@ class MqttIncomingPublishService {
     private final @NotNull ChunkedArrayQueue<Object> qos1Or2Queue = new ChunkedArrayQueue<>(32);
     private final @NotNull ChunkedArrayQueue<Object>.Iterator qos1Or2It = qos1Or2Queue.iterator();
 
+    private long nextQoS1Or2PublishId = 1;
+
     private int referencedFlowCount;
     private int runIndex;
     private int blockingFlowCount;
@@ -65,8 +67,7 @@ class MqttIncomingPublishService {
             if (QOS_0_DROP_OLDEST) {
                 qos0It.reset();
                 qos0It.next();
-                //noinspection unchecked
-                final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos0It.next();
+                final MqttMatchingPublishFlows flows = (MqttMatchingPublishFlows) qos0It.next();
                 qos0It.remove();
                 for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
                     if (h.getElement().dereference() == 0) {
@@ -77,7 +78,7 @@ class MqttIncomingPublishService {
                 return;
             }
         }
-        final HandleList<MqttIncomingPublishFlow> flows = onPublish(publish);
+        final MqttMatchingPublishFlows flows = onPublish(publish);
         if (!flows.isEmpty()) {
             qos0Queue.offer(publish);
             qos0Queue.offer(flows);
@@ -89,8 +90,9 @@ class MqttIncomingPublishService {
         if (qos1Or2Queue.size() >= (2 * receiveMaximum)) {
             return false; // flow control error
         }
-        final HandleList<MqttIncomingPublishFlow> flows = onPublish(publish);
-        if (qos1Or2Queue.isEmpty() && flows.isEmpty()) {
+        publish.setId(nextQoS1Or2PublishId++);
+        final MqttMatchingPublishFlows flows = onPublish(publish);
+        if (qos1Or2Queue.isEmpty() && flows.isEmpty() && flows.areAcknowledged()) {
             incomingQosHandler.ack(publish);
         } else {
             qos1Or2Queue.offer(publish);
@@ -100,8 +102,8 @@ class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    private @NotNull HandleList<MqttIncomingPublishFlow> onPublish(final @NotNull MqttStatefulPublish publish) {
-        final HandleList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
+    private @NotNull MqttMatchingPublishFlows onPublish(final @NotNull MqttStatefulPublish publish) {
+        final MqttMatchingPublishFlows flows = incomingPublishFlows.findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }
@@ -111,7 +113,7 @@ class MqttIncomingPublishService {
                 referencedFlowCount++;
             }
         }
-        emit(publish.stateless(), flows);
+        emit(publish, flows);
         return flows;
     }
 
@@ -123,10 +125,9 @@ class MqttIncomingPublishService {
         qos1Or2It.reset();
         while (qos1Or2It.hasNext()) {
             final MqttStatefulPublish publish = (MqttStatefulPublish) qos1Or2It.next();
-            //noinspection unchecked
-            final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos1Or2It.next();
-            emit(publish.stateless(), flows);
-            if ((qos1Or2It.getIterated() == 2) && flows.isEmpty()) {
+            final MqttMatchingPublishFlows flows = (MqttMatchingPublishFlows) qos1Or2It.next();
+            emit(publish, flows);
+            if ((qos1Or2It.getIterated() == 2) && flows.isEmpty() && flows.areAcknowledged()) {
                 qos1Or2It.remove();
                 incomingQosHandler.ack(publish);
             } else if (blockingFlowCount == referencedFlowCount) {
@@ -136,9 +137,8 @@ class MqttIncomingPublishService {
         qos0It.reset();
         while (qos0It.hasNext()) {
             final MqttStatefulPublish publish = (MqttStatefulPublish) qos0It.next();
-            //noinspection unchecked
-            final HandleList<MqttIncomingPublishFlow> flows = (HandleList<MqttIncomingPublishFlow>) qos0It.next();
-            emit(publish.stateless(), flows);
+            final MqttMatchingPublishFlows flows = (MqttMatchingPublishFlows) qos0It.next();
+            emit(publish, flows);
             if ((qos0It.getIterated() == 2) && flows.isEmpty()) {
                 qos0It.remove();
             } else if (blockingFlowCount == referencedFlowCount) {
@@ -148,7 +148,9 @@ class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    private void emit(final @NotNull MqttPublish publish, final @NotNull HandleList<MqttIncomingPublishFlow> flows) {
+    private void emit(
+            final @NotNull MqttStatefulPublish statefulPublish, final @NotNull MqttMatchingPublishFlows flows) {
+
         for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
             final MqttIncomingPublishFlow flow = h.getElement();
 
@@ -160,6 +162,11 @@ class MqttIncomingPublishService {
             } else {
                 final long requested = flow.requested(runIndex);
                 if (requested > 0) {
+                    MqttPublish publish = statefulPublish.stateless();
+                    if (flow.manualAcknowledgement && (publish.getQos() != MqttQos.AT_MOST_ONCE)) {
+                        publish = publish.withConfirmable(
+                                new MqttIncomingPublishConfirmable(statefulPublish.getId(), flow, flows));
+                    }
                     flow.onNext(publish);
                     flows.remove(h);
                     if (flow.dereference() == 0) {

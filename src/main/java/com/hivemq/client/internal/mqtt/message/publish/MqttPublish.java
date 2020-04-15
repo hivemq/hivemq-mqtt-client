@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.message.publish;
 
 import com.hivemq.client.annotations.Immutable;
+import com.hivemq.client.internal.checkpoint.Confirmable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
@@ -60,12 +61,15 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     private final @Nullable MqttTopicImpl responseTopic;
     private final @Nullable ByteBuffer correlationData;
 
+    private final @Nullable Confirmable confirmable;
+
     public MqttPublish(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean retain, final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
-            final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties,
+            final @Nullable Confirmable confirmable) {
 
         super(userProperties);
         this.topic = topic;
@@ -77,6 +81,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         this.contentType = contentType;
         this.responseTopic = responseTopic;
         this.correlationData = correlationData;
+        this.confirmable = confirmable;
     }
 
     @Override
@@ -155,6 +160,13 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     @Override
+    public void acknowledge() {
+        if (confirmable != null) {
+            confirmable.confirm();
+        }
+    }
+
+    @Override
     public @NotNull MqttWillPublish asWill() {
         return new MqttPublishBuilder.WillDefault(this).build();
     }
@@ -177,6 +189,11 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         final int topicAlias =
                 (topicAliasMapping == null) ? DEFAULT_NO_TOPIC_ALIAS : topicAliasMapping.onPublish(topic);
         return createStateful(packetIdentifier, dup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+    }
+
+    public @NotNull MqttPublish withConfirmable(final @NotNull Confirmable confirmable) {
+        return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
+                responseTopic, correlationData, getUserProperties(), confirmable);
     }
 
     @Override

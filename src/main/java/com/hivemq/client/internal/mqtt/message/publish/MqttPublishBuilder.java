@@ -187,7 +187,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         public @NotNull MqttPublish build() {
             Checks.notNull(topic, "Topic");
             return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                    contentType, responseTopic, correlationData, userProperties);
+                    contentType, responseTopic, correlationData, userProperties, null);
         }
     }
 

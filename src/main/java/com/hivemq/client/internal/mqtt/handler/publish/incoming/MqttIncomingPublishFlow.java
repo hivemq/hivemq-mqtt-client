@@ -54,6 +54,7 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     private @Nullable Throwable error;
 
     private int referenced;
+    private int missingAcknowledgements;
     private long blockedIndex;
     private boolean blocking;
 
@@ -83,7 +84,7 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
             return;
         }
         done = true;
-        if ((referenced == 0) && setDone()) {
+        if (setDone()) {
             subscriber.onComplete();
         } else {
             incomingPublishService.drain();
@@ -102,11 +103,16 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         }
         this.error = error;
         done = true;
-        if ((referenced == 0) && setDone()) {
+        if (setDone()) {
             subscriber.onError(error);
         } else {
             incomingPublishService.drain();
         }
+    }
+
+    @Override
+    protected boolean setDone() {
+        return (referenced == 0) && (missingAcknowledgements == 0) && super.setDone();
     }
 
     @CallByThread("Netty EventLoop")
@@ -184,6 +190,19 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     }
 
     @CallByThread("Netty EventLoop")
+    void increaseMissingAcknowledgements() {
+        missingAcknowledgements++;
+    }
+
+    @CallByThread("Netty EventLoop")
+    void acknowledge() {
+        incomingPublishService.drain();
+        if (--missingAcknowledgements == 0) {
+            checkDone();
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
     int reference() {
         return ++referenced;
     }
@@ -191,9 +210,5 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     @CallByThread("Netty EventLoop")
     int dereference() {
         return --referenced;
-    }
-
-    public boolean isManualAcknowledgement() {
-        return manualAcknowledgement;
     }
 }
