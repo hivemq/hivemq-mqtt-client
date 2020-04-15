@@ -39,22 +39,22 @@ class MqttWebsocketHandshakeHandler extends ChannelInboundHandlerAdapter {
     public static final @NotNull String NAME = "ws.handshake";
 
     private final @NotNull WebSocketClientHandshaker handshaker;
+    private final int handshakeTimeoutMs;
     private final @NotNull Consumer<Channel> onSuccess;
     private final @NotNull BiConsumer<Channel, Throwable> onError;
-    private final int handshakeTimeoutMs;
 
     private boolean handshakeStarted = false;
     private boolean handshakeDone = false;
     private @Nullable ScheduledFuture<?> timeoutFuture;
 
     MqttWebsocketHandshakeHandler(
-            final @NotNull WebSocketClientHandshaker handshaker, final @NotNull Consumer<Channel> onSuccess,
-            final @NotNull BiConsumer<Channel, Throwable> onError, final int handshakeTimeoutMs) {
+            final @NotNull WebSocketClientHandshaker handshaker, final int handshakeTimeoutMs,
+            final @NotNull Consumer<Channel> onSuccess, final @NotNull BiConsumer<Channel, Throwable> onError) {
 
         this.handshaker = handshaker;
+        this.handshakeTimeoutMs = handshakeTimeoutMs;
         this.onSuccess = onSuccess;
         this.onError = onError;
-        this.handshakeTimeoutMs = handshakeTimeoutMs;
     }
 
     @Override
