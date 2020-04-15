@@ -99,7 +99,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     @Override
-    public @NotNull byte[] getPayloadAsBytes() {
+    public byte @NotNull [] getPayloadAsBytes() {
         return ByteBufferUtil.copyBytes(payload);
     }
 

@@ -55,7 +55,7 @@ public enum Mqtt3ConnAckReturnCode implements Mqtt3ReturnCode {
      */
     NOT_AUTHORIZED;
 
-    private static final @NotNull Mqtt3ConnAckReturnCode[] VALUES = values();
+    private static final @NotNull Mqtt3ConnAckReturnCode @NotNull [] VALUES = values();
 
     @Override
     public int getCode() {

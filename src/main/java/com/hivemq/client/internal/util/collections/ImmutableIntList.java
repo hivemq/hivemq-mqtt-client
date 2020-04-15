@@ -54,7 +54,7 @@ public interface ImmutableIntList {
         return new ImmutableIntArray(array);
     }
 
-    static @NotNull ImmutableIntList copyOf(final @NotNull int[] array) {
+    static @NotNull ImmutableIntList copyOf(final int @NotNull [] array) {
         Checks.notNull(array, "Int array");
         switch (array.length) {
             case 0:
@@ -87,7 +87,7 @@ public interface ImmutableIntList {
         private static final int INITIAL_CAPACITY = 4;
 
         private int i;
-        private @Nullable int[] array;
+        private int @Nullable [] array;
         private int size;
 
         private Builder() {}

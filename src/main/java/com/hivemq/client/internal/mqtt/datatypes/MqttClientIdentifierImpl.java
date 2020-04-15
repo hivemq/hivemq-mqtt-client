@@ -63,7 +63,7 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      * @return the created Client Identifier or <code>null</code> if the byte array does not represent a valid Client
      *         Identifier.
      */
-    public static @Nullable MqttClientIdentifierImpl of(final @NotNull byte[] binary) {
+    public static @Nullable MqttClientIdentifierImpl of(final byte @NotNull [] binary) {
         return (!MqttBinaryData.isInRange(binary) || isWellFormed(binary)) ? null :
                 new MqttClientIdentifierImpl(binary);
     }
@@ -83,7 +83,7 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
         return (binary == null) ? null : of(binary);
     }
 
-    private MqttClientIdentifierImpl(final @NotNull byte[] binary) {
+    private MqttClientIdentifierImpl(final byte @NotNull [] binary) {
         super(binary);
     }
 

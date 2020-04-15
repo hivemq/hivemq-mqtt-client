@@ -54,7 +54,7 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      * @param binary the byte array with UTF-8 encoded data.
      * @return whether the byte array represents a Shared Topic Filter.
      */
-    static boolean isShared(final @NotNull byte[] binary) {
+    static boolean isShared(final byte @NotNull [] binary) {
         if (binary.length < SHARE_PREFIX_LENGTH) {
             return false;
         }
@@ -109,7 +109,7 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      * @return the created Shared Topic Filter or <code>null</code> if the byte array is not a valid Shared Topic
      *         Filter.
      */
-    static @Nullable MqttSharedTopicFilterImpl ofInternal(final @NotNull byte[] binary) {
+    static @Nullable MqttSharedTopicFilterImpl ofInternal(final byte @NotNull [] binary) {
         int shareNameEnd = SHARE_PREFIX_LENGTH;
         while (shareNameEnd < binary.length) {
             final byte b = binary[shareNameEnd];
@@ -225,7 +225,7 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     private int filterCharStart;
 
     private MqttSharedTopicFilterImpl(
-            final @NotNull byte[] binary, final int shareNameByteEnd, final int wildcardFlags) {
+            final byte @NotNull [] binary, final int shareNameByteEnd, final int wildcardFlags) {
 
         super(binary, wildcardFlags);
         this.filterByteStart = shareNameByteEnd + 1;

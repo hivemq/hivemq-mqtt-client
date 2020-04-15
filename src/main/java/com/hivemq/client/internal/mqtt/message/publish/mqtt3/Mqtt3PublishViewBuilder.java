@@ -89,7 +89,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
             super(publish);
         }
 
-        public @NotNull B payload(final @Nullable byte[] payload) {
+        public @NotNull B payload(final byte @Nullable [] payload) {
             this.payload = ByteBufferUtil.wrap(payload);
             return self();
         }
@@ -187,7 +187,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
             }
         }
 
-        public @NotNull B payload(final @Nullable byte[] payload) {
+        public @NotNull B payload(final byte @Nullable [] payload) {
             this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
             return self();
         }

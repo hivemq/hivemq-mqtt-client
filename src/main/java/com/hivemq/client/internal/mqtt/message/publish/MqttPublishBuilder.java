@@ -143,7 +143,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return new MqttTopicImplBuilder.Nested<>(this::responseTopic);
     }
 
-    public @NotNull B correlationData(final @Nullable byte[] correlationData) {
+    public @NotNull B correlationData(final byte @Nullable [] correlationData) {
         this.correlationData = MqttChecks.binaryDataOrNull(correlationData, "Correlation data");
         return self();
     }
@@ -170,7 +170,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             super(publish);
         }
 
-        public @NotNull B payload(final @Nullable byte[] payload) {
+        public @NotNull B payload(final byte @Nullable [] payload) {
             this.payload = ByteBufferUtil.wrap(payload);
             return self();
         }
@@ -267,7 +267,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             }
         }
 
-        public @NotNull B payload(final @Nullable byte[] payload) {
+        public @NotNull B payload(final byte @Nullable [] payload) {
             this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
             return self();
         }

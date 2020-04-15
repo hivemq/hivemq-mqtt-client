@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ByteArray {
 
-    protected final @NotNull byte[] array;
+    protected final byte @NotNull [] array;
 
-    public ByteArray(final @NotNull byte[] array) {
+    public ByteArray(final byte @NotNull [] array) {
         this.array = array;
     }
 

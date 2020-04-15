@@ -234,7 +234,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
 
     @Override
     @Deprecated
-    default void sort(final Comparator<? super E> c) {
+    default void sort(final @Nullable Comparator<? super E> c) {
         throw new UnsupportedOperationException();
     }
 

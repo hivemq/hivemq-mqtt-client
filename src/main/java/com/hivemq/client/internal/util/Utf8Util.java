@@ -29,7 +29,7 @@ public final class Utf8Util {
     private static final long UTF_16_SURROGATES = 0b1110_0000L << 56;
     private static final long INVALID_CODE_POINTS = 0b1111_0000L << 56;
 
-    public static long isWellFormed(final @NotNull byte[] bytes) {
+    public static long isWellFormed(final byte @NotNull [] bytes) {
         int index = 0;
         final int end = bytes.length;
         while (true) {

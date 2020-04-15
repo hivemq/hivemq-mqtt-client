@@ -85,7 +85,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C payload(@Nullable byte[] payload);
+        @NotNull C payload(byte @Nullable [] payload);
 
         /**
          * Sets the optional {@link Mqtt5Publish#getPayload() payload}.
@@ -199,7 +199,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C correlationData(@Nullable byte[] correlationData);
+        @NotNull C correlationData(byte @Nullable [] correlationData);
 
         /**
          * Sets the optional {@link Mqtt5Publish#getCorrelationData() correlation data}.

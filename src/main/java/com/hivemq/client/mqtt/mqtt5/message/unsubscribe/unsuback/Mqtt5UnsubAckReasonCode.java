@@ -59,7 +59,7 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
      */
     PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE);
 
-    private static final @NotNull Mqtt5UnsubAckReasonCode[] VALUES = values();
+    private static final @NotNull Mqtt5UnsubAckReasonCode @NotNull [] VALUES = values();
 
     private final int code;
 

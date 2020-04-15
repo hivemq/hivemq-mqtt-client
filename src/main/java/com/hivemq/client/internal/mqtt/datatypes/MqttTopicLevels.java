@@ -46,7 +46,7 @@ public class MqttTopicLevels extends MqttTopicLevel {
 
     private final int firstEnd;
 
-    MqttTopicLevels(final @NotNull byte[] array, final int firstEnd) {
+    MqttTopicLevels(final byte @NotNull [] array, final int firstEnd) {
         super(array);
         this.firstEnd = firstEnd;
     }

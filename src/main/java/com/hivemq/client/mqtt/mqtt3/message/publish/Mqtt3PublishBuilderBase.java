@@ -82,7 +82,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C payload(@Nullable byte[] payload);
+        @NotNull C payload(byte @Nullable [] payload);
 
         /**
          * Sets the optional {@link Mqtt3Publish#getPayload() payload}.

@@ -43,7 +43,7 @@ public enum Mqtt3MessageType {
     PINGRESP,
     DISCONNECT;
 
-    private static final @NotNull Mqtt3MessageType[] VALUES = values();
+    private static final @NotNull Mqtt3MessageType @NotNull [] VALUES = values();
 
     /**
      * @return the byte code of this MQTT message type.

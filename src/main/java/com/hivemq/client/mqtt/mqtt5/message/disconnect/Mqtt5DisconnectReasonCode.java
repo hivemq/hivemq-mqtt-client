@@ -174,7 +174,7 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
 
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
     private static final int ERROR_CODE_MAX = WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED.code;
-    private static final @NotNull Mqtt5DisconnectReasonCode[] ERROR_CODE_LOOKUP =
+    private static final @NotNull Mqtt5DisconnectReasonCode @NotNull [] ERROR_CODE_LOOKUP =
             new Mqtt5DisconnectReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN + 1];
 
     static {

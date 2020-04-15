@@ -88,7 +88,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void handlerAdded(final ChannelHandlerContext ctx) {
+    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         ctx.pipeline().remove(this);
 
         ((SocketChannel) ctx.channel()).config()

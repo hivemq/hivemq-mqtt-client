@@ -67,7 +67,7 @@ public interface Mqtt3SimpleAuthBuilderBase<C extends Mqtt3SimpleAuthBuilderBase
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C password(@NotNull byte[] password);
+        @NotNull C password(byte @NotNull [] password);
 
         /**
          * Sets the optional {@link Mqtt3SimpleAuth#getPassword() password}.

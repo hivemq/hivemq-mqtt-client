@@ -102,7 +102,7 @@ public final class MqttChecks {
         return Checks.notImplemented(clientIdentifier, MqttClientIdentifierImpl.class, "Client identifier");
     }
 
-    private static @NotNull ByteBuffer binaryDataInternal(final @NotNull byte[] binary, final @NotNull String name) {
+    private static @NotNull ByteBuffer binaryDataInternal(final byte @NotNull [] binary, final @NotNull String name) {
         if (!MqttBinaryData.isInRange(binary)) {
             throw new IllegalArgumentException(
                     name + " can not be encoded as binary data. Maximum length is " + MqttBinaryData.MAX_LENGTH +
@@ -112,12 +112,12 @@ public final class MqttChecks {
     }
 
     @Contract("null, _ -> fail")
-    public static @NotNull ByteBuffer binaryData(final @Nullable byte[] binary, final @NotNull String name) {
+    public static @NotNull ByteBuffer binaryData(final byte @Nullable [] binary, final @NotNull String name) {
         return binaryDataInternal(Checks.notNull(binary, name), name);
     }
 
     @Contract("null, _ -> null")
-    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable byte[] binary, final @NotNull String name) {
+    public static @Nullable ByteBuffer binaryDataOrNull(final byte @Nullable [] binary, final @NotNull String name) {
         return (binary == null) ? null : binaryDataInternal(binary, name);
     }
 

@@ -68,7 +68,7 @@ public interface Mqtt5Publish extends Mqtt5Message {
     /**
      * @return the payload of this Publish message as a byte array. Empty byte array if the payload is not present.
      */
-    @NotNull byte[] getPayloadAsBytes();
+    byte @NotNull [] getPayloadAsBytes();
 
     /**
      * @return the QoS of this Publish message.

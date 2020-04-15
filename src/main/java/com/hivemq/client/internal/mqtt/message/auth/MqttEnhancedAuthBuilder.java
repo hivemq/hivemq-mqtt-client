@@ -40,7 +40,7 @@ public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
     }
 
     @Override
-    public @NotNull MqttEnhancedAuthBuilder data(final @Nullable byte[] data) {
+    public @NotNull MqttEnhancedAuthBuilder data(final byte @Nullable [] data) {
         this.data = MqttChecks.binaryDataOrNull(data, "Auth data");
         return this;
     }

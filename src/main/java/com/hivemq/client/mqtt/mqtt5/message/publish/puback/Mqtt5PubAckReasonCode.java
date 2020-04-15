@@ -70,7 +70,7 @@ public enum Mqtt5PubAckReasonCode implements Mqtt5ReasonCode {
      */
     PAYLOAD_FORMAT_INVALID(MqttCommonReasonCode.PAYLOAD_FORMAT_INVALID);
 
-    private static final @NotNull Mqtt5PubAckReasonCode[] VALUES = values();
+    private static final @NotNull Mqtt5PubAckReasonCode @NotNull [] VALUES = values();
 
     private final int code;
 

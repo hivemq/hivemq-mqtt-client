@@ -48,7 +48,7 @@ public abstract class MqttSimpleAuthBuilder<B extends MqttSimpleAuthBuilder<B>> 
         return self();
     }
 
-    public @NotNull B password(final @Nullable byte[] password) {
+    public @NotNull B password(final byte @Nullable [] password) {
         this.password = MqttChecks.binaryData(password, "Password");
         return self();
     }

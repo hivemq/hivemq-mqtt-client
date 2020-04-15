@@ -48,7 +48,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
     private int end;
     private final int allEnd;
 
-    private MqttTopicIterator(final @NotNull byte[] array, final int start, final int end, final int allEnd) {
+    private MqttTopicIterator(final byte @NotNull [] array, final int start, final int end, final int allEnd) {
         super(array);
         this.start = start;
         this.end = end;

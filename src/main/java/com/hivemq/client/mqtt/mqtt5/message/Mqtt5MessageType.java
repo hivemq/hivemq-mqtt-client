@@ -44,7 +44,7 @@ public enum Mqtt5MessageType {
     DISCONNECT,
     AUTH;
 
-    private static final @NotNull Mqtt5MessageType[] VALUES = values();
+    private static final @NotNull Mqtt5MessageType @NotNull [] VALUES = values();
 
     /**
      * @return the byte code of this MQTT message type.
