@@ -45,8 +45,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     private @Nullable MqttClientSslConfigImpl sslConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private @Nullable MqttProxyConfigImpl proxyConfig;
-    private int socketConnectTimeoutMs;
-    private int mqttConnectTimeoutMs;
+    private int socketConnectTimeoutMs = MqttClientTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
+    private int mqttConnectTimeoutMs = MqttClientTransportConfigImpl.DEFAULT_MQTT_CONNECT_TIMEOUT_MS;
 
     MqttClientTransportConfigImplBuilder() {}
 
