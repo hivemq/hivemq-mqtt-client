@@ -83,7 +83,7 @@ public interface MqttClientSslConfig {
     long getHandshakeTimeoutMs();
 
     /**
-     * @return the optional user defined hostname verifier. If absent, the https hostname verification is performed.
+     * @return the optional user defined hostname verifier. If absent, https hostname verification is performed.
      * @since 1.2
      */
     @NotNull Optional<HostnameVerifier> getHostnameVerifier();
