@@ -37,6 +37,7 @@ class MqttPublishTest {
         EqualsVerifier.forClass(MqttPublish.class)
                 .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("topic", "qos", "userProperties")
+                .withIgnoredFields("confirmable")
                 .withRedefinedSubclass(MqttWillPublish.class)
                 .verify();
     }
