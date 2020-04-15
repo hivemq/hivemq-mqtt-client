@@ -418,7 +418,7 @@ public class IntIndex<E> {
 
     private static class Node {
 
-        int key;
+        final int key;
         @NotNull Object value;
         @NotNull Object next;
 
