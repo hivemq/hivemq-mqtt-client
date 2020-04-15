@@ -113,7 +113,8 @@ public interface Mqtt5Publish extends Mqtt5Message {
     /**
      * Acknowledges this Publish message.
      *
-     * @throws IllegalStateException if the message is acknowledged more than once.
+     * @throws UnsupportedOperationException if manual acknowledgement is not enabled.
+     * @throws IllegalStateException         if the message is acknowledged more than once.
      * @since 1.2
      */
     void acknowledge();

@@ -161,8 +161,13 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     @Override
     public void acknowledge() {
-        if (confirmable != null) {
-            confirmable.confirm();
+        final Confirmable confirmable = this.confirmable;
+        if (confirmable == null) {
+            throw new UnsupportedOperationException(
+                    "A publish must not be acknowledged if manual acknowledgement is not enabled");
+        }
+        if (!confirmable.confirm()) {
+            throw new IllegalStateException("A publish must not be acknowledged more than once");
         }
     }
 
