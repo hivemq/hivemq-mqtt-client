@@ -78,6 +78,14 @@ public interface Mqtt3Publish extends Mqtt3Message {
      */
     boolean isRetain();
 
+    /**
+     * Acknowledges this Publish message.
+     *
+     * @throws IllegalStateException if the message is acknowledged more than once.
+     * @since 1.2
+     */
+    void acknowledge();
+
     @Override
     default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.PUBLISH;
