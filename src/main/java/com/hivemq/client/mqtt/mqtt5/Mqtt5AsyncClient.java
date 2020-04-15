@@ -107,8 +107,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      *
      * @param subscribe the Subscribe messages sent to the broker.
      * @param callback  the callback for consuming the incoming Publish messages matching the subscriptions of the
@@ -122,8 +122,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      * <p>
      * The future is completed and the callback is executed on the given executor.
      *
@@ -141,8 +141,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             @NotNull Executor executor);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      *
      * @param subscribe             the Subscribe messages sent to the broker.
      * @param callback              the callback for consuming the incoming Publish messages matching the subscriptions
@@ -159,8 +159,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             boolean manualAcknowledgement);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      * <p>
      * The future is completed and the callback is executed on the given executor.
      *
