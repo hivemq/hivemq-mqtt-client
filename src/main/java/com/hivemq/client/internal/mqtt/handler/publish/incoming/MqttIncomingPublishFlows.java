@@ -117,7 +117,7 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    @NotNull HandleList<MqttIncomingPublishFlow> findMatching(final @NotNull MqttStatefulPublish publish) {
+    @NotNull MqttMatchingPublishFlows findMatching(final @NotNull MqttStatefulPublish publish) {
         final MqttMatchingPublishFlows matchingFlows = new MqttMatchingPublishFlows();
         findMatching(publish, matchingFlows);
         return matchingFlows;

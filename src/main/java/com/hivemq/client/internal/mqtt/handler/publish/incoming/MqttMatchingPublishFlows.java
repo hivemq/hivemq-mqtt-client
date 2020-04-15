@@ -17,12 +17,33 @@
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
+import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.util.collections.HandleList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
+@NotThreadSafe
+public class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
 
     boolean subscriptionFound;
+    private int missingAcknowledgements;
+
+    @Override
+    public @NotNull Handle<MqttIncomingPublishFlow> add(final @NotNull MqttIncomingPublishFlow flow) {
+        if (flow.manualAcknowledgement) {
+            missingAcknowledgements++;
+            flow.increaseMissingAcknowledgements();
+        }
+        return super.add(flow);
+    }
+
+    public boolean areAcknowledged() {
+        return missingAcknowledgements == 0;
+    }
+
+    public void acknowledge() {
+        missingAcknowledgements--;
+    }
 }
