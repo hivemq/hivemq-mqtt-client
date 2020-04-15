@@ -25,14 +25,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Silvio Giebl
  */
-public class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
+class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
 
     private final long id;
     private final @NotNull MqttIncomingPublishFlow flow;
     private final @NotNull MqttMatchingPublishFlows flows;
     private final @NotNull AtomicBoolean confirmed = new AtomicBoolean(false);
 
-    public MqttIncomingPublishConfirmable(
+    MqttIncomingPublishConfirmable(
             final long id, final @NotNull MqttIncomingPublishFlow flow, final @NotNull MqttMatchingPublishFlows flows) {
 
         this.id = id;
@@ -60,7 +60,7 @@ public class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
         flow.acknowledge();
     }
 
-    public static class Qos0 implements Confirmable {
+    static class Qos0 implements Confirmable {
 
         private final @NotNull AtomicBoolean confirmed = new AtomicBoolean(false);
 

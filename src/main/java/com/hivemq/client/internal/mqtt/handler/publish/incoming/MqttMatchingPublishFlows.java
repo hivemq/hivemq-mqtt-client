@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
+class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
 
     boolean subscriptionFound;
     private int missingAcknowledgements;
@@ -39,11 +39,11 @@ public class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow
         return super.add(flow);
     }
 
-    public boolean areAcknowledged() {
+    boolean areAcknowledged() {
         return missingAcknowledgements == 0;
     }
 
-    public void acknowledge() {
+    void acknowledge() {
         missingAcknowledgements--;
     }
 }
