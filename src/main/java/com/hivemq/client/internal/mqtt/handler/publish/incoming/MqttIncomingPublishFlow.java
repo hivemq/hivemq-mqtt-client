@@ -195,8 +195,10 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     }
 
     @CallByThread("Netty EventLoop")
-    void acknowledge() {
-        incomingPublishService.drain();
+    void acknowledge(final boolean drain) {
+        if (drain) {
+            incomingPublishService.drain();
+        }
         if (--missingAcknowledgements == 0) {
             checkDone();
         }
