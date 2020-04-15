@@ -43,7 +43,7 @@ class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
         return missingAcknowledgements == 0;
     }
 
-    boolean acknowledge() {
-        return --missingAcknowledgements == 0;
+    void acknowledge(final @NotNull MqttIncomingPublishFlow flow) {
+        flow.acknowledge(--missingAcknowledgements == 0);
     }
 }
