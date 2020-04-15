@@ -435,7 +435,7 @@ public class Index<E, K> {
 
     private static class Node {
 
-        int hash;
+        final int hash;
         @NotNull Object value;
         @NotNull Object next;
 
