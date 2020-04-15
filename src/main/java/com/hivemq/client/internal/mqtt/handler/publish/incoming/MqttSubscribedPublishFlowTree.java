@@ -133,7 +133,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
         final int subscriptionIdentifier;
         final byte subscriptionOptions;
-        final @Nullable byte[] topicFilterPrefix;
+        final byte @Nullable [] topicFilterPrefix;
         @Nullable MqttSubscribedPublishFlow flow;
         @Nullable Handle<MqttTopicFilterImpl> handle;
         boolean acknowledged;

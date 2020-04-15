@@ -37,7 +37,7 @@ import java.nio.ByteBuffer;
 public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
 
     @Override
-    @NotNull Mqtt5AuthBuilder data(@Nullable byte[] data);
+    @NotNull Mqtt5AuthBuilder data(byte @Nullable [] data);
 
     @Override
     @NotNull Mqtt5AuthBuilder data(@Nullable ByteBuffer data);

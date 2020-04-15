@@ -29,9 +29,9 @@ import java.util.Arrays;
  */
 @Immutable class ImmutableIntArray implements ImmutableIntList {
 
-    private final @NotNull int[] array;
+    private final int @NotNull [] array;
 
-    ImmutableIntArray(final @NotNull int... array) {
+    ImmutableIntArray(final int @NotNull ... array) {
         this.array = array;
         assert size() > 1;
     }

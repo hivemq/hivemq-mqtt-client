@@ -78,7 +78,7 @@ import java.util.function.Consumer;
     }
 
     @Override
-    public boolean containsAll(final @NotNull Collection<?> c) {
+    public boolean containsAll(final @Nullable Collection<?> c) {
         Checks.notNull(c, "Collection");
         return c.size() == 0;
     }
@@ -105,7 +105,7 @@ import java.util.function.Consumer;
     }
 
     @Override
-    public void forEach(final @NotNull Consumer<? super Object> consumer) {
+    public void forEach(final @Nullable Consumer<? super Object> consumer) {
         Checks.notNull(consumer, "Consumer");
     }
 
@@ -178,7 +178,7 @@ import java.util.function.Consumer;
         }
 
         @Override
-        public void forEachRemaining(final @NotNull Consumer<? super Object> consumer) {
+        public void forEachRemaining(final @Nullable Consumer<? super Object> consumer) {
             Checks.notNull(consumer, "Consumer");
         }
     }
@@ -195,7 +195,7 @@ import java.util.function.Consumer;
         private EmptySpliterator() {}
 
         @Override
-        public boolean tryAdvance(final @NotNull Consumer<? super Object> consumer) {
+        public boolean tryAdvance(final @Nullable Consumer<? super Object> consumer) {
             Checks.notNull(consumer, "Consumer");
             return false;
         }
@@ -222,7 +222,7 @@ import java.util.function.Consumer;
         }
 
         @Override
-        public void forEachRemaining(final @NotNull Consumer<? super Object> consumer) {
+        public void forEachRemaining(final @Nullable Consumer<? super Object> consumer) {
             Checks.notNull(consumer, "Consumer");
         }
     }

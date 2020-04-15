@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public final class ByteArrayUtil {
 
     public static boolean equals(
-            final @NotNull byte[] array1, final int start1, final int end1, final @NotNull byte[] array2,
+            final byte @NotNull [] array1, final int start1, final int end1, final byte @NotNull [] array2,
             final int start2, final int end2) {
 
         final int length1 = end1 - start1;
@@ -46,7 +46,7 @@ public final class ByteArrayUtil {
         return true;
     }
 
-    public static int hashCode(final @NotNull byte[] array, final int start, final int end) {
+    public static int hashCode(final byte @NotNull [] array, final int start, final int end) {
         int result = 1;
         for (int i = start; i < end; i++) {
             result = 31 * result + array[i];
@@ -54,7 +54,7 @@ public final class ByteArrayUtil {
         return result;
     }
 
-    public static int indexOf(final @NotNull byte[] array, final int start, final byte search) {
+    public static int indexOf(final byte @NotNull [] array, final int start, final byte search) {
         for (int i = start; i < array.length; i++) {
             if (array[i] == search) {
                 return i;

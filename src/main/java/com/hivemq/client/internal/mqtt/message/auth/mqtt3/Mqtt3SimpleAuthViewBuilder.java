@@ -48,7 +48,7 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
         return self();
     }
 
-    public @NotNull B password(final @Nullable byte[] password) {
+    public @NotNull B password(final byte @Nullable [] password) {
         this.password = MqttChecks.binaryData(password, "Password");
         return self();
     }

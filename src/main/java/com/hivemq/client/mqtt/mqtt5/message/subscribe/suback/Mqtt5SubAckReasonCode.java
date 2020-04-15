@@ -81,7 +81,7 @@ public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
      */
     WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED(MqttCommonReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED);
 
-    private static final @NotNull Mqtt5SubAckReasonCode[] VALUES = values();
+    private static final @NotNull Mqtt5SubAckReasonCode @NotNull [] VALUES = values();
 
     private final int code;
 

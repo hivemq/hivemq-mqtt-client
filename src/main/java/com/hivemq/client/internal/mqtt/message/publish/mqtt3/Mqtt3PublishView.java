@@ -101,7 +101,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @Override
-    public @NotNull byte[] getPayloadAsBytes() {
+    public byte @NotNull [] getPayloadAsBytes() {
         return delegate.getPayloadAsBytes();
     }
 

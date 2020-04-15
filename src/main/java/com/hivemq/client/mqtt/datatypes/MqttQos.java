@@ -41,7 +41,7 @@ public enum MqttQos {
      */
     EXACTLY_ONCE;
 
-    private static final @NotNull MqttQos[] VALUES = values();
+    private static final @NotNull MqttQos @NotNull [] VALUES = values();
 
     /**
      * @return the byte code of this QoS.

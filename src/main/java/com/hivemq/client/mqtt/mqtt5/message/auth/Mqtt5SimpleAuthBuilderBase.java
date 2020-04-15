@@ -59,7 +59,7 @@ public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase
      * @return the builder that is now complete as the password is set.
      */
     @CheckReturnValue
-    @NotNull C password(@NotNull byte[] password);
+    @NotNull C password(byte @NotNull [] password);
 
     /**
      * Sets the {@link Mqtt5SimpleAuth#getPassword() password}. At least the username or the password is mandatory.

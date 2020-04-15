@@ -34,22 +34,22 @@ public class MqttTopicLevel extends ByteArray {
     private static final @NotNull MqttTopicLevel SINGLE_LEVEL_WILDCARD =
             new MqttTopicLevel(new byte[]{MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD});
 
-    static @NotNull MqttTopicLevel of(final @NotNull byte[] array, final int start, final int end) {
+    static @NotNull MqttTopicLevel of(final byte @NotNull [] array, final int start, final int end) {
         if (isSingleLevelWildcard(array, start, end)) {
             return MqttTopicLevel.SINGLE_LEVEL_WILDCARD;
         }
         return new MqttTopicLevel(Arrays.copyOfRange(array, start, end));
     }
 
-    private static boolean isSingleLevelWildcard(final @NotNull byte[] array, final int start, final int end) {
+    private static boolean isSingleLevelWildcard(final byte @NotNull [] array, final int start, final int end) {
         return ((end - start) == 1) && (array[start] == MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD);
     }
 
-    MqttTopicLevel(final @NotNull byte[] array) {
+    MqttTopicLevel(final byte @NotNull [] array) {
         super(array);
     }
 
-    @NotNull byte[] getArray() {
+    byte @NotNull [] getArray() {
         return array;
     }
 
@@ -61,7 +61,7 @@ public class MqttTopicLevel extends ByteArray {
         return this;
     }
 
-    public @Nullable MqttTopicFilterImpl toFilter(final @Nullable byte[] prefix, final boolean multiLevelWildcard) {
+    public @Nullable MqttTopicFilterImpl toFilter(final byte @Nullable [] prefix, final boolean multiLevelWildcard) {
         final byte[] bytes;
         if (prefix != null) {
             if (multiLevelWildcard) {
