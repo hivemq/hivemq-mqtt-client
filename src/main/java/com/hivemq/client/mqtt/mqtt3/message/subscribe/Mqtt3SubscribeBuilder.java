@@ -191,7 +191,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
 
         /**
          * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a parent {@link
-         * com.hivemq.client.mqtt.mqtt3.Mqtt3Client Mqtt5Client} <code>subscribePublishes</code> call.
+         * com.hivemq.client.mqtt.mqtt3.Mqtt3Client Mqtt3Client} <code>subscribePublishes</code> call.
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
