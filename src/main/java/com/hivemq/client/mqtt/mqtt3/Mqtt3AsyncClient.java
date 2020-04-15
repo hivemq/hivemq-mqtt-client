@@ -103,8 +103,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      *
      * @param subscribe the Subscribe messages sent to the broker.
      * @param callback  the callback for consuming the incoming Publish messages matching the subscriptions of the
@@ -118,8 +118,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             @NotNull Mqtt3Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt3Publish> callback);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      * <p>
      * The future is completed and the callback is executed on the given executor.
      *
@@ -137,8 +137,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             @NotNull Executor executor);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      *
      * @param subscribe             the Subscribe messages sent to the broker.
      * @param callback              the callback for consuming the incoming Publish messages matching the subscriptions
@@ -155,8 +155,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             boolean manualAcknowledgement);
 
     /**
-     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
-     * the subscriptions of the Subscribe message with a callback.
+     * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the
+     * subscriptions of the Subscribe message with a callback.
      * <p>
      * The future is completed and the callback is executed on the given executor.
      *
