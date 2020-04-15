@@ -105,4 +105,9 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
 
         ctx.connect(serverAddress, localAddress, promise);
     }
+
+    @Override
+    public boolean isSharable() {
+        return false;
+    }
 }
