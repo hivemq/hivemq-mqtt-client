@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.annotations.CallByThread;
+import com.hivemq.client.internal.checkpoint.Confirmable;
 import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
@@ -163,9 +164,14 @@ class MqttIncomingPublishService {
                 final long requested = flow.requested(runIndex);
                 if (requested > 0) {
                     MqttPublish publish = statefulPublish.stateless();
-                    if (flow.manualAcknowledgement && (publish.getQos() != MqttQos.AT_MOST_ONCE)) {
-                        publish = publish.withConfirmable(
-                                new MqttIncomingPublishConfirmable(statefulPublish.getId(), flow, flows));
+                    if (flow.manualAcknowledgement) {
+                        final Confirmable confirmable;
+                        if (publish.getQos() == MqttQos.AT_MOST_ONCE) {
+                            confirmable = new MqttIncomingPublishConfirmable.Qos0();
+                        } else {
+                            confirmable = new MqttIncomingPublishConfirmable(statefulPublish.getId(), flow, flows);
+                        }
+                        publish = publish.withConfirmable(confirmable);
                     }
                     flow.onNext(publish);
                     flows.remove(h);

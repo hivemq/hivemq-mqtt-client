@@ -46,17 +46,32 @@ public class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
     }
 
     @Override
-    public void confirm() {
+    public boolean confirm() {
         if (confirmed.compareAndSet(false, true)) {
             flow.getEventLoop().execute(this);
-        } else {
-            throw new IllegalStateException("A publish must not be confirmed more than once");
+            return true;
         }
+        return false;
     }
 
     @Override
     public void run() {
         flows.acknowledge();
         flow.acknowledge();
+    }
+
+    public static class Qos0 implements Confirmable {
+
+        private final @NotNull AtomicBoolean confirmed = new AtomicBoolean(false);
+
+        @Override
+        public long getId() {
+            return 0;
+        }
+
+        @Override
+        public boolean confirm() {
+            return confirmed.compareAndSet(false, true);
+        }
     }
 }

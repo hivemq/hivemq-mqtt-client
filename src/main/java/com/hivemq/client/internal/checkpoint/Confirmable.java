@@ -24,5 +24,5 @@ public interface Confirmable {
 
     long getId();
 
-    void confirm();
+    boolean confirm();
 }
