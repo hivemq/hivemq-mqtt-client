@@ -56,7 +56,7 @@ class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
 
     @Override
     public void run() {
-        flow.acknowledge(flows.acknowledge());
+        flows.acknowledge(flow);
     }
 
     static class Qos0 implements Confirmable {
