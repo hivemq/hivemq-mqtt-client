@@ -27,8 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import javax.inject.Inject;
-
 /**
  * @author Silvio Giebl
  */
@@ -40,7 +38,6 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
     private @Nullable Subscriber<? super Flowable<MqttPublishWithFlow>> subscriber;
     private long requested;
 
-    @Inject
     MqttPublishFlowables() {}
 
     @Override
