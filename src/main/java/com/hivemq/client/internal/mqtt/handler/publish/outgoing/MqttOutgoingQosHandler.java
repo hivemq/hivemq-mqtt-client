@@ -105,11 +105,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private int shrinkRequests;
 
     @Inject
-    MqttOutgoingQosHandler(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttPublishFlowables publishFlowables) {
-
+    MqttOutgoingQosHandler(final @NotNull MqttClientConfig clientConfig) {
         this.clientConfig = clientConfig;
-        this.publishFlowables = publishFlowables;
+        publishFlowables = new MqttPublishFlowables();
     }
 
     @Override

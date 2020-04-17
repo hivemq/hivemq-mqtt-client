@@ -17,19 +17,10 @@
 
 package com.hivemq.client.internal.mqtt.ioc;
 
-import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlowTree;
-import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlows;
-import dagger.Binds;
 import dagger.Module;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
 @Module
-abstract class ClientModule {
-
-    @Binds
-    abstract @NotNull MqttSubscribedPublishFlows provideSubscribedPublishFlows(
-            final @NotNull MqttSubscribedPublishFlowTree tree);
-}
+abstract class ClientModule {}

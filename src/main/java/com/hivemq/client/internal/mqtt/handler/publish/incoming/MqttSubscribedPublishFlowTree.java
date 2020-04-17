@@ -28,7 +28,6 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -39,7 +38,6 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
     private @Nullable TopicTreeNode rootNode;
 
-    @Inject
     MqttSubscribedPublishFlowTree() {}
 
     @Override

@@ -49,8 +49,8 @@ public class MqttIncomingPublishFlows {
     private final @Nullable HandleList<MqttGlobalIncomingPublishFlow> @NotNull [] globalFlows;
 
     @Inject
-    MqttIncomingPublishFlows(final @NotNull MqttSubscribedPublishFlows subscribedFlows) {
-        this.subscribedFlows = subscribedFlows;
+    MqttIncomingPublishFlows() {
+        subscribedFlows = new MqttSubscribedPublishFlowTree();
         //noinspection unchecked
         globalFlows = new HandleList[MqttGlobalPublishFilter.values().length];
     }
