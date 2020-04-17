@@ -24,7 +24,7 @@ import java.util.EnumSet;
  * State of an {@link MqttClient}.
  * <pre>
  * +--------------+             +------------------------+
- * | DISCONNECTED <-+         +-> DISCONNECTED_RECONNECT |
+ * | DISCONNECTED &lt;-+         +-&gt; DISCONNECTED_RECONNECT |
  * +-------+------+  \       /  +-----------+------------+
  *         |          \     /               |
  *         |           \   /                |
@@ -34,7 +34,7 @@ import java.util.EnumSet;
  *         |             |                  |
  *         |             |                  |
  *         |      +------+------+           |
- *         +------>  CONNECTED  <-----------+
+ *         +------&gt;  CONNECTED  &lt;-----------+
  *                +-------------+
  * </pre>
  *
