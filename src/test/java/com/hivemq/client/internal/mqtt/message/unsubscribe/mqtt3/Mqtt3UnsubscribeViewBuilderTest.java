@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3;
@@ -348,7 +347,9 @@ class Mqtt3UnsubscribeViewBuilderTest {
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
         final ImmutableList<MqttTopicFilter> topics2 = ImmutableList.of(MqttTopicFilter.of("second"));
 
-        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().topicFilter("fluent").addTopicFilters(topics)
+        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
+                .topicFilter("fluent")
+                .addTopicFilters(topics)
                 .addTopicFilter()
                 .addLevel("nested")
                 .applyTopicFilter()

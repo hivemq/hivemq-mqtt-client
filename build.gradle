@@ -379,6 +379,9 @@ allprojects {
 
     license {
         header file("${project.rootDir}/HEADER")
+        mapping {
+            java = 'SLASHSTAR_STYLE'
+        }
     }
 }
 
