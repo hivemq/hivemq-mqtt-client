@@ -39,6 +39,7 @@ public interface Mqtt5IncomingQos1Interceptor {
      * @param pubAckBuilder the builder for the outgoing PubAck message.
      */
     void onPublish(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish,
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Publish publish,
             @NotNull Mqtt5PubAckBuilder pubAckBuilder);
 }

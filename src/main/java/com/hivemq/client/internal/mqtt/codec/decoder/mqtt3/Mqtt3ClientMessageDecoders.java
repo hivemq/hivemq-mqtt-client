@@ -34,10 +34,14 @@ public class Mqtt3ClientMessageDecoders extends MqttMessageDecoders {
 
     @Inject
     Mqtt3ClientMessageDecoders(
-            final @NotNull Mqtt3ConnAckDecoder connAckDecoder, final @NotNull Mqtt3PublishDecoder publishDecoder,
-            final @NotNull Mqtt3PubAckDecoder pubAckDecoder, final @NotNull Mqtt3PubRecDecoder pubRecDecoder,
-            final @NotNull Mqtt3PubRelDecoder pubRelDecoder, final @NotNull Mqtt3PubCompDecoder pubCompDecoder,
-            final @NotNull Mqtt3SubAckDecoder subAckDecoder, final @NotNull Mqtt3UnsubAckDecoder unsubAckDecoder,
+            final @NotNull Mqtt3ConnAckDecoder connAckDecoder,
+            final @NotNull Mqtt3PublishDecoder publishDecoder,
+            final @NotNull Mqtt3PubAckDecoder pubAckDecoder,
+            final @NotNull Mqtt3PubRecDecoder pubRecDecoder,
+            final @NotNull Mqtt3PubRelDecoder pubRelDecoder,
+            final @NotNull Mqtt3PubCompDecoder pubCompDecoder,
+            final @NotNull Mqtt3SubAckDecoder subAckDecoder,
+            final @NotNull Mqtt3UnsubAckDecoder unsubAckDecoder,
             final @NotNull MqttPingRespDecoder pingRespDecoder) {
 
         decoders[Mqtt3MessageType.CONNACK.getCode()] = connAckDecoder;

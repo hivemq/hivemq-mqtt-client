@@ -799,9 +799,12 @@ class FluxWithSingleTest {
     }
 
     private @NotNull CompletableFuture<StringBuilder> subscribeSingleFuture(
-            final int args, final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle,
-            final @NotNull AtomicInteger onNextCounter, final @NotNull AtomicInteger onErrorCounter,
-            final @NotNull AtomicInteger onCompleteCounter, final @NotNull CountDownLatch latch) {
+            final int args,
+            final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle,
+            final @NotNull AtomicInteger onNextCounter,
+            final @NotNull AtomicInteger onErrorCounter,
+            final @NotNull AtomicInteger onCompleteCounter,
+            final @NotNull CountDownLatch latch) {
 
         switch (args) {
             case 0:
@@ -863,8 +866,10 @@ class FluxWithSingleTest {
     }
 
     private @NotNull CompletableFuture<StringBuilder> subscribeSingleFuture(
-            final int args, final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle,
-            final @NotNull AtomicInteger onNextCounter, final @NotNull AtomicInteger onErrorCounter,
+            final int args,
+            final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle,
+            final @NotNull AtomicInteger onNextCounter,
+            final @NotNull AtomicInteger onErrorCounter,
             final @NotNull AtomicInteger onCompleteCounter) {
 
         return subscribeSingleFuture(

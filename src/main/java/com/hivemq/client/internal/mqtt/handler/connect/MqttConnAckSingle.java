@@ -69,8 +69,10 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     }
 
     private static void connect(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
-            final @NotNull MqttConnAckFlow flow, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
+            final @NotNull MqttConnAckFlow flow,
+            final @NotNull EventLoop eventLoop) {
 
         if (flow.getDisposable().isDisposed()) {
             clientConfig.releaseEventLoop();
@@ -104,8 +106,11 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     }
 
     public static void reconnect(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow flow,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttConnect connect,
+            final @NotNull MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
 
         if (flow.setDone()) {
@@ -114,16 +119,23 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     }
 
     public static void reconnect(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttConnect connect, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttConnect connect,
+            final @NotNull EventLoop eventLoop) {
 
         reconnect(clientConfig, source, cause, connect, 0, null, eventLoop);
     }
 
     private static void reconnect(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttConnect connect, final int attempts,
-            final @Nullable MqttConnAckFlow flow, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttConnect connect,
+            final int attempts,
+            final @Nullable MqttConnAckFlow flow,
+            final @NotNull EventLoop eventLoop) {
 
         final MqttClientReconnector reconnector =
                 new MqttClientReconnector(eventLoop, attempts, connect, clientConfig.getCurrentTransportConfig());

@@ -32,7 +32,9 @@ public class FluxWithSinglePublishOn<F, S> extends FluxWithSingleOperator<F, S, 
     private final int prefetch;
 
     public FluxWithSinglePublishOn(
-            final @NotNull FluxWithSingle<F, S> source, final @NotNull Scheduler scheduler, final boolean delayError,
+            final @NotNull FluxWithSingle<F, S> source,
+            final @NotNull Scheduler scheduler,
+            final boolean delayError,
             final int prefetch) {
 
         super(source);

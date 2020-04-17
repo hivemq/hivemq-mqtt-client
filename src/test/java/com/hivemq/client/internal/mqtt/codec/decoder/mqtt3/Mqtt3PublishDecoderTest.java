@@ -40,7 +40,11 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
     }
 
     private @NotNull ByteBuf createWellformedPublish(
-            final boolean dup, final int qos, final boolean retained, final int packetId, final byte[] topic,
+            final boolean dup,
+            final int qos,
+            final boolean retained,
+            final int packetId,
+            final byte[] topic,
             final @NotNull byte[] payload) throws Exception {
 
         final ByteBuf byteBuf = channel.alloc().buffer();

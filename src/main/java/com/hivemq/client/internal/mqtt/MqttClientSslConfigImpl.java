@@ -57,8 +57,10 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
     MqttClientSslConfigImpl(
             final @Nullable KeyManagerFactory keyManagerFactory,
-            final @Nullable TrustManagerFactory trustManagerFactory, final @Nullable ImmutableList<String> cipherSuites,
-            final @Nullable ImmutableList<String> protocols, final int handshakeTimeoutMs,
+            final @Nullable TrustManagerFactory trustManagerFactory,
+            final @Nullable ImmutableList<String> cipherSuites,
+            final @Nullable ImmutableList<String> protocols,
+            final int handshakeTimeoutMs,
             final @Nullable HostnameVerifier hostnameVerifier) {
 
         this.keyManagerFactory = keyManagerFactory;

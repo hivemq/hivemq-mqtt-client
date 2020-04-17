@@ -70,9 +70,12 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     @Inject
     MqttChannelInitializer(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
-            final @NotNull MqttConnAckFlow connAckFlow, final @NotNull MqttEncoder encoder,
-            final @NotNull MqttConnectHandler connectHandler, final @NotNull MqttDisconnectHandler disconnectHandler,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
+            final @NotNull MqttConnAckFlow connAckFlow,
+            final @NotNull MqttEncoder encoder,
+            final @NotNull MqttConnectHandler connectHandler,
+            final @NotNull MqttDisconnectHandler disconnectHandler,
             final @NotNull MqttAuthHandler authHandler,
             final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer) {
 

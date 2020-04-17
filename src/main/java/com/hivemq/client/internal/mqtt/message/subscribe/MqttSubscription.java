@@ -37,8 +37,11 @@ public class MqttSubscription implements Mqtt5Subscription {
     private final boolean retainAsPublished;
 
     public MqttSubscription(
-            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos, final boolean noLocal,
-            final @NotNull Mqtt5RetainHandling retainHandling, final boolean retainAsPublished) {
+            final @NotNull MqttTopicFilterImpl topicFilter,
+            final @NotNull MqttQos qos,
+            final boolean noLocal,
+            final @NotNull Mqtt5RetainHandling retainHandling,
+            final boolean retainAsPublished) {
 
         this.topicFilter = topicFilter;
         this.qos = qos;

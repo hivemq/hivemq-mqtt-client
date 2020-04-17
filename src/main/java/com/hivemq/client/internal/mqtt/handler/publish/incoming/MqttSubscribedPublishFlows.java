@@ -33,7 +33,8 @@ import java.util.Map;
 public interface MqttSubscribedPublishFlows {
 
     void subscribe(
-            @NotNull MqttSubscription subscription, int subscriptionIdentifier,
+            @NotNull MqttSubscription subscription,
+            int subscriptionIdentifier,
             @Nullable MqttSubscribedPublishFlow flow);
 
     void suback(@NotNull MqttTopicFilterImpl topicFilter, int subscriptionIdentifier, boolean error);

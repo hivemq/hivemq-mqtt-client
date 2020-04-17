@@ -63,11 +63,16 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     private final @Nullable Confirmable confirmable;
 
     public MqttPublish(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean retain, final long messageExpiryInterval,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
+            final boolean retain,
+            final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
-            final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties,
+            final @Nullable MqttUtf8StringImpl contentType,
+            final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable ByteBuffer correlationData,
+            final @NotNull MqttUserPropertiesImpl userProperties,
             final @Nullable Confirmable confirmable) {
 
         super(userProperties);
@@ -181,7 +186,9 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     public @NotNull MqttStatefulPublish createStateful(
-            final int packetIdentifier, final boolean dup, final int topicAlias,
+            final int packetIdentifier,
+            final boolean dup,
+            final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         return new MqttStatefulPublish(this, packetIdentifier, dup, topicAlias, subscriptionIdentifiers);

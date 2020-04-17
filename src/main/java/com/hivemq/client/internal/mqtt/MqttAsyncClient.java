@@ -137,7 +137,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Mqtt5Subscribe subscribe,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor) {
 
         return subscribe(subscribe, callback, executor, false);
@@ -145,7 +146,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Mqtt5Subscribe subscribe,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final boolean manualAcknowledgement) {
 
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
@@ -157,8 +159,10 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
-            final @Nullable Executor executor, final boolean manualAcknowledgement) {
+            final @Nullable Mqtt5Subscribe subscribe,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Executor executor,
+            final boolean manualAcknowledgement) {
 
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
@@ -183,7 +187,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public void publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable MqttGlobalPublishFilter filter,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor) {
 
         publishes(filter, callback, executor, false);
@@ -191,7 +196,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public void publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable MqttGlobalPublishFilter filter,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
@@ -202,8 +208,10 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public void publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
-            final @Nullable Executor executor, final boolean manualAcknowledgement) {
+            final @Nullable MqttGlobalPublishFilter filter,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Executor executor,
+            final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");

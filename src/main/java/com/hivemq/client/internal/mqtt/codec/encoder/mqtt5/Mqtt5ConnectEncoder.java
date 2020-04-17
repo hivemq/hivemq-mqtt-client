@@ -82,8 +82,12 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulConnect message, final @NotNull MqttEncoderContext context,
-            final int encodedLength, final int remainingLength, final int propertyLength, final int willPropertyLength,
+            final @NotNull MqttStatefulConnect message,
+            final @NotNull MqttEncoderContext context,
+            final int encodedLength,
+            final int remainingLength,
+            final int propertyLength,
+            final int willPropertyLength,
             final int omittedProperties) {
 
         final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
@@ -185,8 +189,12 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encode(
-            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int remainingLength,
-            final int propertyLength, final int willPropertyLength, final int omittedProperties) {
+            final @NotNull MqttStatefulConnect message,
+            final @NotNull ByteBuf out,
+            final int remainingLength,
+            final int propertyLength,
+            final int willPropertyLength,
+            final int omittedProperties) {
 
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
@@ -199,7 +207,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeVariableHeader(
-            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulConnect message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         final MqttConnect stateless = message.stateless();
@@ -240,7 +250,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeProperties(
-            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulConnect message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         final MqttConnect stateless = message.stateless();

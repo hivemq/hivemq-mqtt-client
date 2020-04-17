@@ -53,8 +53,10 @@ public class MqttWebSocketInitializer {
     }
 
     public void initChannel(
-            final @NotNull Channel channel, final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttWebSocketConfigImpl webSocketConfig, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull Channel channel,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttWebSocketConfigImpl webSocketConfig,
+            final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
         final URI uri;

@@ -31,7 +31,8 @@ import org.jetbrains.annotations.NotNull;
 public class MqttClientConnectedContextImpl implements Mqtt5ClientConnectedContext {
 
     public static @NotNull MqttClientConnectedContext of(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
 
         if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
@@ -45,7 +46,8 @@ public class MqttClientConnectedContextImpl implements Mqtt5ClientConnectedConte
     private final @NotNull MqttConnAck connAck;
 
     private MqttClientConnectedContextImpl(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
 
         this.clientConfig = clientConfig;

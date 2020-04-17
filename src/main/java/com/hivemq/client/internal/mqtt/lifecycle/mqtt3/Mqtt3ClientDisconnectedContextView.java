@@ -31,8 +31,10 @@ import org.jetbrains.annotations.NotNull;
 public class Mqtt3ClientDisconnectedContextView implements Mqtt3ClientDisconnectedContext {
 
     public static @NotNull MqttClientDisconnectedContext of(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttClientReconnector reconnector) {
 
         return new Mqtt3ClientDisconnectedContextView(new Mqtt3ClientConfigView(clientConfig), source,
                 Mqtt3ExceptionFactory.map(cause), new Mqtt3ClientReconnectorView(reconnector));
@@ -44,8 +46,10 @@ public class Mqtt3ClientDisconnectedContextView implements Mqtt3ClientDisconnect
     private final @NotNull Mqtt3ClientReconnectorView reconnector;
 
     private Mqtt3ClientDisconnectedContextView(
-            final @NotNull Mqtt3ClientConfigView clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull Mqtt3ClientReconnectorView reconnector) {
+            final @NotNull Mqtt3ClientConfigView clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull Mqtt3ClientReconnectorView reconnector) {
 
         this.clientConfig = clientConfig;
         this.source = source;

@@ -95,8 +95,12 @@ class MqttSubscribedPublishFlowTreeTest extends MqttSubscribedPublishFlowsTest {
             "remove, test/topic/filter, test/topic//filter, test/topic///filter, test/topic///filter, test/topic//filter, test/topic/filter",
     })
     void branching_compaction(
-            final @NotNull String compactOperation, final @NotNull String filter1, final @NotNull String filter2,
-            final @NotNull String filter3, final @NotNull String topic1, final @NotNull String topic2,
+            final @NotNull String compactOperation,
+            final @NotNull String filter1,
+            final @NotNull String filter2,
+            final @NotNull String filter3,
+            final @NotNull String topic1,
+            final @NotNull String topic2,
             final @NotNull String topic3) {
 
         final MqttSubscription subscription1 = new MqttSubscriptionBuilder.Default().topicFilter(filter1).build();

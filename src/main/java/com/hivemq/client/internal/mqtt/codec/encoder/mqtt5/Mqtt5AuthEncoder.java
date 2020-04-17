@@ -59,8 +59,11 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithUserPropertiesEncoder.With
 
     @Override
     void encode(
-            final @NotNull MqttAuth message, final @NotNull ByteBuf out, final int remainingLength,
-            final int propertyLength, final int omittedProperties) {
+            final @NotNull MqttAuth message,
+            final @NotNull ByteBuf out,
+            final int remainingLength,
+            final int propertyLength,
+            final int omittedProperties) {
 
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
@@ -72,7 +75,9 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithUserPropertiesEncoder.With
     }
 
     private void encodeVariableHeader(
-            final @NotNull MqttAuth message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttAuth message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         out.writeByte(message.getReasonCode().getCode());
@@ -80,7 +85,9 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithUserPropertiesEncoder.With
     }
 
     private void encodeProperties(
-            final @NotNull MqttAuth message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttAuth message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         MqttVariableByteInteger.encode(propertyLength, out);

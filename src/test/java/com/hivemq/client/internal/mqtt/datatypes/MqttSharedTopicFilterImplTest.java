@@ -47,7 +47,8 @@ class MqttSharedTopicFilterImplTest {
     }
 
     private @Nullable MqttTopicFilterImpl from(
-            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
+            final @NotNull SharedTopicFilterSource source,
+            final @NotNull String shareName,
             final @NotNull String topicFilter) {
 
         if (source == SharedTopicFilterSource.SHARE_NAME_AND_TOPIC_FILTER) {
@@ -170,8 +171,10 @@ class MqttSharedTopicFilterImplTest {
     @ParameterizedTest
     @MethodSource("invalidShareNameOrTopicFilterFromByteBuf")
     void from_invalidShareNameOrTopicFilterByteBuf_returnsNull(
-            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
-            final @NotNull String topicFilter, @SuppressWarnings("unused") final @NotNull String message) {
+            final @NotNull SharedTopicFilterSource source,
+            final @NotNull String shareName,
+            final @NotNull String topicFilter,
+            @SuppressWarnings("unused") final @NotNull String message) {
 
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNull(mqtt5TopicFilter);
@@ -180,8 +183,10 @@ class MqttSharedTopicFilterImplTest {
     @ParameterizedTest
     @MethodSource("invalidShareNameOrTopicFilterFromStringAndFromShareNameAndTopicFilter")
     void from_invalidShareNameOrTopicFilterString_throws(
-            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
-            final @NotNull String topicFilter, final @NotNull String message) {
+            final @NotNull SharedTopicFilterSource source,
+            final @NotNull String shareName,
+            final @NotNull String topicFilter,
+            final @NotNull String message) {
 
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> from(source, shareName, topicFilter));
@@ -241,7 +246,8 @@ class MqttSharedTopicFilterImplTest {
     @MethodSource("validShareNameAndTopicFilter")
     void from_validShareNameAndTopicFilter(
             final @NotNull SharedTopicFilterSource source,
-            @SuppressWarnings("unused") final @NotNull String testDescription, final @NotNull String shareName,
+            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String shareName,
             final @NotNull String topicFilter) {
 
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);

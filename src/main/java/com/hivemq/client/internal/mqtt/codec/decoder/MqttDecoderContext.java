@@ -34,9 +34,13 @@ public class MqttDecoderContext {
     private final boolean directBufferCorrelationData;
 
     MqttDecoderContext(
-            final int maximumPacketSize, final int topicAliasMaximum, final boolean problemInformationRequested,
-            final boolean responseInformationRequested, final boolean validatePayloadFormat,
-            final boolean directBufferPayload, final boolean directBufferAuth,
+            final int maximumPacketSize,
+            final int topicAliasMaximum,
+            final boolean problemInformationRequested,
+            final boolean responseInformationRequested,
+            final boolean validatePayloadFormat,
+            final boolean directBufferPayload,
+            final boolean directBufferAuth,
             final boolean directBufferCorrelationData) {
 
         this.maximumPacketSize = maximumPacketSize;

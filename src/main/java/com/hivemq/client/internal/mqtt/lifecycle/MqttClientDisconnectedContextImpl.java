@@ -30,8 +30,10 @@ import org.jetbrains.annotations.NotNull;
 public class MqttClientDisconnectedContextImpl implements Mqtt5ClientDisconnectedContext {
 
     public static @NotNull MqttClientDisconnectedContext of(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttClientReconnector reconnector) {
 
         if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
             return Mqtt3ClientDisconnectedContextView.of(clientConfig, source, cause, reconnector);
@@ -45,8 +47,10 @@ public class MqttClientDisconnectedContextImpl implements Mqtt5ClientDisconnecte
     private final @NotNull MqttClientReconnector reconnector;
 
     private MqttClientDisconnectedContextImpl(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttClientReconnector reconnector) {
 
         this.clientConfig = clientConfig;
         this.source = source;

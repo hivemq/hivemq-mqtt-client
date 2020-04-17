@@ -37,8 +37,11 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
     private final int handshakeTimeoutMs;
 
     MqttProxyConfigImpl(
-            final @NotNull MqttProxyProtocol protocol, final @NotNull InetSocketAddress address,
-            final @Nullable String username, final @Nullable String password, final int handshakeTimeoutMs) {
+            final @NotNull MqttProxyProtocol protocol,
+            final @NotNull InetSocketAddress address,
+            final @Nullable String username,
+            final @Nullable String password,
+            final int handshakeTimeoutMs) {
 
         this.protocol = protocol;
         this.address = address;

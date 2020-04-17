@@ -61,7 +61,9 @@ abstract class MqttPubRelWithFlow extends MqttPubOrRelWithFlow {
         private final @NotNull MqttPubRec pubRec;
 
         MqttQos2CompleteWithFlow(
-                final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec, final @NotNull MqttPubRel pubRel,
+                final @NotNull MqttPublish publish,
+                final @NotNull MqttPubRec pubRec,
+                final @NotNull MqttPubRel pubRel,
                 final @NotNull MqttAckFlow ackFlow) {
 
             super(pubRel, ackFlow);

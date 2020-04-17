@@ -51,7 +51,9 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     private boolean afterOnDisconnected;
 
     public MqttClientReconnector(
-            final @NotNull EventLoop eventLoop, final int attempts, final @NotNull MqttConnect connect,
+            final @NotNull EventLoop eventLoop,
+            final int attempts,
+            final @NotNull MqttConnect connect,
             final @NotNull MqttClientTransportConfigImpl transportConfig) {
 
         this.eventLoop = eventLoop;

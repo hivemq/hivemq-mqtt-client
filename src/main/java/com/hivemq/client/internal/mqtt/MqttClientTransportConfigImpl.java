@@ -43,9 +43,12 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     private final int mqttConnectTimeoutMs;
 
     MqttClientTransportConfigImpl(
-            final @NotNull InetSocketAddress serverAddress, final @Nullable InetSocketAddress localAddress,
-            final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
-            final @Nullable MqttProxyConfigImpl proxyConfig, final int socketConnectTimeoutMs,
+            final @NotNull InetSocketAddress serverAddress,
+            final @Nullable InetSocketAddress localAddress,
+            final @Nullable MqttClientSslConfigImpl sslConfig,
+            final @Nullable MqttWebSocketConfigImpl webSocketConfig,
+            final @Nullable MqttProxyConfigImpl proxyConfig,
+            final int socketConnectTimeoutMs,
             final int mqttConnectTimeoutMs) {
 
         this.serverAddress = serverAddress;

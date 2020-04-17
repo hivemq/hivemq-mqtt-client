@@ -55,7 +55,8 @@ public class MqttIncomingPublishFlows {
     }
 
     public void subscribe(
-            final @NotNull MqttSubscribe subscribe, final int subscriptionIdentifier,
+            final @NotNull MqttSubscribe subscribe,
+            final int subscriptionIdentifier,
             final @Nullable MqttSubscribedPublishFlow flow) {
 
         final ImmutableList<MqttSubscription> subscriptions = subscribe.getSubscriptions();
@@ -66,7 +67,8 @@ public class MqttIncomingPublishFlows {
     }
 
     public void subAck(
-            final @NotNull MqttSubscribe subscribe, final int subscriptionIdentifier,
+            final @NotNull MqttSubscribe subscribe,
+            final int subscriptionIdentifier,
             final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
 
         final ImmutableList<MqttSubscription> subscriptions = subscribe.getSubscriptions();

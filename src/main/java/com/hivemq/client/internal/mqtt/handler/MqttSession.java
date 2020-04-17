@@ -61,8 +61,10 @@ public class MqttSession {
 
     @CallByThread("Netty EventLoop")
     public void startOrResume(
-            final @NotNull MqttConnAck connAck, final @NotNull MqttClientConnectionConfig connectionConfig,
-            final @NotNull ChannelPipeline pipeline, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttConnAck connAck,
+            final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull ChannelPipeline pipeline,
+            final @NotNull EventLoop eventLoop) {
 
         if (hasSession && !connAck.isSessionPresent()) {
             final String message = "Session expired as CONNACK did not contain the session present flag.";
@@ -85,7 +87,8 @@ public class MqttSession {
 
     @CallByThread("Netty EventLoop")
     public void expire(
-            final @NotNull Throwable cause, final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull Throwable cause,
+            final @NotNull MqttClientConnectionConfig connectionConfig,
             final @NotNull EventLoop eventLoop) {
 
         final long expiryInterval = connectionConfig.getSessionExpiryInterval();

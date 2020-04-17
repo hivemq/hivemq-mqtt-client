@@ -94,7 +94,8 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
         private @Nullable Subscription subscription;
 
         MapSubscriber(
-                final @NotNull T subscriber, final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                final @NotNull T subscriber,
+                final @Nullable Function<? super F, ? extends FM> flowableMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
             this.subscriber = subscriber;
@@ -172,7 +173,8 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
                 extends MapSubscriber<F, S, FM, SM, T> implements WithSingleConditionalSubscriber<F, S> {
 
             Conditional(
-                    final @NotNull T subscriber, final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                    final @NotNull T subscriber,
+                    final @Nullable Function<? super F, ? extends FM> flowableMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
                 super(subscriber, flowableMapper, singleMapper);

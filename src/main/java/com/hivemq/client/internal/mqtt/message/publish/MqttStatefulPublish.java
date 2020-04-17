@@ -40,7 +40,10 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
     private long id;
 
     MqttStatefulPublish(
-            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean dup, final int topicAlias,
+            final @NotNull MqttPublish publish,
+            final int packetIdentifier,
+            final boolean dup,
+            final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);

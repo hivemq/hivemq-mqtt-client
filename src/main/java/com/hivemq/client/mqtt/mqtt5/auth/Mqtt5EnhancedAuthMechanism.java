@@ -77,7 +77,8 @@ public interface Mqtt5EnhancedAuthMechanism {
      * @return a {@link CompletableFuture} succeeding when the required data for auth is added to the builder.
      */
     @NotNull CompletableFuture<Void> onAuth(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Connect connect,
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Connect connect,
             @NotNull Mqtt5EnhancedAuthBuilder authBuilder);
 
     /**
@@ -104,7 +105,8 @@ public interface Mqtt5EnhancedAuthMechanism {
      *         and when the required data for auth is added to the builder.
      */
     default @NotNull CompletableFuture<Boolean> onServerReAuth(
-            final @NotNull Mqtt5ClientConfig clientConfig, final @NotNull Mqtt5Auth auth,
+            final @NotNull Mqtt5ClientConfig clientConfig,
+            final @NotNull Mqtt5Auth auth,
             final @NotNull Mqtt5AuthBuilder authBuilder) {
 
         return onReAuth(clientConfig, authBuilder).thenApply(aVoid -> true);

@@ -61,7 +61,8 @@ public final class MqttDisconnectUtil {
      * @param reasonString the reason string why the channel is closed.
      */
     public static void disconnect(
-            final @NotNull Channel channel, final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final @NotNull Channel channel,
+            final @NotNull Mqtt5DisconnectReasonCode reasonCode,
             final @NotNull String reasonString) {
 
         final MqttDisconnect disconnect =
@@ -78,7 +79,8 @@ public final class MqttDisconnectUtil {
      * @param cause      the cause why the channel is closed.
      */
     public static void disconnect(
-            final @NotNull Channel channel, final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final @NotNull Channel channel,
+            final @NotNull Mqtt5DisconnectReasonCode reasonCode,
             final @NotNull Throwable cause) {
 
         final MqttDisconnect disconnect =
@@ -87,7 +89,8 @@ public final class MqttDisconnectUtil {
     }
 
     public static void fireDisconnectEvent(
-            final @NotNull Channel channel, final @NotNull Throwable cause,
+            final @NotNull Channel channel,
+            final @NotNull Throwable cause,
             final @NotNull MqttDisconnectSource source) {
 
         fireDisconnectEvent(channel, new MqttDisconnectEvent(cause, source));

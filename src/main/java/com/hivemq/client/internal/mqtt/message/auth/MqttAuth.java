@@ -42,8 +42,10 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
     private final @Nullable ByteBuffer data;
 
     public MqttAuth(
-            final @NotNull Mqtt5AuthReasonCode reasonCode, final @NotNull MqttUtf8StringImpl method,
-            final @Nullable ByteBuffer data, final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull Mqtt5AuthReasonCode reasonCode,
+            final @NotNull MqttUtf8StringImpl method,
+            final @Nullable ByteBuffer data,
+            final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);

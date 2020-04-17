@@ -36,7 +36,9 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     private final int handshakeTimeoutMs;
 
     MqttWebSocketConfigImpl(
-            final @NotNull String serverPath, final @NotNull String queryString, final @NotNull String subprotocol,
+            final @NotNull String serverPath,
+            final @NotNull String queryString,
+            final @NotNull String subprotocol,
             final int handshakeTimeoutMs) {
 
         this.serverPath = serverPath;

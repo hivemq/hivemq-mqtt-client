@@ -205,7 +205,8 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     protected @NotNull MqttClientConfig buildClientConfig(
-            final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull MqttVersion mqttVersion,
+            final @NotNull MqttClientAdvancedConfig advancedConfig,
             final @NotNull MqttClientConfig.ConnectDefaults connectDefaults) {
 
         return new MqttClientConfig(mqttVersion, identifier, buildTransportConfig(), executorConfig, advancedConfig,

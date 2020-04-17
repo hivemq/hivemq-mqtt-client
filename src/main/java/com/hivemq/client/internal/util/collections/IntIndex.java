@@ -55,7 +55,8 @@ public class IntIndex<E> {
         }
 
         public Spec(
-                final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity,
+                final @NotNull ToIntFunction<? super E> keyFunction,
+                final int minCapacity,
                 final float nodeThresholdFactor) {
 
             this.keyFunction = keyFunction;

@@ -103,8 +103,12 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @Override
     @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulPublish message, final @NotNull MqttEncoderContext context,
-            final int encodedLength, final int remainingLength, final int propertyLength, final int omittedProperties) {
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull MqttEncoderContext context,
+            final int encodedLength,
+            final int remainingLength,
+            final int propertyLength,
+            final int omittedProperties) {
 
         final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && payload.isDirect()) {
@@ -121,8 +125,11 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @Override
     void encode(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int remainingLength,
-            final int propertyLength, final int omittedProperties) {
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int remainingLength,
+            final int propertyLength,
+            final int omittedProperties) {
 
         encodeFixedHeader(message, out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
@@ -149,7 +156,9 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     private void encodeVariableHeader(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         final MqttPublish stateless = message.stateless();
@@ -168,7 +177,9 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     private void encodeProperties(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         MqttVariableByteInteger.encode(propertyLength, out);

@@ -33,7 +33,8 @@ public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
     private final @Nullable MqttEnhancedAuth enhancedAuth;
 
     MqttStatefulConnect(
-            final @NotNull MqttConnect connect, final @NotNull MqttClientIdentifierImpl clientIdentifier,
+            final @NotNull MqttConnect connect,
+            final @NotNull MqttClientIdentifierImpl clientIdentifier,
             final @Nullable MqttEnhancedAuth enhancedAuth) {
 
         super(connect);

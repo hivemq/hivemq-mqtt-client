@@ -63,7 +63,8 @@ public class KeyStoreUtil {
     }
 
     public static @NotNull KeyManagerFactory keyManagerFromKeystore(
-            final @NotNull File keyStoreFile, final @NotNull String keyStorePassword,
+            final @NotNull File keyStoreFile,
+            final @NotNull String keyStorePassword,
             final @NotNull String privateKeyPassword) throws SSLException {
 
         Checks.notNull(keyStoreFile, "Keystore file");

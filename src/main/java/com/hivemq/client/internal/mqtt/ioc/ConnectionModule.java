@@ -43,7 +43,8 @@ abstract class ConnectionModule {
     @Provides
     @ConnectionScope
     static @NotNull MqttAuthHandler provideAuthHandler(
-            final @NotNull MqttConnect connect, final @NotNull Lazy<MqttConnectAuthHandler> connectAuthHandlerLazy,
+            final @NotNull MqttConnect connect,
+            final @NotNull Lazy<MqttConnectAuthHandler> connectAuthHandlerLazy,
             final @NotNull Lazy<MqttDisconnectOnAuthHandler> disconnectOnAuthHandlerLazy) {
 
         return (connect.getRawEnhancedAuthMechanism() == null) ? disconnectOnAuthHandlerLazy.get() :

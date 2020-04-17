@@ -42,9 +42,14 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     private final boolean requestResponseInformation;
 
     public MqttConnectRestrictions(
-            final int receiveMaximum, final int sendMaximum, final int maximumPacketSize,
-            final int sendMaximumPacketSize, final int topicAliasMaximum, final int sendTopicAliasMaximum,
-            final boolean requestProblemInformation, final boolean requestResponseInformation) {
+            final int receiveMaximum,
+            final int sendMaximum,
+            final int maximumPacketSize,
+            final int sendMaximumPacketSize,
+            final int topicAliasMaximum,
+            final int sendTopicAliasMaximum,
+            final boolean requestProblemInformation,
+            final boolean requestResponseInformation) {
 
         this.receiveMaximum = receiveMaximum;
         this.sendMaximum = sendMaximum;

@@ -82,7 +82,8 @@ public abstract class AbstractMqttDecoderTest {
     protected EmbeddedChannel channel;
 
     protected AbstractMqttDecoderTest(
-            final @NotNull MqttMessageDecoders decoders, final @NotNull MqttVersion mqttVersion,
+            final @NotNull MqttMessageDecoders decoders,
+            final @NotNull MqttVersion mqttVersion,
             final @NotNull MqttConnect connect) {
 
         this.decoders = decoders;

@@ -54,10 +54,14 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     private final @Nullable MqttWillPublish willPublish;
 
     public MqttConnect(
-            final int keepAlive, final boolean cleanStart, final long sessionExpiryInterval,
-            final @NotNull MqttConnectRestrictions restrictions, final @Nullable MqttSimpleAuth simpleAuth,
+            final int keepAlive,
+            final boolean cleanStart,
+            final long sessionExpiryInterval,
+            final @NotNull MqttConnectRestrictions restrictions,
+            final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
-            final @Nullable MqttWillPublish willPublish, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final @Nullable MqttWillPublish willPublish,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.keepAlive = keepAlive;

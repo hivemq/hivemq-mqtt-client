@@ -167,7 +167,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeUnsubscribe(
-            final @NotNull byte[] expected, final @NotNull MqttUserPropertiesImpl userProperties,
+            final @NotNull byte[] expected,
+            final @NotNull MqttUserPropertiesImpl userProperties,
             final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, userProperties);
         final int packetIdentifier = 0x01;

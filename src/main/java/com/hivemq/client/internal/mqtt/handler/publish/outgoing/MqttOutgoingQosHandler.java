@@ -298,7 +298,8 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void writeQos1Or2Publish(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttStatefulPublish publish,
             final @NotNull MqttPublishWithFlow publishWithFlow) {
 
         currentPending = publishWithFlow;

@@ -33,8 +33,10 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
     private @Nullable Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
-            final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttIncomingQosHandler incomingQosHandler, final @NotNull MqttGlobalPublishFilter filter,
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttIncomingQosHandler incomingQosHandler,
+            final @NotNull MqttGlobalPublishFilter filter,
             final boolean manualAcknowledgement) {
 
         super(subscriber, clientConfig, incomingQosHandler, manualAcknowledgement);

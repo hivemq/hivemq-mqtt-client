@@ -50,7 +50,8 @@ public class MqttDecoder extends ByteToMessageDecoder {
 
     @Inject
     MqttDecoder(
-            final @NotNull MqttMessageDecoders decoders, final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttMessageDecoders decoders,
+            final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttConnect connect) {
 
         this.decoders = decoders;

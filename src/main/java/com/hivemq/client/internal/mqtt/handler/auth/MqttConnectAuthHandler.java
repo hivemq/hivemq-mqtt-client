@@ -61,7 +61,8 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
 
     @Override
     public void write(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg,
             final @NotNull ChannelPromise promise) {
 
         if (msg instanceof MqttConnect) {

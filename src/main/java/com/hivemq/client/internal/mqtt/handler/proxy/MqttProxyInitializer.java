@@ -30,8 +30,10 @@ import java.util.function.Consumer;
 public final class MqttProxyInitializer {
 
     public static void initChannel(
-            final @NotNull Channel channel, final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttProxyConfigImpl proxyConfig, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull Channel channel,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttProxyConfigImpl proxyConfig,
+            final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
         final MqttProxyAdapterHandler proxyAdapterHandler =

@@ -35,8 +35,10 @@ public class MqttPubAck extends MqttMessageWithUserProperties.WithReason.WithCod
     public static final @NotNull Mqtt5PubAckReasonCode DEFAULT_REASON_CODE = Mqtt5PubAckReasonCode.SUCCESS;
 
     public MqttPubAck(
-            final int packetIdentifier, final @NotNull Mqtt5PubAckReasonCode reasonCode,
-            final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final int packetIdentifier,
+            final @NotNull Mqtt5PubAckReasonCode reasonCode,
+            final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
     }

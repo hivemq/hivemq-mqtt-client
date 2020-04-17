@@ -260,7 +260,8 @@ public final class RxFutureConverter {
         }
 
         private static <T> void complete(
-                final @NotNull MaybeObserver<? super T> observer, final @Nullable T t,
+                final @NotNull MaybeObserver<? super T> observer,
+                final @Nullable T t,
                 final @Nullable Throwable throwable) {
 
             if (throwable != null) {
@@ -317,7 +318,8 @@ public final class RxFutureConverter {
         }
 
         private static <T> void complete(
-                final @NotNull SingleObserver<? super T> observer, final @Nullable T t,
+                final @NotNull SingleObserver<? super T> observer,
+                final @Nullable T t,
                 final @Nullable Throwable throwable) {
 
             if (t != null) {
