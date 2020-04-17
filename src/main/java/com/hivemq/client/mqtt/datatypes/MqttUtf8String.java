@@ -23,24 +23,23 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.ByteBuffer;
 
 /**
- * UTF-8 encoded String according to the MQTT specification.
+ * UTF-8 encoded string according to the MQTT specification.
  * <p>
- * MUST requirements: An UTF-8 encoded String
+ * MUST requirements: An UTF-8 encoded string
  * <ul>
- * <li>must not be longer than 65535 bytes in UTF-8 encoding,</li>
- * <li>must not contain the null character (U+0000) and</li>
- * <li>must be well-formed UTF-8 as defined by the Unicode specification, so
- * <ul>
- * <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and</li>
- * <li>must not contain non-shortest form encodings.</li>
- * </ul>
- * </li>
+ *   <li>must not be longer than 65535 bytes in UTF-8 encoding,
+ *   <li>must not contain the null character (U+0000) and
+ *   <li>must be well-formed UTF-8 as defined by the Unicode specification, so
+ *     <ul>
+ *       <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and
+ *       <li>must not contain non-shortest form encodings.
+ *     </ul>
  * </ul>
  * <p>
- * SHOULD requirements: An UTF-8 encoded String
+ * SHOULD requirements: An UTF-8 encoded string
  * <ul>
- * <li>should not contain control characters (U+0001..U+001F, U+007F..U+009F) and</li>
- * <li>should not contain non-characters.</li>
+ *   <li>should not contain control characters (U+0001..U+001F, U+007F..U+009F) and
+ *   <li>should not contain non-characters.
  * </ul>
  *
  * @author Silvio Giebl

@@ -22,7 +22,7 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link MqttClientDisconnectedContext} with methods specific to a {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+ * A {@link MqttClientDisconnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
  * Mqtt5Client}.
  *
  * @author Silvio Giebl

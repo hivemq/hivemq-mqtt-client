@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * MQTT 5 PubAck message. This message is translated from and to a MQTT 5 PUBACK packet.
+ * MQTT 5 PubAck message. This message is translated from and to an MQTT 5 PUBACK packet.
  *
  * @author Silvio Giebl
  * @since 1.0

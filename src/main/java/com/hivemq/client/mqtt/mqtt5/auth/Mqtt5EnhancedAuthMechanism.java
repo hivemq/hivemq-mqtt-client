@@ -36,20 +36,18 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * The enhanced auth has two life cycles:
  * <ul>
- * <li>Auth when connecting:
- * <ol>
- * <li>{@link #onAuth}</li>
- * <li>({@link #onContinue})*</li>
- * <li>({@link #onAuthSuccess} | {@link
- * #onAuthRejected} | {@link #onAuthError})</li>
- * </ol>
- * </li>
- * <li>Reauth when connected:
- * <ol>
- * <li>({@link #onReAuth} | {@link #onServerReAuth})</li>
- * <li>({@link #onContinue})*</li>
- * <li>({@link #onReAuthSuccess} | {@link #onReAuthRejected} | {@link #onReAuthError})</li>
- * </ol>
+ *   <li>Auth when connecting:
+ *     <ol>
+ *       <li>{@link #onAuth}
+ *       <li>({@link #onContinue})*
+ *       <li>({@link #onAuthSuccess} | {@link #onAuthRejected} | {@link #onAuthError})
+ *     </ol>
+ *   <li>Reauth when connected:
+ *     <ol>
+ *       <li>({@link #onReAuth} | {@link #onServerReAuth})
+ *       <li>({@link #onContinue})*
+ *       <li>({@link #onReAuthSuccess} | {@link #onReAuthRejected} | {@link #onReAuthError})
+ *     </ol>
  * </ul>
  *
  * @author Silvio Giebl

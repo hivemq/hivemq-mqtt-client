@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Reason Code of a {@link Mqtt5PubRel MQTT 5 PubRel message}.
+ * Reason Code of an {@link Mqtt5PubRel MQTT 5 PubRel message}.
  *
  * @author Silvio Giebl
  * @since 1.0

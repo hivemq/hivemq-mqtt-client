@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Builder for a {@link Mqtt3Client}.
+ * Builder for an {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.0

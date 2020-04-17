@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * MQTT 5 PubRel message. This message is translated from and to a MQTT 5 PUBREL packet.
+ * MQTT 5 PubRel message. This message is translated from and to an MQTT 5 PUBREL packet.
  *
  * @author Silvio Giebl
  * @since 1.0

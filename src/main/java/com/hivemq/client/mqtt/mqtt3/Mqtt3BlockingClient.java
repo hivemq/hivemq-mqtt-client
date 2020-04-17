@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Blocking API of a {@link Mqtt3Client}.
+ * Blocking API of an {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -178,9 +178,9 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         * <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
-         * instance.</li>
-         * <li>Otherwise blocks the calling thread until a Publish message is received.</li>
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
+         *     instance.
+         *   <li>Otherwise blocks the calling thread until a Publish message is received.
          * </ul>
          *
          * @return the received Publish message.
@@ -192,10 +192,9 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         * <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
-         * instance.</li>
-         * <li>Otherwise blocks the calling thread until a Publish message is received or the given timeout
-         * applies.</li>
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
+         *     instance.
+         *   <li>Otherwise blocks the calling thread until a Publish message is received or the given timeout applies.
          * </ul>
          *
          * @param timeout  the time to wait for a Publish messages to be received.

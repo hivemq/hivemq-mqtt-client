@@ -22,7 +22,7 @@ import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link MqttClientDisconnectedContext} with methods specific to a {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
+ * A {@link MqttClientDisconnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
  * Mqtt3Client}.
  *
  * @author Silvio Giebl

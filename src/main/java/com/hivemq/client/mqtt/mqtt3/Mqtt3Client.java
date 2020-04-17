@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Mqtt3Client extends MqttClient {
 
     /**
-     * Creates a builder for a MQTT 3 client.
+     * Creates a builder for an MQTT 3 client.
      *
      * @return the created builder for a MQTT 3 client.
      */

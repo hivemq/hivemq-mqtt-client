@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * MQTT 3 Publish message. This message is translated from and to a MQTT 3 PUBLISH packet.
+ * MQTT 3 Publish message. This message is translated from and to an MQTT 3 PUBLISH packet.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl

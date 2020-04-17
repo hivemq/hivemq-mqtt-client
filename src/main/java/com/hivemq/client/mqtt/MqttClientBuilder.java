@@ -23,7 +23,7 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Builder for a {@link MqttClient}.
+ * Builder for an {@link MqttClient}.
  *
  * @author Silvio Giebl
  * @since 1.0

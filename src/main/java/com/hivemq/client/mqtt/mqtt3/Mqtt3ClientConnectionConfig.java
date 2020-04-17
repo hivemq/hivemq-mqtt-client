@@ -21,7 +21,7 @@ import com.hivemq.client.mqtt.MqttClientConnectionConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Connection configuration of a {@link Mqtt3Client}.
+ * Connection configuration of an {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.0

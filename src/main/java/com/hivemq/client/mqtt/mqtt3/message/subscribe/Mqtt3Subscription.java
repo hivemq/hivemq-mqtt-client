@@ -23,7 +23,7 @@ import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Subscription in a {@link Mqtt3Subscribe MQTT 3 Subscribe message}.
+ * Subscription in an {@link Mqtt3Subscribe MQTT 3 Subscribe message}.
  *
  * @author Silvio Giebl
  * @since 1.0

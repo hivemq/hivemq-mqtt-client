@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * Result for a {@link Mqtt3Publish MQTT 3 Publish message} sent by the client.
+ * Result for an {@link Mqtt3Publish MQTT 3 Publish message} sent by the client.
  * <p>
  * The result is provided if a Publish message is successfully delivered (sent or acknowledged respectively to its
  * {@link com.hivemq.client.mqtt.datatypes.MqttQos QoS} level).

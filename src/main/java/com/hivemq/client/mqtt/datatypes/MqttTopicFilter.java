@@ -29,9 +29,9 @@ import java.util.List;
  * <p>
  * A Topic Filter has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}. Additionally it
  * <ul>
- * <li>must be at least one character long,</li>
- * <li>may contain one multi-level wildcard character ({@value #MULTI_LEVEL_WILDCARD}) at the end and</li>
- * <li>may contain multiple single-level wildcards ({@value #SINGLE_LEVEL_WILDCARD}).</li>
+ *   <li>must be at least one character long,
+ *   <li>may contain one multi-level wildcard character ({@value #MULTI_LEVEL_WILDCARD}) at the end and
+ *   <li>may contain multiple single-level wildcards ({@value #SINGLE_LEVEL_WILDCARD}).
  * </ul>
  *
  * @author Silvio Giebl

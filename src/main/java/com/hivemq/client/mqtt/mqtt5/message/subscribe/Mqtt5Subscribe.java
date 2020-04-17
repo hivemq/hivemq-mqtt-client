@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * MQTT 5 Subscribe message. This message is translated from and to a MQTT 5 SUBSCRIBE packet.
+ * MQTT 5 Subscribe message. This message is translated from and to an MQTT 5 SUBSCRIBE packet.
  *
  * @author Silvio Giebl
  * @since 1.0

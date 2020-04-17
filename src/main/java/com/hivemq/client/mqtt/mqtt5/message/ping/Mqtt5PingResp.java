@@ -22,7 +22,7 @@ import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * MQTT 5 PingResp message. This message is translated from and to a MQTT 5 PINGRESP packet.
+ * MQTT 5 PingResp message. This message is translated from and to an MQTT 5 PINGRESP packet.
  *
  * @author Silvio Giebl
  * @since 1.0

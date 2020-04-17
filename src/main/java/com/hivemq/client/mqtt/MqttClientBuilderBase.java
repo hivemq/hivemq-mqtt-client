@@ -30,7 +30,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
- * Builder base for a {@link MqttClient}.
+ * Builder base for an {@link MqttClient}.
  *
  * @param <B> the type of the builder.
  * @author Silvio Giebl

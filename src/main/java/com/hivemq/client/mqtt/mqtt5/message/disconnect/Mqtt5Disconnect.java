@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 /**
- * MQTT 5 Disconnect message. This message is translated from and to a MQTT 5 DISCONNECT packet.
+ * MQTT 5 Disconnect message. This message is translated from and to an MQTT 5 DISCONNECT packet.
  *
  * @author Silvio Giebl
  * @since 1.0

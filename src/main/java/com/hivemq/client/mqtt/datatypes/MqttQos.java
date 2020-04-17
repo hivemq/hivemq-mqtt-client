@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * MQTT Quality of Service according to the MQTT 5 specification.
+ * MQTT Quality of Service (QoS) according to the MQTT specification.
  *
  * @author Silvio Giebl
  * @since 1.0

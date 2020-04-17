@@ -52,23 +52,23 @@ public enum MqttGlobalPublishFilter {
      * <p>
      * This filter will not match any messages if
      * <ul>
-     * <li>the {@link #ALL} filter is used or</li>
-     * <li>both {@link #SUBSCRIBED} and {@link #UNSOLICITED} filters are used.</li>
+     *   <li>the {@link #ALL} filter is used or
+     *   <li>both {@link #SUBSCRIBED} and {@link #UNSOLICITED} filters are used.
      * </ul>
      * <p>
      * Example (pseudo-code):
      * <ul>
-     * <li><code>stream1 = client.subscribeWithStream("a/#")</code></li>
-     * <li><code>client.subscribe("b/#")</code></li>
-     * <li><code>stream2 = client.publishes(SUBSCRIBED)</code></li>
-     * <li><code>stream3 = client.publishes(REMAINING)</code></li>
+     *   <li><code>stream1 = client.subscribePublishes("a/#")</code>
+     *   <li><code>client.subscribe("b/#")</code>
+     *   <li><code>stream2 = client.publishes(SUBSCRIBED)</code>
+     *   <li><code>stream3 = client.publishes(REMAINING)</code>
      * </ul>
      * Result: incoming Publishes with topic
      * <ul>
-     * <li><code>"a/b"</code> will be emitted in <code>stream1</code> and <code>stream2</code>.</li>
-     * <li><code>"b/c"</code> will be emitted in <code>stream2</code></li>
-     * <li><code>"c/d"</code> will be emitted in <code>stream3</code> as there is no other stream registered for the
-     * topic.</li>
+     *   <li><code>"a/b"</code> will be emitted in <code>stream1</code> and <code>stream2</code>.
+     *   <li><code>"b/c"</code> will be emitted in <code>stream2</code>
+     *   <li><code>"c/d"</code> will be emitted in <code>stream3</code> as there is no other stream registered for the
+     *     topic.
      * </ul>
      */
     REMAINING

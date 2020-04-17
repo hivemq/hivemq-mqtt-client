@@ -21,7 +21,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 
 /**
- * State of a {@link MqttClient}.
+ * State of an {@link MqttClient}.
+ * <pre>
+ * +--------------+             +------------------------+
+ * | DISCONNECTED <-+         +-> DISCONNECTED_RECONNECT |
+ * +-------+------+  \       /  +-----------+------------+
+ *         |          \     /               |
+ *         |           \   /                |
+ * +-------v------+     \ /     +-----------v------------+
+ * |  CONNECTING  +------x------+  CONNECTING_RECONNECT  |
+ * +-------+------+      |      +-----------+------------+
+ *         |             |                  |
+ *         |             |                  |
+ *         |      +------+------+           |
+ *         +------>  CONNECTED  <-----------+
+ *                +-------------+
+ * </pre>
  *
  * @author Silvio Giebl
  * @since 1.0

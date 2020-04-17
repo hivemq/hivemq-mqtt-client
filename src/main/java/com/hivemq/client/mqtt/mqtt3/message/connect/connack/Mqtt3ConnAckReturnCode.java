@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Return Code of a {@link Mqtt3ConnAck MQTT 3 ConnAck message}.
+ * Return Code of an {@link Mqtt3ConnAck MQTT 3 ConnAck message}.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl

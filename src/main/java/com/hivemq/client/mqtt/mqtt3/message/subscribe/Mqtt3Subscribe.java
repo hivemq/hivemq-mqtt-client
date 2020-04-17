@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * MQTT 3 Subscribe message. This message is translated from and to a MQTT 3 SUBSCRIBE packet.
+ * MQTT 3 Subscribe message. This message is translated from and to an MQTT 3 SUBSCRIBE packet.
  *
  * @author Silvio Giebl
  * @since 1.0

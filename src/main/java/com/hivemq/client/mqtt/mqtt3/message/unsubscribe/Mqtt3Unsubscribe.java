@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * MQTT 3 Unsubscribe message. This message is translated from and to a MQTT 3 UNSUBSCRIBE packet.
+ * MQTT 3 Unsubscribe message. This message is translated from and to an MQTT 3 UNSUBSCRIBE packet.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl
@@ -37,7 +37,7 @@ import java.util.List;
 public interface Mqtt3Unsubscribe extends Mqtt3Message {
 
     /**
-     * Creates a builder for a Unsubscribe message.
+     * Creates a builder for an Unsubscribe message.
      *
      * @return the created builder.
      */

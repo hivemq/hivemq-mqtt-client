@@ -30,7 +30,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 /**
- * MQTT 5 ConnAck packet. This message is translated from and to a MQTT 5 CONNACK packet.
+ * MQTT 5 ConnAck packet. This message is translated from and to an MQTT 5 CONNACK packet.
  *
  * @author Silvio Giebl
  * @since 1.0

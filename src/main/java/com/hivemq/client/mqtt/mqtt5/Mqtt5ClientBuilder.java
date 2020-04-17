@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Builder for a {@link Mqtt5Client}.
+ * Builder for an {@link Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0

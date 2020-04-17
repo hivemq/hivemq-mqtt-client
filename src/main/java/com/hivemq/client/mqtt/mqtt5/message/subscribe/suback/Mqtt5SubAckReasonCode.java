@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Reason Code of a {@link Mqtt5SubAck MQTT 5 SubAck message}.
+ * Reason Code of an {@link Mqtt5SubAck MQTT 5 SubAck message}.
  *
  * @author Silvio Giebl
  * @since 1.0
