@@ -132,7 +132,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)
      */
     @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
-            @NotNull Mqtt3Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull Mqtt3Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             @NotNull Executor executor);
 
     /**
@@ -150,7 +151,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @since 1.2
      */
     @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
-            @NotNull Mqtt3Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull Mqtt3Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             boolean manualAcknowledgement);
 
     /**
@@ -171,8 +173,10 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @since 1.2
      */
     @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
-            @NotNull Mqtt3Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
-            @NotNull Executor executor, boolean manualAcknowledgement);
+            @NotNull Mqtt3Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull Executor executor,
+            boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)}
@@ -217,7 +221,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor, boolean)
      */
     void publishes(
-            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull MqttGlobalPublishFilter filter,
+            @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             @NotNull Executor executor);
 
     /**
@@ -232,7 +237,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @since 1.2
      */
     void publishes(
-            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull MqttGlobalPublishFilter filter,
+            @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             boolean manualAcknowledgement);
 
     /**
@@ -248,8 +254,10 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @since 1.2
      */
     void publishes(
-            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
-            @NotNull Executor executor, boolean manualAcknowledgement);
+            @NotNull MqttGlobalPublishFilter filter,
+            @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull Executor executor,
+            boolean manualAcknowledgement);
 
     /**
      * Unsubscribes this client with the given Unsubscribe message.

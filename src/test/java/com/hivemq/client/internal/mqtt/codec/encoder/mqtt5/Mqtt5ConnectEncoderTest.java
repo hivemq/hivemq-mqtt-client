@@ -520,7 +520,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
     private void encodeNok(
             final @NotNull MqttStatefulConnect connectWrapper,
-            final @NotNull Class<? extends Exception> expectedException, final @NotNull String reason) {
+            final @NotNull Class<? extends Exception> expectedException,
+            final @NotNull String reason) {
 
         final Throwable exception = assertThrows(expectedException, () -> channel.writeOutbound(connectWrapper));
         assertTrue(exception.getMessage().contains(reason), () -> "found: " + exception.getMessage());
@@ -612,7 +613,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @NotNull
         @Override
         public CompletableFuture<Void> onAuth(
-                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Connect connect,
+                @NotNull final Mqtt5ClientConfig clientConfig,
+                @NotNull final Mqtt5Connect connect,
                 @NotNull final Mqtt5EnhancedAuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
@@ -627,7 +629,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @NotNull
         @Override
         public CompletableFuture<Boolean> onServerReAuth(
-                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Auth auth,
+                @NotNull final Mqtt5ClientConfig clientConfig,
+                @NotNull final Mqtt5Auth auth,
                 @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
@@ -635,7 +638,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @NotNull
         @Override
         public CompletableFuture<Boolean> onContinue(
-                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Auth auth,
+                @NotNull final Mqtt5ClientConfig clientConfig,
+                @NotNull final Mqtt5Auth auth,
                 @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }

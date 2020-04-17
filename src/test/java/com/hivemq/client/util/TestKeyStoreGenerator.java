@@ -51,7 +51,9 @@ public class TestKeyStoreGenerator {
     }
 
     public File generateKeyStore(
-            final String name, final String keystoreType, final String keyStorePassword,
+            final String name,
+            final String keystoreType,
+            final String keyStorePassword,
             final String privateKeyPassword) throws Exception {
 
         final KeyStore ks = KeyStore.getInstance(keystoreType);

@@ -34,11 +34,16 @@ public class Mqtt5ClientMessageDecoders extends MqttMessageDecoders {
 
     @Inject
     Mqtt5ClientMessageDecoders(
-            final @NotNull Mqtt5ConnAckDecoder connAckDecoder, final @NotNull Mqtt5PublishDecoder publishDecoder,
-            final @NotNull Mqtt5PubAckDecoder pubAckDecoder, final @NotNull Mqtt5PubRecDecoder pubRecDecoder,
-            final @NotNull Mqtt5PubRelDecoder pubRelDecoder, final @NotNull Mqtt5PubCompDecoder pubCompDecoder,
-            final @NotNull Mqtt5SubAckDecoder subAckDecoder, final @NotNull Mqtt5UnsubAckDecoder unsubAckDecoder,
-            final @NotNull MqttPingRespDecoder pingRespDecoder, final @NotNull Mqtt5DisconnectDecoder disconnectDecoder,
+            final @NotNull Mqtt5ConnAckDecoder connAckDecoder,
+            final @NotNull Mqtt5PublishDecoder publishDecoder,
+            final @NotNull Mqtt5PubAckDecoder pubAckDecoder,
+            final @NotNull Mqtt5PubRecDecoder pubRecDecoder,
+            final @NotNull Mqtt5PubRelDecoder pubRelDecoder,
+            final @NotNull Mqtt5PubCompDecoder pubCompDecoder,
+            final @NotNull Mqtt5SubAckDecoder subAckDecoder,
+            final @NotNull Mqtt5UnsubAckDecoder unsubAckDecoder,
+            final @NotNull MqttPingRespDecoder pingRespDecoder,
+            final @NotNull Mqtt5DisconnectDecoder disconnectDecoder,
             final @NotNull Mqtt5AuthDecoder authDecoder) {
 
         decoders[Mqtt5MessageType.CONNACK.getCode()] = connAckDecoder;

@@ -43,7 +43,9 @@ public interface Mqtt5OutgoingQos2Interceptor {
      * @param pubRelBuilder the builder for the outgoing PubRel message.
      */
     void onPubRec(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubRec pubRec,
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Publish publish,
+            @NotNull Mqtt5PubRec pubRec,
             @NotNull Mqtt5PubRelBuilder pubRelBuilder);
 
     /**

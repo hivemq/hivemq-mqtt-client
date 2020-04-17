@@ -41,7 +41,8 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
     @Override
     public void subscribe(
-            final @NotNull MqttSubscription subscription, final int subscriptionIdentifier,
+            final @NotNull MqttSubscription subscription,
+            final int subscriptionIdentifier,
             final @Nullable MqttSubscribedPublishFlow flow) {
 
         final TopicTreeEntry entry = new TopicTreeEntry(subscription, subscriptionIdentifier, flow);
@@ -138,7 +139,8 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         boolean acknowledged;
 
         TopicTreeEntry(
-                final @NotNull MqttSubscription subscription, final int subscriptionIdentifier,
+                final @NotNull MqttSubscription subscription,
+                final int subscriptionIdentifier,
                 final @Nullable MqttSubscribedPublishFlow flow) {
 
             this.subscriptionIdentifier = subscriptionIdentifier;
@@ -226,7 +228,8 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         }
 
         private static boolean suback(
-                final @Nullable NodeList<TopicTreeEntry> entries, final int subscriptionIdentifier,
+                final @Nullable NodeList<TopicTreeEntry> entries,
+                final int subscriptionIdentifier,
                 final boolean error) {
 
             if (entries != null) {
@@ -536,7 +539,8 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         }
 
         private static void getSubscriptions(
-                final @NotNull NodeList<TopicTreeEntry> entries, final @NotNull MqttTopicLevel topicLevels,
+                final @NotNull NodeList<TopicTreeEntry> entries,
+                final @NotNull MqttTopicLevel topicLevels,
                 final boolean multiLevelWildcard,
                 final @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> map) {
 

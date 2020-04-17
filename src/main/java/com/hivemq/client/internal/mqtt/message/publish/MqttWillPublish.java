@@ -37,11 +37,16 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
     private final long delayInterval;
 
     public MqttWillPublish(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean isRetain, final long messageExpiryInterval,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
+            final boolean isRetain,
+            final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
-            final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties,
+            final @Nullable MqttUtf8StringImpl contentType,
+            final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable ByteBuffer correlationData,
+            final @NotNull MqttUserPropertiesImpl userProperties,
             final long delayInterval) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,

@@ -51,10 +51,15 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
     })
     @ParameterizedTest(name = "Connect(\"{0}\", {1}, {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\")")
     void matchesPaho(
-            final @NotNull String clientId, final boolean cleanSession, final int keepAliveInterval,
-            final @Nullable String userName, final @Nullable String password, final @Nullable String willMessage,
-            final @Nullable String willTopic, final @Nullable Integer willQos, final @Nullable Boolean willRetained)
-            throws MqttException {
+            final @NotNull String clientId,
+            final boolean cleanSession,
+            final int keepAliveInterval,
+            final @Nullable String userName,
+            final @Nullable String password,
+            final @Nullable String willMessage,
+            final @Nullable String willTopic,
+            final @Nullable Integer willQos,
+            final @Nullable Boolean willRetained) throws MqttException {
 
         final boolean hasAuth = isNotBlank(userName) && isNotBlank(password);
         final boolean hasWill =

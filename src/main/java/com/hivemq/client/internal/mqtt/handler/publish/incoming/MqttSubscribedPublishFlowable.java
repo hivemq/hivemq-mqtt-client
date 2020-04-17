@@ -37,7 +37,8 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
     private final boolean manualAcknowledgement;
 
     public MqttSubscribedPublishFlowable(
-            final @NotNull MqttSubscribe subscribe, final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttSubscribe subscribe,
+            final @NotNull MqttClientConfig clientConfig,
             final boolean manualAcknowledgement) {
 
         this.subscribe = subscribe;

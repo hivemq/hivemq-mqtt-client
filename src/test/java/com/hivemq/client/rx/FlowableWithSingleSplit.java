@@ -33,7 +33,8 @@ public class FlowableWithSingleSplit<U, F, S> extends FlowableWithSingle<F, S> {
     private final @NotNull Class<S> singleClass;
 
     public FlowableWithSingleSplit(
-            final @NotNull Flowable<U> source, final @NotNull Class<F> flowableClass,
+            final @NotNull Flowable<U> source,
+            final @NotNull Class<F> flowableClass,
             final @NotNull Class<S> singleClass) {
 
         this.source = source;
@@ -59,7 +60,8 @@ public class FlowableWithSingleSplit<U, F, S> extends FlowableWithSingle<F, S> {
         private @Nullable Subscription subscription;
 
         SplitSubscriber(
-                final @NotNull Subscriber<? super F> subscriber, final @NotNull Class<F> flowableClass,
+                final @NotNull Subscriber<? super F> subscriber,
+                final @NotNull Class<F> flowableClass,
                 final @NotNull Class<S> singleClass) {
 
             this.subscriber = subscriber;

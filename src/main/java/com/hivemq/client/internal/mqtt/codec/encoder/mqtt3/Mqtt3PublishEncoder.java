@@ -63,8 +63,10 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
 
     @Override
     @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulPublish message, final @NotNull MqttEncoderContext context,
-            final int encodedLength, final int remainingLength) {
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull MqttEncoderContext context,
+            final int encodedLength,
+            final int remainingLength) {
 
         final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && payload.isDirect()) {

@@ -58,7 +58,8 @@ public class FlowableWithSingleItem<F, S> extends FlowableWithSingle<F, S> {
         private @Nullable Subscription subscription;
 
         SingleItemSubscriber(
-                final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber, final @NotNull S single,
+                final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber,
+                final @NotNull S single,
                 final int index) {
 
             this.subscriber = subscriber;

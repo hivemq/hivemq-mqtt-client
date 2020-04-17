@@ -102,7 +102,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
             private final @NotNull R reasonCode;
 
             protected WithCode(
-                    final @NotNull R reasonCode, final @Nullable MqttUtf8StringImpl reasonString,
+                    final @NotNull R reasonCode,
+                    final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
 
                 super(reasonString, userProperties);
@@ -133,7 +134,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 private final int packetIdentifier;
 
                 protected WithId(
-                        final int packetIdentifier, final @NotNull R reasonCode,
+                        final int packetIdentifier,
+                        final @NotNull R reasonCode,
                         final @Nullable MqttUtf8StringImpl reasonString,
                         final @NotNull MqttUserPropertiesImpl userProperties) {
 
@@ -166,7 +168,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
             private final @NotNull ImmutableList<@NotNull R> reasonCodes;
 
             protected WithCodesAndId(
-                    final int packetIdentifier, final @NotNull ImmutableList<@NotNull R> reasonCodes,
+                    final int packetIdentifier,
+                    final @NotNull ImmutableList<@NotNull R> reasonCodes,
                     final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
 

@@ -223,7 +223,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     private void reconnect(
             final @NotNull MqttDisconnectEvent disconnectEvent,
-            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull EventLoop eventLoop) {
 
         final MqttClientConfig.ConnectDefaults connectDefaults = clientConfig.getConnectDefaults();
         final Mqtt5EnhancedAuthMechanism enhancedAuthMechanism = connectionConfig.getRawEnhancedAuthMechanism();

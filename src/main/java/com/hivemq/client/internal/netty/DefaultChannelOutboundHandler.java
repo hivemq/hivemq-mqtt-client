@@ -34,7 +34,8 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
     default void bind(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress localAddress,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull SocketAddress localAddress,
             final @NotNull ChannelPromise promise) {
 
         ctx.bind(localAddress, promise);
@@ -42,8 +43,10 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
     default void connect(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress remoteAddress,
-            final @Nullable SocketAddress localAddress, final @NotNull ChannelPromise promise) {
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull SocketAddress remoteAddress,
+            final @Nullable SocketAddress localAddress,
+            final @NotNull ChannelPromise promise) {
 
         ctx.connect(remoteAddress, localAddress, promise);
     }
@@ -70,7 +73,8 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
     default void write(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg,
             final @NotNull ChannelPromise promise) {
 
         ctx.write(msg, promise);

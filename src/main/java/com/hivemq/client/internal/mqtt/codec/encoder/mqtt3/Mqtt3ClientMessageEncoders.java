@@ -34,11 +34,15 @@ public class Mqtt3ClientMessageEncoders extends MqttMessageEncoders {
 
     @Inject
     Mqtt3ClientMessageEncoders(
-            final @NotNull Mqtt3ConnectEncoder connectEncoder, final @NotNull Mqtt3PublishEncoder publishEncoder,
-            final @NotNull Mqtt3PubAckEncoder pubAckEncoder, final @NotNull Mqtt3PubRecEncoder pubRecEncoder,
-            final @NotNull Mqtt3PubRelEncoder pubRelEncoder, final @NotNull Mqtt3PubCompEncoder pubCompEncoder,
+            final @NotNull Mqtt3ConnectEncoder connectEncoder,
+            final @NotNull Mqtt3PublishEncoder publishEncoder,
+            final @NotNull Mqtt3PubAckEncoder pubAckEncoder,
+            final @NotNull Mqtt3PubRecEncoder pubRecEncoder,
+            final @NotNull Mqtt3PubRelEncoder pubRelEncoder,
+            final @NotNull Mqtt3PubCompEncoder pubCompEncoder,
             final @NotNull Mqtt3SubscribeEncoder subscribeEncoder,
-            final @NotNull Mqtt3UnsubscribeEncoder unsubscribeEncoder, final @NotNull MqttPingReqEncoder pingReqEncoder,
+            final @NotNull Mqtt3UnsubscribeEncoder unsubscribeEncoder,
+            final @NotNull MqttPingReqEncoder pingReqEncoder,
             final @NotNull Mqtt3DisconnectEncoder disconnectEncoder) {
 
         encoders[Mqtt3MessageType.CONNECT.getCode()] = connectEncoder;

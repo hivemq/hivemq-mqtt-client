@@ -36,7 +36,8 @@ import java.util.function.Function;
 public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, SM> {
 
     public static <F, S, FM, SM> @NotNull FluxWithSingleMap<F, S, FM, SM> mapBoth(
-            final @NotNull FluxWithSingle<F, S> source, final @Nullable Function<? super F, ? extends FM> fluxMapper,
+            final @NotNull FluxWithSingle<F, S> source,
+            final @Nullable Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FluxWithSingleMap<>(source, fluxMapper, singleMapper);
@@ -52,7 +53,8 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
     private final @NotNull Function<? super S, ? extends SM> singleMapper;
 
     private FluxWithSingleMap(
-            final @NotNull FluxWithSingle<F, S> source, final @Nullable Function<? super F, ? extends FM> fluxMapper,
+            final @NotNull FluxWithSingle<F, S> source,
+            final @Nullable Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         super(source);
@@ -93,7 +95,8 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
         private @Nullable Subscription subscription;
 
         MapSubscriber(
-                final @NotNull T subscriber, final @Nullable Function<? super F, ? extends FM> fluxMapper,
+                final @NotNull T subscriber,
+                final @Nullable Function<? super F, ? extends FM> fluxMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
             this.subscriber = subscriber;
@@ -177,7 +180,8 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
                 implements CoreWithSingleConditionalSubscriber<F, S> {
 
             Conditional(
-                    final @NotNull T subscriber, final @Nullable Function<? super F, ? extends FM> fluxMapper,
+                    final @NotNull T subscriber,
+                    final @Nullable Function<? super F, ? extends FM> fluxMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
                 super(subscriber, fluxMapper, singleMapper);

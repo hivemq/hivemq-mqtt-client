@@ -61,9 +61,12 @@ class Mqtt3ClientExample {
 
     // create a client with a random UUID and connect to server
     Mqtt3ClientExample(
-            @NotNull final String server, final int port, final boolean usesSsl,
+            @NotNull final String server,
+            final int port,
+            final boolean usesSsl,
             @Nullable final TrustManagerFactory trustManagerFactory,
-            @Nullable final KeyManagerFactory keyManagerFactory, @Nullable final String serverPath) {
+            @Nullable final KeyManagerFactory keyManagerFactory,
+            @Nullable final String serverPath) {
         this.server = server;
         this.port = port;
         this.usesSsl = usesSsl;

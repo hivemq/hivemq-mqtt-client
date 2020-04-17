@@ -240,7 +240,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeNok(
-            final @NotNull MqttAuth auth, final @NotNull Class<? extends Exception> expectedException,
+            final @NotNull MqttAuth auth,
+            final @NotNull Class<? extends Exception> expectedException,
             final @NotNull String reason) {
 
         final Throwable exception = assertThrows(expectedException, () -> channel.writeOutbound(auth));

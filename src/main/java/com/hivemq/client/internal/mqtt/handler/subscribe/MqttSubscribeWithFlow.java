@@ -31,7 +31,8 @@ class MqttSubscribeWithFlow extends MqttSubOrUnsubWithFlow {
     private final @Nullable MqttSubscriptionFlow<MqttSubAck> flow;
 
     MqttSubscribeWithFlow(
-            final @NotNull MqttSubscribe subscribe, final int subscriptionIdentifier,
+            final @NotNull MqttSubscribe subscribe,
+            final int subscriptionIdentifier,
             final @Nullable MqttSubscriptionFlow<MqttSubAck> flow) {
 
         this.subscribe = subscribe;

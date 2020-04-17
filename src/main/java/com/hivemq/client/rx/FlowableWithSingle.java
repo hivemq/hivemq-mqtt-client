@@ -314,7 +314,8 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
-            final @NotNull Consumer<? super F> onNext, final @NotNull Consumer<? super Throwable> onError,
+            final @NotNull Consumer<? super F> onNext,
+            final @NotNull Consumer<? super Throwable> onError,
             final @NotNull Action onComplete) {
 
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);

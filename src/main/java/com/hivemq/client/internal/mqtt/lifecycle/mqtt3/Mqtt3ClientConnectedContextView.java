@@ -32,7 +32,8 @@ import org.jetbrains.annotations.NotNull;
 public class Mqtt3ClientConnectedContextView implements Mqtt3ClientConnectedContext {
 
     public static @NotNull MqttClientConnectedContext of(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
 
         return new Mqtt3ClientConnectedContextView(
@@ -44,7 +45,8 @@ public class Mqtt3ClientConnectedContextView implements Mqtt3ClientConnectedCont
     private final @NotNull Mqtt3ConnAckView connAck;
 
     private Mqtt3ClientConnectedContextView(
-            final @NotNull Mqtt3ClientConfigView clientConfig, final @NotNull Mqtt3ConnectView connect,
+            final @NotNull Mqtt3ClientConfigView clientConfig,
+            final @NotNull Mqtt3ConnectView connect,
             final @NotNull Mqtt3ConnAckView connAck) {
 
         this.clientConfig = clientConfig;

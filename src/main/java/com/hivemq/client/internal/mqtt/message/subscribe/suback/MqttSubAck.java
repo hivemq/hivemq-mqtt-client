@@ -35,8 +35,10 @@ public class MqttSubAck extends MqttMessageWithUserProperties.WithReason.WithCod
         implements Mqtt5SubAck {
 
     public MqttSubAck(
-            final int packetIdentifier, final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes,
-            final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final int packetIdentifier,
+            final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes,
+            final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCodes, reasonString, userProperties);
     }

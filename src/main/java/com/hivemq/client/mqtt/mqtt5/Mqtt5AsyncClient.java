@@ -136,7 +136,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
      */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull Mqtt5Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             @NotNull Executor executor);
 
     /**
@@ -154,7 +155,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @since 1.2
      */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull Mqtt5Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             boolean manualAcknowledgement);
 
     /**
@@ -175,8 +177,10 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @since 1.2
      */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
-            @NotNull Executor executor, final boolean manualAcknowledgement);
+            @NotNull Mqtt5Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull Executor executor,
+            final boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)}
@@ -221,7 +225,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor, boolean)
      */
     void publishes(
-            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull MqttGlobalPublishFilter filter,
+            @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             @NotNull Executor executor);
 
     /**
@@ -236,7 +241,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @since 1.2
      */
     void publishes(
-            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull MqttGlobalPublishFilter filter,
+            @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             boolean manualAcknowledgement);
 
     /**
@@ -252,8 +258,10 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @since 1.2
      */
     void publishes(
-            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
-            @NotNull Executor executor, boolean manualAcknowledgement);
+            @NotNull MqttGlobalPublishFilter filter,
+            @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull Executor executor,
+            boolean manualAcknowledgement);
 
     /**
      * Unsubscribes this client with the given Unsubscribe message.

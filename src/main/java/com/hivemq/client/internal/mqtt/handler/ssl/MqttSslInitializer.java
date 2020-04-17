@@ -43,8 +43,10 @@ public final class MqttSslInitializer {
     private static final @NotNull String SSL_HANDLER_NAME = "ssl";
 
     public static void initChannel(
-            final @NotNull Channel channel, final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttClientSslConfigImpl sslConfig, final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull Channel channel,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttClientSslConfigImpl sslConfig,
+            final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
         final InetSocketAddress serverAddress = clientConfig.getCurrentTransportConfig().getServerAddress();

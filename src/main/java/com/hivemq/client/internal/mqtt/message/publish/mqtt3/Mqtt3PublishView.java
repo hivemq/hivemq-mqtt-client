@@ -45,7 +45,9 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             Mqtt3PublishView::of;
 
     public static @NotNull MqttPublish delegate(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
             final boolean retain) {
 
         return new MqttPublish(topic, payload, qos, retain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
@@ -60,14 +62,18 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     static @NotNull Mqtt3PublishView of(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
             final boolean retain) {
 
         return new Mqtt3PublishView(delegate(topic, payload, qos, retain));
     }
 
     static @NotNull Mqtt3PublishView willOf(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
             final boolean retain) {
 
         return new Mqtt3PublishView(

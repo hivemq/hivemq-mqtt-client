@@ -159,7 +159,9 @@ import java.util.function.Consumer;
     }
 
     private static boolean equals(
-            final @NotNull Object @NotNull [] array, final int fromIndex, final int toIndex,
+            final @NotNull Object @NotNull [] array,
+            final int fromIndex,
+            final int toIndex,
             final @NotNull List<?> that) {
 
         if ((toIndex - fromIndex) != that.size()) {

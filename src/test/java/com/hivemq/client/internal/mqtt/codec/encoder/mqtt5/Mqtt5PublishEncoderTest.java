@@ -693,8 +693,11 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     }
 
     private void encode(
-            final @NotNull byte[] expected, final @NotNull MqttPublish publish, final int packetIdentifier,
-            final boolean isDup, final @NotNull ImmutableIntList subscriptionIdentifiers) {
+            final @NotNull byte[] expected,
+            final @NotNull MqttPublish publish,
+            final int packetIdentifier,
+            final boolean isDup,
+            final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         final MqttStatefulPublish publishInternal =
                 publish.createStateful(packetIdentifier, isDup, DEFAULT_NO_TOPIC_ALIAS, subscriptionIdentifiers);
@@ -702,8 +705,12 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     }
 
     private void encode(
-            final @NotNull byte[] expected, final @NotNull MqttPublish publish, final int packetIdentifier,
-            final boolean isDup, int topicAlias, final boolean isNewTopicAlias,
+            final @NotNull byte[] expected,
+            final @NotNull MqttPublish publish,
+            final int packetIdentifier,
+            final boolean isDup,
+            int topicAlias,
+            final boolean isNewTopicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         if (isNewTopicAlias) {

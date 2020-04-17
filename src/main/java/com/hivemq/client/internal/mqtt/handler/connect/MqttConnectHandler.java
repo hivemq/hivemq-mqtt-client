@@ -77,8 +77,10 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     @Inject
     MqttConnectHandler(
-            final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow connAckFlow,
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session,
+            final @NotNull MqttConnect connect,
+            final @NotNull MqttConnAckFlow connAckFlow,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttSession session,
             final @NotNull MqttDecoder decoder) {
 
         this.connect = connect;

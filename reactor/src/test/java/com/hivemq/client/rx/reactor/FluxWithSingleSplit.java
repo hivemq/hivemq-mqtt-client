@@ -59,7 +59,8 @@ public class FluxWithSingleSplit<U, F, S> extends FluxWithSingle<F, S> {
         private @Nullable Subscription subscription;
 
         SplitSubscriber(
-                final @NotNull Subscriber<? super F> subscriber, final @NotNull Class<F> flowableClass,
+                final @NotNull Subscriber<? super F> subscriber,
+                final @NotNull Class<F> flowableClass,
                 final @NotNull Class<S> singleClass) {
 
             this.subscriber = subscriber;

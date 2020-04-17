@@ -62,7 +62,6 @@ public class MqttClientConnectionConfig
     private final @NotNull Channel channel;
     private final int flags;
 
-    // @formatter:off
     public MqttClientConnectionConfig(
             final @NotNull MqttClientTransportConfigImpl transportConfig,
             final int keepAlive,
@@ -86,7 +85,6 @@ public class MqttClientConnectionConfig
             final boolean sharedSubscriptionAvailable,
             final boolean subscriptionIdentifiersAvailable,
             final @NotNull Channel channel) {
-    // @formatter:on
 
         this.transportConfig = transportConfig;
         this.keepAlive = (short) keepAlive;

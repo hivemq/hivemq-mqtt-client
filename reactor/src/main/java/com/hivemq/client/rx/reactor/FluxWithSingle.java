@@ -254,7 +254,8 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      * @see #subscribe(Consumer, Consumer, Runnable)
      */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
-            final @NotNull Consumer<? super F> consumer, final @NotNull Consumer<? super Throwable> errorConsumer,
+            final @NotNull Consumer<? super F> consumer,
+            final @NotNull Consumer<? super Throwable> errorConsumer,
             final @NotNull Runnable completeConsumer) {
 
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
@@ -284,8 +285,10 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      * @see #subscribe(Consumer, Consumer, Runnable, Context)
      */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
-            final @NotNull Consumer<? super F> consumer, final @NotNull Consumer<? super Throwable> errorConsumer,
-            final @NotNull Runnable completeConsumer, final @NotNull Context initialContext) {
+            final @NotNull Consumer<? super F> consumer,
+            final @NotNull Consumer<? super Throwable> errorConsumer,
+            final @NotNull Runnable completeConsumer,
+            final @NotNull Context initialContext) {
 
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();

@@ -34,12 +34,17 @@ public class Mqtt5ClientMessageEncoders extends MqttMessageEncoders {
 
     @Inject
     Mqtt5ClientMessageEncoders(
-            final @NotNull Mqtt5ConnectEncoder connectEncoder, final @NotNull Mqtt5PublishEncoder publishEncoder,
-            final @NotNull Mqtt5PubAckEncoder pubAckEncoder, final @NotNull Mqtt5PubRecEncoder pubRecEncoder,
-            final @NotNull Mqtt5PubRelEncoder pubRelEncoder, final @NotNull Mqtt5PubCompEncoder pubCompEncoder,
+            final @NotNull Mqtt5ConnectEncoder connectEncoder,
+            final @NotNull Mqtt5PublishEncoder publishEncoder,
+            final @NotNull Mqtt5PubAckEncoder pubAckEncoder,
+            final @NotNull Mqtt5PubRecEncoder pubRecEncoder,
+            final @NotNull Mqtt5PubRelEncoder pubRelEncoder,
+            final @NotNull Mqtt5PubCompEncoder pubCompEncoder,
             final @NotNull Mqtt5SubscribeEncoder subscribeEncoder,
-            final @NotNull Mqtt5UnsubscribeEncoder unsubscribeEncoder, final @NotNull MqttPingReqEncoder pingReqEncoder,
-            final @NotNull Mqtt5DisconnectEncoder disconnectEncoder, final @NotNull Mqtt5AuthEncoder authEncoder) {
+            final @NotNull Mqtt5UnsubscribeEncoder unsubscribeEncoder,
+            final @NotNull MqttPingReqEncoder pingReqEncoder,
+            final @NotNull Mqtt5DisconnectEncoder disconnectEncoder,
+            final @NotNull Mqtt5AuthEncoder authEncoder) {
 
         encoders[Mqtt5MessageType.CONNECT.getCode()] = connectEncoder;
         encoders[Mqtt5MessageType.PUBLISH.getCode()] = publishEncoder;

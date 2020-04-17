@@ -35,7 +35,8 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
     private final @Nullable MqttClientInterceptors interceptors;
 
     MqttClientAdvancedConfig(
-            final boolean allowServerReAuth, final boolean validatePayloadFormat,
+            final boolean allowServerReAuth,
+            final boolean validatePayloadFormat,
             final @Nullable MqttClientInterceptors interceptors) {
 
         this.allowServerReAuth = allowServerReAuth;

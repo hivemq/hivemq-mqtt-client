@@ -47,8 +47,10 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
     private final @NotNull BiConsumer<Channel, Throwable> onError;
 
     public MqttProxyAdapterHandler(
-            final @NotNull MqttProxyConfigImpl proxyConfig, final @NotNull InetSocketAddress serverAddress,
-            final @NotNull Consumer<Channel> onSuccess, final @NotNull BiConsumer<Channel, Throwable> onError) {
+            final @NotNull MqttProxyConfigImpl proxyConfig,
+            final @NotNull InetSocketAddress serverAddress,
+            final @NotNull Consumer<Channel> onSuccess,
+            final @NotNull BiConsumer<Channel, Throwable> onError) {
 
         this.proxyConfig = proxyConfig;
         this.serverAddress = serverAddress;
@@ -58,8 +60,10 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
 
     @Override
     public void connect(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress remoteAddress,
-            final @Nullable SocketAddress localAddress, final @NotNull ChannelPromise promise) {
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull SocketAddress remoteAddress,
+            final @Nullable SocketAddress localAddress,
+            final @NotNull ChannelPromise promise) {
 
         final Channel channel = ctx.channel();
         final String username = proxyConfig.getRawUsername();

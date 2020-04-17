@@ -35,8 +35,10 @@ public class MqttPubRel extends MqttMessageWithUserProperties.WithReason.WithCod
     public static final @NotNull Mqtt5PubRelReasonCode DEFAULT_REASON_CODE = Mqtt5PubRelReasonCode.SUCCESS;
 
     public MqttPubRel(
-            final int packetIdentifier, final @NotNull Mqtt5PubRelReasonCode reasonCode,
-            final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final int packetIdentifier,
+            final @NotNull Mqtt5PubRelReasonCode reasonCode,
+            final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
     }

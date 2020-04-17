@@ -166,7 +166,9 @@ final class Mqtt5MessageDecoderUtil {
     }
 
     static @NotNull ByteBuffer decodeBinaryDataOnlyOnce(
-            final @Nullable ByteBuffer current, final @NotNull String name, final @NotNull ByteBuf in,
+            final @Nullable ByteBuffer current,
+            final @NotNull String name,
+            final @NotNull ByteBuf in,
             final boolean direct) throws MqttDecoderException {
 
         if (current != null) {
@@ -224,7 +226,8 @@ final class Mqtt5MessageDecoderUtil {
     }
 
     static @NotNull MqttUtf8StringImpl decodeReasonStringIfRequested(
-            final @Nullable MqttUtf8StringImpl current, final @NotNull ByteBuf in,
+            final @Nullable MqttUtf8StringImpl current,
+            final @NotNull ByteBuf in,
             final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
         checkProblemInformationRequested("reason string", context);
@@ -233,7 +236,8 @@ final class Mqtt5MessageDecoderUtil {
 
     static @NotNull ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyIfRequested(
             final @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
-            final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context) throws MqttDecoderException {
+            final @NotNull ByteBuf in,
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
         checkProblemInformationRequested("user property", context);
         return decodeUserProperty(userPropertiesBuilder, in);

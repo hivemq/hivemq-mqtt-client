@@ -47,8 +47,10 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
     private final @Nullable MqttUtf8StringImpl serverReference;
 
     public MqttDisconnect(
-            final @NotNull Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
-            final @Nullable MqttUtf8StringImpl serverReference, final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final long sessionExpiryInterval,
+            final @Nullable MqttUtf8StringImpl serverReference,
+            final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);

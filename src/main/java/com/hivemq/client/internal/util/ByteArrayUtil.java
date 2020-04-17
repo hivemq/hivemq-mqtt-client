@@ -24,8 +24,12 @@ import org.jetbrains.annotations.NotNull;
 public final class ByteArrayUtil {
 
     public static boolean equals(
-            final byte @NotNull [] array1, final int start1, final int end1, final byte @NotNull [] array2,
-            final int start2, final int end2) {
+            final byte @NotNull [] array1,
+            final int start1,
+            final int end1,
+            final byte @NotNull [] array2,
+            final int start2,
+            final int end2) {
 
         final int length1 = end1 - start1;
         final int length2 = end2 - start2;

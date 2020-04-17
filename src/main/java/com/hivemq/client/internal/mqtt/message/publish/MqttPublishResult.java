@@ -201,7 +201,8 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         private final @NotNull BooleanSupplier acknowledgedCallback;
 
         public MqttQos2IntermediateResult(
-                final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec,
+                final @NotNull MqttPublish publish,
+                final @NotNull MqttPubRec pubRec,
                 final @NotNull BooleanSupplier acknowledgedCallback) {
 
             super(publish, null, pubRec);
@@ -220,7 +221,9 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         private final @NotNull MqttPubComp pubComp;
 
         public MqttQos2CompleteResult(
-                final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec, final @NotNull MqttPubRel pubRel,
+                final @NotNull MqttPublish publish,
+                final @NotNull MqttPubRec pubRec,
+                final @NotNull MqttPubRel pubRel,
                 final @NotNull MqttPubComp pubComp) {
 
             super(publish, null, pubRec);

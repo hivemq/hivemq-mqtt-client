@@ -55,12 +55,17 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
     private final @Nullable MqttUtf8StringImpl serverReference;
 
     public MqttConnAck(
-            final @NotNull Mqtt5ConnAckReasonCode reasonCode, final boolean sessionPresent,
-            final long sessionExpiryInterval, final int serverKeepAlive,
+            final @NotNull Mqtt5ConnAckReasonCode reasonCode,
+            final boolean sessionPresent,
+            final long sessionExpiryInterval,
+            final int serverKeepAlive,
             final @Nullable MqttClientIdentifierImpl assignedClientIdentifier,
-            final @Nullable Mqtt5EnhancedAuth enhancedAuth, final @NotNull MqttConnAckRestrictions restrictions,
-            final @Nullable MqttUtf8StringImpl responseInformation, final @Nullable MqttUtf8StringImpl serverReference,
-            final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final @Nullable Mqtt5EnhancedAuth enhancedAuth,
+            final @NotNull MqttConnAckRestrictions restrictions,
+            final @Nullable MqttUtf8StringImpl responseInformation,
+            final @Nullable MqttUtf8StringImpl serverReference,
+            final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
         this.sessionPresent = sessionPresent;

@@ -35,8 +35,10 @@ public class MqttUnsubAck extends MqttMessageWithUserProperties.WithReason.WithC
         implements Mqtt5UnsubAck {
 
     public MqttUnsubAck(
-            final int packetIdentifier, final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
-            final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final int packetIdentifier,
+            final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
+            final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCodes, reasonString, userProperties);
     }

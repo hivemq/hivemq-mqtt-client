@@ -94,7 +94,8 @@ final class Mqtt5MessageEncoderUtil {
     }
 
     static void encodeNullableProperty(
-            final int propertyIdentifier, final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
+            final int propertyIdentifier,
+            final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             final @NotNull ByteBuf out) {
 
         if (payloadFormatIndicator != null) {

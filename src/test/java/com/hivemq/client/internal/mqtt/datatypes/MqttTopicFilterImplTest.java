@@ -192,8 +192,10 @@ class MqttTopicFilterImplTest {
     @MethodSource("wildcardTopicFilterProvider")
     void containsWildcards(
             final @NotNull Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
-            @SuppressWarnings("unused") final @NotNull String testDescription, final @NotNull String topicFilterString,
-            final boolean containsWildcards, final boolean containsMultiLevelWildcard,
+            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String topicFilterString,
+            final boolean containsWildcards,
+            final boolean containsMultiLevelWildcard,
             final boolean containsSingleLevelWildcard) {
         final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
         assertNotNull(mqtt5TopicFilter);

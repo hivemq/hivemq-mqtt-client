@@ -64,7 +64,8 @@ public class MqttWebSocketCodec extends ChannelDuplexHandler {
 
     @Override
     public void write(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg,
             final @NotNull ChannelPromise promise) {
 
         if (msg instanceof ByteBuf) {
