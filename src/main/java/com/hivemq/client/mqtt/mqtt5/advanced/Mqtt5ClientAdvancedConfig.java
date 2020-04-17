@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Advanced configuration of a {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client}.
+ * Advanced configuration of an {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0

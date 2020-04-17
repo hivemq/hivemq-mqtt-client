@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * MQTT 5 Unsubscribe message. This message is translated from and to a MQTT 5 UNSUBSCRIBE packet.
+ * MQTT 5 Unsubscribe message. This message is translated from and to an MQTT 5 UNSUBSCRIBE packet.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -37,7 +37,7 @@ import java.util.List;
 public interface Mqtt5Unsubscribe extends Mqtt5Message {
 
     /**
-     * Creates a builder for a Unsubscribe message.
+     * Creates a builder for an Unsubscribe message.
      *
      * @return the created builder.
      */

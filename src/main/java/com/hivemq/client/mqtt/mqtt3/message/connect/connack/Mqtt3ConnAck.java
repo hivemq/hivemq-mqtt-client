@@ -22,7 +22,7 @@ import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * MQTT 3 ConnAck message. This message is translated from and to a MQTT 3 CONNACK packet.
+ * MQTT 3 ConnAck message. This message is translated from and to an MQTT 3 CONNACK packet.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl

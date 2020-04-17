@@ -40,7 +40,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 /**
- * Asynchronous API of a {@link Mqtt5Client} based on futures and callbacks.
+ * Asynchronous API of an {@link Mqtt5Client} based on futures and callbacks.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -62,12 +62,12 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @param connect the Connect message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally with the ConnAck message if it does not contain an Error Code (connected
-     *         successfully),</li>
-     *         <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
-     *         Mqtt5ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
-     *         <li>completes exceptionally with a different exception if an error occurred before the Connect message
-     *         was sent or before the ConnAck message was received.</li>
+     *           <li>completes normally with the ConnAck message if it does not contain an Error Code (connected
+     *             successfully),
+     *           <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
+     *             Mqtt5ConnAckException} wrapping the ConnAck message if it contains an Error Code or
+     *           <li>completes exceptionally with a different exception if an error occurred before the Connect message
+     *             was sent or before the ConnAck message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
@@ -95,12 +95,12 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @param subscribe the Subscribe messages sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally with the SubAck message if all subscriptions of the Subscribe message were
-     *         successful (the SubAck message contains no Error Codes),</li>
-     *         <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
-     *         Mqtt5SubAckException} wrapping the SubAck message if it contains at least one Error Code or</li>
-     *         <li>completes exceptionally with a different exception if an error occurred before the Subscribe message
-     *         was sent or before a SubAck message was received.</li>
+     *           <li>completes normally with the SubAck message if all subscriptions of the Subscribe message were
+     *             successful (the SubAck message contains no Error Codes),
+     *           <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *             Mqtt5SubAckException} wrapping the SubAck message if it contains at least one Error Code or
+     *           <li>completes exceptionally with a different exception if an error occurred before the Subscribe
+     *             message was sent or before a SubAck message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
@@ -189,10 +189,10 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * Calling {@link Mqtt5SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
      * calling one of the following methods:
      * <ul>
-     * <li>{@link #subscribe(Mqtt5Subscribe)} if no callback has been supplied to the builder</li>
-     * <li>{@link #subscribe(Mqtt5Subscribe, Consumer)} if only a callback has been supplied to the builder</li>
-     * <li>{@link #subscribe(Mqtt5Subscribe, Consumer, Executor)} if a callback and an executor has been supplied to
-     * the builder</li>
+     *   <li>{@link #subscribe(Mqtt5Subscribe)} if no callback has been supplied to the builder
+     *   <li>{@link #subscribe(Mqtt5Subscribe, Consumer)} if only a callback has been supplied to the builder
+     *   <li>{@link #subscribe(Mqtt5Subscribe, Consumer, Executor)} if a callback and an executor has been supplied to
+     *     the builder
      * </ul>
      *
      * @return the fluent builder for the Subscribe message.
@@ -269,12 +269,13 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @param unsubscribe the Unsubscribe message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally with the UnsubAck message if all Topic Filters of the Unsubscribe message were
-     *         successfully unsubscribed (the UnsubAck message contains no Error Codes),</li>
-     *         <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException
-     *         Mqtt5UnsubAckException} wrapping the UnsubAck message if it contains at least one Error Code or</li>
-     *         <li>completes exceptionally with a different exception if an error occurred before the Unsubscribe
-     *         message was sent or before a UnsubAck message was received.</li>
+     *           <li>completes normally with the UnsubAck message if all Topic Filters of the Unsubscribe message were
+     *             successfully unsubscribed (the UnsubAck message contains no Error Codes),
+     *           <li>completes exceptionally with a
+     *             {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException Mqtt5UnsubAckException}
+     *             wrapping the UnsubAck message if it contains at least one Error Code or
+     *           <li>completes exceptionally with a different exception if an error occurred before the Unsubscribe
+     *             message was sent or before a UnsubAck message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
@@ -297,14 +298,14 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @param publish the Publish message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally with the {@link Mqtt5PublishResult} if the Publish message was successfully
-     *         published (no acknowledgement message contains an Error Code, {@link Mqtt5PublishResult#getError()} will
-     *         always be absent),</li>
-     *         <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException
-     *         Mqtt5PubAckException} or {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubRecException
-     *         Mqtt5PubRecException} wrapping the acknowledgement message if it contains an Error Code or</li>
-     *         <li>completes exceptionally with a different exception if an error occurred before the Publish message
-     *         was sent or before an acknowledgement message was received.</li>
+     *           <li>completes normally with the {@link Mqtt5PublishResult} if the Publish message was successfully
+     *             published (no acknowledgement message contains an Error Code, {@link Mqtt5PublishResult#getError()}
+     *             will always be absent),
+     *           <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException
+     *             Mqtt5PubAckException} or {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubRecException
+     *             Mqtt5PubRecException} wrapping the acknowledgement message if it contains an Error Code or
+     *           <li>completes exceptionally with a different exception if an error occurred before the Publish message
+     *             was sent or before an acknowledgement message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(@NotNull Mqtt5Publish publish);
@@ -326,12 +327,11 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      *
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally when the client was successfully re-authenticated,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException
-     *         Mqtt5AuthException} wrapping the Auth message with the Error Code if not re-authenticated successfully
-     *         or</li>
-     *         <li>errors with a different exception if an error occurred before the first Auth message was sent or
-     *         before the last Auth message was received.</li>
+     *           <li>completes normally when the client was successfully re-authenticated,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException Mqtt5AuthException}
+     *             wrapping the Auth message with the Error Code if not re-authenticated successfully or
+     *           <li>errors with a different exception if an error occurred before the first Auth message was sent or
+     *             before the last Auth message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<Void> reauth();
@@ -350,8 +350,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @param disconnect the Disconnect message sent to the broker.
      * @return the {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes when the client was successfully disconnected or</li>
-     *         <li>errors if not disconnected gracefully.</li>
+     *           <li>completes when the client was successfully disconnected or
+     *           <li>errors if not disconnected gracefully.
      *         </ul>
      */
     @NotNull CompletableFuture<Void> disconnect(@NotNull Mqtt5Disconnect disconnect);

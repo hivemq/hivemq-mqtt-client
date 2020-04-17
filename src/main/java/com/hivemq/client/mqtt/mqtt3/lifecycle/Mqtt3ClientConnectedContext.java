@@ -24,7 +24,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link MqttClientConnectedContext} with methods specific to a {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
+ * A {@link MqttClientConnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
  * Mqtt3Client}.
  *
  * @author Silvio Giebl

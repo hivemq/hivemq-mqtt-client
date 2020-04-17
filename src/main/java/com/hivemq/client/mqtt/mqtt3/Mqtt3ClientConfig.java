@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * Configuration of a {@link Mqtt3Client}.
+ * Configuration of an {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.0

@@ -28,10 +28,10 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * The Share Name has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}. Additionally it
  * <ul>
- * <li>must be at least 1 character long,</li>
- * <li>must not contain wildcard characters ({@value MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@value
- * MqttTopicFilter#SINGLE_LEVEL_WILDCARD}) and</li>
- * <li>must not contain a topic level separator ({@value MqttTopic#TOPIC_LEVEL_SEPARATOR})</li>
+ *   <li>must be at least 1 character long,
+ *   <li>must not contain wildcard characters ({@value MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@value
+ *     MqttTopicFilter#SINGLE_LEVEL_WILDCARD}) and
+ *   <li>must not contain a topic level separator ({@value MqttTopic#TOPIC_LEVEL_SEPARATOR})
  * </ul>
  * <p>
  * The Topic Filter has the same restrictions as a {@link MqttTopicFilter Topic Filter}.

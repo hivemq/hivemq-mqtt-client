@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 /**
- * Reason Code of a {@link Mqtt5PubAck MQTT 5 PubAck message}.
+ * Reason Code of an {@link Mqtt5PubAck MQTT 5 PubAck message}.
  *
  * @author Silvio Giebl
  * @since 1.0

@@ -29,9 +29,9 @@ import java.util.List;
  * <p>
  * A Topic Name has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}. Additionally it
  * <ul>
- * <li>must be at least 1 character long and</li>
- * <li>must not contain wildcard characters ({@value MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@value
- * MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).</li>
+ *   <li>must be at least 1 character long and
+ *   <li>must not contain wildcard characters ({@value MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@value
+ *     MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).
  * </ul>
  *
  * @author Silvio Giebl

@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * MQTT 5 Connect message. This message is translated from and to a MQTT 5 CONNECT packet.
+ * MQTT 5 Connect message. This message is translated from and to an MQTT 5 CONNECT packet.
  *
  * @author Silvio Giebl
  * @since 1.0

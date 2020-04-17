@@ -20,7 +20,7 @@ import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Exception that is used if an operation is called on a {@link com.hivemq.client.mqtt.MqttClient MqttClient} that is
+ * Exception that is used if an operation is called on an {@link com.hivemq.client.mqtt.MqttClient MqttClient} that is
  * not possible in its current state, e.g. a client can not publish if it is not connected.
  *
  * @author Silvio Giebl

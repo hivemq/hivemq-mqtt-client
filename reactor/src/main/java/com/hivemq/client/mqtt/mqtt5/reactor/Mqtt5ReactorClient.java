@@ -41,7 +41,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Reactor API of a {@link Mqtt5Client}.
+ * Reactor API of an {@link Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.2
@@ -84,12 +84,11 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param connect the Connect message sent to the broker during connect.
      * @return the {@link Mono} which
      *         <ul>
-     *         <li>succeeds with the ConnAck message if it does not contain an Error Code (connected
-     *         successfully),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
-     *         Mqtt5ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
-     *         <li>errors with a different exception if an error occurred before the Connect message was sent or before
-     *         the ConnAck message was received.</li>
+     *           <li>succeeds with the ConnAck message if it does not contain an Error Code (connected successfully),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
+     *             Mqtt5ConnAckException} wrapping the ConnAck message if it contains an Error Code or
+     *           <li>errors with a different exception if an error occurred before the Connect message was sent or
+     *             before the ConnAck message was received.
      *         </ul>
      */
     @CheckReturnValue
@@ -121,12 +120,12 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Mono} which
      *         <ul>
-     *         <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
-     *         successful (the SubAck message contains at least one Reason Code that is not an Error Code),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
-     *         Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent or
-     *         before a SubAck message was received.</li>
+     *           <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
+     *             successful (the SubAck message contains at least one Reason Code that is not an Error Code),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *             Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent or
+     *             before a SubAck message was received.
      *         </ul>
      */
     @CheckReturnValue
@@ -156,17 +155,17 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link FluxWithSingle} which
      *         <ul>
-     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
-     *         Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
-     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
-     *         message,</li>
-     *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
-     *         Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
-     *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
-     *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException}).</li>
+     *           <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *             Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
+     *             Error Code) and then emits the Publish messages matching the successful subscriptions of the
+     *             Subscribe message,
+     *           <li>completes when all subscriptions of the Subscribe message were unsubscribed,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *             Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *             before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *             message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException}).
      *         </ul>
      * @see #subscribePublishes(Mqtt5Subscribe, boolean)
      */
@@ -185,17 +184,17 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
      * @return the {@link FluxWithSingle} which
      *         <ul>
-     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
-     *         Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
-     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
-     *         message,</li>
-     *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
-     *         Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
-     *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
-     *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException}).</li>
+     *           <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *             Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
+     *             Error Code) and then emits the Publish messages matching the successful subscriptions of the
+     *             Subscribe message,
+     *           <li>completes when all subscriptions of the Subscribe message were unsubscribed,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *             Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *             before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *             message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException}).
      *         </ul>
      * @see #subscribePublishes(Mqtt5Subscribe)
      */
@@ -226,10 +225,10 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param filter the filter with which all incoming Publish messages are filtered.
      * @return the {@link Flux} which
      *         <ul>
-     *         <li>emits the incoming Publish messages matching the given filter,</li>
-     *         <li>never completes but</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException} when the MQTT session expires.</li>
+     *           <li>emits the incoming Publish messages matching the given filter,
+     *           <li>never completes but
+     *           <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException} when the MQTT session expires.
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
@@ -247,10 +246,10 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
      * @return the {@link Flux} which
      *         <ul>
-     *         <li>emits the incoming Publish messages matching the given filter,</li>
-     *         <li>never completes but</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException} when the MQTT session expires.</li>
+     *           <li>emits the incoming Publish messages matching the given filter,
+     *           <li>never completes but
+     *           <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException} when the MQTT session expires.
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter)
      */
@@ -267,13 +266,13 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param unsubscribe the Unsubscribe message sent to the broker during unsubscribe.
      * @return the {@link Mono} which
      *         <ul>
-     *         <li>succeeds with the UnsubAck message if at least one Topic Filter of the Unsubscribe message was
-     *         successfully unsubscribed (the UnsubAck message contains at least one Reason Code that is not an Error
-     *         Code),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException
-     *         Mqtt5UnsubAckException} wrapping the UnsubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Unsubscribe message was sent or
-     *         before a UnsubAck message was received.</li>
+     *           <li>succeeds with the UnsubAck message if at least one Topic Filter of the Unsubscribe message was
+     *             successfully unsubscribed (the UnsubAck message contains at least one Reason Code that is not an
+     *             Error Code),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException
+     *             Mqtt5UnsubAckException} wrapping the UnsubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Unsubscribe message was sent or
+     *             before a UnsubAck message was received.
      *         </ul>
      */
     @CheckReturnValue
@@ -303,11 +302,11 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param publisher the source of the Publish messages to publish.
      * @return the {@link Flux} which
      *         <ul>
-     *         <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,</li>
-     *         <li>completes if the given {@link Publisher} completes, but not before all {@link Mqtt5PublishResult}s
-     *         were emitted, or</li>
-     *         <li>errors with the same exception if the given {@link Publisher} errors, but not before all
-     *         {@link Mqtt5PublishResult}s were emitted.</li>
+     *           <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,
+     *           <li>completes if the given {@link Publisher} completes, but not before all {@link Mqtt5PublishResult}s
+     *             were emitted, or
+     *           <li>errors with the same exception if the given {@link Publisher} errors, but not before all
+     *             {@link Mqtt5PublishResult}s were emitted.
      *         </ul>
      */
     @CheckReturnValue
@@ -321,12 +320,11 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      *
      * @return the {@link Mono} which
      *         <ul>
-     *         <li>completes when the client was successfully re-authenticated,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException
-     *         Mqtt5AuthException} wrapping the Auth message with the Error Code if not re-authenticated successfully
-     *         or</li>
-     *         <li>errors with a different exception if an error occurred before the first Auth message was sent or
-     *         before the last Auth message was received.</li>
+     *           <li>completes when the client was successfully re-authenticated,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException Mqtt5AuthException}
+     *             wrapping the Auth message with the Error Code if not re-authenticated successfully or
+     *           <li>errors with a different exception if an error occurred before the first Auth message was sent or
+     *             before the last Auth message was received.
      *         </ul>
      */
     @CheckReturnValue
@@ -350,8 +348,8 @@ public interface Mqtt5ReactorClient extends Mqtt5Client {
      * @param disconnect the Disconnect message sent to the broker during disconnect.
      * @return the {@link Mono} which
      *         <ul>
-     *         <li>completes when the client was successfully disconnected or</li>
-     *         <li>errors if not disconnected gracefully.</li>
+     *           <li>completes when the client was successfully disconnected or
+     *           <li>errors if not disconnected gracefully.
      *         </ul>
      */
     @CheckReturnValue

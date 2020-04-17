@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * MQTT 5 SubAck message. This message is translated from and to a MQTT 5 SUBACK packet.
+ * MQTT 5 SubAck message. This message is translated from and to an MQTT 5 SUBACK packet.
  *
  * @author Silvio Giebl
  * @since 1.0

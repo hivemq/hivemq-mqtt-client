@@ -20,7 +20,7 @@ import com.hivemq.client.mqtt.mqtt3.message.Mqtt3ReturnCode;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Return Code of a {@link Mqtt3SubAck MQTT 3 SubAck message}.
+ * Return Code of an {@link Mqtt3SubAck MQTT 3 SubAck message}.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl

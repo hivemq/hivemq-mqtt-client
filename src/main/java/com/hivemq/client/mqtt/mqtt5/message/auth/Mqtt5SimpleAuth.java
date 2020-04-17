@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * Simple authentication and/or authorization related data in the {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect
+ * Simple authentication and/or authorization related data in an {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect
  * MQTT 5 Connect message}.
  *
  * @author Silvio Giebl

@@ -43,12 +43,12 @@ public interface MqttClientIdentifier extends MqttUtf8String {
     }
 
     /**
-     * Checks whether this Client Identifier must be allowed by a MQTT broker according to the MQTT specification.
+     * Checks whether this Client Identifier must be allowed by every MQTT broker according to the MQTT specification.
      * <p>
-     * A Client Identifier must be allowed by a MQTT broker if it is between 1 and 23 characters long and only contains
-     * lower or uppercase alphabetical characters or numbers.
+     * A Client Identifier must be allowed by every MQTT broker if it is between 1 and 23 characters long and only
+     * contains lower or uppercase alphabetical characters or numbers.
      *
-     * @return whether this Client Identifier must be allowed by a MQTT broker.
+     * @return whether this Client Identifier must be allowed by every MQTT broker.
      */
     boolean mustBeAllowedByServer();
 }

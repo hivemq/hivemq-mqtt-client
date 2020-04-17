@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
- * A {@link MqttClientReconnector} with methods specific to a {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+ * A {@link MqttClientReconnector} with methods specific to an {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
  * Mqtt5Client}.
  *
  * @author Silvio Giebl

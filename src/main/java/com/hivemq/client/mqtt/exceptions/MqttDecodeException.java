@@ -20,7 +20,7 @@ import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Exception that is used if an decoding error occurred.
+ * Exception that is used if a decoding error occurred.
  *
  * @author Silvio Giebl
  * @since 1.0

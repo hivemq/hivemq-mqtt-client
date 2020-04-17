@@ -36,7 +36,7 @@ import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Reactive API of a {@link Mqtt3Client}.
+ * Reactive API of an {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -63,12 +63,11 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param connect the Connect message sent to the broker during connect.
      * @return the {@link Single} which
      *         <ul>
-     *         <li>succeeds with the ConnAck message if it does not contain an Error Code (connected
-     *         successfully),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3ConnAckException
-     *         Mqtt3ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
-     *         <li>errors with a different exception if an error occurred before the Connect message was sent or before
-     *         the ConnAck message was received.</li>
+     *           <li>succeeds with the ConnAck message if it does not contain an Error Code (connected successfully),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3ConnAckException
+     *             Mqtt3ConnAckException} wrapping the ConnAck message if it contains an Error Code or
+     *           <li>errors with a different exception if an error occurred before the Connect message was sent or
+     *             before the ConnAck message was received.
      *         </ul>
      */
     @CheckReturnValue
@@ -100,12 +99,12 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Single} which
      *         <ul>
-     *         <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
-     *         successful (the SubAck message contains at least one Return Code that is not an Error Code),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
-     *         Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent or
-     *         before a SubAck message was received.</li>
+     *           <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
+     *             successful (the SubAck message contains at least one Return Code that is not an Error Code),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *             Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent or
+     *             before a SubAck message was received.
      *         </ul>
      */
     @CheckReturnValue
@@ -147,17 +146,17 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link FlowableWithSingle} which
      *         <ul>
-     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
-     *         Subscribe message was successful (the SubAck message contains at least one Return Code that is not an
-     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
-     *         message,</li>
-     *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
-     *         Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
-     *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
-     *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException}).</li>
+     *           <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *             Subscribe message was successful (the SubAck message contains at least one Return Code that is not an
+     *             Error Code) and then emits the Publish messages matching the successful subscriptions of the
+     *             Subscribe message,
+     *           <li>completes when all subscriptions of the Subscribe message were unsubscribed,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *             Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *             before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *             message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException}).
      *         </ul>
      * @see #subscribePublishes(Mqtt3Subscribe, boolean)
      * @since 1.2
@@ -177,17 +176,17 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
      * @return the {@link FlowableWithSingle} which
      *         <ul>
-     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
-     *         Subscribe message was successful (the SubAck message contains at least one Return Code that is not an
-     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
-     *         message,</li>
-     *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
-     *         Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
-     *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
-     *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException}).</li>
+     *           <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *             Subscribe message was successful (the SubAck message contains at least one Return Code that is not an
+     *             Error Code) and then emits the Publish messages matching the successful subscriptions of the
+     *             Subscribe message,
+     *           <li>completes when all subscriptions of the Subscribe message were unsubscribed,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *             Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *             before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *             message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException}).
      *         </ul>
      * @see #subscribePublishes(Mqtt3Subscribe)
      * @since 1.2
@@ -220,10 +219,10 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param filter the filter with which all incoming Publish messages are filtered.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits the incoming Publish messages matching the given filter,</li>
-     *         <li>never completes but</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException} when the MQTT session expires.</li>
+     *           <li>emits the incoming Publish messages matching the given filter,
+     *           <li>never completes but
+     *           <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException} when the MQTT session expires.
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
@@ -241,10 +240,10 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits the incoming Publish messages matching the given filter,</li>
-     *         <li>never completes but</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException} when the MQTT session expires.</li>
+     *           <li>emits the incoming Publish messages matching the given filter,
+     *           <li>never completes but
+     *           <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException} when the MQTT session expires.
      *         </ul>
      * @see #publishes(MqttGlobalPublishFilter)
      * @since 1.2
@@ -262,9 +261,9 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param unsubscribe the Unsubscribe message sent to the broker during unsubscribe.
      * @return the {@link Completable} which
      *         <ul>
-     *         <li>succeeds when the corresponding UnsubAck message was received or</li>
-     *         <li>errors if an error occurred before the Unsubscribe message was sent or before a UnsubAck message was
-     *         received.</li>
+     *           <li>succeeds when the corresponding UnsubAck message was received or
+     *           <li>errors if an error occurred before the Unsubscribe message was sent or before a UnsubAck message
+     *             was received.
      *         </ul>
      */
     @CheckReturnValue
@@ -294,11 +293,11 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param publishFlowable the source of the Publish messages to publish.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits {@link Mqtt3PublishResult}s each corresponding to a Publish message,</li>
-     *         <li>completes if the given {@link Flowable} completes, but not before all {@link Mqtt3PublishResult}s
-     *         were emitted, or</li>
-     *         <li>errors with the same exception if the given {@link Flowable} errors, but not before all
-     *         {@link Mqtt3PublishResult}s were emitted.</li>
+     *           <li>emits {@link Mqtt3PublishResult}s each corresponding to a Publish message,
+     *           <li>completes if the given {@link Flowable} completes, but not before all {@link Mqtt3PublishResult}s
+     *             were emitted, or
+     *           <li>errors with the same exception if the given {@link Flowable} errors, but not before all
+     *             {@link Mqtt3PublishResult}s were emitted.
      *         </ul>
      */
     @CheckReturnValue
@@ -312,8 +311,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *
      * @return the {@link Completable} which
      *         <ul>
-     *         <li>completes when the client was successfully disconnected or</li>
-     *         <li>errors if not disconnected gracefully.</li>
+     *           <li>completes when the client was successfully disconnected or
+     *           <li>errors if not disconnected gracefully.
      *         </ul>
      */
     @CheckReturnValue

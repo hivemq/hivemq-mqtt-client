@@ -21,7 +21,7 @@ import com.hivemq.client.mqtt.MqttClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Provides context about the client that is now disconnected and the cause for disconnection and allows reconnecting.
+ * Provides context about the client that is now disconnected, the cause for disconnection and allows reconnecting.
  *
  * @author Silvio Giebl
  * @since 1.1
@@ -44,19 +44,19 @@ public interface MqttClientDisconnectedContext {
      * <p>
      * This can be:
      * <ul>
-     * <li>{@link com.hivemq.client.mqtt.exceptions.ConnectionFailedException ConnectionFailedException} if a connect
-     * attempt failed</li>
-     * <li>{@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3ConnAckException Mqtt3ConnAckException} or {@link
-     * com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException Mqtt5ConnAckException} (depending on the MQTT
-     * version of the client) if the ConnAck message contained an error code, which means that the connect was
-     * rejected</li>
-     * <li>{@link com.hivemq.client.mqtt.exceptions.ConnectionClosedException ConnectionClosedException} if the
-     * connection was closed without sending a Disconnect message (use {@link #getSource()} to determine if the server
-     * or the client closed the connection)</li>
-     * <li>{@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3DisconnectException Mqtt3DisconnectException} or {@link
-     * com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException Mqtt5DisconnectException} (depending on the MQTT
-     * version of the client) if the connection was closed with a Disconnect message (use {@link #getSource()} to
-     * determine if the server, the user or the client sent the Disconnect message)</li>
+     *   <li>{@link com.hivemq.client.mqtt.exceptions.ConnectionFailedException ConnectionFailedException} if a connect
+     *     attempt failed
+     *   <li>{@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3ConnAckException Mqtt3ConnAckException} or {@link
+     *     com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException Mqtt5ConnAckException} (depending on the MQTT
+     *     version of the client) if the ConnAck message contained an error code, which means that the connect was
+     *     rejected
+     *   <li>{@link com.hivemq.client.mqtt.exceptions.ConnectionClosedException ConnectionClosedException} if the
+     *     connection was closed without sending a Disconnect message (use {@link #getSource()} to determine if the
+     *     server or the client closed the connection)
+     *   <li>{@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3DisconnectException Mqtt3DisconnectException} or {@link
+     *     com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException Mqtt5DisconnectException} (depending on the
+     *     MQTT version of the client) if the connection was closed with a Disconnect message (use {@link #getSource()}
+     *     to determine if the server, the user or the client sent the Disconnect message)
      * </ul>
      * <p>
      * Example: You can use the following code to extract the Disconnect message:

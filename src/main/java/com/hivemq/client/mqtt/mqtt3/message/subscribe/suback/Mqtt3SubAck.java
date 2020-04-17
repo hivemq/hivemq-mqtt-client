@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * MQTT 3 SubAck message. This message is translated from and to a MQTT 3 SUBACK packet.
+ * MQTT 3 SubAck message. This message is translated from and to an MQTT 3 SUBACK packet.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl

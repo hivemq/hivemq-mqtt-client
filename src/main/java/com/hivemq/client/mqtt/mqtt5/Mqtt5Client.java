@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Mqtt5Client extends MqttClient {
 
     /**
-     * Creates a builder for a MQTT 5 client.
+     * Creates a builder for an MQTT 5 client.
      *
      * @return the created builder for a MQTT 5 client.
      */

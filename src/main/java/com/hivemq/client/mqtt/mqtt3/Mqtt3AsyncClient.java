@@ -36,7 +36,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 /**
- * Asynchronous API of a {@link Mqtt3Client} based on futures and callbacks.
+ * Asynchronous API of an {@link Mqtt3Client} based on futures and callbacks.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -58,12 +58,12 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param connect the Connect message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally with the ConnAck message if it does not contain an Error Code (connected
-     *         successfully),</li>
-     *         <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3ConnAckException
-     *         Mqtt3ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
-     *         <li>completes exceptionally with a different exception if an error occurred before the Connect message
-     *         was sent or before the ConnAck message was received.</li>
+     *           <li>completes normally with the ConnAck message if it does not contain an Error Code (connected
+     *             successfully),
+     *           <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3ConnAckException
+     *             Mqtt3ConnAckException} wrapping the ConnAck message if it contains an Error Code or
+     *           <li>completes exceptionally with a different exception if an error occurred before the Connect message
+     *             was sent or before the ConnAck message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
@@ -91,12 +91,12 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param subscribe the Subscribe messages sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally with the SubAck message if all subscriptions of the Subscribe message were
-     *         successful (the SubAck message contains no Error Codes),</li>
-     *         <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
-     *         Mqtt3SubAckException} wrapping the SubAck message if it contains at least one Error Code or</li>
-     *         <li>completes exceptionally with a different exception if an error occurred before the Subscribe message
-     *         was sent or before a SubAck message was received.</li>
+     *           <li>completes normally with the SubAck message if all subscriptions of the Subscribe message were
+     *             successful (the SubAck message contains no Error Codes),
+     *           <li>completes exceptionally with a {@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *             Mqtt3SubAckException} wrapping the SubAck message if it contains at least one Error Code or
+     *           <li>completes exceptionally with a different exception if an error occurred before the Subscribe
+     *             message was sent or before a SubAck message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
@@ -185,10 +185,10 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * Calling {@link Mqtt3SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
      * calling one of the following methods:
      * <ul>
-     * <li>{@link #subscribe(Mqtt3Subscribe)} if no callback has been supplied to the builder</li>
-     * <li>{@link #subscribe(Mqtt3Subscribe, Consumer)} if only a callback has been supplied to the builder</li>
-     * <li>{@link #subscribe(Mqtt3Subscribe, Consumer, Executor)} if a callback and an executor have been supplied to
-     * the builder</li>
+     *   <li>{@link #subscribe(Mqtt3Subscribe)} if no callback has been supplied to the builder
+     *   <li>{@link #subscribe(Mqtt3Subscribe, Consumer)} if only a callback has been supplied to the builder
+     *   <li>{@link #subscribe(Mqtt3Subscribe, Consumer, Executor)} if a callback and an executor have been supplied to
+     *     the builder
      * </ul>
      *
      * @return the fluent builder for the Subscribe message.
@@ -265,9 +265,9 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param unsubscribe the Unsubscribe message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally when the corresponding UnsubAck message was received or</li>
-     *         <li>completes exceptionally if an error occurred before the Unsubscribe message was sent or before a
-     *         UnsubAck message was received.</li>
+     *           <li>completes normally when the corresponding UnsubAck message was received or
+     *           <li>completes exceptionally if an error occurred before the Unsubscribe message was sent or before a
+     *             UnsubAck message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<Void> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
@@ -290,10 +290,10 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param publish the Publish message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes normally with the same Publish message (for context) if the Publish message was
-     *         successfully published or</li>
-     *         <li>completes exceptionally if an error occurred before the Publish message was sent or before an
-     *         acknowledgement message was received.</li>
+     *           <li>completes normally with the same Publish message (for context) if the Publish message was
+     *             successfully published or
+     *           <li>completes exceptionally if an error occurred before the Publish message was sent or before an
+     *             acknowledgement message was received.
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(@NotNull Mqtt3Publish publish);
@@ -315,8 +315,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      *
      * @return the {@link CompletableFuture} which
      *         <ul>
-     *         <li>completes when the client was successfully disconnected or</li>
-     *         <li>errors if not disconnected gracefully.</li>
+     *           <li>completes when the client was successfully disconnected or
+     *           <li>errors if not disconnected gracefully.
      *         </ul>
      */
     @NotNull CompletableFuture<Void> disconnect();

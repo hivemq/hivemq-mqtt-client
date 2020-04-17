@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * MQTT 5 PubComp message. This message is translated from and to a MQTT 5 PUBCOMP packet.
+ * MQTT 5 PubComp message. This message is translated from and to an MQTT 5 PUBCOMP packet.
  *
  * @author Silvio Giebl
  * @since 1.0

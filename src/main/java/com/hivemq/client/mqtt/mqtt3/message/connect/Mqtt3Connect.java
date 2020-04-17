@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * MQTT 3 Connect message. This message is translated from and to a MQTT 3 CONNECT packet.
+ * MQTT 3 Connect message. This message is translated from and to an MQTT 3 CONNECT packet.
  *
  * @author Silvio Giebl
  * @since 1.0

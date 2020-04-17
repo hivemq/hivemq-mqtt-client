@@ -20,7 +20,7 @@ import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Connection configuration of a {@link MqttClient}.
+ * Connection configuration of an {@link MqttClient}.
  *
  * @author Silvio Giebl
  * @since 1.0

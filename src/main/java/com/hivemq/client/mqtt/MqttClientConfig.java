@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Configuration of a {@link MqttClient}.
+ * Configuration of an {@link MqttClient}.
  *
  * @author Silvio Giebl
  * @since 1.0

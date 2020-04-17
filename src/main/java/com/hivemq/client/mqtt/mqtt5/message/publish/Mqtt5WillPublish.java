@@ -21,8 +21,8 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * MQTT 5 Will Publish which can be a part of a {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect Connect
- * message}.
+ * MQTT 5 Will Publish which can be a part of an {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect MQTT 5
+ * Connect message}.
  *
  * @author Silvio Giebl
  * @since 1.0
