@@ -49,7 +49,7 @@ public interface MqttClientReconnector {
      */
     boolean DEFAULT_RECONNECT = false;
     /**
-     * If resubscribe when the session expired before the client reconnected successfully is enabled by defaultt.
+     * If resubscribe when the session expired before the client reconnected successfully is enabled by default.
      *
      * @since 1.2
      */
@@ -132,7 +132,7 @@ public interface MqttClientReconnector {
 
     /**
      * Instructs the client to queue pending Publish messages and automatically publish them even if the session expired
-     * before reconnected.
+     * before reconnected successfully.
      * <p>
      * When the client reconnected successfully and its session is still present, the client will always queue pending
      * Publish messages and automatically publish them to ensure the QoS guarantees.
