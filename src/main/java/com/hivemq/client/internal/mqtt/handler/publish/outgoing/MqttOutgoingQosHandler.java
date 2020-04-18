@@ -48,6 +48,7 @@ import com.hivemq.client.internal.util.Ranges;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.internal.util.collections.IntIndex;
 import com.hivemq.client.internal.util.collections.NodeList;
+import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
@@ -188,7 +189,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     @Override
     public void run() {
         if (!hasSession) {
-            clearQueued(MqttClientStateExceptions.notConnected());
+            if (!isRepublishIfSessionExpired()) {
+                clearQueued(MqttClientStateExceptions.notConnected());
+            }
             return;
         }
         final ChannelHandlerContext ctx = this.ctx;
@@ -477,6 +480,10 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         pendingIndex.clear();
         resendPending = null;
 
+        if (isRepublishIfSessionExpired()) {
+            return;
+        }
+
         for (MqttPubOrRelWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
             packetIdentifiers.returnId(current.packetIdentifier);
             if (current instanceof MqttPublishWithFlow) {
@@ -494,8 +501,11 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             }
         }
         pending.clear();
-
         clearQueued(cause);
+    }
+
+    private boolean isRepublishIfSessionExpired() {
+        return clientConfig.isRepublishIfSessionExpired() && (clientConfig.getState() != MqttClientState.DISCONNECTED);
     }
 
     private void clearQueued(final @NotNull Throwable cause) {

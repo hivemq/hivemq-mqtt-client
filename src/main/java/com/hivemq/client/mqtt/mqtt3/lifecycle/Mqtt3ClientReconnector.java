@@ -49,6 +49,12 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
             @NotNull CompletableFuture<T> future, @Nullable BiConsumer<? super T, ? super Throwable> callback);
 
     @Override
+    @NotNull Mqtt3ClientReconnector resubscribeIfSessionExpired(boolean resubscribe);
+
+    @Override
+    @NotNull Mqtt3ClientReconnector republishIfSessionExpired(boolean republish);
+
+    @Override
     @NotNull Mqtt3ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     @Override

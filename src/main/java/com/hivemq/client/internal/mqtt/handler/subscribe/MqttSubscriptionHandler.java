@@ -355,7 +355,6 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
         pendingIndex.clear();
         sendPending = null;
-
         for (MqttSubOrUnsubWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
             if (current.packetIdentifier == 0) {
                 break;
@@ -364,17 +363,18 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             current.packetIdentifier = 0;
         }
 
-        if (clientConfig.getState() == MqttClientState.DISCONNECTED) {
-            incomingPublishFlows.clear(cause);
-
-            for (MqttSubOrUnsubWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
-                final MqttSubscriptionFlow<?> flow = current.getFlow();
-                if (flow != null) {
-                    flow.onError(cause);
-                }
-            }
-            pending.clear();
-            nextSubscriptionIdentifier = 1;
+        if (clientConfig.isResubscribeIfSessionExpired() && (clientConfig.getState() != MqttClientState.DISCONNECTED)) {
+            return;
         }
+
+        incomingPublishFlows.clear(cause);
+        for (MqttSubOrUnsubWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
+            final MqttSubscriptionFlow<?> flow = current.getFlow();
+            if (flow != null) {
+                flow.onError(cause);
+            }
+        }
+        pending.clear();
+        nextSubscriptionIdentifier = 1;
     }
 }

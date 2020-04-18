@@ -51,7 +51,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull <T> Mqtt3ClientReconnector reconnectWhen(
+    public @NotNull <T> Mqtt3ClientReconnectorView reconnectWhen(
             final @Nullable CompletableFuture<T> future,
             final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
@@ -62,6 +62,28 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     @Override
     public boolean isReconnect() {
         return delegate.isReconnect();
+    }
+
+    @Override
+    public @NotNull Mqtt3ClientReconnectorView resubscribeIfSessionExpired(final boolean resubscribe) {
+        delegate.resubscribeIfSessionExpired(resubscribe);
+        return this;
+    }
+
+    @Override
+    public boolean isResubscribeIfSessionExpired() {
+        return delegate.isResubscribeIfSessionExpired();
+    }
+
+    @Override
+    public @NotNull Mqtt3ClientReconnectorView republishIfSessionExpired(final boolean republish) {
+        delegate.republishIfSessionExpired(republish);
+        return this;
+    }
+
+    @Override
+    public boolean isRepublishIfSessionExpired() {
+        return delegate.isRepublishIfSessionExpired();
     }
 
     @Override
