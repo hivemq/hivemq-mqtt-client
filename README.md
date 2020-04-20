@@ -53,7 +53,7 @@ backpressure support.
 - Automatic and configurable **resubscribe if the session expired**
 - **Manual message acknowledgment**
   - Acknowledge multiple streams separately
-  - Order of acknowledgement does not matter, the client ensures the order of MQTT acknowledgements for 100%
+  - Order of acknowledgment does not matter, the client ensures the order of MQTT acknowledgments for 100%
     compatibility with the MQTT specification
 - Lifecycle listeners
   - When connected
