@@ -24,9 +24,11 @@ backpressure support.
 
 ## Features
 
-- **All MQTT 3.1.1 and MQTT 5.0 features**
+- **All MQTT [3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html) and 
+  [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html) features**
 - API flavors:
-  - **Reactive**: Reactive Streams compatible, RxJava and Reactor
+  - **Reactive**: [Reactive Streams](https://www.reactive-streams.org/) compatible, 
+    [RxJava](https://github.com/ReactiveX/RxJava) and [Reactor](https://github.com/reactor/reactor-core)
   - **Asynchronous**: futures and callbacks
   - **Blocking**: quick start and testing
   - Switch flexibly between flavours and use them concurrently
@@ -39,7 +41,7 @@ backpressure support.
   - TCP
   - **SSL/TLS**
     - All TLS versions up to TLS 1.3
-    - TLS Mutual authentication
+    - TLS mutual authentication
     - TLS Server Name Indication (SNI)
     - TLS Session Resumption
     - Default and customizable hostname verification
@@ -48,12 +50,14 @@ backpressure support.
   - All possible combinations
 - Automatic and configurable **thread management**
 - Automatic and configurable **reconnect handling and message redelivery**
-- Automatic and configurable **resubscribe if a session expired**
+- Automatic and configurable **resubscribe if the session expired**
 - **Manual message acknowledgment**
   - Acknowledge multiple streams separately
-  - Order of acknowledgment does not matter, the client ensures the order of MQTT acknowledgments for 100% compatibility
-    with the MQTT specification
-- Lifecycle listeners (connected, disconnected)
+  - Order of acknowledgement does not matter, the client ensures the order of MQTT acknowledgements for 100%
+    compatibility with the MQTT specification
+- Lifecycle listeners
+  - When connected
+  - When disconnected or connection failed
 - MQTT 5 specific:
   - Pluggable Enhanced Authentication support (additional to MQTT specification: server-triggered re-authentication)
   - Automatic Topic Alias mapping
