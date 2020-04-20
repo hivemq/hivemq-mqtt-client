@@ -24,23 +24,38 @@ backpressure support.
 
 ## Features
 
-- All MQTT 3.1.1 and MQTT 5.0 features
+- **All MQTT 3.1.1 and MQTT 5.0 features**
 - API flavors:
-  - Reactive, Async and Blocking
-  - Flexible switching
-  - Consistent and clearly separated
-- Backpressure support:
+  - **Reactive**: Reactive Streams compatible, RxJava and Reactor
+  - **Asynchronous**: futures and callbacks
+  - **Blocking**: quick start and testing
+  - Switch flexibly between flavours and use them concurrently
+  - Flavours are clearly separated but have a consistent API style
+- **Backpressure support**:
   - QoS 1 and 2
   - QoS 0 (dropping incoming messages, if necessary)
+  - Bringing MQTT flow control and reactive pull backpressure together
 - Transports:
   - TCP
-  - SSL/TLS
-  - WebSocket, Secure WebSocket
-- Automatic and configurable thread management
-- Automatic and configurable reconnect handling and message redelivery
+  - **SSL/TLS**
+    - All TLS versions up to TLS 1.3
+    - TLS Mutual authentication
+    - TLS Server Name Indication (SNI)
+    - TLS Session Resumption
+    - Default and customizable hostname verification
+  - **WebSocket**, Secure WebSocket
+  - **Proxy**: SOCKS4, SOCKS5, HTTP CONNECT
+  - All possible combinations
+- Automatic and configurable **thread management**
+- Automatic and configurable **reconnect handling and message redelivery**
+- Automatic and configurable **resubscribe if a session expired**
+- **Manual message acknowledgment**
+  - Acknowledge multiple streams separately
+  - Order of acknowledgment does not matter, the client ensures the order of MQTT acknowledgments for 100% compatibility
+    with the MQTT specification
 - Lifecycle listeners (connected, disconnected)
 - MQTT 5 specific:
-  - Pluggable Enhanced Auth support (additional to MQTT specification: server-triggered reauth)
+  - Pluggable Enhanced Authentication support (additional to MQTT specification: server-triggered re-authentication)
   - Automatic Topic Alias mapping
   - Interceptors for QoS flows
 
@@ -70,7 +85,7 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.2.0'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.2.0'
 }
 ```
 
@@ -109,7 +124,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.2.0'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.2.0'
 }
 ```
 
