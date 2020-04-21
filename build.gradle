@@ -4,7 +4,7 @@ plugins {
     id 'biz.aQute.bnd.builder' apply false
     id 'com.github.hierynomus.license' apply false
     id 'com.jfrog.bintray' apply false
-    id 'com.github.breadmoirai.github-release' apply false
+    id 'com.github.breadmoirai.github-release'
 }
 
 
@@ -194,33 +194,28 @@ allprojects {
     }
 }
 
-allprojects {
-    plugins.withId('com.github.johnrengelman.shadow') {
+shadowJar {
+    appendix 'shaded'
+    classifier null
 
-        shadowJar {
-            appendix 'shaded'
-            classifier null
-
-            // api: not shaded and relocated, added as dependencies in pom
-            dependencies {
-                it.exclude(it.dependency('io.reactivex.rxjava2:rxjava'))
-                it.exclude(it.dependency('org.reactivestreams:reactive-streams'))
-                it.exclude(it.dependency('org.slf4j:slf4j-api'))
-            }
-
-            def shadePrefix = project.group.toString() + '.shaded.'
-            def shadeFilePrefix = shadePrefix.replace('.', '_')
-            relocate 'io.netty', shadePrefix + 'io.netty'
-            relocate 'META-INF/native/libnetty', 'META-INF/native/lib' + shadeFilePrefix + 'netty'
-            exclude 'META-INF/io.netty.versions.properties'
-            relocate 'org.jctools', shadePrefix + 'org.jctools'
-            relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
-            relocate 'dagger', shadePrefix + 'dagger'
-            relocate 'javax.inject', shadePrefix + 'javax.inject'
-
-            minimize()
-        }
+    // api: not shaded and relocated, added as dependencies in pom
+    dependencies {
+        it.exclude(it.dependency('io.reactivex.rxjava2:rxjava'))
+        it.exclude(it.dependency('org.reactivestreams:reactive-streams'))
+        it.exclude(it.dependency('org.slf4j:slf4j-api'))
     }
+
+    def shadePrefix = 'com.hivemq.client.internal.shaded.'
+    def shadeFilePrefix = shadePrefix.replace('.', '_')
+    relocate 'io.netty', shadePrefix + 'io.netty'
+    relocate 'META-INF/native/libnetty', 'META-INF/native/lib' + shadeFilePrefix + 'netty'
+    exclude 'META-INF/io.netty.versions.properties'
+    relocate 'org.jctools', shadePrefix + 'org.jctools'
+    relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
+    relocate 'dagger', shadePrefix + 'dagger'
+    relocate 'javax.inject', shadePrefix + 'javax.inject'
+
+    minimize()
 }
 
 
@@ -235,8 +230,18 @@ allprojects {
 
         publishing {
             publications {
-                withType(MavenPublication) {
-                    project.afterEvaluate {
+                base(MavenPublication) {
+                    from components.java
+                    artifact tasks.javadocJar
+                    artifact tasks.sourcesJar
+                    suppressAllPomMetadataWarnings()
+                }
+            }
+        }
+        afterEvaluate {
+            publishing {
+                publications {
+                    withType(MavenPublication) {
                         pom {
                             name = project.readableName
                             description = project.description
@@ -266,12 +271,6 @@ allprojects {
                         }
                     }
                 }
-                base(MavenPublication) {
-                    from components.java
-                    artifact tasks.javadocJar
-                    artifact tasks.sourcesJar
-                    suppressAllPomMetadataWarnings()
-                }
             }
         }
 
@@ -296,10 +295,6 @@ allprojects {
                     gpg {
                         sign = true
                     }
-                    /*mavenCentralSync {
-                        user = ''
-                        password = ''
-                    }*/
                 }
             }
         }
@@ -315,32 +310,6 @@ allprojects {
                     def moduleFile = new File(new File(new File(project.buildDir, 'publications'), publication.name), 'module.json')
                     if (moduleFile.exists()) {
                         publication.artifact(moduleFile).setExtension('module')
-                    }
-                }
-            }
-        }
-    }
-}
-
-allprojects {
-    plugins.withId('com.github.johnrengelman.shadow') {
-        publishing {
-            publications {
-                shaded(MavenPublication) {
-                    artifactId project.name + '-shaded'
-                    artifact tasks.shadowJar
-                    artifact tasks.javadocJar
-                    artifact tasks.sourcesJar
-                    pom.withXml {
-                        def dependenciesNode = asNode().appendNode('dependencies')
-
-                        configurations.api.allDependencies.each {
-                            def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', it.group)
-                            dependencyNode.appendNode('artifactId', it.name)
-                            dependencyNode.appendNode('version', it.version)
-                            dependencyNode.appendNode('scope', 'compile')
-                        }
                     }
                 }
             }
@@ -375,7 +344,27 @@ features.each { feature ->
     }
 }
 
-apply plugin: 'com.github.breadmoirai.github-release'
+publishing {
+    publications {
+        shaded(MavenPublication) {
+            artifactId project.name + '-shaded'
+            artifact tasks.shadowJar
+            artifact tasks.javadocJar
+            artifact tasks.sourcesJar
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                configurations.api.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                    dependencyNode.appendNode('scope', 'compile')
+                }
+            }
+        }
+    }
+}
 
 githubRelease {
     token project.github_token
