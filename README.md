@@ -28,9 +28,9 @@ backpressure support.
   [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html) features**
 - API flavors:
   - **Reactive**: [Reactive Streams](https://www.reactive-streams.org/) compatible, 
-    [RxJava](https://github.com/ReactiveX/RxJava) and [Reactor](https://github.com/reactor/reactor-core) APIs available.
-  - **Asynchronous**: futures and callbacks
-  - **Blocking**: for quick start and testing
+    [RxJava](https://github.com/ReactiveX/RxJava) and [Reactor](https://github.com/reactor/reactor-core) APIs available
+  - **Asynchronous API**: futures and callbacks
+  - **Blocking API**: for quick start and testing
   - Switch flexibly between flavours and use them concurrently
   - Flavours are clearly separated but have a consistent API style
 - **Backpressure support**:
