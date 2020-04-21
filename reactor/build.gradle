@@ -2,7 +2,10 @@ plugins {
     id 'java-library'
 }
 
-description 'Adds a reactor API to the HiveMQ MQTT Client'
+
+/* ******************** metadata ******************** */
+
+description 'Reactor API for the HiveMQ MQTT Client'
 
 ext {
     moduleName = 'com.hivemq.client.mqtt.reactor'
@@ -10,14 +13,28 @@ ext {
     prevVersion = '1.2.0'
 }
 
+
+/* ******************** dependencies ******************** */
+
 dependencies {
     api rootProject
     api group: 'io.projectreactor', name: 'reactor-core', version: '3.3.4.RELEASE'
+
     implementation group: 'io.projectreactor.addons', name: 'reactor-adapter', version: '3.3.3.RELEASE'
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
 }
 
+
+/* ******************** test ******************** */
+
 dependencies {
     testImplementation group: 'io.projectreactor', name: 'reactor-test', version: '3.3.4.RELEASE'
     testImplementation group: 'com.google.guava', name: 'guava', version: '24.1-jre'
+}
+
+
+/* ******************** jars ******************** */
+
+jar {
+    bnd('Export-Package': 'com.hivemq.client.mqtt.mqtt3.reactor, com.hivemq.client.mqtt.mqtt5.reactor, com.hivemq.client.rx.reactor')
 }
