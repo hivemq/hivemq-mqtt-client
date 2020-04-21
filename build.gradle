@@ -20,6 +20,7 @@ allprojects {
     ext {
         moduleName = 'com.hivemq.client.mqtt'
         readableName = 'HiveMQ MQTT Client'
+        vendor = 'HiveMQ and the HiveMQ Community'
         githubOrg = 'hivemq'
         githubRepo = 'hivemq-mqtt-client'
         githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
@@ -30,7 +31,6 @@ allprojects {
         licenseShortName = 'Apache-2.0'
         licenseReadableName = 'The Apache License, Version 2.0'
         licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-        shadedAppendix = 'shaded'
         prevVersion = '1.1.4'
     }
 }
@@ -144,20 +144,33 @@ allprojects {
         project.apply plugin: 'biz.aQute.bnd.builder'
 
         jar {
-            bnd(
-                    'Automatic-Module-Name': project.moduleName,
-                    'Bundle-Name': project.name,
-                    'Bundle-SymbolicName': project.moduleName,
-                    'Bundle-Description': project.description,
-                    'Bundle-Vendor': 'HiveMQ and the HiveMQ Community',
-                    'Bundle-License': project.licenseShortName + ';description="' + project.licenseReadableName + '";link="' + project.licenseUrl + '"',
-                    'Bundle-DocURL': project.docUrl,
-                    'Bundle-SCM': 'url="' + project.githubUrl + '";connection="' + project.scmConnection + '";developerConnection="' + project.scmDeveloperConnection + '"',
-                    'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
-                    '-consumer-policy': '${range;[==,=+)}',
-                    '-removeheaders': 'Private-Package')
+            afterEvaluate {
+                bnd(
+                        'Automatic-Module-Name': project.moduleName,
+                        'Bundle-Name': project.name,
+                        'Bundle-SymbolicName': project.moduleName,
+                        'Bundle-Description': project.description,
+                        'Bundle-Vendor': project.vendor,
+                        'Bundle-License': project.licenseShortName +
+                                ';description="' + project.licenseReadableName +
+                                '";link="' + project.licenseUrl + '"',
+                        'Bundle-DocURL': project.docUrl,
+                        'Bundle-SCM': 'url="' + project.githubUrl +
+                                '";connection="' + project.scmConnection +
+                                '";developerConnection="' + project.scmDeveloperConnection + '"',
+                        '-consumer-policy': '${range;[==,=+)}',
+                        '-removeheaders': 'Private-Package')
+            }
         }
+    }
+}
 
+jar {
+    bnd('Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*')
+}
+
+allprojects {
+    plugins.withType(JavaLibraryPlugin) {
         javadoc {
             options.encoding 'UTF-8'
             exclude '**/internal/**'
@@ -185,7 +198,7 @@ allprojects {
     plugins.withId('com.github.johnrengelman.shadow') {
 
         shadowJar {
-            appendix project.shadedAppendix
+            appendix 'shaded'
             classifier null
 
             // api: not shaded and relocated, added as dependencies in pom
@@ -223,31 +236,33 @@ allprojects {
         publishing {
             publications {
                 withType(MavenPublication) {
-                    pom {
-                        name = project.readableName
-                        description = project.description
-                        url = project.githubUrl
-                        licenses {
-                            license {
-                                name = project.licenseReadableName
-                                url = project.licenseUrl
-                            }
-                        }
-                        developers {
-                            developer {
-                                id = 'SG'
-                                name = 'Silvio Giebl'
-                                email = 'silvio.giebl@hivemq.com'
-                            }
-                        }
-                        scm {
-                            connection = project.scmConnection
-                            developerConnection = project.scmDeveloperConnection
+                    project.afterEvaluate {
+                        pom {
+                            name = project.readableName
+                            description = project.description
                             url = project.githubUrl
-                        }
-                        issueManagement {
-                            system = 'github'
-                            url = project.issuesUrl
+                            licenses {
+                                license {
+                                    name = project.licenseReadableName
+                                    url = project.licenseUrl
+                                }
+                            }
+                            developers {
+                                developer {
+                                    id = 'SG'
+                                    name = 'Silvio Giebl'
+                                    email = 'silvio.giebl@hivemq.com'
+                                }
+                            }
+                            scm {
+                                connection = project.scmConnection
+                                developerConnection = project.scmDeveloperConnection
+                                url = project.githubUrl
+                            }
+                            issueManagement {
+                                system = 'github'
+                                url = project.issuesUrl
+                            }
                         }
                     }
                 }
@@ -312,7 +327,7 @@ allprojects {
         publishing {
             publications {
                 shaded(MavenPublication) {
-                    artifactId project.name + '-' + project.shadedAppendix
+                    artifactId project.name + '-shaded'
                     artifact tasks.shadowJar
                     artifact tasks.javadocJar
                     artifact tasks.sourcesJar
