@@ -28,9 +28,9 @@ backpressure support.
   [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html) features**
 - API flavors:
   - **Reactive**: [Reactive Streams](https://www.reactive-streams.org/) compatible, 
-    [RxJava](https://github.com/ReactiveX/RxJava) and [Reactor](https://github.com/reactor/reactor-core)
+    [RxJava](https://github.com/ReactiveX/RxJava) and [Reactor](https://github.com/reactor/reactor-core) APIs available.
   - **Asynchronous**: futures and callbacks
-  - **Blocking**: quick start and testing
+  - **Blocking**: for quick start and testing
   - Switch flexibly between flavours and use them concurrently
   - Flavours are clearly separated but have a consistent API style
 - **Backpressure support**:
@@ -40,7 +40,7 @@ backpressure support.
 - Transports:
   - TCP
   - **SSL/TLS**
-    - All TLS versions up to TLS 1.3
+    - All TLS versions up to TLS 1.3 are supported
     - TLS mutual authentication
     - TLS Server Name Indication (SNI)
     - TLS Session Resumption
@@ -55,8 +55,8 @@ backpressure support.
   - Selectively enable manual acknowledgement only for specific streams
   - Acknowledge messages emitted to multiple streams independently per stream,
     the client aggregates the acknowledgements before sending MQTT acknowledgements
-  - Order of acknowledgment does not matter,
-    the client ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification
+  - Order of manual acknowledgment does not matter,
+    the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification
 - Lifecycle listeners
   - When connected
   - When disconnected or connection failed
