@@ -52,11 +52,11 @@ backpressure support.
 - Automatic and configurable **reconnect handling and message redelivery**
 - Automatic and configurable **resubscribe if the session expired**
 - **Manual message acknowledgment**
-  - Selectively enable manual acknowledgement only for specific streams
-  - Acknowledge messages emitted to multiple streams independently per stream,
-    the client aggregates the acknowledgements before sending MQTT acknowledgements
-  - Order of manual acknowledgment does not matter,
-    the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification
+  - Selectively enable manual acknowledgement for specific streams
+  - Acknowledge messages that are emitted to multiple streams independently per stream
+    (the client aggregates the acknowledgements before sending MQTT acknowledgements)
+  - Order of manual acknowledgment does not matter
+    (the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification)
 - Lifecycle listeners
   - When connected
   - When disconnected or connection failed
