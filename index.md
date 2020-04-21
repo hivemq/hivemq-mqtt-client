@@ -20,23 +20,44 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
 
 # Features
 
-- **All MQTT 3.1.1 and MQTT 5.0 features**
+- **All MQTT [3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html) and 
+  [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html) features**
 - API flavors:
-  - **Reactive**, **Asynchronous** and **Blocking**
-  - Flexible switching
-  - Consistent and clearly separated
+  - **Reactive**: [Reactive Streams](https://www.reactive-streams.org/) compatible, 
+    [RxJava](https://github.com/ReactiveX/RxJava) and [Reactor](https://github.com/reactor/reactor-core)
+  - **Asynchronous**: futures and callbacks
+  - **Blocking**: quick start and testing
+  - Switch flexibly between flavours and use them concurrently
+  - Flavours are clearly separated but have a consistent API style
 - **Backpressure support**:
   - QoS 1 and 2
   - QoS 0 (dropping incoming messages, if necessary)
+  - Bringing MQTT flow control and reactive pull backpressure together
 - Transports:
   - TCP
   - **SSL/TLS**
-  - WebSocket, Secure WebSocket
+    - All TLS versions up to TLS 1.3
+    - TLS mutual authentication
+    - TLS Server Name Indication (SNI)
+    - TLS Session Resumption
+    - Default and customizable hostname verification
+  - **WebSocket**, Secure WebSocket
+  - **Proxy**: SOCKS4, SOCKS5, HTTP CONNECT
+  - All possible combinations
 - Automatic and configurable **thread management**
-- Automatic and configurable **reconnect handling** and message redelivery
-- Lifecycle listeners (connected, disconnected)
+- Automatic and configurable **reconnect handling and message redelivery**
+- Automatic and configurable **resubscribe if the session expired**
+- **Manual message acknowledgment**
+  - Selectively enable manual acknowledgement only for specific streams
+  - Acknowledge messages emitted to multiple streams independently per stream,
+    the client aggregates the acknowledgements before sending MQTT acknowledgements
+  - Order of acknowledgment does not matter,
+    the client ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification
+- Lifecycle listeners
+  - When connected
+  - When disconnected or connection failed
 - MQTT 5 specific:
-  - Pluggable Enhanced Auth support (additional to MQTT specification: server-triggered reauth)
+  - Pluggable Enhanced Authentication support (additional to MQTT specification: server-triggered re-authentication)
   - Automatic Topic Alias mapping
   - Interceptors for QoS flows
 
