@@ -20,7 +20,7 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
 
 # Features
 
-- **All MQTT [3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html) and 
+- **All [MQTT 3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html) and 
   [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html) features**
 - API flavors:
   - **Reactive**: [Reactive Streams](https://www.reactive-streams.org/) compatible, 
