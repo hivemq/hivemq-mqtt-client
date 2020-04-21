@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
 import com.hivemq.client.internal.annotations.CallByThread;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkCancellable;
+import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkedFlow;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
 import com.hivemq.client.internal.util.collections.ChunkedArrayQueue;
 import io.reactivex.internal.util.BackpressureHelper;
@@ -45,22 +44,22 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
     private final @NotNull Subscriber<? super MqttPublishResult> subscriber;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
 
-    private long requestedNettyLocal;
+    private long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
     private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NO_NEW_REQUESTS);
 
     private volatile long acknowledged;
-    private long acknowledgedNettyLocal;
     private final @NotNull AtomicLong published = new AtomicLong();
     private @Nullable Throwable error; // synced over volatile published
 
     private final @NotNull ChunkedArrayQueue<MqttPublishResult> queue = new ChunkedArrayQueue<>(32);
 
-    private final @NotNull AtomicReference<@Nullable LinkCancellable> linkCancellable = new AtomicReference<>();
+    private final @NotNull AtomicReference<@Nullable LinkedFlow> linkedFlow = new AtomicReference<>();
 
     MqttAckFlowableFlow(
             final @NotNull Subscriber<? super MqttPublishResult> subscriber,
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
 
         super(clientConfig);
         this.subscriber = subscriber;
@@ -106,26 +105,26 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
             }
             requested = addNewRequested();
         }
-        if (requestedNettyLocal != Long.MAX_VALUE) {
-            requestedNettyLocal -= emitted;
+        if (this.requested != Long.MAX_VALUE) {
+            this.requested -= emitted;
         }
         acknowledged(acknowledged);
     }
 
     @CallByThread("Netty EventLoop")
     @Override
-    void acknowledged(final long acknowledged) {
-        if (acknowledged > 0) {
-            final long acknowledgedLocal = this.acknowledgedNettyLocal += acknowledged;
-            this.acknowledged = acknowledgedLocal;
-            if ((acknowledgedLocal == published.get()) && setDone()) {
+    void acknowledged(final long newAcknowledged) {
+        if (newAcknowledged > 0) {
+            final long acknowledged = this.acknowledged + newAcknowledged;
+            this.acknowledged = acknowledged;
+            if ((acknowledged == published.get()) && setDone()) {
                 if (error != null) {
                     subscriber.onError(error);
                 } else {
                     subscriber.onComplete();
                 }
             }
-            outgoingQosHandler.request(acknowledged);
+            outgoingQosHandler.request(newAcknowledged);
         }
     }
 
@@ -138,14 +137,14 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
         }
     }
 
-    void onError(final @NotNull Throwable t, final long published) {
-        error = t;
+    void onError(final @NotNull Throwable error, final long published) {
+        this.error = error;
         if (!this.published.compareAndSet(0, published)) {
-            RxJavaPlugins.onError(t);
+            RxJavaPlugins.onError(error);
             return;
         }
         if ((acknowledged == published) && setDone()) {
-            subscriber.onError(t);
+            subscriber.onError(error);
         }
     }
 
@@ -164,10 +163,7 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
 
     @CallByThread("Netty EventLoop")
     private long requested() {
-        if (requestedNettyLocal <= 0) {
-            return addNewRequested();
-        }
-        return requestedNettyLocal;
+        return (requested > 0) ? requested : addNewRequested();
     }
 
     @CallByThread("Netty EventLoop")
@@ -182,7 +178,7 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
                 // requestState is afterwards set to STATE_NEW_REQUESTS although newRequested is reset to 0.
                 // If request is not called until the next invocation of this method, newRequested may be 0.
                 if (newRequested > 0) {
-                    return requestedNettyLocal = BackpressureHelper.addCap(requestedNettyLocal, newRequested);
+                    return requested = BackpressureHelper.addCap(requested, newRequested);
                 }
             }
         }
@@ -197,15 +193,15 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
     }
 
     private void cancelLink() {
-        final LinkCancellable linkCancellable = this.linkCancellable.getAndSet(LinkCancellable.CANCELLED);
-        if (linkCancellable != null) {
-            linkCancellable.cancelLink();
+        final LinkedFlow linkedFlow = this.linkedFlow.getAndSet(LinkedFlow.CANCELLED);
+        if (linkedFlow != null) {
+            linkedFlow.cancelLink();
         }
     }
 
-    void link(final @NotNull LinkCancellable linkCancellable) {
-        if (!this.linkCancellable.compareAndSet(null, linkCancellable)) {
-            linkCancellable.cancelLink();
+    void link(final @NotNull LinkedFlow linkedFlow) {
+        if (!this.linkedFlow.compareAndSet(null, linkedFlow)) {
+            linkedFlow.cancelLink();
         }
     }
 }

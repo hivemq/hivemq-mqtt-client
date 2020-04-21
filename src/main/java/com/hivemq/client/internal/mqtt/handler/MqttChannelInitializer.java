@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttProxyConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImpl;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
@@ -27,7 +26,8 @@ import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
-import com.hivemq.client.internal.mqtt.handler.ssl.SslUtil;
+import com.hivemq.client.internal.mqtt.handler.proxy.MqttProxyInitializer;
+import com.hivemq.client.internal.mqtt.handler.ssl.MqttSslInitializer;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -37,6 +37,7 @@ import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.SocketChannel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -44,9 +45,10 @@ import javax.inject.Inject;
 /**
  * Initializes:
  * <ul>
- * <li>the SSL handlers (optional)</li>
- * <li>the WebSocket handlers (optional)</li>
- * <li>the basic MQTT handlers: Encoder, AuthHandler, ConnectHandler, DisconnectHandler</li>
+ *   <li>the proxy handlers (optional)
+ *   <li>the SSL/TLS handlers (optional)
+ *   <li>the WebSocket handlers (optional)
+ *   <li>the basic MQTT handlers: Encoder, AuthHandler, ConnectHandler, DisconnectHandler
  * </ul>
  *
  * @author Silvio Giebl
@@ -68,9 +70,12 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     @Inject
     MqttChannelInitializer(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
-            final @NotNull MqttConnAckFlow connAckFlow, final @NotNull MqttEncoder encoder,
-            final @NotNull MqttConnectHandler connectHandler, final @NotNull MqttDisconnectHandler disconnectHandler,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
+            final @NotNull MqttConnAckFlow connAckFlow,
+            final @NotNull MqttEncoder encoder,
+            final @NotNull MqttConnectHandler connectHandler,
+            final @NotNull MqttDisconnectHandler disconnectHandler,
             final @NotNull MqttAuthHandler authHandler,
             final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer) {
 
@@ -85,30 +90,47 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void handlerAdded(final ChannelHandlerContext ctx) {
-        try {
-            initChannel(ctx.channel());
-            ctx.pipeline().remove(this);
-        } catch (final Throwable cause) {
-            exceptionCaught(ctx, cause);
-        }
+    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
+        ctx.pipeline().remove(this);
+
+        ((SocketChannel) ctx.channel()).config()
+                .setKeepAlive(true)
+                .setTcpNoDelay(true)
+                .setConnectTimeoutMillis(clientConfig.getCurrentTransportConfig().getSocketConnectTimeoutMs());
+
+        initProxy(ctx.channel());
     }
 
-    void initChannel(final @NotNull Channel channel) throws Exception {
-        final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
-        final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
-        if (sslConfig != null) {
-            SslUtil.initChannel(channel, sslConfig, transportConfig.getServerAddress());
-        }
-        final MqttWebSocketConfigImpl webSocketConfig = transportConfig.getRawWebSocketConfig();
-        if (webSocketConfig != null) {
-            webSocketInitializer.get().initChannel(channel, webSocketConfig);
+    private void initProxy(final @NotNull Channel channel) {
+        final MqttProxyConfigImpl proxyConfig = clientConfig.getCurrentTransportConfig().getRawProxyConfig();
+        if (proxyConfig == null) {
+            initSsl(channel);
         } else {
-            initMqtt(channel);
+            MqttProxyInitializer.initChannel(channel, clientConfig, proxyConfig, this::initSsl, this::onError);
         }
     }
 
-    public void initMqtt(final @NotNull Channel channel) {
+    private void initSsl(final @NotNull Channel channel) {
+        final MqttClientSslConfigImpl sslConfig = clientConfig.getCurrentTransportConfig().getRawSslConfig();
+        if (sslConfig == null) {
+            initWebsocket(channel);
+        } else {
+            MqttSslInitializer.initChannel(channel, clientConfig, sslConfig, this::initWebsocket, this::onError);
+        }
+    }
+
+    private void initWebsocket(final @NotNull Channel channel) {
+        final MqttWebSocketConfigImpl webSocketConfig =
+                clientConfig.getCurrentTransportConfig().getRawWebSocketConfig();
+        if (webSocketConfig == null) {
+            initMqtt(channel);
+        } else {
+            webSocketInitializer.get()
+                    .initChannel(channel, clientConfig, webSocketConfig, this::initMqtt, this::onError);
+        }
+    }
+
+    private void initMqtt(final @NotNull Channel channel) {
         channel.pipeline()
                 .addLast(MqttEncoder.NAME, encoder)
                 .addLast(MqttAuthHandler.NAME, authHandler)
@@ -116,14 +138,10 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
                 .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
     }
 
-    @Override
-    public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        if (ctx.pipeline().get(MqttDisconnectHandler.NAME) != null) {
-            ctx.pipeline().remove(MqttDisconnectHandler.NAME);
-        }
-        ctx.close();
+    private void onError(final @NotNull Channel channel, final @NotNull Throwable cause) {
+        channel.close();
         MqttConnAckSingle.reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause),
-                connect, connAckFlow, ctx.channel().eventLoop());
+                connect, connAckFlow, channel.eventLoop());
     }
 
     @Override

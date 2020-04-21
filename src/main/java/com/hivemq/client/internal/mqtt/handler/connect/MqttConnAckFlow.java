@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.connect;
 
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
@@ -31,23 +29,17 @@ public class MqttConnAckFlow {
 
     private final @Nullable SingleObserver<? super Mqtt5ConnAck> observer;
     private final @NotNull Disposable disposable;
-    private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final int attempts;
     private boolean done;
 
-    MqttConnAckFlow(
-            final @NotNull SingleObserver<? super Mqtt5ConnAck> observer,
-            final @NotNull MqttClientTransportConfigImpl transportConfig) {
-
+    MqttConnAckFlow(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
         this.observer = observer;
         disposable = new MqttConnAckDisposable();
-        this.transportConfig = transportConfig;
         attempts = 0;
     }
 
-    MqttConnAckFlow(
-            final @Nullable MqttConnAckFlow oldFlow, final @NotNull MqttClientTransportConfigImpl transportConfig) {
-
+    @SuppressWarnings("CopyConstructorMissesField")
+    MqttConnAckFlow(final @Nullable MqttConnAckFlow oldFlow) {
         if (oldFlow == null) {
             observer = null;
             disposable = new MqttConnAckDisposable();
@@ -57,7 +49,6 @@ public class MqttConnAckFlow {
             disposable = oldFlow.disposable;
             attempts = oldFlow.attempts + 1;
         }
-        this.transportConfig = transportConfig;
     }
 
     boolean setDone() {
@@ -68,24 +59,20 @@ public class MqttConnAckFlow {
         return true;
     }
 
-    void onSuccess(final @NotNull Mqtt5ConnAck t) {
+    void onSuccess(final @NotNull Mqtt5ConnAck connAck) {
         if (observer != null) {
-            observer.onSuccess(t);
+            observer.onSuccess(connAck);
         }
     }
 
-    void onError(final @NotNull Throwable t) {
+    void onError(final @NotNull Throwable error) {
         if (observer != null) {
-            observer.onError(t);
+            observer.onError(error);
         }
     }
 
     @NotNull Disposable getDisposable() {
         return disposable;
-    }
-
-    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
-        return transportConfig;
     }
 
     int getAttempts() {

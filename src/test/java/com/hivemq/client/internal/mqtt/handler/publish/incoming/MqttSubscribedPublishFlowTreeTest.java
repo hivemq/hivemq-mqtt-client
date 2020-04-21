@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -28,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
+class MqttSubscribedPublishFlowTreeTest extends MqttSubscribedPublishFlowsTest {
 
-    MqttSubscriptionFlowTreeTest() {
-        super(MqttSubscriptionFlowTree::new);
+    MqttSubscribedPublishFlowTreeTest() {
+        super(MqttSubscribedPublishFlowTree::new);
     }
 
     @ParameterizedTest
@@ -92,13 +95,23 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
             "remove, test/topic/filter, test/topic//filter, test/topic///filter, test/topic///filter, test/topic//filter, test/topic/filter",
     })
     void branching_compaction(
-            final @NotNull String compactOperation, final @NotNull String filter1, final @NotNull String filter2,
-            final @NotNull String filter3, final @NotNull String topic1, final @NotNull String topic2,
+            final @NotNull String compactOperation,
+            final @NotNull String filter1,
+            final @NotNull String filter2,
+            final @NotNull String filter3,
+            final @NotNull String topic1,
+            final @NotNull String topic2,
             final @NotNull String topic3) {
 
-        flows.subscribe(MqttTopicFilterImpl.of(filter1), null);
-        flows.subscribe(MqttTopicFilterImpl.of(filter2), null);
-        flows.subscribe(MqttTopicFilterImpl.of(filter3), null);
+        final MqttSubscription subscription1 = new MqttSubscriptionBuilder.Default().topicFilter(filter1).build();
+        final MqttSubscription subscription2 = new MqttSubscriptionBuilder.Default().topicFilter(filter2).build();
+        final MqttSubscription subscription3 = new MqttSubscriptionBuilder.Default().topicFilter(filter3).build();
+        flows.subscribe(subscription1, 1, null);
+        flows.subscribe(subscription2, 2, null);
+        flows.subscribe(subscription3, 3, null);
+        flows.suback(subscription1.getTopicFilter(), 1, false);
+        flows.suback(subscription2.getTopicFilter(), 2, false);
+        flows.suback(subscription3.getTopicFilter(), 3, false);
 
         final MqttMatchingPublishFlows matching1 = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic1), matching1);
@@ -110,16 +123,19 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
         flows.findMatching(MqttTopicImpl.of(topic3), matching3);
         assertTrue(matching3.subscriptionFound);
 
+        assertEquals(ImmutableMap.of(1, ImmutableList.of(subscription1), 2, ImmutableList.of(subscription2), 3,
+                ImmutableList.of(subscription3)), flows.getSubscriptions());
+
         switch (compactOperation) {
             case "unsubscribe":
-                flows.unsubscribe(MqttTopicFilterImpl.of(filter1), null);
-                flows.unsubscribe(MqttTopicFilterImpl.of(filter2), null);
-                flows.unsubscribe(MqttTopicFilterImpl.of(filter3), null);
+                flows.unsubscribe(MqttTopicFilterImpl.of(filter1));
+                flows.unsubscribe(MqttTopicFilterImpl.of(filter2));
+                flows.unsubscribe(MqttTopicFilterImpl.of(filter3));
                 break;
             case "remove":
-                flows.remove(MqttTopicFilterImpl.of(filter1), null);
-                flows.remove(MqttTopicFilterImpl.of(filter2), null);
-                flows.remove(MqttTopicFilterImpl.of(filter3), null);
+                flows.suback(MqttTopicFilterImpl.of(filter1), 1, true);
+                flows.suback(MqttTopicFilterImpl.of(filter2), 2, true);
+                flows.suback(MqttTopicFilterImpl.of(filter3), 3, true);
                 break;
             default:
                 fail();
@@ -134,5 +150,7 @@ class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
         final MqttMatchingPublishFlows matching6 = new MqttMatchingPublishFlows();
         flows.findMatching(MqttTopicImpl.of(topic3), matching6);
         assertFalse(matching6.subscriptionFound);
+
+        assertTrue(flows.getSubscriptions().isEmpty());
     }
 }

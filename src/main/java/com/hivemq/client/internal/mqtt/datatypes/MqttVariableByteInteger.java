@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -32,7 +31,7 @@ public final class MqttVariableByteInteger {
     public static final int NOT_MINIMUM_BYTES = -3;
     private static final int CONTINUATION_BIT_MASK = 0x80;
     private static final int VALUE_MASK = 0x7f;
-    private static final int VALUE_BITS = 7;
+    private static final byte VALUE_BITS = 7;
     private static final int MAX_SHIFT = VALUE_BITS * 3;
     private static final int ONE_BYTE_MAX_VALUE = (1 << VALUE_BITS) - 1;
     private static final int TWO_BYTES_MAX_VALUE = (1 << (VALUE_BITS * 2)) - 1;
@@ -87,7 +86,7 @@ public final class MqttVariableByteInteger {
     public static void encode(int value, final @NotNull ByteBuf byteBuf) {
         do {
             int encodedByte = value & VALUE_MASK;
-            value >>>= 7;
+            value >>>= VALUE_BITS;
             if (value > 0) {
                 encodedByte |= CONTINUATION_BIT_MASK;
             }

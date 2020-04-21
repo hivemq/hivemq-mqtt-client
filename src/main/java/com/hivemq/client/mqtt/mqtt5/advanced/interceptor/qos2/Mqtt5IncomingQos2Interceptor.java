@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2;
@@ -42,7 +41,8 @@ public interface Mqtt5IncomingQos2Interceptor {
      * @param pubRecBuilder the builder for the outgoing PubRec message.
      */
     void onPublish(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish,
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Publish publish,
             @NotNull Mqtt5PubRecBuilder pubRecBuilder);
 
     /**
@@ -55,6 +55,7 @@ public interface Mqtt5IncomingQos2Interceptor {
      * @param pubCompBuilder the builder for the outgoing PubComp message.
      */
     void onPubRel(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5PubRel pubRel,
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5PubRel pubRel,
             @NotNull Mqtt5PubCompBuilder pubCompBuilder);
 }

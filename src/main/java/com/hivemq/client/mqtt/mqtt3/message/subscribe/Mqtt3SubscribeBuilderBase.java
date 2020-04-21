@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Builder base for a {@link Mqtt3Subscribe}.
@@ -37,6 +40,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @param subscription the subscription.
      * @return the builder that is now complete as at least one subscription is set.
      */
+    @CheckReturnValue
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 
     /**
@@ -49,7 +53,41 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @return the fluent builder for the subscription.
      * @see #addSubscription(Mqtt3Subscription)
      */
+    @CheckReturnValue
     @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
+
+    /**
+     * Adds {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least
+     * one subscription is mandatory.
+     *
+     * @param subscriptions the subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull C addSubscriptions(@NotNull Mqtt3Subscription @NotNull ... subscriptions);
+
+    /**
+     * Adds a collection of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription is mandatory.
+     *
+     * @param subscriptions the collection of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull C addSubscriptions(@NotNull Collection<@NotNull ? extends Mqtt3Subscription> subscriptions);
+
+    /**
+     * Adds a stream of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription is mandatory.
+     *
+     * @param subscriptions the stream of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt3Subscription> subscriptions);
 
     /**
      * {@link Mqtt3SubscribeBuilderBase} that provides additional methods for the first subscription.

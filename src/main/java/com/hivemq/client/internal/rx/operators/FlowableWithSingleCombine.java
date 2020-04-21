@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.rx.operators;
@@ -30,7 +29,6 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Silvio Giebl
@@ -50,10 +48,14 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
 
     private static class CombineSubscriber<F, S> implements FlowableWithSingleSubscriber<F, S>, Subscription {
 
+        private static final @NotNull Object COMPLETE = new Object();
+
         private final @NotNull Subscriber<? super Object> subscriber;
         private @Nullable Subscription subscription;
         private final @NotNull AtomicLong requested = new AtomicLong();
-        private final @NotNull AtomicReference<@Nullable Object> queued = new AtomicReference<>();
+
+        private @Nullable Object queued;
+        private @Nullable Object done;
 
         CombineSubscriber(final @NotNull Subscriber<? super Object> subscriber) {
             this.subscriber = subscriber;
@@ -77,40 +79,67 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
 
         private void next(final @NotNull Object next) {
             if (requested.get() == 0) {
-                queued.set(next);
-                if ((requested.get() != 0) && (queued.getAndSet(null)) != null) {
-                    BackpressureHelper.produced(requested, 1);
-                    subscriber.onNext(next);
+                synchronized (this) {
+                    if (requested.get() == 0) {
+                        queued = next;
+                        return;
+                    }
                 }
-            } else {
-                BackpressureHelper.produced(requested, 1);
-                subscriber.onNext(next);
             }
-        }
-
-        @Override
-        public void onError(final @NotNull Throwable throwable) {
-            subscriber.onError(throwable);
+            BackpressureHelper.produced(requested, 1);
+            subscriber.onNext(next);
         }
 
         @Override
         public void onComplete() {
-            subscriber.onComplete();
+            synchronized (this) {
+                if (queued != null) {
+                    done = COMPLETE;
+                } else {
+                    subscriber.onComplete();
+                }
+            }
+        }
+
+        @Override
+        public void onError(final @NotNull Throwable error) {
+            synchronized (this) {
+                if (queued != null) {
+                    done = error;
+                } else {
+                    subscriber.onError(error);
+                }
+            }
         }
 
         @Override
         public void request(long n) {
             assert subscription != null;
             if (n > 0) {
-                if (requested.get() == 0) {
-                    final Object next = queued.getAndSet(null);
-                    if (next != null) {
-                        subscriber.onNext(next);
-                        n--;
+                if (BackpressureHelper.add(requested, n) == 0) {
+                    synchronized (this) {
+                        final Object queued = this.queued;
+                        if (queued != null) {
+                            this.queued = null;
+                            BackpressureHelper.produced(requested, 1);
+                            subscriber.onNext(queued);
+                            n--;
+                            final Object done = this.done;
+                            if (done != null) {
+                                this.done = null;
+                                if (done instanceof Throwable) {
+                                    subscriber.onError((Throwable) done);
+                                } else {
+                                    subscriber.onComplete();
+                                }
+                                return;
+                            }
+                        }
+                        if (n > 0) {
+                            subscription.request(n);
+                        }
                     }
-                }
-                if (n > 0) {
-                    BackpressureHelper.add(requested, n);
+                } else {
                     subscription.request(n);
                 }
             }

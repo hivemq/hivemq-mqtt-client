@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.connect.connack;
@@ -24,7 +23,7 @@ import com.hivemq.client.mqtt.datatypes.MqttQos;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Restrictions for the client set by the server in a {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
+ * Restrictions for the client set by the server in an {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  * <p>
  * These restrictions are used in conjunction with the {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions
  * Mqtt5ConnectRestrictions} to form the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient

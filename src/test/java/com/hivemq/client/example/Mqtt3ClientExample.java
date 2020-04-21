@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.example;
@@ -62,9 +61,12 @@ class Mqtt3ClientExample {
 
     // create a client with a random UUID and connect to server
     Mqtt3ClientExample(
-            @NotNull final String server, final int port, final boolean usesSsl,
+            @NotNull final String server,
+            final int port,
+            final boolean usesSsl,
             @Nullable final TrustManagerFactory trustManagerFactory,
-            @Nullable final KeyManagerFactory keyManagerFactory, @Nullable final String serverPath) {
+            @Nullable final KeyManagerFactory keyManagerFactory,
+            @Nullable final String serverPath) {
         this.server = server;
         this.port = port;
         this.usesSsl = usesSsl;

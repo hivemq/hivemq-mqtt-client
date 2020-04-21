@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt;
@@ -28,10 +27,14 @@ import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckSingleFlo
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubAckSingle;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttUnsubAckSingle;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -69,6 +72,11 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
+    public @NotNull Single<Mqtt5ConnAck> connect() {
+        return connect(MqttConnect.DEFAULT);
+    }
+
+    @Override
     public @NotNull Single<Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
         return connect(MqttChecks.connect(connect));
     }
@@ -79,6 +87,11 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @NotNull Single<Mqtt5ConnAck> connectUnsafe(final @NotNull MqttConnect connect) {
         return new MqttConnAckSingle(clientConfig, connect);
+    }
+
+    @Override
+    public @NotNull MqttConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith() {
+        return new MqttConnectBuilder.Nested<>(this::connect);
     }
 
     @Override
@@ -95,32 +108,73 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
-            final @Nullable Mqtt5Subscribe subscribe) {
-
-        return subscribeStream(MqttChecks.subscribe(subscribe));
+    public @NotNull MqttSubscribeBuilder.Nested<Single<Mqtt5SubAck>> subscribeWith() {
+        return new MqttSubscribeBuilder.Nested<>(this::subscribe);
     }
 
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(final @NotNull MqttSubscribe subscribe) {
-        return subscribeStreamUnsafe(subscribe).observeOnBoth(
+    @Override
+    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+            final @NotNull Mqtt5Subscribe subscribe) {
+
+        return subscribePublishes(subscribe);
+    }
+
+    @Override
+    public @NotNull MqttSubscribeBuilder.Nested<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
+        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
+    }
+
+    @Override
+    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
+            final @Nullable Mqtt5Subscribe subscribe) {
+
+        return subscribePublishes(subscribe, false);
+    }
+
+    @Override
+    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
+            final @Nullable Mqtt5Subscribe subscribe, final boolean manualAcknowledgement) {
+
+        return subscribePublishes(MqttChecks.subscribe(subscribe), manualAcknowledgement);
+    }
+
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
+            final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
+
+        return subscribePublishesUnsafe(subscribe, manualAcknowledgement).observeOnBoth(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStreamUnsafe(
-            final @NotNull MqttSubscribe subscribe) {
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishesUnsafe(
+            final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
 
-        return new MqttSubscribedPublishFlowable(subscribe, clientConfig);
+        return new MqttSubscribedPublishFlowable(subscribe, clientConfig, manualAcknowledgement);
+    }
+
+    @Override
+    public @NotNull MqttSubscribePublishesBuilder subscribePublishesWith() {
+        return new MqttSubscribePublishesBuilder();
     }
 
     @Override
     public @NotNull Flowable<Mqtt5Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
-        Checks.notNull(filter, "Global publish filter");
-
-        return publishesUnsafe(filter).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler(), true);
+        return publishes(filter, false);
     }
 
-    @NotNull Flowable<Mqtt5Publish> publishesUnsafe(final @NotNull MqttGlobalPublishFilter filter) {
-        return new MqttGlobalIncomingPublishFlowable(filter, clientConfig);
+    @Override
+    public @NotNull Flowable<Mqtt5Publish> publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
+        Checks.notNull(filter, "Global publish filter");
+
+        return publishesUnsafe(filter, manualAcknowledgement).observeOn(
+                clientConfig.getExecutorConfig().getApplicationScheduler(), true);
+    }
+
+    @NotNull Flowable<Mqtt5Publish> publishesUnsafe(
+            final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
+        return new MqttGlobalIncomingPublishFlowable(filter, clientConfig, manualAcknowledgement);
     }
 
     @Override
@@ -134,6 +188,11 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @NotNull Single<Mqtt5UnsubAck> unsubscribeUnsafe(final @NotNull MqttUnsubscribe unsubscribe) {
         return new MqttUnsubAckSingle(unsubscribe, clientConfig);
+    }
+
+    @Override
+    public @NotNull MqttUnsubscribeBuilder.Nested<Single<Mqtt5UnsubAck>> unsubscribeWith() {
+        return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
     }
 
     @NotNull Single<Mqtt5PublishResult> publish(final @NotNull MqttPublish publish) {
@@ -184,6 +243,11 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
+    public @NotNull Completable disconnect() {
+        return disconnect(MqttDisconnect.DEFAULT);
+    }
+
+    @Override
     public @NotNull Completable disconnect(final @Nullable Mqtt5Disconnect disconnect) {
         return disconnect(MqttChecks.disconnect(disconnect));
     }
@@ -194,6 +258,11 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @NotNull Completable disconnectUnsafe(final @NotNull MqttDisconnect disconnect) {
         return new MqttDisconnectCompletable(clientConfig, disconnect);
+    }
+
+    @Override
+    public @NotNull MqttDisconnectBuilder.Nested<Completable> disconnectWith() {
+        return new MqttDisconnectBuilder.Nested<>(this::disconnect);
     }
 
     @Override
@@ -209,5 +278,14 @@ public class MqttRxClient implements Mqtt5RxClient {
     @Override
     public @NotNull MqttBlockingClient toBlocking() {
         return new MqttBlockingClient(this);
+    }
+
+    private class MqttSubscribePublishesBuilder
+            extends MqttSubscribeBuilder.Publishes<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
+
+        @Override
+        public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> applySubscribe() {
+            return subscribePublishes(build(), manualAcknowledgement);
+        }
     }
 }

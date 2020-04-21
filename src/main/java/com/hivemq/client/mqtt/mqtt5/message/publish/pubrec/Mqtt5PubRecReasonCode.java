@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.publish.pubrec;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 /**
- * Reason Code of a {@link Mqtt5PubRec MQTT 5 PubRec message}.
+ * Reason Code of an {@link Mqtt5PubRec MQTT 5 PubRec message}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -70,7 +69,7 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
      */
     PAYLOAD_FORMAT_INVALID(MqttCommonReasonCode.PAYLOAD_FORMAT_INVALID);
 
-    private static final @NotNull Mqtt5PubRecReasonCode[] VALUES = values();
+    private static final @NotNull Mqtt5PubRecReasonCode @NotNull [] VALUES = values();
 
     private final int code;
 

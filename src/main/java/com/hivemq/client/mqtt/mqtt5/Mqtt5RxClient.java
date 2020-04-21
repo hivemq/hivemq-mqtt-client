@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
@@ -45,7 +39,7 @@ import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Reactive API of a {@link Mqtt5Client}.
+ * Reactive API of an {@link Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -59,9 +53,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return see {@link #connect(Mqtt5Connect)}.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Single<Mqtt5ConnAck> connect() {
-        return connect(MqttConnect.DEFAULT);
-    }
+    @CheckReturnValue
+    @NotNull Single<Mqtt5ConnAck> connect();
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -73,14 +66,14 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @param connect the Connect message sent to the broker during connect.
      * @return the {@link Single} which
      *         <ul>
-     *         <li>succeeds with the ConnAck message if it does not contain an Error Code (connected
-     *         successfully),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
-     *         Mqtt5ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
-     *         <li>errors with a different exception if an error occurred before the Connect message was sent or before
-     *         the ConnAck message was received.</li>
+     *           <li>succeeds with the ConnAck message if it does not contain an Error Code (connected successfully),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
+     *             Mqtt5ConnAckException} wrapping the ConnAck message if it contains an Error Code or
+     *           <li>errors with a different exception if an error occurred before the Connect message was sent or
+     *             before the ConnAck message was received.
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
     /**
@@ -92,9 +85,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mqtt5ConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith() {
-        return new MqttConnectBuilder.Nested<>(this::connect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5ConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith();
 
     /**
      * Creates a {@link Single} for subscribing this client with the given Subscribe message.
@@ -104,20 +96,21 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
      * See {@link #publishes(MqttGlobalPublishFilter)} to consume the incoming Publish messages. Alternatively, call
-     * {@link #subscribeStream(Mqtt5Subscribe)} to consume the incoming Publish messages matching the subscriptions of
-     * the Subscribe message directly.
+     * {@link #subscribePublishes(Mqtt5Subscribe)} to consume the incoming Publish messages matching the subscriptions
+     * of the Subscribe message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Single} which
      *         <ul>
-     *         <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
-     *         successful (the SubAck message contains at least one Reason Code that is not an Error Code),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
-     *         Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent or
-     *         before a SubAck message was received.</li>
+     *           <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
+     *             successful (the SubAck message contains at least one Reason Code that is not an Error Code),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *             Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent or
+     *             before a SubAck message was received.
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
     /**
@@ -130,9 +123,20 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith();
+
+    /**
+     * @deprecated use {@link #subscribePublishes(Mqtt5Subscribe)}.
+     */
+    @Deprecated
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
+
+    /**
+     * @deprecated use {@link #subscribePublishesWith()}.
+     */
+    @Deprecated
+    @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
@@ -145,34 +149,68 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link FlowableWithSingle} which
      *         <ul>
-     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
-     *         Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
-     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
-     *         message,</li>
-     *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
-     *         Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
-     *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
-     *         message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException}).</li>
+     *           <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *             Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
+     *             Error Code) and then emits the Publish messages matching the successful subscriptions of the
+     *             Subscribe message,
+     *           <li>completes when all subscriptions of the Subscribe message were unsubscribed,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *             Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *             before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *             message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException}).
      *         </ul>
+     * @see #subscribePublishes(Mqtt5Subscribe, boolean)
+     * @since 1.2
      */
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
+    @CheckReturnValue
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(@NotNull Mqtt5Subscribe subscribe);
 
     /**
-     * Fluent counterpart of {@link #subscribeStream(Mqtt5Subscribe)}.
+     * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
+     * <p>
+     * The returned {@link FlowableWithSingle} represents the source of the SubAck message corresponding to the given
+     * Subscribe message and the source of the incoming Publish messages matching the subscriptions of the Subscribe
+     * message. Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when
+     * subscribing (in terms of Reactive Streams) to the returned {@link FlowableWithSingle}.
+     *
+     * @param subscribe             the Subscribe message sent to the broker during subscribe.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return the {@link FlowableWithSingle} which
+     *         <ul>
+     *           <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *             Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
+     *             Error Code) and then emits the Publish messages matching the successful subscriptions of the
+     *             Subscribe message,
+     *           <li>completes when all subscriptions of the Subscribe message were unsubscribed,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *             Mqtt5SubAckException} wrapping the SubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Subscribe message was sent,
+     *             before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
+     *             message were unsubscribed (e.g. {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException}).
+     *         </ul>
+     * @see #subscribePublishes(Mqtt5Subscribe)
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
+            @NotNull Mqtt5Subscribe subscribe, boolean manualAcknowledgement);
+
+    /**
+     * Fluent counterpart of {@link #subscribePublishes(Mqtt5Subscribe, boolean)}.
      * <p>
      * Calling {@link Mqtt5SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribeStream(Mqtt5Subscribe)} with the result of {@link
+     * effect as calling {@link #subscribePublishes(Mqtt5Subscribe)} with the result of {@link
      * Mqtt5SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
-     * @see #subscribeStream(Mqtt5Subscribe)
+     * @see #subscribePublishes(Mqtt5Subscribe, boolean)
+     * @since 1.2
      */
-    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5SubscribeBuilder.Publishes.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribePublishesWith();
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
@@ -184,13 +222,37 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @param filter the filter with which all incoming Publish messages are filtered.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits the incoming Publish messages matching the given filter,</li>
-     *         <li>never completes but</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
-     *         MqttSessionExpiredException} when the MQTT session expires.</li>
+     *           <li>emits the incoming Publish messages matching the given filter,
+     *           <li>never completes but
+     *           <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException} when the MQTT session expires.
      *         </ul>
+     * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
+    @CheckReturnValue
+    @NotNull Flowable<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter);
+
+    /**
+     * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
+     * <p>
+     * The returned {@link Flowable} represents the source of the incoming Publish messages matching the given type.
+     * Calling this method does not start consuming yet. This is done lazy and asynchronous when subscribing (in terms
+     * of Reactive Streams) to the returned {@link Flowable}.
+     *
+     * @param filter                the filter with which all incoming Publish messages are filtered.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return the {@link Flowable} which
+     *         <ul>
+     *           <li>emits the incoming Publish messages matching the given filter,
+     *           <li>never completes but
+     *           <li>errors with a {@link com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException
+     *             MqttSessionExpiredException} when the MQTT session expires.
+     *         </ul>
+     * @see #publishes(MqttGlobalPublishFilter)
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
      * Creates a {@link Single} for unsubscribing this client with the given Unsubscribe message.
@@ -202,15 +264,16 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @param unsubscribe the Unsubscribe message sent to the broker during unsubscribe.
      * @return the {@link Single} which
      *         <ul>
-     *         <li>succeeds with the UnsubAck message if at least one Topic Filter of the Unsubscribe message was
-     *         successfully unsubscribed (the UnsubAck message contains at least one Reason Code that is not an Error
-     *         Code),</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException
-     *         Mqtt5UnsubAckException} wrapping the UnsubAck message if it only contains Error Codes or</li>
-     *         <li>errors with a different exception if an error occurred before the Unsubscribe message was sent or
-     *         before a UnsubAck message was received.</li>
+     *           <li>succeeds with the UnsubAck message if at least one Topic Filter of the Unsubscribe message was
+     *             successfully unsubscribed (the UnsubAck message contains at least one Reason Code that is not an
+     *             Error Code),
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException
+     *             Mqtt5UnsubAckException} wrapping the UnsubAck message if it only contains Error Codes or
+     *           <li>errors with a different exception if an error occurred before the Unsubscribe message was sent or
+     *             before a UnsubAck message was received.
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
     /**
@@ -223,9 +286,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
-    default @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Single<Mqtt5UnsubAck>> unsubscribeWith() {
-        return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Single<Mqtt5UnsubAck>> unsubscribeWith();
 
     /**
      * Creates a {@link Flowable} for publishing the Publish messages emitted by the given {@link Flowable}.
@@ -238,14 +300,14 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @param publishFlowable the source of the Publish messages to publish.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,</li>
-     *         <li>completes when the given {@link Flowable} completes,</li>
-     *         <li>errors with the same exception when the given {@link Flowable} errors or</li>
-     *         <li>errors with a different exception if an error occurred before all Publish messages of the given
-     *         {@link Flowable} are answered by a {@link Mqtt5PublishResult} (e.g. {@link
-     *         com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException MqttSessionExpiredException}).</li>
+     *           <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,
+     *           <li>completes if the given {@link Flowable} completes, but not before all {@link Mqtt5PublishResult}s
+     *             were emitted, or
+     *           <li>errors with the same exception if the given {@link Flowable} errors, but not before all
+     *             {@link Mqtt5PublishResult}s were emitted.
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
 
     /**
@@ -256,14 +318,14 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *
      * @return the {@link Completable} which
      *         <ul>
-     *         <li>completes when the client was successfully re-authenticated,</li>
-     *         <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException
-     *         Mqtt5AuthException} wrapping the Auth message with the Error Code if not re-authenticated successfully
-     *         or</li>
-     *         <li>errors with a different exception if an error occurred before the first Auth message was sent or
-     *         before the last Auth message was received.</li>
+     *           <li>completes when the client was successfully re-authenticated,
+     *           <li>errors with a {@link com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException Mqtt5AuthException}
+     *             wrapping the Auth message with the Error Code if not re-authenticated successfully or
+     *           <li>errors with a different exception if an error occurred before the first Auth message was sent or
+     *             before the last Auth message was received.
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Completable reauth();
 
     /**
@@ -272,9 +334,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return see {@link #disconnect(Mqtt5Disconnect)}.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Completable disconnect() {
-        return disconnect(MqttDisconnect.DEFAULT);
-    }
+    @CheckReturnValue
+    @NotNull Completable disconnect();
 
     /**
      * Creates a {@link Completable} for disconnecting this client with the given Disconnect message.
@@ -285,10 +346,11 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @param disconnect the Disconnect message sent to the broker during disconnect.
      * @return the {@link Completable} which
      *         <ul>
-     *         <li>completes when the client was successfully disconnected or</li>
-     *         <li>errors if not disconnected gracefully.</li>
+     *           <li>completes when the client was successfully disconnected or
+     *           <li>errors if not disconnected gracefully.
      *         </ul>
      */
+    @CheckReturnValue
     @NotNull Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
 
     /**
@@ -300,11 +362,11 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the builder for the Disconnect message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith() {
-        return new MqttDisconnectBuilder.Nested<>(this::disconnect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith();
 
     @Override
+    @CheckReturnValue
     default @NotNull Mqtt5RxClient toRx() {
         return this;
     }

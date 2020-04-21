@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.disconnect;
@@ -62,7 +61,8 @@ public final class MqttDisconnectUtil {
      * @param reasonString the reason string why the channel is closed.
      */
     public static void disconnect(
-            final @NotNull Channel channel, final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final @NotNull Channel channel,
+            final @NotNull Mqtt5DisconnectReasonCode reasonCode,
             final @NotNull String reasonString) {
 
         final MqttDisconnect disconnect =
@@ -79,7 +79,8 @@ public final class MqttDisconnectUtil {
      * @param cause      the cause why the channel is closed.
      */
     public static void disconnect(
-            final @NotNull Channel channel, final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final @NotNull Channel channel,
+            final @NotNull Mqtt5DisconnectReasonCode reasonCode,
             final @NotNull Throwable cause) {
 
         final MqttDisconnect disconnect =
@@ -88,7 +89,8 @@ public final class MqttDisconnectUtil {
     }
 
     public static void fireDisconnectEvent(
-            final @NotNull Channel channel, final @NotNull Throwable cause,
+            final @NotNull Channel channel,
+            final @NotNull Throwable cause,
             final @NotNull MqttDisconnectSource source) {
 
         fireDisconnectEvent(channel, new MqttDisconnectEvent(cause, source));

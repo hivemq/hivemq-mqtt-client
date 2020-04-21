@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Reason Code of a {@link Mqtt5UnsubAck MQTT 5 UnsubAck message}.
+ * Reason Code of an {@link Mqtt5UnsubAck MQTT 5 UnsubAck message}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -59,7 +58,7 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
      */
     PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE);
 
-    private static final @NotNull Mqtt5UnsubAckReasonCode[] VALUES = values();
+    private static final @NotNull Mqtt5UnsubAckReasonCode @NotNull [] VALUES = values();
 
     private final int code;
 

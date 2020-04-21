@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
@@ -33,7 +32,8 @@ import org.jetbrains.annotations.NotNull;
 public class Mqtt3ClientConnectedContextView implements Mqtt3ClientConnectedContext {
 
     public static @NotNull MqttClientConnectedContext of(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
 
         return new Mqtt3ClientConnectedContextView(
@@ -45,7 +45,8 @@ public class Mqtt3ClientConnectedContextView implements Mqtt3ClientConnectedCont
     private final @NotNull Mqtt3ConnAckView connAck;
 
     private Mqtt3ClientConnectedContextView(
-            final @NotNull Mqtt3ClientConfigView clientConfig, final @NotNull Mqtt3ConnectView connect,
+            final @NotNull Mqtt3ClientConfigView clientConfig,
+            final @NotNull Mqtt3ConnectView connect,
             final @NotNull Mqtt3ConnAckView connAck) {
 
         this.clientConfig = clientConfig;

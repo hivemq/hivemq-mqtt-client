@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.auth;
@@ -26,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * Simple authentication and/or authorization related data in the {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect
+ * Simple authentication and/or authorization related data in an {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect
  * MQTT 5 Connect message}.
  *
  * @author Silvio Giebl

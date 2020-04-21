@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.datatypes;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,8 +39,7 @@ public interface MqttTopicFilterBuilder extends
      */
     // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            MqttTopicFilterBuilder, MqttTopicFilterBuilder.End,
+    interface Complete extends MqttTopicFilterBuilder, MqttTopicFilterBuilder.End,
             MqttTopicFilterBuilderBase.Complete<
                     MqttTopicFilterBuilder.Complete, MqttTopicFilterBuilder.End, MqttSharedTopicFilterBuilder,
                     MqttSharedTopicFilterBuilder.Complete, MqttSharedTopicFilterBuilder.End> {}
@@ -57,6 +56,7 @@ public interface MqttTopicFilterBuilder extends
          *
          * @return the built {@link MqttTopicFilter}.
          */
+        @CheckReturnValue
         @NotNull MqttTopicFilter build();
     }
 
@@ -80,8 +80,7 @@ public interface MqttTopicFilterBuilder extends
          */
         // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>, Nested.End<P>,
+        interface Complete<P> extends Nested<P>, Nested.End<P>,
                 MqttTopicFilterBuilderBase.Complete<
                         Nested.Complete<P>, Nested.End<P>, MqttSharedTopicFilterBuilder.Nested<P>,
                         MqttSharedTopicFilterBuilder.Nested.Complete<P>, MqttSharedTopicFilterBuilder.Nested.End<P>> {}

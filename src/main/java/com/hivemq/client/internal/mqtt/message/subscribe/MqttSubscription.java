@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.subscribe;
@@ -38,8 +37,11 @@ public class MqttSubscription implements Mqtt5Subscription {
     private final boolean retainAsPublished;
 
     public MqttSubscription(
-            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos, final boolean noLocal,
-            final @NotNull Mqtt5RetainHandling retainHandling, final boolean retainAsPublished) {
+            final @NotNull MqttTopicFilterImpl topicFilter,
+            final @NotNull MqttQos qos,
+            final boolean noLocal,
+            final @NotNull Mqtt5RetainHandling retainHandling,
+            final boolean retainAsPublished) {
 
         this.topicFilter = topicFilter;
         this.qos = qos;
@@ -110,5 +112,34 @@ public class MqttSubscription implements Mqtt5Subscription {
         result = 31 * result + retainHandling.hashCode();
         result = 31 * result + Boolean.hashCode(retainAsPublished);
         return result;
+    }
+
+    public byte encodeSubscriptionOptions() {
+        byte subscriptionOptions = 0;
+        subscriptionOptions |= retainHandling.getCode() << 4;
+        if (retainAsPublished) {
+            subscriptionOptions |= 0b0000_1000;
+        }
+        if (noLocal) {
+            subscriptionOptions |= 0b0000_0100;
+        }
+        subscriptionOptions |= qos.getCode();
+        return subscriptionOptions;
+    }
+
+    public static @Nullable MqttQos decodeQos(final byte subscriptionOptions) {
+        return MqttQos.fromCode(subscriptionOptions & 0b0000_0011);
+    }
+
+    public static boolean decodeNoLocal(final byte subscriptionOptions) {
+        return (subscriptionOptions & 0b0000_0100) != 0;
+    }
+
+    public static @Nullable Mqtt5RetainHandling decodeRetainHandling(final byte subscriptionOptions) {
+        return Mqtt5RetainHandling.fromCode((subscriptionOptions & 0b0011_0000) >> 4);
+    }
+
+    public static boolean decodeRetainAsPublished(final byte subscriptionOptions) {
+        return (subscriptionOptions & 0b0000_1000) != 0;
     }
 }

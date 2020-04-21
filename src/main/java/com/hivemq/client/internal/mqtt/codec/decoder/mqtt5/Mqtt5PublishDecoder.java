@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.decoder.mqtt5;
@@ -155,8 +154,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                         throw new MqttDecoderException("malformed subscription identifier");
                     }
                     if (subscriptionIdentifier == 0) {
-                        throw new MqttDecoderException(
-                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                        throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                                 "subscription identifier must not be 0");
                     }
                     subscriptionIdentifiersBuilder.add(subscriptionIdentifier);
@@ -174,8 +172,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
             final MqttTopicImpl[] topicAliasMapping = context.getTopicAliasMapping();
             if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
-                throw new MqttDecoderException(
-                        Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
+                throw new MqttDecoderException(Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
                         "topic alias must not exceed topic alias maximum");
             }
             if (topic == null) {
@@ -189,8 +186,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                 topicAlias |= TOPIC_ALIAS_FLAG_NEW;
             }
         } else if (topic == null) {
-            throw new MqttDecoderException(
-                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+            throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "topic alias must be present if topic name is zero length");
         }
 
@@ -212,7 +208,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         final MqttPublish publish =
                 new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
-                        responseTopic, correlationData, userProperties);
+                        responseTopic, correlationData, userProperties, null);
 
         final ImmutableIntList subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :

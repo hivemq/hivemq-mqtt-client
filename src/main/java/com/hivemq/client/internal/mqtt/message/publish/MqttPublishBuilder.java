@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.publish;
@@ -143,7 +142,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return new MqttTopicImplBuilder.Nested<>(this::responseTopic);
     }
 
-    public @NotNull B correlationData(final @Nullable byte[] correlationData) {
+    public @NotNull B correlationData(final byte @Nullable [] correlationData) {
         this.correlationData = MqttChecks.binaryDataOrNull(correlationData, "Correlation data");
         return self();
     }
@@ -170,7 +169,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             super(publish);
         }
 
-        public @NotNull B payload(final @Nullable byte[] payload) {
+        public @NotNull B payload(final byte @Nullable [] payload) {
             this.payload = ByteBufferUtil.wrap(payload);
             return self();
         }
@@ -187,7 +186,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         public @NotNull MqttPublish build() {
             Checks.notNull(topic, "Topic");
             return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                    contentType, responseTopic, correlationData, userProperties);
+                    contentType, responseTopic, correlationData, userProperties, null);
         }
     }
 
@@ -267,7 +266,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             }
         }
 
-        public @NotNull B payload(final @Nullable byte[] payload) {
+        public @NotNull B payload(final byte @Nullable [] payload) {
             this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
             return self();
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -193,8 +192,10 @@ class MqttTopicFilterImplTest {
     @MethodSource("wildcardTopicFilterProvider")
     void containsWildcards(
             final @NotNull Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
-            @SuppressWarnings("unused") final @NotNull String testDescription, final @NotNull String topicFilterString,
-            final boolean containsWildcards, final boolean containsMultiLevelWildcard,
+            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String topicFilterString,
+            final boolean containsWildcards,
+            final boolean containsMultiLevelWildcard,
             final boolean containsSingleLevelWildcard) {
         final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
         assertNotNull(mqtt5TopicFilter);

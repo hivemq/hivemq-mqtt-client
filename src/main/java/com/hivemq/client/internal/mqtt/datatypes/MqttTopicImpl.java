@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -68,7 +67,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param binary the byte array with the UTF-8 encoded data.
      * @return the created Topic Name or <code>null</code> if the byte array does not represent a valid Topic Name.
      */
-    public static @Nullable MqttTopicImpl of(final @NotNull byte[] binary) {
+    public static @Nullable MqttTopicImpl of(final byte @NotNull [] binary) {
         return (binary.length == 0) || !MqttBinaryData.isInRange(binary) || isWellFormed(binary) ? null :
                 new MqttTopicImpl(binary);
     }
@@ -96,7 +95,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @see MqttUtf8StringImpl#isWellFormed(byte[])
      * @see #containsWildcardCharacters(byte[])
      */
-    static boolean isWellFormed(final @NotNull byte[] binary) {
+    static boolean isWellFormed(final byte @NotNull [] binary) {
         return MqttUtf8StringImpl.isWellFormed(binary) || containsWildcardCharacters(binary);
     }
 
@@ -120,7 +119,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param binary the byte array with UTF-8 encoded data.
      * @return whether the byte array contains wildcard characters.
      */
-    private static boolean containsWildcardCharacters(final @NotNull byte[] binary) {
+    private static boolean containsWildcardCharacters(final byte @NotNull [] binary) {
         for (final byte b : binary) {
             if (b == MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD || b == MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD) {
                 return true;
@@ -169,7 +168,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
         }
     }
 
-    private MqttTopicImpl(final @NotNull byte[] binary) {
+    private MqttTopicImpl(final byte @NotNull [] binary) {
         super(binary);
     }
 

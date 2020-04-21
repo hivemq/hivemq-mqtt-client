@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,9 @@ public class TestKeyStoreGenerator {
     }
 
     public File generateKeyStore(
-            final String name, final String keystoreType, final String keyStorePassword,
+            final String name,
+            final String keystoreType,
+            final String keyStorePassword,
             final String privateKeyPassword) throws Exception {
 
         final KeyStore ks = KeyStore.getInstance(keystoreType);

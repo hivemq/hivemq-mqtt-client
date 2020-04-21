@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
-import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlow;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.jetbrains.annotations.NotNull;
@@ -29,47 +26,22 @@ import org.jetbrains.annotations.Nullable;
  */
 class MqttSubscribeWithFlow extends MqttSubOrUnsubWithFlow {
 
-    private final @NotNull MqttSubscribe subscribe;
-    private final @NotNull MqttSubscriptionFlow<MqttSubAck> flow;
+    final @NotNull MqttSubscribe subscribe;
+    final int subscriptionIdentifier;
+    private final @Nullable MqttSubscriptionFlow<MqttSubAck> flow;
 
     MqttSubscribeWithFlow(
-            final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
+            final @NotNull MqttSubscribe subscribe,
+            final int subscriptionIdentifier,
+            final @Nullable MqttSubscriptionFlow<MqttSubAck> flow) {
 
         this.subscribe = subscribe;
+        this.subscriptionIdentifier = subscriptionIdentifier;
         this.flow = flow;
     }
 
-    @NotNull MqttSubscribe getMessage() {
-        return subscribe;
-    }
-
     @Override
-    @NotNull MqttSubscriptionFlow<MqttSubAck> getFlow() {
+    @Nullable MqttSubscriptionFlow<MqttSubAck> getFlow() {
         return flow;
-    }
-
-    static class Stateful extends MqttSubOrUnsubWithFlow.Stateful {
-
-        private final @NotNull MqttStatefulSubscribe subscribe;
-        private final @NotNull MqttSubscriptionFlow<MqttSubAck> flow;
-
-        Stateful(final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
-            this.subscribe = subscribe;
-            this.flow = flow;
-        }
-
-        @Override
-        @NotNull MqttStatefulSubscribe getMessage() {
-            return subscribe;
-        }
-
-        @Override
-        @NotNull MqttSubscriptionFlow<MqttSubAck> getFlow() {
-            return flow;
-        }
-
-        @Nullable MqttSubscribedPublishFlow getPublishFlow() {
-            return (flow instanceof MqttSubscribedPublishFlow) ? (MqttSubscribedPublishFlow) flow : null;
-        }
     }
 }

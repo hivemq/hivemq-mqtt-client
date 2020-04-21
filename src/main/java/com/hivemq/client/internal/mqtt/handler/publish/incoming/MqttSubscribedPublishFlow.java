@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
@@ -20,7 +19,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubscriptionFlow;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -35,13 +33,14 @@ import org.reactivestreams.Subscriber;
 public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implements MqttSubscriptionFlow<MqttSubAck> {
 
     private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
-    private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscribedPublishFlow(
-            final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttIncomingQosHandler incomingQosHandler,
+            final boolean manualAcknowledgement) {
 
-        super(subscriber, clientConfig, incomingQosHandler);
+        super(subscriber, clientConfig, incomingQosHandler, manualAcknowledgement);
         topicFilters = new HandleList<>();
     }
 
@@ -55,19 +54,11 @@ public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implement
 
     @Override
     void runCancel() {
-        incomingQosHandler.getIncomingPublishFlows().cancel(this);
+        incomingPublishService.incomingPublishFlows.cancel(this);
         super.runCancel();
     }
 
     @NotNull HandleList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
-    }
-
-    int getSubscriptionIdentifier() {
-        return subscriptionIdentifier;
-    }
-
-    void setSubscriptionIdentifier(final int subscriptionIdentifier) {
-        this.subscriptionIdentifier = subscriptionIdentifier;
     }
 }

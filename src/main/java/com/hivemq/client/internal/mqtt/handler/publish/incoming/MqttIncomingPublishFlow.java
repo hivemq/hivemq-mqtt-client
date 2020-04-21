@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
@@ -35,7 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
+abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         implements Emitter<Mqtt5Publish>, Subscription, Runnable {
 
     private static final int STATE_NO_NEW_REQUESTS = 0;
@@ -43,7 +42,8 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     private static final int STATE_BLOCKED = 2;
 
     final @NotNull Subscriber<? super Mqtt5Publish> subscriber;
-    final @NotNull MqttIncomingQosHandler incomingQosHandler;
+    final @NotNull MqttIncomingPublishService incomingPublishService;
+    final boolean manualAcknowledgement;
 
     private long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
@@ -53,16 +53,20 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     private @Nullable Throwable error;
 
     private int referenced;
+    private int missingAcknowledgements;
     private long blockedIndex;
     private boolean blocking;
 
     MqttIncomingPublishFlow(
-            final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttIncomingQosHandler incomingQosHandler,
+            final boolean manualAcknowledgement) {
 
         super(clientConfig);
         this.subscriber = subscriber;
-        this.incomingQosHandler = incomingQosHandler;
+        incomingPublishService = incomingQosHandler.incomingPublishService;
+        this.manualAcknowledgement = manualAcknowledgement;
     }
 
     @CallByThread("Netty EventLoop")
@@ -81,29 +85,35 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
             return;
         }
         done = true;
-        if ((referenced == 0) && setDone()) {
+        if (setDone()) {
             subscriber.onComplete();
         } else {
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
         }
     }
 
     @CallByThread("Netty EventLoop")
     @Override
-    public void onError(final @NotNull Throwable t) {
+    public void onError(final @NotNull Throwable error) {
         if (done) {
-            if (t != error) {
-                RxJavaPlugins.onError(t);
+            // multiple calls with the same error are expected if flow was subscribed with multiple topic filters
+            if (error != this.error) {
+                RxJavaPlugins.onError(error);
             }
             return;
         }
-        error = t;
+        this.error = error;
         done = true;
-        if ((referenced == 0) && setDone()) {
-            subscriber.onError(t);
+        if (setDone()) {
+            subscriber.onError(error);
         } else {
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
         }
+    }
+
+    @Override
+    protected boolean setDone() {
+        return (referenced == 0) && (missingAcknowledgements == 0) && super.setDone();
     }
 
     @CallByThread("Netty EventLoop")
@@ -134,7 +144,7 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     @Override
     public void run() { // only executed if was blocking
         if (referenced > 0) { // is blocking
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
         }
     }
 
@@ -176,7 +186,22 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     @CallByThread("Netty EventLoop")
     void runCancel() { // always executed if cancelled
         if (referenced > 0) { // is blocking
-            incomingQosHandler.getIncomingPublishService().drain();
+            incomingPublishService.drain();
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    void increaseMissingAcknowledgements() {
+        missingAcknowledgements++;
+    }
+
+    @CallByThread("Netty EventLoop")
+    void acknowledge(final boolean drain) {
+        if (drain) {
+            incomingPublishService.drain();
+        }
+        if (--missingAcknowledgements == 0) {
+            checkDone();
         }
     }
 

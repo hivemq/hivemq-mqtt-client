@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.lifecycle;
@@ -36,10 +35,10 @@ public enum MqttDisconnectSource {
      * <p>
      * This can happen if
      * <ul>
-     * <li>an initialization error occurs (e.g. unknown host)</li>
-     * <li>an operation times out (e.g. connect, ping)</li>
-     * <li>a network error occurs</li>
-     * <li>the server does not conform to the MQTT specification (e.g. malformed packet, protocol error)</li>
+     *   <li>an initialization error occurs (e.g. unknown host)
+     *   <li>an operation times out (e.g. connect, ping)
+     *   <li>a network error occurs
+     *   <li>the server does not conform to the MQTT specification (e.g. malformed packet, protocol error)
      * </ul>
      */
     CLIENT,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.decoder.mqtt5;
@@ -35,11 +34,16 @@ public class Mqtt5ClientMessageDecoders extends MqttMessageDecoders {
 
     @Inject
     Mqtt5ClientMessageDecoders(
-            final @NotNull Mqtt5ConnAckDecoder connAckDecoder, final @NotNull Mqtt5PublishDecoder publishDecoder,
-            final @NotNull Mqtt5PubAckDecoder pubAckDecoder, final @NotNull Mqtt5PubRecDecoder pubRecDecoder,
-            final @NotNull Mqtt5PubRelDecoder pubRelDecoder, final @NotNull Mqtt5PubCompDecoder pubCompDecoder,
-            final @NotNull Mqtt5SubAckDecoder subAckDecoder, final @NotNull Mqtt5UnsubAckDecoder unsubAckDecoder,
-            final @NotNull MqttPingRespDecoder pingRespDecoder, final @NotNull Mqtt5DisconnectDecoder disconnectDecoder,
+            final @NotNull Mqtt5ConnAckDecoder connAckDecoder,
+            final @NotNull Mqtt5PublishDecoder publishDecoder,
+            final @NotNull Mqtt5PubAckDecoder pubAckDecoder,
+            final @NotNull Mqtt5PubRecDecoder pubRecDecoder,
+            final @NotNull Mqtt5PubRelDecoder pubRelDecoder,
+            final @NotNull Mqtt5PubCompDecoder pubCompDecoder,
+            final @NotNull Mqtt5SubAckDecoder subAckDecoder,
+            final @NotNull Mqtt5UnsubAckDecoder unsubAckDecoder,
+            final @NotNull MqttPingRespDecoder pingRespDecoder,
+            final @NotNull Mqtt5DisconnectDecoder disconnectDecoder,
             final @NotNull Mqtt5AuthDecoder authDecoder) {
 
         decoders[Mqtt5MessageType.CONNACK.getCode()] = connAckDecoder;

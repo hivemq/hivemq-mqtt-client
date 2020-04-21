@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.auth;
@@ -37,20 +36,18 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * The enhanced auth has two life cycles:
  * <ul>
- * <li>Auth when connecting:
- * <ol>
- * <li>{@link #onAuth}</li>
- * <li>({@link #onContinue})*</li>
- * <li>({@link #onAuthSuccess} | {@link
- * #onAuthRejected} | {@link #onAuthError})</li>
- * </ol>
- * </li>
- * <li>Reauth when connected:
- * <ol>
- * <li>({@link #onReAuth} | {@link #onServerReAuth})</li>
- * <li>({@link #onContinue})*</li>
- * <li>({@link #onReAuthSuccess} | {@link #onReAuthRejected} | {@link #onReAuthError})</li>
- * </ol>
+ *   <li>Auth when connecting:
+ *     <ol>
+ *       <li>{@link #onAuth}
+ *       <li>({@link #onContinue})*
+ *       <li>({@link #onAuthSuccess} | {@link #onAuthRejected} | {@link #onAuthError})
+ *     </ol>
+ *   <li>Reauth when connected:
+ *     <ol>
+ *       <li>({@link #onReAuth} | {@link #onServerReAuth})
+ *       <li>({@link #onContinue})*
+ *       <li>({@link #onReAuthSuccess} | {@link #onReAuthRejected} | {@link #onReAuthError})
+ *     </ol>
  * </ul>
  *
  * @author Silvio Giebl
@@ -78,7 +75,8 @@ public interface Mqtt5EnhancedAuthMechanism {
      * @return a {@link CompletableFuture} succeeding when the required data for auth is added to the builder.
      */
     @NotNull CompletableFuture<Void> onAuth(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Connect connect,
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Connect connect,
             @NotNull Mqtt5EnhancedAuthBuilder authBuilder);
 
     /**
@@ -105,7 +103,8 @@ public interface Mqtt5EnhancedAuthMechanism {
      *         and when the required data for auth is added to the builder.
      */
     default @NotNull CompletableFuture<Boolean> onServerReAuth(
-            final @NotNull Mqtt5ClientConfig clientConfig, final @NotNull Mqtt5Auth auth,
+            final @NotNull Mqtt5ClientConfig clientConfig,
+            final @NotNull Mqtt5Auth auth,
             final @NotNull Mqtt5AuthBuilder authBuilder) {
 
         return onReAuth(clientConfig, authBuilder).thenApply(aVoid -> true);

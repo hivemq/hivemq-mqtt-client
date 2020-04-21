@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.connect.connack;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Reason Code of a {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
+ * Reason Code of an {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -136,7 +135,7 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
 
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
     private static final int ERROR_CODE_MAX = CONNECTION_RATE_EXCEEDED.code;
-    private static final @NotNull Mqtt5ConnAckReasonCode[] ERROR_CODE_LOOKUP =
+    private static final @NotNull Mqtt5ConnAckReasonCode @NotNull [] ERROR_CODE_LOOKUP =
             new Mqtt5ConnAckReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN + 1];
 
     static {

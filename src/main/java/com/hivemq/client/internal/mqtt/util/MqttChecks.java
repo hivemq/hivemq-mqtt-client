@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.util;
@@ -102,7 +101,7 @@ public final class MqttChecks {
         return Checks.notImplemented(clientIdentifier, MqttClientIdentifierImpl.class, "Client identifier");
     }
 
-    private static @NotNull ByteBuffer binaryDataInternal(final @NotNull byte[] binary, final @NotNull String name) {
+    private static @NotNull ByteBuffer binaryDataInternal(final byte @NotNull [] binary, final @NotNull String name) {
         if (!MqttBinaryData.isInRange(binary)) {
             throw new IllegalArgumentException(
                     name + " can not be encoded as binary data. Maximum length is " + MqttBinaryData.MAX_LENGTH +
@@ -112,12 +111,12 @@ public final class MqttChecks {
     }
 
     @Contract("null, _ -> fail")
-    public static @NotNull ByteBuffer binaryData(final @Nullable byte[] binary, final @NotNull String name) {
+    public static @NotNull ByteBuffer binaryData(final byte @Nullable [] binary, final @NotNull String name) {
         return binaryDataInternal(Checks.notNull(binary, name), name);
     }
 
     @Contract("null, _ -> null")
-    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable byte[] binary, final @NotNull String name) {
+    public static @Nullable ByteBuffer binaryDataOrNull(final byte @Nullable [] binary, final @NotNull String name) {
         return (binary == null) ? null : binaryDataInternal(binary, name);
     }
 

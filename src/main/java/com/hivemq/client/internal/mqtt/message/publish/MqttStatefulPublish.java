@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.publish;
@@ -38,9 +37,13 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
     private final boolean dup;
     private final int topicAlias;
     private final @NotNull ImmutableIntList subscriptionIdentifiers;
+    private long id;
 
     MqttStatefulPublish(
-            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean dup, final int topicAlias,
+            final @NotNull MqttPublish publish,
+            final int packetIdentifier,
+            final boolean dup,
+            final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);
@@ -63,6 +66,14 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
 
     public @NotNull ImmutableIntList getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(final long id) {
+        this.id = id;
     }
 
     @Override

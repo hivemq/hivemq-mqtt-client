@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
-import com.hivemq.client.internal.rx.FuseableSubscriber;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableSubscriber;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,59 +49,52 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         source.subscribe(new AckLinkSubscriber(s, ackFlow));
     }
 
-    interface LinkCancellable {
+    interface LinkedFlow {
 
-        @NotNull LinkCancellable CANCELLED = () -> {};
+        @NotNull LinkedFlow CANCELLED = () -> {};
 
         void cancelLink();
     }
 
-    private static class AckLinkSubscriber
-            extends FuseableSubscriber<MqttPublish, MqttPublishWithFlow, Subscriber<? super MqttPublishWithFlow>>
-            implements LinkCancellable {
+    private static class AckLinkSubscriber implements FlowableSubscriber<MqttPublish>, Subscription, LinkedFlow {
+
+        private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(AckLinkSubscriber.class);
 
         static final int STATE_NONE = 0;
-        static final int STATE_EMITTING = 1;
+        static final int STATE_IN_PROGRESS = 1;
         static final int STATE_DONE = 2;
-        static final int STATE_CANCEL = 3;
-        static final int STATE_CANCELLED = 4;
+        static final int STATE_CANCELLED = 3;
 
+        private final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber;
         private final @NotNull MqttAckFlowableFlow ackFlow;
-        private boolean linked;
-        private final @NotNull AtomicInteger state = new AtomicInteger();
-        private final @NotNull AtomicInteger pollState = new AtomicInteger();
+        private @Nullable Subscription subscription;
+        private final @NotNull AtomicInteger state = new AtomicInteger(STATE_NONE);
+        private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NONE);
         private long published;
-        private @Nullable Throwable error;
 
         AckLinkSubscriber(
                 final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber,
                 final @NotNull MqttAckFlowableFlow ackFlow) {
 
-            super(subscriber);
+            this.subscriber = subscriber;
             this.ackFlow = ackFlow;
         }
 
-        private boolean startEmitting(final @NotNull AtomicInteger state) {
-            return state.compareAndSet(STATE_NONE, STATE_EMITTING);
-        }
-
-        private void stopEmitting(final @NotNull AtomicInteger state) {
-            if (!state.compareAndSet(STATE_EMITTING, STATE_NONE)) {
-                cancelActual();
-            }
+        @Override
+        public void onSubscribe(final @NotNull Subscription subscription) {
+            this.subscription = subscription;
+            subscriber.onSubscribe(this);
+            ackFlow.link(this);
         }
 
         @Override
-        public void onNext(final @Nullable MqttPublish publish) {
-            if (startEmitting(state)) {
-                if (sourceMode == NONE) {
-                    assert publish != null;
-                    subscriber.onNext(new MqttPublishWithFlow(publish, ackFlow));
-                    published++;
-                } else {
-                    subscriber.onNext(null);
+        public void onNext(final @NotNull MqttPublish publish) {
+            if (state.compareAndSet(STATE_NONE, STATE_IN_PROGRESS)) {
+                subscriber.onNext(new MqttPublishWithFlow(publish, ackFlow));
+                published++;
+                if (!state.compareAndSet(STATE_IN_PROGRESS, STATE_NONE)) {
+                    cancelActual();
                 }
-                stopEmitting(state);
             }
         }
 
@@ -107,107 +102,49 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         public void onComplete() {
             if (state.compareAndSet(STATE_NONE, STATE_DONE)) {
                 subscriber.onComplete();
-                if (sourceMode == NONE) {
-                    ackFlow.onComplete(published);
-                }
+                ackFlow.onComplete(published);
             }
         }
 
         @Override
-        public void onError(final @NotNull Throwable t) {
-            error = t;
+        public void onError(final @NotNull Throwable error) {
             if (state.compareAndSet(STATE_NONE, STATE_DONE)) {
                 subscriber.onComplete();
-                if (sourceMode == NONE) {
-                    ackFlow.onError(t, published);
-                }
+                ackFlow.onError(error, published);
             } else {
-                RxJavaPlugins.onError(t);
+                RxJavaPlugins.onError(error);
             }
         }
 
         @Override
         public void request(final long n) {
-            link();
-            super.request(n);
+            assert subscription != null;
+            if (requestState.compareAndSet(STATE_NONE, STATE_IN_PROGRESS)) {
+                subscription.request(n);
+                if (!requestState.compareAndSet(STATE_IN_PROGRESS, STATE_NONE)) {
+                    subscription.cancel();
+                }
+            }
         }
 
         @Override
-        public int requestFusion(final int mode) {
-            if (queueSubscription != null) {
-                sourceMode = queueSubscription.requestFusion(mode);
-            }
-            link();
-            return sourceMode;
-        }
-
-        @Override
-        public @Nullable MqttPublishWithFlow poll() {
-            assert queueSubscription != null;
-            if (!startEmitting(pollState)) {
-                return null;
-            }
-            final MqttPublish publish;
-            try {
-                publish = queueSubscription.poll();
-            } catch (final Throwable e) {
-                queueSubscription.cancel();
-                pollState.set(STATE_DONE);
-                if (state.getAndSet(STATE_DONE) != STATE_DONE) {
-                    ackFlow.onError(e, published);
-                    if (sourceMode == ASYNC) {
-                        subscriber.onComplete();
-                    }
-                }
-                return null;
-            }
-            if (publish == null) {
-                if (sourceMode == SYNC) {
-                    pollState.set(STATE_DONE);
-                    if (state.getAndSet(STATE_DONE) != STATE_DONE) {
-                        ackFlow.onComplete(published);
-                    }
-                } else { // ASYNC
-                    if (state.get() == STATE_DONE) {
-                        final Throwable error = this.error;
-                        if (error == null) {
-                            ackFlow.onComplete(published);
-                        } else {
-                            ackFlow.onError(error, published);
-                        }
-                    }
-                    stopEmitting(pollState);
-                }
-                return null;
-            }
-            stopEmitting(pollState);
-            published++;
-            return new MqttPublishWithFlow(publish, ackFlow);
-        }
-
-        private void link() {
-            if (!linked) {
-                linked = true;
-                ackFlow.link(this);
-            }
+        public void cancel() {
+            LOGGER.error("MqttPublishFlowables is global and must never cancel. This must not happen and is a bug.");
         }
 
         @Override
         public void cancelLink() {
-            final int previousState = state.getAndSet(STATE_CANCEL);
-            if ((previousState == STATE_NONE) && (pollState.getAndSet(STATE_CANCEL) == STATE_NONE)) {
+            if (state.getAndSet(STATE_CANCELLED) == STATE_NONE) {
                 cancelActual();
             }
         }
 
         private void cancelActual() {
-            if (state.compareAndSet(STATE_CANCEL, STATE_CANCELLED)) {
-                assert subscription != null;
+            assert subscription != null;
+            if (requestState.getAndSet(STATE_CANCELLED) == STATE_NONE) {
                 subscription.cancel();
-                if (sourceMode != SYNC) {
-                    subscriber.onComplete();
-                }
             }
+            subscriber.onComplete();
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor;
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Collection of interceptors of MQTT messages received or sent by a {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+ * Collection of interceptors of MQTT messages received or sent by an {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
  * MQTT5Client}.
  *
  * @author Silvio Giebl

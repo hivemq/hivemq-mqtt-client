@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,8 +80,7 @@ class Mqtt3RxClientViewExceptionsTest {
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(
-                () -> mqtt3Client.subscribe(subscribe).ignoreElement().blockingAwait(),
+        assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).ignoreElement().blockingAwait(),
                 mqtt5MessageException);
     }
 
@@ -89,14 +88,15 @@ class Mqtt3RxClientViewExceptionsTest {
     void subscribeWithStream() {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
-        given(mqtt5Client.subscribeStream(any())).willReturn(
+        given(mqtt5Client.subscribePublishes(any(), anyBoolean())).willReturn(
                 new FlowableWithSingleSplit<>(Flowable.error(mqtt5MessageException), Mqtt5Publish.class,
                         Mqtt5SubAck.class));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(() -> mqtt3Client.subscribeStream(subscribe).blockingSubscribe(), mqtt5MessageException);
+        assertMqtt3Exception(
+                () -> mqtt3Client.subscribePublishes(subscribe, false).blockingSubscribe(), mqtt5MessageException);
     }
 
     @ParameterizedTest
@@ -104,9 +104,9 @@ class Mqtt3RxClientViewExceptionsTest {
     void publishes(final @NotNull MqttGlobalPublishFilter filter) {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
-        given(mqtt5Client.publishes(filter)).willReturn(Flowable.error(mqtt5MessageException));
+        given(mqtt5Client.publishes(filter, false)).willReturn(Flowable.error(mqtt5MessageException));
 
-        assertMqtt3Exception(() -> mqtt3Client.publishes(filter).blockingSubscribe(), mqtt5MessageException);
+        assertMqtt3Exception(() -> mqtt3Client.publishes(filter, false).blockingSubscribe(), mqtt5MessageException);
     }
 
     @Test

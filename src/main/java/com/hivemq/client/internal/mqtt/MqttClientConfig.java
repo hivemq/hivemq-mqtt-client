@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt;
@@ -38,6 +37,7 @@ import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import io.netty.channel.EventLoop;
+import io.netty.handler.ssl.SslContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,12 +66,18 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull AtomicReference<@NotNull MqttClientState> state;
     private volatile @Nullable MqttClientConnectionConfig connectionConfig;
+    private @NotNull MqttClientTransportConfigImpl currentTransportConfig;
+    private @Nullable SslContext currentSslContext;
+    private boolean resubscribeIfSessionExpired;
+    private boolean republishIfSessionExpired;
 
     public MqttClientConfig(
-            final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
+            final @NotNull MqttVersion mqttVersion,
+            final @NotNull MqttClientIdentifierImpl clientIdentifier,
             final @NotNull MqttClientTransportConfigImpl transportConfig,
             final @NotNull MqttClientExecutorConfigImpl executorConfig,
-            final @NotNull MqttClientAdvancedConfig advancedConfig, final @NotNull ConnectDefaults connectDefaults,
+            final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
             final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
 
@@ -87,6 +93,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
 
         state = new AtomicReference<>(MqttClientState.DISCONNECTED);
+        currentTransportConfig = transportConfig;
     }
 
     @Override
@@ -185,7 +192,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             if (--eventLoopAcquires == 0) {
                 final EventLoop eventLoop = this.eventLoop;
                 final long eventLoopAcquireCount = this.eventLoopAcquireCount;
-                assert eventLoop != null;
+                assert eventLoop != null : "eventLoopAcquires was > 0 -> eventLoop != null";
                 eventLoop.execute(() -> { // release eventLoop after all tasks are finished
                     synchronized (state) {
                         if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired
@@ -226,6 +233,41 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public void setConnectionConfig(final @Nullable MqttClientConnectionConfig connectionConfig) {
         this.connectionConfig = connectionConfig;
+    }
+
+    public @NotNull MqttClientTransportConfigImpl getCurrentTransportConfig() {
+        return currentTransportConfig;
+    }
+
+    public void setCurrentTransportConfig(final @NotNull MqttClientTransportConfigImpl currentTransportConfig) {
+        if (!this.currentTransportConfig.equals(currentTransportConfig)) {
+            this.currentTransportConfig = currentTransportConfig;
+            currentSslContext = null;
+        }
+    }
+
+    public @Nullable SslContext getCurrentSslContext() {
+        return currentSslContext;
+    }
+
+    public void setCurrentSslContext(final @Nullable SslContext currentSslContext) {
+        this.currentSslContext = currentSslContext;
+    }
+
+    public boolean isResubscribeIfSessionExpired() {
+        return resubscribeIfSessionExpired;
+    }
+
+    public void setResubscribeIfSessionExpired(final boolean resubscribeIfSessionExpired) {
+        this.resubscribeIfSessionExpired = resubscribeIfSessionExpired;
+    }
+
+    public boolean isRepublishIfSessionExpired() {
+        return republishIfSessionExpired;
+    }
+
+    public void setRepublishIfSessionExpired(final boolean republishIfSessionExpired) {
+        this.republishIfSessionExpired = republishIfSessionExpired;
     }
 
     public static class ConnectDefaults {

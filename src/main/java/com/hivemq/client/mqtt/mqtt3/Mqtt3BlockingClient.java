@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
-import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
-import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
@@ -40,7 +35,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Blocking API of a {@link Mqtt3Client}.
+ * Blocking API of an {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -54,9 +49,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return see {@link #connect(Mqtt3Connect)}.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mqtt3ConnAck connect() {
-        return connect(Mqtt3ConnectView.DEFAULT);
-    }
+    @NotNull Mqtt3ConnAck connect();
 
     /**
      * Connects this client with the given Connect message.
@@ -77,9 +70,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mqtt3ConnectBuilder.Send<Mqtt3ConnAck> connectWith() {
-        return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3ConnectBuilder.Send<Mqtt3ConnAck> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -103,9 +95,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith() {
-        return new Mqtt3SubscribeViewBuilder.Send<>(this::subscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -113,8 +104,21 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @param filter the filter with which all incoming Publish messages are filtered.
      * @return a {@link Mqtt3Publishes} instance that can be used to receive the Publish messages on the calling
      *         thread.
+     * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    @NotNull Mqtt3Publishes publishes(@NotNull MqttGlobalPublishFilter filter);
+    @NotNull Mqtt3Publishes publishes(final @NotNull MqttGlobalPublishFilter filter);
+
+    /**
+     * Globally consumes all incoming Publish messages matching the given filter.
+     *
+     * @param filter                the filter with which all incoming Publish messages are filtered.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return a {@link Mqtt3Publishes} instance that can be used to receive the Publish messages on the calling
+     *         thread.
+     * @see #publishes(MqttGlobalPublishFilter)
+     * @since 1.2
+     */
+    @NotNull Mqtt3Publishes publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
      * Unsubscribes this client with the given Unsubscribe message.
@@ -132,9 +136,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder.SendVoid.Start unsubscribeWith() {
-        return new Mqtt3UnsubscribeViewBuilder.SendVoid(this::unsubscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3UnsubscribeBuilder.SendVoid.Start unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -152,9 +155,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt3Publish)
      */
-    default @NotNull Mqtt3PublishBuilder.SendVoid publishWith() {
-        return new Mqtt3PublishViewBuilder.SendVoid(this::publish);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt3PublishBuilder.SendVoid publishWith();
 
     /**
      * Disconnects this client with the given Disconnect message.
@@ -162,6 +164,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     void disconnect();
 
     @Override
+    @CheckReturnValue
     default @NotNull Mqtt3BlockingClient toBlocking() {
         return this;
     }
@@ -175,9 +178,9 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         * <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
-         * instance.</li>
-         * <li>Otherwise blocks the calling thread until a Publish message is received.</li>
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
+         *     instance.
+         *   <li>Otherwise blocks the calling thread until a Publish message is received.
          * </ul>
          *
          * @return the received Publish message.
@@ -189,10 +192,9 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         * <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
-         * instance.</li>
-         * <li>Otherwise blocks the calling thread until a Publish message is received or the given timeout
-         * applies.</li>
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt3Publishes}
+         *     instance.
+         *   <li>Otherwise blocks the calling thread until a Publish message is received or the given timeout applies.
          * </ul>
          *
          * @param timeout  the time to wait for a Publish messages to be received.

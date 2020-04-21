@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.auth;
@@ -43,8 +42,10 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
     private final @Nullable ByteBuffer data;
 
     public MqttAuth(
-            final @NotNull Mqtt5AuthReasonCode reasonCode, final @NotNull MqttUtf8StringImpl method,
-            final @Nullable ByteBuffer data, final @Nullable MqttUtf8StringImpl reasonString,
+            final @NotNull Mqtt5AuthReasonCode reasonCode,
+            final @NotNull MqttUtf8StringImpl method,
+            final @Nullable ByteBuffer data,
+            final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);

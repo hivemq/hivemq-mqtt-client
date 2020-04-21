@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3.message.publish;
@@ -29,7 +28,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * MQTT 3 Publish message. This message is translated from and to a MQTT 3 PUBLISH packet.
+ * MQTT 3 Publish message. This message is translated from and to an MQTT 3 PUBLISH packet.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl
@@ -66,7 +65,7 @@ public interface Mqtt3Publish extends Mqtt3Message {
     /**
      * @return the payload of this Publish message as a byte array. Empty byte array if the payload is not present.
      */
-    @NotNull byte[] getPayloadAsBytes();
+    byte @NotNull [] getPayloadAsBytes();
 
     /**
      * @return the QoS of this Publish message.
@@ -77,6 +76,15 @@ public interface Mqtt3Publish extends Mqtt3Message {
      * @return whether this Publish message is a retained message.
      */
     boolean isRetain();
+
+    /**
+     * Acknowledges this Publish message.
+     *
+     * @throws UnsupportedOperationException if manual acknowledgement is not enabled.
+     * @throws IllegalStateException         if the message is acknowledged more than once.
+     * @since 1.2
+     */
+    void acknowledge();
 
     @Override
     default @NotNull Mqtt3MessageType getType() {

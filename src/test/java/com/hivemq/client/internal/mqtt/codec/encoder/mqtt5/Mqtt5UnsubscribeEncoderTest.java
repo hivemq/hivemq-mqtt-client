@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt5;
@@ -168,7 +167,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeUnsubscribe(
-            final @NotNull byte[] expected, final @NotNull MqttUserPropertiesImpl userProperties,
+            final @NotNull byte[] expected,
+            final @NotNull MqttUserPropertiesImpl userProperties,
             final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, userProperties);
         final int packetIdentifier = 0x01;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,8 @@ public class KeyStoreUtil {
     }
 
     public static @NotNull KeyManagerFactory keyManagerFromKeystore(
-            final @NotNull File keyStoreFile, final @NotNull String keyStorePassword,
+            final @NotNull File keyStoreFile,
+            final @NotNull String keyStorePassword,
             final @NotNull String privateKeyPassword) throws SSLException {
 
         Checks.notNull(keyStoreFile, "Keystore file");

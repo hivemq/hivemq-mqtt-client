@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.util;
@@ -28,13 +27,13 @@ import java.util.Optional;
  */
 public final class ByteBufferUtil {
 
-    private static final @NotNull byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    private static final byte @NotNull [] EMPTY_BYTE_ARRAY = new byte[0];
 
     public static @NotNull ByteBuffer allocate(final int capacity, final boolean direct) {
         return direct ? ByteBuffer.allocateDirect(capacity) : ByteBuffer.allocate(capacity);
     }
 
-    public static @Nullable ByteBuffer wrap(final @Nullable byte[] binary) {
+    public static @Nullable ByteBuffer wrap(final byte @Nullable [] binary) {
         return (binary == null) ? null : ByteBuffer.wrap(binary);
     }
 
@@ -49,7 +48,7 @@ public final class ByteBufferUtil {
         return Optional.of(byteBuffer.asReadOnlyBuffer());
     }
 
-    public static @NotNull byte[] getBytes(final @NotNull ByteBuffer byteBuffer) {
+    public static byte @NotNull [] getBytes(final @NotNull ByteBuffer byteBuffer) {
         if (byteBuffer.hasArray()) {
             final byte[] array = byteBuffer.array();
             if ((byteBuffer.arrayOffset() == 0) && (array.length == byteBuffer.remaining())) {
@@ -59,7 +58,7 @@ public final class ByteBufferUtil {
         return copyBytes(byteBuffer);
     }
 
-    public static @NotNull byte[] copyBytes(final @Nullable ByteBuffer byteBuffer) {
+    public static byte @NotNull [] copyBytes(final @Nullable ByteBuffer byteBuffer) {
         if (byteBuffer == null) {
             return EMPTY_BYTE_ARRAY;
         }

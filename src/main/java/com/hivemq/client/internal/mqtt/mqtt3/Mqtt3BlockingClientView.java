@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.mqtt3;
@@ -21,12 +20,17 @@ import com.hivemq.client.internal.mqtt.MqttBlockingClient;
 import com.hivemq.client.internal.mqtt.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
+import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -62,6 +66,11 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
+    public @NotNull Mqtt3ConnAck connect() {
+        return connect(Mqtt3ConnectView.DEFAULT);
+    }
+
+    @Override
     public @NotNull Mqtt3ConnAck connect(final @Nullable Mqtt3Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
         try {
@@ -69,6 +78,11 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
+    }
+
+    @Override
+    public @NotNull Mqtt3ConnectViewBuilder.Send<Mqtt3ConnAck> connectWith() {
+        return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
 
     @Override
@@ -82,10 +96,22 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
+    public @NotNull Mqtt3SubscribeViewBuilder.Send<Mqtt3SubAck> subscribeWith() {
+        return new Mqtt3SubscribeViewBuilder.Send<>(this::subscribe);
+    }
+
+    @Override
     public @NotNull Mqtt3Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
+        return publishes(filter, false);
+    }
+
+    @Override
+    public @NotNull Mqtt3Publishes publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
         Checks.notNull(filter, "Global publish filter");
 
-        return new Mqtt3PublishesView(delegate.publishes(filter));
+        return new Mqtt3PublishesView(delegate.publishes(filter, manualAcknowledgement));
     }
 
     @Override
@@ -99,6 +125,11 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
+    public @NotNull Mqtt3UnsubscribeViewBuilder.SendVoid unsubscribeWith() {
+        return new Mqtt3UnsubscribeViewBuilder.SendVoid(this::unsubscribe);
+    }
+
+    @Override
     public void publish(final @Nullable Mqtt3Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
         try {
@@ -106,6 +137,11 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
+    }
+
+    @Override
+    public @NotNull Mqtt3PublishViewBuilder.SendVoid publishWith() {
+        return new Mqtt3PublishViewBuilder.SendVoid(this::publish);
     }
 
     @Override

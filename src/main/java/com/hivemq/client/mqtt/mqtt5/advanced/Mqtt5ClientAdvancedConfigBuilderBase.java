@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.advanced;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptorsBuilder;
@@ -39,6 +39,7 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      * @param allowServerReAuth whether server re-auth is allowed.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B allowServerReAuth(boolean allowServerReAuth);
 
     /**
@@ -47,6 +48,7 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      * @param validatePayloadFormat whether the payload format is validated.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B validatePayloadFormat(boolean validatePayloadFormat);
 
     /**
@@ -56,6 +58,7 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      *                     interceptors.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B interceptors(@Nullable Mqtt5ClientInterceptors interceptors);
 
     /**
@@ -67,5 +70,6 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      * @return the fluent builder for the collection of interceptors.
      * @see #interceptors(Mqtt5ClientInterceptors)
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientInterceptorsBuilder.Nested<? extends B> interceptors();
 }

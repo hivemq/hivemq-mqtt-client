@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt;
@@ -41,7 +40,8 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
     private final @NotNull Scheduler applicationScheduler;
 
     MqttClientExecutorConfigImpl(
-            final @Nullable Executor nettyExecutor, final int nettyThreads,
+            final @Nullable Executor nettyExecutor,
+            final int nettyThreads,
             final @NotNull Scheduler applicationScheduler) {
 
         this.nettyExecutor = nettyExecutor;

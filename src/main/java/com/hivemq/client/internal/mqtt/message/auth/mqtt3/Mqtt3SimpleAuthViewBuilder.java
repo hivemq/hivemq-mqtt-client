@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.auth.mqtt3;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
         return self();
     }
 
-    public @NotNull B password(final @Nullable byte[] password) {
+    public @NotNull B password(final byte @Nullable [] password) {
         this.password = MqttChecks.binaryData(password, "Password");
         return self();
     }
@@ -58,9 +58,7 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
     }
 
     public @NotNull Mqtt3SimpleAuthView build() {
-        if (username == null) {
-            throw new IllegalStateException("Username must be given.");
-        }
+        Checks.state(username != null, "Username must be given.");
         return Mqtt3SimpleAuthView.of(username, password);
     }
 

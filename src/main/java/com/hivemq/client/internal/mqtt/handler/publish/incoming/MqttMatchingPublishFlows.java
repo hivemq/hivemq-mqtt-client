@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,37 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
+import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.util.collections.HandleList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
+@NotThreadSafe
 class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
 
     boolean subscriptionFound;
+    private int missingAcknowledgements;
+
+    @Override
+    public @NotNull Handle<MqttIncomingPublishFlow> add(final @NotNull MqttIncomingPublishFlow flow) {
+        if (flow.manualAcknowledgement) {
+            missingAcknowledgements++;
+            flow.increaseMissingAcknowledgements();
+        }
+        return super.add(flow);
+    }
+
+    boolean areAcknowledged() {
+        return missingAcknowledgements == 0;
+    }
+
+    void acknowledge(final @NotNull MqttIncomingPublishFlow flow) {
+        flow.acknowledge(--missingAcknowledgements == 0);
+    }
 }

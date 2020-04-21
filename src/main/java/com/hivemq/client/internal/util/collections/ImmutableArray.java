@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.util.collections;
@@ -76,7 +75,7 @@ import java.util.function.Consumer;
     }
 
     private static <T> T @NotNull [] toArray(
-            final @NotNull Object @NotNull [] array, final int fromIndex, final int length, T @NotNull [] other) {
+            final @NotNull Object @NotNull [] array, final int fromIndex, final int length, T @Nullable [] other) {
 
         Checks.notNull(other, "Array");
         if (other.length < length) {
@@ -127,7 +126,7 @@ import java.util.function.Consumer;
     }
 
     @Override
-    public void forEach(final @NotNull Consumer<? super E> consumer) {
+    public void forEach(final @Nullable Consumer<? super E> consumer) {
         Checks.notNull(consumer, "Consumer");
         for (int i = 0; i < array.length; i++) {
             consumer.accept(get(i));
@@ -160,7 +159,10 @@ import java.util.function.Consumer;
     }
 
     private static boolean equals(
-            final @NotNull Object[] array, final int fromIndex, final int toIndex, final @NotNull List<?> that) {
+            final @NotNull Object @NotNull [] array,
+            final int fromIndex,
+            final int toIndex,
+            final @NotNull List<?> that) {
 
         if ((toIndex - fromIndex) != that.size()) {
             return false;
@@ -187,7 +189,7 @@ import java.util.function.Consumer;
         return hashCode(array, 0, array.length);
     }
 
-    private static int hashCode(final @NotNull Object[] array, final int fromIndex, final int toIndex) {
+    private static int hashCode(final @NotNull Object @NotNull [] array, final int fromIndex, final int toIndex) {
         int hashCode = 1;
         for (int i = fromIndex; i < toIndex; i++) {
             hashCode = 31 * hashCode + array[i].hashCode();
@@ -200,7 +202,9 @@ import java.util.function.Consumer;
         return toString(array, 0, array.length);
     }
 
-    private static @NotNull String toString(final @NotNull Object[] array, final int fromIndex, final int toIndex) {
+    private static @NotNull String toString(
+            final @NotNull Object @NotNull [] array, final int fromIndex, final int toIndex) {
+
         final StringBuilder sb = new StringBuilder().append('[');
         int i = fromIndex;
         while (true) {
@@ -245,7 +249,7 @@ import java.util.function.Consumer;
         }
 
         @Override
-        public <T> T @NotNull [] toArray(final T @NotNull [] other) {
+        public <T> T @NotNull [] toArray(final T @Nullable [] other) {
             return ImmutableArray.toArray(array, fromIndex, size(), other);
         }
 
@@ -287,7 +291,7 @@ import java.util.function.Consumer;
         }
 
         @Override
-        public void forEach(final @NotNull Consumer<? super E> consumer) {
+        public void forEach(final @Nullable Consumer<? super E> consumer) {
             Checks.notNull(consumer, "Consumer");
             for (int i = fromIndex; i < toIndex; i++) {
                 consumer.accept(get(i));

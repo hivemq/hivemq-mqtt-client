@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.unsubscribe;
@@ -23,6 +22,7 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -31,7 +31,9 @@ import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -67,6 +69,31 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
+    public @NotNull B addTopicFilters(final @Nullable MqttTopicFilter @Nullable ... topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFiltersBuilder.ensureFree(topicFilters.length);
+        for (final MqttTopicFilter topicFilter : topicFilters) {
+            addTopicFilter(topicFilter);
+        }
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable Collection<@Nullable ? extends MqttTopicFilter> topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFiltersBuilder.ensureFree(topicFilters.size());
+        topicFilters.forEach(this::addTopicFilter);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable Stream<@Nullable ? extends MqttTopicFilter> topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFilters.forEach(this::addTopicFilter);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
     public @NotNull B reverse(final @Nullable Mqtt5Subscribe subscribe) {
         final ImmutableList<MqttSubscription> subscriptions = MqttChecks.subscribe(subscribe).getSubscriptions();
         for (final MqttSubscription subscription : subscriptions) {
@@ -96,12 +123,13 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
+    private void ensureAtLeastOneSubscription() {
+        Checks.state(topicFiltersBuilder.getSize() > 0, "At least one topic filter must be added.");
+    }
+
     public @NotNull MqttUnsubscribe build() {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
-        if (topicFilters.isEmpty()) {
-            throw new IllegalStateException("At least one topic filter must be added.");
-        }
-        return new MqttUnsubscribe(topicFilters, userProperties);
+        ensureAtLeastOneSubscription();
+        return new MqttUnsubscribe(topicFiltersBuilder.build(), userProperties);
     }
 
     public static class Default extends MqttUnsubscribeBuilder<Default>

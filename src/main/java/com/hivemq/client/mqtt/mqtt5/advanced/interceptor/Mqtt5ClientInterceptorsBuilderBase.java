@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
@@ -35,11 +35,15 @@ import org.jetbrains.annotations.Nullable;
 @DoNotImplement
 public interface Mqtt5ClientInterceptorsBuilderBase<B extends Mqtt5ClientInterceptorsBuilderBase<B>> {
 
+    @CheckReturnValue
     @NotNull B incomingQos1Interceptor(@Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor);
 
+    @CheckReturnValue
     @NotNull B outgoingQos1Interceptor(@Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor);
 
+    @CheckReturnValue
     @NotNull B incomingQos2Interceptor(@Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor);
 
+    @CheckReturnValue
     @NotNull B outgoingQos2Interceptor(@Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor);
 }

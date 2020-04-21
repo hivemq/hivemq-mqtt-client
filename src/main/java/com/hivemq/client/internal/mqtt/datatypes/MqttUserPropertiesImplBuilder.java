@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
 
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
@@ -25,7 +25,9 @@ import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -58,6 +60,28 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
 
     public @NotNull B add(final @Nullable Mqtt5UserProperty userProperty) {
         listBuilder.add(MqttChecks.userProperty(userProperty));
+        return self();
+    }
+
+    public @NotNull B addAll(final @Nullable Mqtt5UserProperty @Nullable ... userProperties) {
+        Checks.notNull(userProperties, "User Properties");
+        listBuilder.ensureFree(userProperties.length);
+        for (final Mqtt5UserProperty userProperty : userProperties) {
+            add(userProperty);
+        }
+        return self();
+    }
+
+    public @NotNull B addAll(final @Nullable Collection<@Nullable ? extends Mqtt5UserProperty> userProperties) {
+        Checks.notNull(userProperties, "User Properties");
+        listBuilder.ensureFree(userProperties.size());
+        userProperties.forEach(this::add);
+        return self();
+    }
+
+    public @NotNull B addAll(final @Nullable Stream<@Nullable ? extends Mqtt5UserProperty> userProperties) {
+        Checks.notNull(userProperties, "User Properties");
+        userProperties.forEach(this::add);
         return self();
     }
 

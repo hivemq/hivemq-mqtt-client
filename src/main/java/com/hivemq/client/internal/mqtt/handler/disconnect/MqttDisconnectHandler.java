@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.disconnect;
@@ -67,11 +66,12 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     public static final @NotNull String NAME = "disconnect";
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttDisconnectHandler.class);
+    private static final @NotNull Object STATE_CLOSED = new Object();
     private static final int DISCONNECT_TIMEOUT = 10; // TODO configurable
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttSession session;
-    private @Nullable State state = null;
+    private @Nullable Object state = null;
 
     @Inject
     MqttDisconnectHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session) {
@@ -92,7 +92,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     private void readDisconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnect disconnect) {
         if (state == null) {
-            state = State.CLOSED;
+            state = STATE_CLOSED;
             fireDisconnectEvent(ctx.channel(), new Mqtt5DisconnectException(disconnect, "Server sent DISCONNECT."),
                     MqttDisconnectSource.SERVER);
         }
@@ -100,7 +100,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         if (state == null) {
-            state = State.CLOSED;
+            state = STATE_CLOSED;
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5ConnAckException(connAck, "Must not receive second CONNACK."));
         }
@@ -110,13 +110,13 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     public void channelInactive(final @NotNull ChannelHandlerContext ctx) {
         ctx.fireChannelInactive();
         if (state == null) {
-            state = State.CLOSED;
+            state = STATE_CLOSED;
             fireDisconnectEvent(ctx.channel(),
                     new ConnectionClosedException("Server closed connection without DISCONNECT."),
                     MqttDisconnectSource.SERVER);
         } else if (state instanceof DisconnectingState) {
             final DisconnectingState disconnectingState = (DisconnectingState) state;
-            state = State.CLOSED;
+            state = STATE_CLOSED;
             disconnectingState.timeoutFuture.cancel(false);
             disconnected(disconnectingState.channel, disconnectingState.disconnectEvent);
             disconnectingState.disconnectEvent.getFlow().onComplete();
@@ -126,7 +126,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         if (state == null) {
-            state = State.CLOSED;
+            state = STATE_CLOSED;
             fireDisconnectEvent(ctx.channel(), new ConnectionClosedException(cause), MqttDisconnectSource.CLIENT);
         } else if (!(cause instanceof IOException)) {
             LOGGER.warn("Exception while disconnecting: {}", cause);
@@ -142,7 +142,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     private void writeDisconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
         final ChannelHandlerContext ctx = this.ctx;
         if ((ctx != null) && (state == null)) {
-            state = State.CLOSED;
+            state = STATE_CLOSED;
             fireDisconnectEvent(ctx.channel(), new MqttDisconnectEvent.ByUser(disconnect, flow));
         } else {
             flow.onError(MqttClientStateExceptions.notConnected());
@@ -153,7 +153,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     protected void onDisconnectEvent(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
 
-        state = State.CLOSED;
+        state = STATE_CLOSED;
 
         final Channel channel = ctx.channel();
 
@@ -223,7 +223,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     private void reconnect(
             final @NotNull MqttDisconnectEvent disconnectEvent,
-            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull EventLoop eventLoop) {
 
         final MqttClientConfig.ConnectDefaults connectDefaults = clientConfig.getConnectDefaults();
         final Mqtt5EnhancedAuthMechanism enhancedAuthMechanism = connectionConfig.getRawEnhancedAuthMechanism();
@@ -247,8 +248,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
                 connectDefaults.getWillPublish(),
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         // @formatter:on
-        MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
-                connectionConfig.getTransportConfig(), eventLoop);
+        MqttConnAckSingle.reconnect(
+                clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect, eventLoop);
     }
 
     @Override
@@ -256,12 +257,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         return false;
     }
 
-    private static class State {
-
-        static final @NotNull State CLOSED = new State();
-    }
-
-    private static class DisconnectingState extends State implements Runnable {
+    private static class DisconnectingState implements Runnable {
 
         private final @NotNull Channel channel;
         private final @NotNull MqttDisconnectEvent.ByUser disconnectEvent;

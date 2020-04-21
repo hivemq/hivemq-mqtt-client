@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt3;
@@ -35,11 +34,15 @@ public class Mqtt3ClientMessageEncoders extends MqttMessageEncoders {
 
     @Inject
     Mqtt3ClientMessageEncoders(
-            final @NotNull Mqtt3ConnectEncoder connectEncoder, final @NotNull Mqtt3PublishEncoder publishEncoder,
-            final @NotNull Mqtt3PubAckEncoder pubAckEncoder, final @NotNull Mqtt3PubRecEncoder pubRecEncoder,
-            final @NotNull Mqtt3PubRelEncoder pubRelEncoder, final @NotNull Mqtt3PubCompEncoder pubCompEncoder,
+            final @NotNull Mqtt3ConnectEncoder connectEncoder,
+            final @NotNull Mqtt3PublishEncoder publishEncoder,
+            final @NotNull Mqtt3PubAckEncoder pubAckEncoder,
+            final @NotNull Mqtt3PubRecEncoder pubRecEncoder,
+            final @NotNull Mqtt3PubRelEncoder pubRelEncoder,
+            final @NotNull Mqtt3PubCompEncoder pubCompEncoder,
             final @NotNull Mqtt3SubscribeEncoder subscribeEncoder,
-            final @NotNull Mqtt3UnsubscribeEncoder unsubscribeEncoder, final @NotNull MqttPingReqEncoder pingReqEncoder,
+            final @NotNull Mqtt3UnsubscribeEncoder unsubscribeEncoder,
+            final @NotNull MqttPingReqEncoder pingReqEncoder,
             final @NotNull Mqtt3DisconnectEncoder disconnectEncoder) {
 
         encoders[Mqtt3MessageType.CONNECT.getCode()] = connectEncoder;

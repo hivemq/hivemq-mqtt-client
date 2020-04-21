@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientBuilderBase;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Builder for a {@link Mqtt3Client}.
+ * Builder for an {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -44,6 +44,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt3ClientBuilder simpleAuth(@Nullable Mqtt3SimpleAuth simpleAuth);
 
     /**
@@ -57,6 +58,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      * @see #simpleAuth(Mqtt3SimpleAuth)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends Mqtt3ClientBuilder> simpleAuth();
 
     /**
@@ -66,6 +68,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt3ClientBuilder willPublish(@Nullable Mqtt3Publish willPublish);
 
     /**
@@ -79,6 +82,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      * @see #willPublish(Mqtt3Publish)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt3WillPublishBuilder.Nested<? extends Mqtt3ClientBuilder> willPublish();
 
     /**
@@ -86,6 +90,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      *
      * @return the built {@link Mqtt3Client}.
      */
+    @CheckReturnValue
     @NotNull Mqtt3Client build();
 
     /**
@@ -93,6 +98,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      *
      * @return the built {@link Mqtt3RxClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt3RxClient buildRx();
 
     /**
@@ -100,6 +106,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      *
      * @return the built {@link Mqtt3AsyncClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt3AsyncClient buildAsync();
 
     /**
@@ -107,5 +114,6 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      *
      * @return the built {@link Mqtt3BlockingClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt3BlockingClient buildBlocking();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.util;
@@ -29,7 +28,7 @@ public final class Utf8Util {
     private static final long UTF_16_SURROGATES = 0b1110_0000L << 56;
     private static final long INVALID_CODE_POINTS = 0b1111_0000L << 56;
 
-    public static long isWellFormed(final @NotNull byte[] bytes) {
+    public static long isWellFormed(final byte @NotNull [] bytes) {
         int index = 0;
         final int end = bytes.length;
         while (true) {

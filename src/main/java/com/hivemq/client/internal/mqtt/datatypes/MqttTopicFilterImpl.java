@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -27,6 +26,8 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
 
 /**
  * @author Silvio Giebl
@@ -89,7 +90,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      * @param binary the byte array with the UTF-8 encoded data.
      * @return the created Topic Filter or <code>null</code> if the byte array does not represent a valid Topic Filter.
      */
-    public static @Nullable MqttTopicFilterImpl of(final @NotNull byte[] binary) {
+    public static @Nullable MqttTopicFilterImpl of(final byte @NotNull [] binary) {
         if ((binary.length == 0) || !MqttBinaryData.isInRange(binary) || isWellFormed(binary)) {
             return null;
         }
@@ -126,7 +127,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      *         that a multi-level and/or single-level wildcards are present in the byte array or {@link
      *         #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced.
      */
-    static int validateWildcards(final @NotNull byte[] binary, final int start) {
+    static int validateWildcards(final byte @NotNull [] binary, final int start) {
         int wildcardFlags = 0;
 
         int state = WILDCARD_CHECK_STATE_BEFORE;
@@ -238,7 +239,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
 
     final int wildcardFlags;
 
-    MqttTopicFilterImpl(final @NotNull byte[] binary, final int wildcardFlags) {
+    MqttTopicFilterImpl(final byte @NotNull [] binary, final int wildcardFlags) {
         super(binary);
         this.wildcardFlags = wildcardFlags;
     }
@@ -286,6 +287,11 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         return toString();
     }
 
+    public byte @Nullable [] getPrefix() {
+        final int filterByteStart = getFilterByteStart();
+        return (filterByteStart == 0) ? null : Arrays.copyOfRange(toBinary(), 0, filterByteStart - 1);
+    }
+
     @Override
     public boolean matches(final @Nullable MqttTopic topic) {
         return matches(MqttChecks.topic(topic));
@@ -295,7 +301,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         return matches(toBinary(), getFilterByteStart(), topic.toBinary());
     }
 
-    private static boolean matches(final @NotNull byte[] filter, final int offset, final @NotNull byte[] topic) {
+    private static boolean matches(final byte @NotNull [] filter, final int offset, final byte @NotNull [] topic) {
         int fi = offset;
         int ti = 0;
         while (fi < filter.length) {
@@ -333,7 +339,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     private static boolean matches(
-            final @NotNull byte[] filter1, final int offset1, final @NotNull byte[] filter2, final int offset2) {
+            final byte @NotNull [] filter1, final int offset1, final byte @NotNull [] filter2, final int offset2) {
 
         int i1 = offset1;
         int i2 = offset2;

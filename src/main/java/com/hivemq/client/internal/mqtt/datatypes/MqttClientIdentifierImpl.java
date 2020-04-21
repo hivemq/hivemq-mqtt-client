@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -63,7 +62,7 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      * @return the created Client Identifier or <code>null</code> if the byte array does not represent a valid Client
      *         Identifier.
      */
-    public static @Nullable MqttClientIdentifierImpl of(final @NotNull byte[] binary) {
+    public static @Nullable MqttClientIdentifierImpl of(final byte @NotNull [] binary) {
         return (!MqttBinaryData.isInRange(binary) || isWellFormed(binary)) ? null :
                 new MqttClientIdentifierImpl(binary);
     }
@@ -83,7 +82,7 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
         return (binary == null) ? null : of(binary);
     }
 
-    private MqttClientIdentifierImpl(final @NotNull byte[] binary) {
+    private MqttClientIdentifierImpl(final byte @NotNull [] binary) {
         super(binary);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler;
@@ -62,8 +61,10 @@ public class MqttSession {
 
     @CallByThread("Netty EventLoop")
     public void startOrResume(
-            final @NotNull MqttConnAck connAck, final @NotNull MqttClientConnectionConfig connectionConfig,
-            final @NotNull ChannelPipeline pipeline, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttConnAck connAck,
+            final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull ChannelPipeline pipeline,
+            final @NotNull EventLoop eventLoop) {
 
         if (hasSession && !connAck.isSessionPresent()) {
             final String message = "Session expired as CONNACK did not contain the session present flag.";
@@ -86,7 +87,8 @@ public class MqttSession {
 
     @CallByThread("Netty EventLoop")
     public void expire(
-            final @NotNull Throwable cause, final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull Throwable cause,
+            final @NotNull MqttClientConnectionConfig connectionConfig,
             final @NotNull EventLoop eventLoop) {
 
         final long expiryInterval = connectionConfig.getSessionExpiryInterval();

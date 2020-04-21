@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.util.collections;
@@ -54,6 +53,21 @@ public class NodeList<N extends NodeList.Node<N>> {
             last.next = node;
             node.prev = last;
             this.last = node;
+        }
+        size++;
+    }
+
+    public void addFirst(final @NotNull N node) {
+        assert node.prev == null;
+        assert node.next == null;
+
+        final N first = this.first;
+        if (first == null) {
+            this.first = last = node;
+        } else {
+            first.prev = node;
+            node.next = first;
+            this.first = node;
         }
         size++;
     }

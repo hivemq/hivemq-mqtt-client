@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt;
 
+import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import com.hivemq.client.internal.util.Checks;
@@ -83,6 +88,11 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
+    public @NotNull Mqtt5ConnAck connect() {
+        return connect(MqttConnect.DEFAULT);
+    }
+
+    @Override
     public @NotNull Mqtt5ConnAck connect(final @Nullable Mqtt5Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
         try {
@@ -93,9 +103,17 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
+    public @NotNull MqttConnectBuilder.Send<Mqtt5ConnAck> connectWith() {
+        return new MqttConnectBuilder.Send<>(this::connect);
+    }
+
+    @Override
     public @NotNull Mqtt5SubAck subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         try {
+            if (!getState().isConnectedOrReconnect()) {
+                throw MqttClientStateExceptions.notConnected();
+            }
             return handleSubAck(delegate.subscribeUnsafe(mqttSubscribe).blockingGet());
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
@@ -103,20 +121,40 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
+    public @NotNull MqttSubscribeBuilder.Send<Mqtt5SubAck> subscribeWith() {
+        return new MqttSubscribeBuilder.Send<>(this::subscribe);
+    }
+
+    @Override
     public @NotNull Mqtt5Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
+        return publishes(filter, false);
+    }
+
+    @Override
+    public @NotNull Mqtt5Publishes publishes(
+            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
+
         Checks.notNull(filter, "Global publish filter");
 
-        return new MqttPublishes(delegate.publishesUnsafe(filter));
+        return new MqttPublishes(delegate.publishesUnsafe(filter, manualAcknowledgement));
     }
 
     @Override
     public @NotNull Mqtt5UnsubAck unsubscribe(final @Nullable Mqtt5Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
         try {
+            if (!getState().isConnectedOrReconnect()) {
+                throw MqttClientStateExceptions.notConnected();
+            }
             return handleUnsubAck(delegate.unsubscribeUnsafe(mqttUnsubscribe).blockingGet());
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }
+    }
+
+    @Override
+    public @NotNull MqttUnsubscribeBuilder.Send<Mqtt5UnsubAck> unsubscribeWith() {
+        return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
     }
 
     @Override
@@ -130,12 +168,22 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
+    public @NotNull MqttPublishBuilder.Send<Mqtt5PublishResult> publishWith() {
+        return new MqttPublishBuilder.Send<>(this::publish);
+    }
+
+    @Override
     public void reauth() {
         try {
             delegate.reauthUnsafe().blockingAwait();
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }
+    }
+
+    @Override
+    public void disconnect() {
+        disconnect(MqttDisconnect.DEFAULT);
     }
 
     @Override
@@ -146,6 +194,11 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }
+    }
+
+    @Override
+    public @NotNull MqttDisconnectBuilder.SendVoid disconnectWith() {
+        return new MqttDisconnectBuilder.SendVoid(this::disconnect);
     }
 
     @Override

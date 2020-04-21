@@ -4,9 +4,11 @@
 
 # HiveMQ MQTT Client
 
-[![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
 [![JitPack](https://jitpack.io/v/hivemq/hivemq-mqtt-client.svg)](https://jitpack.io/#hivemq/hivemq-mqtt-client)
+[![Build Status](https://travis-ci.com/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.com/hivemq/hivemq-mqtt-client)
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/context:java)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/alerts/)
 
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
@@ -22,23 +24,44 @@ backpressure support.
 
 ## Features
 
-- All MQTT 3.1.1 and MQTT 5.0 features
+- **All [MQTT 3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html) and 
+  [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html) features**
 - API flavors:
-  - Reactive, Async and Blocking
-  - Flexible switching
-  - Consistent and clearly separated
-- Backpressure support:
+  - **Reactive**: [Reactive Streams](https://www.reactive-streams.org/) compatible, 
+    [RxJava](https://github.com/ReactiveX/RxJava) and [Reactor](https://github.com/reactor/reactor-core) APIs available
+  - **Asynchronous API**: futures and callbacks
+  - **Blocking API**: for quick start and testing
+  - Switch flexibly between flavours and use them concurrently
+  - Flavours are clearly separated but have a consistent API style
+- **Backpressure support**:
   - QoS 1 and 2
   - QoS 0 (dropping incoming messages, if necessary)
+  - Bringing MQTT flow control and reactive pull backpressure together
 - Transports:
   - TCP
-  - SSL/TLS
-  - WebSocket, Secure WebSocket
-- Automatic and configurable thread management
-- Automatic and configurable reconnect handling and message redelivery
-- Lifecycle listeners (connected, disconnected)
+  - **SSL/TLS**
+    - All TLS versions up to TLS 1.3 are supported
+    - TLS mutual authentication
+    - TLS Server Name Indication (SNI)
+    - TLS Session Resumption
+    - Default and customizable hostname verification
+  - **WebSocket**, Secure WebSocket
+  - **Proxy**: SOCKS4, SOCKS5, HTTP CONNECT
+  - All possible combinations
+- Automatic and configurable **thread management**
+- Automatic and configurable **reconnect handling and message redelivery**
+- Automatic and configurable **resubscribe if the session expired**
+- **Manual message acknowledgment**
+  - Selectively enable manual acknowledgement only for specific streams
+  - Acknowledge messages emitted to multiple streams independently per stream,
+    the client aggregates the acknowledgements before sending MQTT acknowledgements
+  - Order of manual acknowledgment does not matter,
+    the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification
+- Lifecycle listeners
+  - When connected
+  - When disconnected or connection failed
 - MQTT 5 specific:
-  - Pluggable Enhanced Auth support (additional to MQTT specification: server-triggered reauth)
+  - Pluggable Enhanced Authentication support (additional to MQTT specification: server-triggered re-authentication)
   - Automatic Topic Alias mapping
   - Interceptors for QoS flows
 
@@ -68,7 +91,18 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.1.4'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.2.0'
+}
+```
+
+For optional features you can choose to include additional modules:
+
+```groovy
+dependencies {
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-websocket', version: '1.2.0'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-proxy', version: '1.2.0'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-epoll', version: '1.2.0'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-reactor', version: '1.2.0'
 }
 ```
 
@@ -90,7 +124,44 @@ NOTE: You have to set the compiler version to `1.8` or higher.
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.1.4</version>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+```
+
+For optional features you can choose to include additional modules:
+
+```xml
+<project>
+    ...
+    <dependencies>
+        <dependency>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client-websocket</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client-proxy</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client-epoll</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client-reactor</artifactId>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
     ...
@@ -101,13 +172,14 @@ NOTE: You have to set the compiler version to `1.8` or higher.
 
 If you are experiencing problems with transitive dependencies, you can try the shaded version.
 This version packs the transitive dependencies which are only used internal under a different package name.
+The shaded version includes the websocket, proxy and epoll modules.
 To use the shaded version just append `-shaded` to the artifact name.
 
 #### Gradle
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.1.4'
+    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.2.0'
 }
 ```
 
@@ -120,7 +192,7 @@ dependencies {
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.1.4</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
     ...
@@ -141,6 +213,12 @@ repositories {
 
 dependencies {
     implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT'
+    
+    // snapshots for optional modules
+    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT'
+    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT'
+    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT'
+    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT'
 }
 ```
 
@@ -163,13 +241,44 @@ dependencies {
             <version>develop-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <!-- snapshots for optional modules -->
+    <dependencies>
+        <dependency>
+            <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
+            <artifactId>hivemq-mqtt-client-websocket</artifactId>
+            <version>develop-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
+            <artifactId>hivemq-mqtt-client-proxy</artifactId>
+            <version>develop-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
+            <artifactId>hivemq-mqtt-client-epoll</artifactId>
+            <version>develop-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
+            <artifactId>hivemq-mqtt-client-reactor</artifactId>
+            <version>develop-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
     ...
 </project>
 ```
 
 Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version.
 
-JitPack works for all branches and also specific commits by specifying in the version.
+JitPack works for all branches and also specific commits.
+Just specify `<branch>-SNAPSHOT` or the first 10 digits of the commit id in the version.
 
 ## General principles
 

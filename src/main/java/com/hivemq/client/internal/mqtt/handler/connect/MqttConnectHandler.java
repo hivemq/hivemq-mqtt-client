@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.connect;
@@ -66,7 +65,6 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     public static final @NotNull String NAME = "connect";
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttConnectHandler.class);
-    private static final int CONNACK_TIMEOUT = 60; // TODO configurable
 
     private final @NotNull MqttConnect connect;
     private final @NotNull MqttConnAckFlow connAckFlow;
@@ -74,13 +72,15 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     private final @NotNull MqttSession session;
     private final @NotNull MqttDecoder decoder;
 
-    private boolean connectCalled = false;
+    private boolean connectWritten = false;
     private long connectFlushTime;
 
     @Inject
     MqttConnectHandler(
-            final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow connAckFlow,
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session,
+            final @NotNull MqttConnect connect,
+            final @NotNull MqttConnAckFlow connAckFlow,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttSession session,
             final @NotNull MqttDecoder decoder) {
 
         this.connect = connect;
@@ -91,22 +91,17 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    public void channelActive(final @NotNull ChannelHandlerContext ctx) {
-        if (!connectCalled) {
-            connectCalled = true;
+    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
+        super.handlerAdded(ctx);
+        if (ctx.channel().isActive()) {
             writeConnect(ctx);
         }
-        ctx.fireChannelActive();
     }
 
     @Override
-    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
-        super.handlerAdded(ctx);
-
-        if (!connectCalled && ctx.channel().isActive()) {
-            connectCalled = true;
-            writeConnect(ctx);
-        }
+    public void channelActive(final @NotNull ChannelHandlerContext ctx) {
+        writeConnect(ctx);
+        ctx.fireChannelActive();
     }
 
     /**
@@ -120,9 +115,12 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param ctx the channel handler context.
      */
     private void writeConnect(final @NotNull ChannelHandlerContext ctx) {
-        connectFlushTime = System.nanoTime();
-        ctx.writeAndFlush((connect.getRawEnhancedAuthMechanism() == null) ?
-                connect.createStateful(clientConfig.getRawClientIdentifier(), null) : connect).addListener(this);
+        if (!connectWritten) {
+            connectWritten = true;
+            connectFlushTime = System.nanoTime();
+            ctx.writeAndFlush((connect.getRawEnhancedAuthMechanism() == null) ?
+                    connect.createStateful(clientConfig.getRawClientIdentifier(), null) : connect).addListener(this);
+        }
     }
 
     @Override
@@ -264,7 +262,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
         // @formatter:off
         final MqttClientConnectionConfig connectionConfig = new MqttClientConnectionConfig(
-                connAckFlow.getTransportConfig(),
+                clientConfig.getCurrentTransportConfig(),
                 keepAlive,
                 connect.isCleanStart(),
                 connect.getSessionExpiryInterval() == 0,
@@ -303,8 +301,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    protected long getTimeout() {
-        return CONNACK_TIMEOUT;
+    protected long getTimeoutMs() {
+        return clientConfig.getCurrentTransportConfig().getMqttConnectTimeoutMs();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttClientSslConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.Collection;
@@ -39,7 +38,8 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
     private @Nullable TrustManagerFactory trustManagerFactory;
     private @Nullable ImmutableList<String> cipherSuites;
     private @Nullable ImmutableList<String> protocols;
-    private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private int handshakeTimeoutMs = (int) MqttClientSslConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @Nullable HostnameVerifier hostnameVerifier = MqttClientSslConfigImpl.DEFAULT_HOSTNAME_VERIFIER;
 
     MqttClientSslConfigImplBuilder() {}
 
@@ -49,7 +49,8 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
             trustManagerFactory = sslConfig.getRawTrustManagerFactory();
             cipherSuites = sslConfig.getRawCipherSuites();
             protocols = sslConfig.getRawProtocols();
-            handshakeTimeoutMs = sslConfig.getHandshakeTimeoutMs();
+            handshakeTimeoutMs = (int) sslConfig.getHandshakeTimeoutMs();
+            hostnameVerifier = sslConfig.getRawHostnameVerifier();
         }
     }
 
@@ -77,13 +78,20 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
     public @NotNull B handshakeTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
         Checks.notNull(timeUnit, "Time unit");
-        this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
+        this.handshakeTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "Handshake timeout in milliseconds");
+        return self();
+    }
+
+    public @NotNull B hostnameVerifier(final @Nullable HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier =
+                (hostnameVerifier == null) ? MqttClientSslConfigImpl.DEFAULT_HOSTNAME_VERIFIER : hostnameVerifier;
         return self();
     }
 
     public @NotNull MqttClientSslConfigImpl build() {
         return new MqttClientSslConfigImpl(
-                keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
+                keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs, hostnameVerifier);
     }
 
     public static class Default extends MqttClientSslConfigImplBuilder<Default> implements MqttClientSslConfigBuilder {
@@ -105,7 +113,7 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
         private final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer;
 
-        public Nested(
+        Nested(
                 final @Nullable MqttClientSslConfigImpl sslConfig,
                 final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer) {
 

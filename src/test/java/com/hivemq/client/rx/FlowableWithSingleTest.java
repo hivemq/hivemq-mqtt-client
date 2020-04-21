@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.rx;
@@ -36,6 +35,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -107,7 +107,7 @@ class FlowableWithSingleTest {
 
     @MethodSource("singleNext3")
     @ParameterizedTest
-    void observeOnFlowable(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
+    void observeOn(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
@@ -151,8 +151,10 @@ class FlowableWithSingleTest {
                 .assertValue("next0")
                 .requestMore(1)
                 .awaitCount(2)
-                .assertValues("next0", "next1")
+                .assertValueAt(1, "next1")
                 .requestMore(1)
+                .awaitCount(3)
+                .assertValueAt(2, "next2")
                 .await()
                 .assertError(IllegalArgumentException.class)
                 .assertErrorMessage("test");
@@ -188,10 +190,53 @@ class FlowableWithSingleTest {
                 .assertValue("next0")
                 .requestMore(1022)
                 .awaitCount(1023)
+                .assertValueCount(1023)
                 .requestMore(1)
+                .awaitCount(1024)
+                .assertValueCount(1024)
                 .await()
                 .assertError(IllegalArgumentException.class)
                 .assertErrorMessage("test");
+
+        executorService.shutdown();
+    }
+
+    @Test
+    void observeOnBoth_delayError_bufferSize_2() {
+        final Flowable<? extends CharSequence> flowable =
+                Flowable.<CharSequence>just(new StringBuilder("single")).concatWith(
+                        Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
+                        .concatWith(Flowable.error(new IllegalArgumentException("test")))
+                        .hide();
+        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
+
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+
+        final AtomicInteger count = new AtomicInteger();
+        final AtomicReference<StringBuilder> single = new AtomicReference<>();
+        final AtomicReference<Throwable> error = new AtomicReference<>();
+        // @formatter:off
+        flowableWithSingle.observeOnBoth(Schedulers.from(executorService), true, 1024)
+                .doOnSingle(stringBuilder -> {
+                    single.set(stringBuilder);
+                    assertEquals("test_thread", Thread.currentThread().getName());
+                })
+                .doOnNext(string -> {
+                    assertEquals("next" + count.getAndIncrement(), string);
+                    assertEquals("test_thread", Thread.currentThread().getName());
+                })
+                .doOnError(error::set)
+                .ignoreElements()
+                .onErrorComplete()
+                .blockingAwait();
+        // @formatter:on
+
+        assertEquals(1024, count.get());
+        assertEquals("single", single.get().toString());
+        assertTrue(error.get() instanceof IllegalArgumentException);
+        assertEquals("test", error.get().getMessage());
 
         executorService.shutdown();
     }
@@ -268,16 +313,15 @@ class FlowableWithSingleTest {
 
         final AtomicInteger nextCounter = new AtomicInteger();
         final AtomicInteger singleCounter = new AtomicInteger();
-        flowableWithSingle //
-                .mapBoth(s -> {
-                    nextCounter.incrementAndGet();
-                    assertNotEquals("test_thread", Thread.currentThread().getName());
-                    return s + "-1";
-                }, stringBuilder -> {
-                    assertEquals(1, singleCounter.incrementAndGet());
-                    assertNotEquals("test_thread", Thread.currentThread().getName());
-                    return stringBuilder.append("-1");
-                }).mapBoth(s -> {
+        flowableWithSingle.mapBoth(s -> {
+            nextCounter.incrementAndGet();
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return s + "-1";
+        }, stringBuilder -> {
+            assertEquals(1, singleCounter.incrementAndGet());
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return stringBuilder.append("-1");
+        }).mapBoth(s -> {
             nextCounter.incrementAndGet();
             assertNotEquals("test_thread", Thread.currentThread().getName());
             return s + "-2";
@@ -821,9 +865,12 @@ class FlowableWithSingleTest {
     }
 
     private @NotNull CompletableFuture<StringBuilder> subscribeSingleFuture(
-            final int args, final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle,
-            final @NotNull AtomicInteger onNextCounter, final @NotNull AtomicInteger onErrorCounter,
-            final @NotNull AtomicInteger onCompleteCounter, final @NotNull CountDownLatch latch) {
+            final int args,
+            final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle,
+            final @NotNull AtomicInteger onNextCounter,
+            final @NotNull AtomicInteger onErrorCounter,
+            final @NotNull AtomicInteger onCompleteCounter,
+            final @NotNull CountDownLatch latch) {
 
         switch (args) {
             case 0:
@@ -885,8 +932,10 @@ class FlowableWithSingleTest {
     }
 
     private @NotNull CompletableFuture<StringBuilder> subscribeSingleFuture(
-            final int args, final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle,
-            final @NotNull AtomicInteger onNextCounter, final @NotNull AtomicInteger onErrorCounter,
+            final int args,
+            final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle,
+            final @NotNull AtomicInteger onNextCounter,
+            final @NotNull AtomicInteger onErrorCounter,
             final @NotNull AtomicInteger onCompleteCounter) {
 
         return subscribeSingleFuture(

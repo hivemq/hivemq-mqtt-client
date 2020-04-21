@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.publish;
@@ -38,15 +37,20 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
     private final long delayInterval;
 
     public MqttWillPublish(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean isRetain, final long messageExpiryInterval,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
+            final boolean isRetain,
+            final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
-            final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties,
+            final @Nullable MqttUtf8StringImpl contentType,
+            final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable ByteBuffer correlationData,
+            final @NotNull MqttUserPropertiesImpl userProperties,
             final long delayInterval) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
-                correlationData, userProperties);
+                correlationData, userProperties, null);
         this.delayInterval = delayInterval;
     }
 

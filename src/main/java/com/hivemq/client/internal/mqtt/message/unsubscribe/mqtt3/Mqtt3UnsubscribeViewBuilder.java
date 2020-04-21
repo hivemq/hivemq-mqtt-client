@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3;
@@ -21,6 +20,7 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
@@ -28,8 +28,10 @@ import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -64,6 +66,31 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
+    public @NotNull B addTopicFilters(final @Nullable MqttTopicFilter @Nullable ... topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFiltersBuilder.ensureFree(topicFilters.length);
+        for (final MqttTopicFilter topicFilter : topicFilters) {
+            addTopicFilter(topicFilter);
+        }
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable Collection<@Nullable ? extends MqttTopicFilter> topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFiltersBuilder.ensureFree(topicFilters.size());
+        topicFilters.forEach(this::addTopicFilter);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable Stream<@Nullable ? extends MqttTopicFilter> topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFilters.forEach(this::addTopicFilter);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
     public @NotNull B reverse(final @Nullable Mqtt3Subscribe subscribe) {
         final ImmutableList<MqttSubscription> subscriptions = MqttChecks.subscribe(subscribe).getSubscriptions();
         for (final MqttSubscription subscription : subscriptions) {
@@ -84,12 +111,13 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
+    private void ensureAtLeastOneSubscription() {
+        Checks.state(topicFiltersBuilder.getSize() > 0, "At least one topic filter must be added.");
+    }
+
     public @NotNull Mqtt3UnsubscribeView build() {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
-        if (topicFilters.isEmpty()) {
-            throw new IllegalStateException("At least one topic filter must be added.");
-        }
-        return Mqtt3UnsubscribeView.of(topicFilters);
+        ensureAtLeastOneSubscription();
+        return Mqtt3UnsubscribeView.of(topicFiltersBuilder.build());
     }
 
     public static class Default extends Mqtt3UnsubscribeViewBuilder<Default>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Builder base for a {@link MqttWebSocketConfig}.
@@ -36,7 +38,17 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
      * @param serverPath the server path.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverPath(@NotNull String serverPath);
+
+    /**
+     * Sets the {@link MqttWebSocketConfig#getQueryString() query string}.
+     *
+     * @param queryString the query string.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B queryString(@NotNull String queryString);
 
     /**
      * Sets the {@link MqttWebSocketConfig#getSubprotocol() subprotocol}.
@@ -44,5 +56,19 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
      * @param subprotocol the subprotocol.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B subprotocol(@NotNull String subprotocol);
+
+    /**
+     * Sets the {@link MqttWebSocketConfig#getHandshakeTimeoutMs() websocket handshake timeout}.
+     * <p>
+     * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
+     *
+     * @param timeout  the websocket handshake timeout or <code>0</code> to disable the timeout.
+     * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 }

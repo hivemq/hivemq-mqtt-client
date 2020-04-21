@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt;
@@ -39,7 +38,7 @@ public interface MqttClient {
      */
     int DEFAULT_SERVER_PORT = 1883;
     /**
-     * The default server port when using SSL.
+     * The default server port when using SSL/TLS.
      */
     int DEFAULT_SERVER_PORT_SSL = 8883;
     /**
@@ -47,14 +46,14 @@ public interface MqttClient {
      */
     int DEFAULT_SERVER_PORT_WEBSOCKET = 80;
     /**
-     * The default server port when using SSL and WebSocket.
+     * The default server port when using SSL/TLS and WebSocket.
      */
     int DEFAULT_SERVER_PORT_WEBSOCKET_SSL = 443;
 
     /**
-     * Creates a builder for a MQTT client.
+     * Creates a builder for an MQTT client.
      *
-     * @return the created builder for a MQTT client.
+     * @return the created builder for an MQTT client.
      */
     static @NotNull MqttClientBuilder builder() {
         return new MqttRxClientBuilderBase.Choose();
@@ -67,6 +66,7 @@ public interface MqttClient {
 
     /**
      * @return the state of this client.
+     * @since 1.1
      */
     default @NotNull MqttClientState getState() {
         return getConfig().getState();

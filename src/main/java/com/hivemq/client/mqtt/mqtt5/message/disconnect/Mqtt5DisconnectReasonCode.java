@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.disconnect;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 /**
- * Reason Code of {@link Mqtt5Disconnect MQTT 5 Disconnect message}.
+ * Reason Code of an {@link Mqtt5Disconnect MQTT 5 Disconnect message}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -174,7 +173,7 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
 
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
     private static final int ERROR_CODE_MAX = WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED.code;
-    private static final @NotNull Mqtt5DisconnectReasonCode[] ERROR_CODE_LOOKUP =
+    private static final @NotNull Mqtt5DisconnectReasonCode @NotNull [] ERROR_CODE_LOOKUP =
             new Mqtt5DisconnectReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN + 1];
 
     static {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
@@ -20,28 +19,33 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public interface MqttSubscriptionFlows {
+public interface MqttSubscribedPublishFlows {
 
-    void subscribe(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscribedPublishFlow flow);
+    void subscribe(
+            @NotNull MqttSubscription subscription,
+            int subscriptionIdentifier,
+            @Nullable MqttSubscribedPublishFlow flow);
 
-    void remove(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscribedPublishFlow flow);
+    void suback(@NotNull MqttTopicFilterImpl topicFilter, int subscriptionIdentifier, boolean error);
 
-    void unsubscribe(
-            @NotNull MqttTopicFilterImpl topicFilter,
-            @Nullable Consumer<MqttSubscribedPublishFlow> unsubscribedCallback);
+    void unsubscribe(@NotNull MqttTopicFilterImpl topicFilter);
 
     void cancel(@NotNull MqttSubscribedPublishFlow flow);
 
     void findMatching(@NotNull MqttTopicImpl topic, @NotNull MqttMatchingPublishFlows matchingFlows);
 
     void clear(@NotNull Throwable cause);
+
+    @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> getSubscriptions();
 }

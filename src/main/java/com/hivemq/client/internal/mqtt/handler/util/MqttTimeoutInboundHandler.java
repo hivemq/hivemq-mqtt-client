@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.util;
@@ -90,12 +89,9 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
      */
     @CallByThread("Netty EventLoop")
     protected void scheduleTimeout(final @NotNull Channel channel) {
-        if (timeoutFuture != null) {
-            timeoutFuture.cancel(false);
-            timeoutFuture = null;
-            run();
-        } else {
-            timeoutFuture = channel.eventLoop().schedule(this, getTimeout(), TimeUnit.SECONDS);
+        final long timeoutMs = getTimeoutMs();
+        if (timeoutMs > 0) {
+            timeoutFuture = channel.eventLoop().schedule(this, timeoutMs, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -122,7 +118,7 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
      *
      * @return the timeout interval in seconds.
      */
-    protected abstract long getTimeout();
+    protected abstract long getTimeoutMs();
 
     /**
      * @return the Reason Code that will be used in the DISCONNECT message if a timeout happens and the channel is still

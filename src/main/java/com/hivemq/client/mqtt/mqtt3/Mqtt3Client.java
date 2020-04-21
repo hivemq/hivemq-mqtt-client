@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 import com.hivemq.client.mqtt.MqttClient;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Mqtt3Client extends MqttClient {
 
     /**
-     * Creates a builder for a MQTT 3 client.
+     * Creates a builder for an MQTT 3 client.
      *
      * @return the created builder for a MQTT 3 client.
      */
@@ -50,6 +50,7 @@ public interface Mqtt3Client extends MqttClient {
      *
      * @return a reactive API for this client.
      */
+    @CheckReturnValue
     @NotNull Mqtt3RxClient toRx();
 
     /**
@@ -59,6 +60,7 @@ public interface Mqtt3Client extends MqttClient {
      *
      * @return a asynchronous API for this client.
      */
+    @CheckReturnValue
     @NotNull Mqtt3AsyncClient toAsync();
 
     /**
@@ -68,5 +70,6 @@ public interface Mqtt3Client extends MqttClient {
      *
      * @return a blocking API for this client.
      */
+    @CheckReturnValue
     @NotNull Mqtt3BlockingClient toBlocking();
 }

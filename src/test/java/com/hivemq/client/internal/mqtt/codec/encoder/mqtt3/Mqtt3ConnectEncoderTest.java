@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt3;
@@ -52,10 +51,15 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
     })
     @ParameterizedTest(name = "Connect(\"{0}\", {1}, {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\")")
     void matchesPaho(
-            final @NotNull String clientId, final boolean cleanSession, final int keepAliveInterval,
-            final @Nullable String userName, final @Nullable String password, final @Nullable String willMessage,
-            final @Nullable String willTopic, final @Nullable Integer willQos, final @Nullable Boolean willRetained)
-            throws MqttException {
+            final @NotNull String clientId,
+            final boolean cleanSession,
+            final int keepAliveInterval,
+            final @Nullable String userName,
+            final @Nullable String password,
+            final @Nullable String willMessage,
+            final @Nullable String willTopic,
+            final @Nullable Integer willQos,
+            final @Nullable Boolean willRetained) throws MqttException {
 
         final boolean hasAuth = isNotBlank(userName) && isNotBlank(password);
         final boolean hasWill =

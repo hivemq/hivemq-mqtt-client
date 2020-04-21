@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.disconnect;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -40,6 +40,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @param reasonCode the Reason Code.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B reasonCode(@NotNull Mqtt5DisconnectReasonCode reasonCode);
 
     /**
@@ -50,6 +51,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @param sessionExpiryInterval the session expiry interval in seconds.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
 
     /**
@@ -58,6 +60,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      *
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B noSessionExpiry();
 
     /**
@@ -66,6 +69,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @param serverReference the server reference.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverReference(@Nullable String serverReference);
 
     /**
@@ -74,6 +78,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @param serverReference the server reference.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B serverReference(@Nullable MqttUtf8String serverReference);
 
     /**
@@ -82,6 +87,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @param reasonString the Reason String.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B reasonString(@Nullable String reasonString);
 
     /**
@@ -90,6 +96,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @param reasonString the Reason String.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B reasonString(@Nullable MqttUtf8String reasonString);
 
     /**
@@ -98,6 +105,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @param userProperties the User Properties.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
 
     /**
@@ -109,5 +117,6 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @return the fluent builder for the User Properties.
      * @see #userProperties(Mqtt5UserProperties)
      */
+    @CheckReturnValue
     @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
 }

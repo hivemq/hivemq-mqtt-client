@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.auth;
@@ -158,8 +157,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         }
         if (state != MqttAuthState.NONE) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5AuthException(
-                            auth,
+                    new Mqtt5AuthException(auth,
                             "Must not receive AUTH with reason code REAUTHENTICATE if reauth is still pending."));
             return;
         }

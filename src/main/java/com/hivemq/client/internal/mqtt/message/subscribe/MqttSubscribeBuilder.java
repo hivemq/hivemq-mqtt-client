@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.subscribe;
@@ -32,7 +31,9 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -65,9 +66,43 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return new MqttSubscriptionBuilder.Nested<>(this::addSubscription);
     }
 
+    public @NotNull B addSubscriptions(final @Nullable Mqtt5Subscription @Nullable ... subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.length);
+        for (final Mqtt5Subscription subscription : subscriptions) {
+            addSubscription(subscription);
+        }
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(
+            final @Nullable Collection<@Nullable ? extends Mqtt5Subscription> subscriptions) {
+
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.size());
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable ? extends Mqtt5Subscription> subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
     public @NotNull B userProperties(final @Nullable Mqtt5UserProperties userProperties) {
         this.userProperties = MqttChecks.userProperties(userProperties);
         return self();
+    }
+
+    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
+        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     private @NotNull MqttSubscriptionBuilder.Default getFirstSubscriptionBuilder() {
@@ -82,10 +117,6 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
             subscriptionsBuilder.add(firstSubscriptionBuilder.build());
             firstSubscriptionBuilder = null;
         }
-    }
-
-    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
-        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     public @NotNull B topicFilter(final @Nullable String topicFilter) {
@@ -122,13 +153,14 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
+    private void ensureAtLeastOneSubscription() {
+        Checks.state(subscriptionsBuilder.getSize() > 0, "At least one subscription must be added.");
+    }
+
     public @NotNull MqttSubscribe build() {
         buildFirstSubscription();
-        final ImmutableList<MqttSubscription> subscriptions = subscriptionsBuilder.build();
-        if (subscriptions.isEmpty()) {
-            throw new IllegalStateException("At least one subscription must be added.");
-        }
-        return new MqttSubscribe(subscriptions, userProperties);
+        ensureAtLeastOneSubscription();
+        return new MqttSubscribe(subscriptionsBuilder.build(), userProperties);
     }
 
     public static class Default extends MqttSubscribeBuilder<Default> implements Mqtt5SubscribeBuilder.Start.Complete {
@@ -140,7 +172,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
 
         @Override
-        protected @NotNull MqttSubscribeBuilder.Default self() {
+        protected @NotNull Default self() {
             return this;
         }
     }
@@ -155,7 +187,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
 
         @Override
-        protected @NotNull MqttSubscribeBuilder.Nested<P> self() {
+        protected @NotNull Nested<P> self() {
             return this;
         }
 
@@ -175,13 +207,30 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
 
         @Override
-        protected @NotNull MqttSubscribeBuilder.Send<P> self() {
+        protected @NotNull Send<P> self() {
             return this;
         }
 
         @Override
         public @NotNull P send() {
             return parentConsumer.apply(build());
+        }
+    }
+
+    public static abstract class Publishes<P> extends MqttSubscribeBuilder<Publishes<P>>
+            implements Mqtt5SubscribeBuilder.Publishes.Start.Complete<P>, Mqtt5SubscribeBuilder.Publishes.Args<P> {
+
+        protected boolean manualAcknowledgement;
+
+        @Override
+        protected @NotNull Publishes<P> self() {
+            return this;
+        }
+
+        @Override
+        public @NotNull Publishes<P> manualAcknowledgement(final boolean manualAcknowledgement) {
+            this.manualAcknowledgement = manualAcknowledgement;
+            return this;
         }
     }
 }

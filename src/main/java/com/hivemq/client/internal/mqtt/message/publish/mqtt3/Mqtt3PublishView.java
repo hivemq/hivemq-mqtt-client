@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.publish.mqtt3;
@@ -46,11 +45,13 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             Mqtt3PublishView::of;
 
     public static @NotNull MqttPublish delegate(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
             final boolean retain) {
 
         return new MqttPublish(topic, payload, qos, retain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, null);
     }
 
     public static @NotNull MqttStatefulPublish statefulDelegate(
@@ -61,14 +62,18 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     static @NotNull Mqtt3PublishView of(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
             final boolean retain) {
 
         return new Mqtt3PublishView(delegate(topic, payload, qos, retain));
     }
 
     static @NotNull Mqtt3PublishView willOf(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
             final boolean retain) {
 
         return new Mqtt3PublishView(
@@ -101,7 +106,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @Override
-    public @NotNull byte[] getPayloadAsBytes() {
+    public byte @NotNull [] getPayloadAsBytes() {
         return delegate.getPayloadAsBytes();
     }
 
@@ -117,6 +122,11 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     public @NotNull MqttPublish getDelegate() {
         return delegate;
+    }
+
+    @Override
+    public void acknowledge() {
+        delegate.acknowledge();
     }
 
     @Override

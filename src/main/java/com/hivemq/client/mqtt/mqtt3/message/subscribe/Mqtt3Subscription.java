@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
@@ -24,7 +23,7 @@ import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Subscription in a {@link Mqtt3Subscribe MQTT 3 Subscribe message}.
+ * Subscription in an {@link Mqtt3Subscribe MQTT 3 Subscribe message}.
  *
  * @author Silvio Giebl
  * @since 1.0

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.InetSocketAddressUtil;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
+import com.hivemq.client.mqtt.MqttProxyConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static com.hivemq.client.mqtt.MqttClient.*;
@@ -38,8 +40,12 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     private @Nullable InetSocketAddress serverAddress;
     private @NotNull Object serverHost = DEFAULT_SERVER_HOST; // String or InetAddress
     private int serverPort = -1;
+    private @Nullable InetSocketAddress localAddress;
     private @Nullable MqttClientSslConfigImpl sslConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
+    private @Nullable MqttProxyConfigImpl proxyConfig;
+    private int socketConnectTimeoutMs = MqttClientTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
+    private int mqttConnectTimeoutMs = MqttClientTransportConfigImpl.DEFAULT_MQTT_CONNECT_TIMEOUT_MS;
 
     MqttClientTransportConfigImplBuilder() {}
 
@@ -51,14 +57,22 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         serverAddress = builder.serverAddress;
         serverHost = builder.serverHost;
         serverPort = builder.serverPort;
+        localAddress = builder.localAddress;
         sslConfig = builder.sslConfig;
         webSocketConfig = builder.webSocketConfig;
+        proxyConfig = builder.proxyConfig;
+        socketConnectTimeoutMs = builder.socketConnectTimeoutMs;
+        mqttConnectTimeoutMs = builder.mqttConnectTimeoutMs;
     }
 
     void set(final @NotNull MqttClientTransportConfigImpl transportConfig) {
         serverAddress = transportConfig.getServerAddress();
+        localAddress = transportConfig.getRawLocalAddress();
         sslConfig = transportConfig.getRawSslConfig();
         webSocketConfig = transportConfig.getRawWebSocketConfig();
+        proxyConfig = transportConfig.getRawProxyConfig();
+        socketConnectTimeoutMs = transportConfig.getSocketConnectTimeoutMs();
+        mqttConnectTimeoutMs = transportConfig.getMqttConnectTimeoutMs();
     }
 
     abstract @NotNull B self();
@@ -78,8 +92,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return self();
     }
 
-    private void setServerHost(final @NotNull Object serverHost) {
-        this.serverHost = serverHost;
+    private void setServerHost(final @NotNull Object host) {
+        serverHost = host;
         if (serverAddress != null) {
             serverPort = serverAddress.getPort();
             serverAddress = null;
@@ -96,6 +110,69 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
                 serverHost = serverAddress.getHostString();
             }
             serverAddress = null;
+        }
+        return self();
+    }
+
+    public @NotNull B localAddress(final @Nullable InetSocketAddress address) {
+        if (address == null) {
+            localAddress = null;
+        } else {
+            localAddress = checkLocalAddress(address);
+        }
+        return self();
+    }
+
+    public @NotNull B localAddress(final @Nullable String address) {
+        if (address == null) {
+            removeLocalAddress();
+        } else {
+            localAddress = checkLocalAddress(new InetSocketAddress(address, getLocalPort()));
+        }
+        return self();
+    }
+
+    public @NotNull B localAddress(final @Nullable InetAddress address) {
+        if (address == null) {
+            removeLocalAddress();
+        } else {
+            localAddress = new InetSocketAddress(address, getLocalPort());
+        }
+        return self();
+    }
+
+    private @NotNull InetSocketAddress checkLocalAddress(final @NotNull InetSocketAddress address) {
+        if (address.isUnresolved()) {
+            throw new IllegalArgumentException("Local bind address must not be unresolved.");
+        }
+        return address;
+    }
+
+    private void removeLocalAddress() {
+        if ((localAddress != null) && (localAddress.getAddress() != null)) {
+            if (localAddress.getPort() == 0) {
+                localAddress = null;
+            } else {
+                localAddress = new InetSocketAddress(localAddress.getPort());
+            }
+        }
+    }
+
+    private int getLocalPort() {
+        return (localAddress == null) ? 0 : localAddress.getPort();
+    }
+
+    public @NotNull B localPort(final int port) {
+        if (port == 0) {
+            if ((localAddress != null) && (localAddress.getPort() != 0)) {
+                if (localAddress.getAddress() == null) {
+                    localAddress = null;
+                } else {
+                    localAddress = new InetSocketAddress(localAddress.getAddress(), 0);
+                }
+            }
+        } else {
+            localAddress = new InetSocketAddress((localAddress == null) ? null : localAddress.getAddress(), port);
         }
         return self();
     }
@@ -129,6 +206,29 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return new MqttWebSocketConfigImplBuilder.Nested<>(webSocketConfig, this::webSocketConfig);
     }
 
+    public @NotNull B proxyConfig(final @Nullable MqttProxyConfig proxyConfig) {
+        this.proxyConfig = Checks.notImplementedOrNull(proxyConfig, MqttProxyConfigImpl.class, "Proxy config");
+        return self();
+    }
+
+    public @NotNull MqttProxyConfigImplBuilder.Nested<B> proxyConfig() {
+        return new MqttProxyConfigImplBuilder.Nested<>(proxyConfig, this::proxyConfig);
+    }
+
+    public @NotNull B socketConnectTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
+        this.socketConnectTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "Socket connect timeout in milliseconds");
+        return self();
+    }
+
+    public @NotNull B mqttConnectTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
+        this.mqttConnectTimeoutMs = (int) Checks.range(timeUnit.toMillis(timeout), 0, Integer.MAX_VALUE,
+                "MQTT connect timeout in milliseconds");
+        return self();
+    }
+
     private @NotNull InetSocketAddress getServerAddress() {
         if (serverAddress != null) {
             return serverAddress;
@@ -136,7 +236,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         if (serverHost instanceof InetAddress) {
             return new InetSocketAddress((InetAddress) serverHost, getServerPort());
         }
-        return InetSocketAddress.createUnresolved((String) serverHost, getServerPort());
+        return InetSocketAddressUtil.create((String) serverHost, getServerPort());
     }
 
     private int getServerPort() {
@@ -156,7 +256,8 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     }
 
     @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
-        return new MqttClientTransportConfigImpl(getServerAddress(), sslConfig, webSocketConfig);
+        return new MqttClientTransportConfigImpl(getServerAddress(), localAddress, sslConfig, webSocketConfig,
+                proxyConfig, socketConnectTimeoutMs, mqttConnectTimeoutMs);
     }
 
     public static class Default extends MqttClientTransportConfigImplBuilder<Default>
@@ -183,10 +284,6 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
             implements MqttClientTransportConfigBuilder.Nested<P> {
 
         private final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer;
-
-        public Nested(final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer) {
-            this.parentConsumer = parentConsumer;
-        }
 
         public Nested(
                 final @NotNull MqttClientTransportConfigImpl transportConfig,

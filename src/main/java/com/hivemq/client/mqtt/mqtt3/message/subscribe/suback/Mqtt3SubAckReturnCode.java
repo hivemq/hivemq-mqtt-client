@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe.suback;
@@ -21,7 +20,7 @@ import com.hivemq.client.mqtt.mqtt3.message.Mqtt3ReturnCode;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Return Code of a {@link Mqtt3SubAck MQTT 3 SubAck message}.
+ * Return Code of an {@link Mqtt3SubAck MQTT 3 SubAck message}.
  *
  * @author Daniel Krüger
  * @author Silvio Giebl

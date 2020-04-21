@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +34,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
      *
      * @return the created builder for a Will Publish.
      */
+    @CheckReturnValue
     @NotNull Mqtt5WillPublishBuilder asWill();
 
     /**
@@ -48,6 +49,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
          * @return the created complete builder for a Will Publish.
          */
         @Override
+        @CheckReturnValue
         @NotNull Mqtt5WillPublishBuilder.Complete asWill();
 
         /**
@@ -55,6 +57,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
          *
          * @return the built {@link Mqtt5Publish}.
          */
+        @CheckReturnValue
         @NotNull Mqtt5Publish build();
     }
 

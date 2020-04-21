@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.auth.mqtt3;
@@ -20,6 +19,7 @@ package com.hivemq.client.internal.mqtt.message.auth.mqtt3;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.jetbrains.annotations.NotNull;
@@ -58,11 +58,7 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
     @Override
     public @NotNull MqttUtf8String getUsername() {
-        final MqttUtf8StringImpl username = delegate.getRawUsername();
-        if (username == null) {
-            throw new IllegalStateException();
-        }
-        return username;
+        return Checks.stateNotNull(delegate.getRawUsername(), "Username");
     }
 
     @Override

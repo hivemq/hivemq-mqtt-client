@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Christoph Schäbel
  */
-class SslUtilTest {
+class MqttSslInitializerTest {
 
     @SuppressWarnings("NullabilityAnnotations")
     private EmbeddedChannel embeddedChannel;
@@ -183,6 +183,6 @@ class SslUtilTest {
     private static @NotNull SSLEngine createSslEngine(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
-        return SslUtil.createSslContext(sslConfig).newEngine(channel.alloc());
+        return MqttSslInitializer.createSslContext(sslConfig).newEngine(channel.alloc());
     }
 }

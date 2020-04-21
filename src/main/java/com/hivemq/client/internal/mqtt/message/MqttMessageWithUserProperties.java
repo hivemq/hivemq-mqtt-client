@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message;
@@ -103,7 +102,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
             private final @NotNull R reasonCode;
 
             protected WithCode(
-                    final @NotNull R reasonCode, final @Nullable MqttUtf8StringImpl reasonString,
+                    final @NotNull R reasonCode,
+                    final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
 
                 super(reasonString, userProperties);
@@ -114,7 +114,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 return reasonCode;
             }
 
-            protected boolean partialEquals(final @NotNull WithCode that) {
+            protected boolean partialEquals(final @NotNull WithCode<R> that) {
                 return super.partialEquals(that) && reasonCode.equals(that.reasonCode);
             }
 
@@ -134,7 +134,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 private final int packetIdentifier;
 
                 protected WithId(
-                        final int packetIdentifier, final @NotNull R reasonCode,
+                        final int packetIdentifier,
+                        final @NotNull R reasonCode,
                         final @Nullable MqttUtf8StringImpl reasonString,
                         final @NotNull MqttUserPropertiesImpl userProperties) {
 
@@ -167,7 +168,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
             private final @NotNull ImmutableList<@NotNull R> reasonCodes;
 
             protected WithCodesAndId(
-                    final int packetIdentifier, final @NotNull ImmutableList<@NotNull R> reasonCodes,
+                    final int packetIdentifier,
+                    final @NotNull ImmutableList<@NotNull R> reasonCodes,
                     final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
 

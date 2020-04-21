@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt5;
@@ -70,8 +69,12 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
      * @return the byte buffer the MQTT message is encoded to.
      */
     @NotNull ByteBuf encode(
-            final @NotNull M message, final @NotNull MqttEncoderContext context, final int encodedLength,
-            final int remainingLength, final int propertyLength, final int omittedProperties) {
+            final @NotNull M message,
+            final @NotNull MqttEncoderContext context,
+            final int encodedLength,
+            final int remainingLength,
+            final int propertyLength,
+            final int omittedProperties) {
 
         final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength, propertyLength, omittedProperties);
@@ -88,7 +91,10 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
      * @param omittedProperties the count of omitted properties of the MQTT message.
      */
     abstract void encode(
-            final @NotNull M message, final @NotNull ByteBuf out, final int remainingLength, final int propertyLength,
+            final @NotNull M message,
+            final @NotNull ByteBuf out,
+            final int remainingLength,
+            final int propertyLength,
             final int omittedProperties);
 
     /**
@@ -250,8 +256,11 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
 
             @Override
             protected void encode(
-                    final @NotNull M message, final @NotNull ByteBuf out, final int remainingLength,
-                    final int propertyLength, final int omittedProperties) {
+                    final @NotNull M message,
+                    final @NotNull ByteBuf out,
+                    final int remainingLength,
+                    final int propertyLength,
+                    final int omittedProperties) {
 
                 encodeFixedHeader(out, remainingLength);
                 encodeVariableHeader(message, out, propertyLength, omittedProperties);
@@ -263,7 +272,9 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
             }
 
             private void encodeVariableHeader(
-                    final @NotNull M message, final @NotNull ByteBuf out, final int propertyLength,
+                    final @NotNull M message,
+                    final @NotNull ByteBuf out,
+                    final int propertyLength,
                     final int omittedProperties) {
 
                 encodeAdditionalVariableHeader(message, out);

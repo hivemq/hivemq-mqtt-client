@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.datatypes;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +47,7 @@ public interface MqttTopicFilterBuilderBase<
      * @param topicLevel the level.
      * @return the builder that is now complete as at least one Topic level is set.
      */
+    @CheckReturnValue
     @NotNull C addLevel(@NotNull String topicLevel);
 
     /**
@@ -54,6 +55,7 @@ public interface MqttTopicFilterBuilderBase<
      *
      * @return the builder that is now complete as at least one single-level wildcard is set.
      */
+    @CheckReturnValue
     @NotNull C singleLevelWildcard();
 
     /**
@@ -61,6 +63,7 @@ public interface MqttTopicFilterBuilderBase<
      *
      * @return the end builder.
      */
+    @CheckReturnValue
     @NotNull E multiLevelWildcard();
 
     /**
@@ -69,6 +72,7 @@ public interface MqttTopicFilterBuilderBase<
      * @param shareName the Share Name.
      * @return the created builder for a Shared Topic Filter.
      */
+    @CheckReturnValue
     @NotNull S share(@NotNull String shareName);
 
     /**
@@ -98,6 +102,7 @@ public interface MqttTopicFilterBuilderBase<
          * @return the created complete builder for a Shared Topic Filter.
          */
         @Override
+        @CheckReturnValue
         @NotNull SC share(@NotNull String shareName);
     }
 

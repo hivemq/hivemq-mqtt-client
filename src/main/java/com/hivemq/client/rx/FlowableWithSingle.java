@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.rx;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.internal.rx.WithSingleStrictSubscriber;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMap;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMapError;
@@ -51,13 +51,15 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWithSingle<F, S> {
 
     /**
-     * Modifies the upstream to perform its emissions and notifications including the single item on a specified
-     * Scheduler.
+     * Modifies the upstream to perform its emissions and notifications including the single item on a specified {@link
+     * Scheduler} asynchronously with a bounded buffer of {@link #bufferSize()} slots.
      *
-     * @param scheduler see {@link Flowable#observeOn(Scheduler)}.
-     * @return a {@link FlowableWithSingle} notified from the upstream on the specified Scheduler.
-     * @see Flowable#observeOn(Scheduler)
+     * @param scheduler see {@link #observeOn(Scheduler)}.
+     * @return the source {@link FlowableWithSingle} modified so that its {@link Subscriber}s are notified on the
+     *         specified {@link Scheduler}.
+     * @see #observeOn(Scheduler)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeOnBoth(final @NotNull Scheduler scheduler) {
@@ -65,14 +67,16 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Modifies the upstream to perform its emissions and notifications including the single item on a specified
-     * Scheduler.
+     * Modifies the upstream to perform its emissions and notifications including the single item on a specified {@link
+     * Scheduler} asynchronously with a bounded buffer and optionally delays onError notifications.
      *
-     * @param scheduler  see {@link Flowable#observeOn(Scheduler)}.
-     * @param delayError see {@link Flowable#observeOn(Scheduler)}.
-     * @return a {@link FlowableWithSingle} notified from the upstream on the specified Scheduler.
-     * @see Flowable#observeOn(Scheduler)
+     * @param scheduler  see {@link #observeOn(Scheduler)}.
+     * @param delayError see {@link #observeOn(Scheduler)}.
+     * @return the source {@link FlowableWithSingle} modified so that its {@link Subscriber}s are notified on the
+     *         specified {@link Scheduler}.
+     * @see #observeOn(Scheduler)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeOnBoth(
@@ -82,15 +86,18 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Modifies the upstream to perform its emissions and notifications including the single item on a specified
-     * Scheduler.
+     * Modifies the upstream to perform its emissions and notifications including the single item on a specified {@link
+     * Scheduler} asynchronously with a bounded buffer of configurable size and optionally delays onError
+     * notifications.
      *
-     * @param scheduler  see {@link Flowable#observeOn(Scheduler)}.
-     * @param delayError see {@link Flowable#observeOn(Scheduler)}.
-     * @param bufferSize see {@link Flowable#observeOn(Scheduler)}.
-     * @return a {@link FlowableWithSingle} notified from the upstream on the specified Scheduler.
-     * @see Flowable#observeOn(Scheduler)
+     * @param scheduler  see {@link #observeOn(Scheduler)}.
+     * @param delayError see {@link #observeOn(Scheduler)}.
+     * @param bufferSize see {@link #observeOn(Scheduler)}.
+     * @return the source {@link FlowableWithSingle} modified so that its {@link Subscriber}s are notified on the
+     *         specified {@link Scheduler}.
+     * @see #observeOn(Scheduler)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeOnBoth(
@@ -108,6 +115,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param <SM>         the type of the mapped single item.
      * @return a {@link FlowableWithSingle} that applies the mapper function to the single item.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final <SM> @NotNull FlowableWithSingle<F, SM> mapSingle(
@@ -122,20 +130,21 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * them to items of type <code>FM</code> and a specified function to the single item of type <code>S</code> mapping
      * it to an item of type <code>SM</code>.
      *
+     * @param flowableMapper the mapper function to apply to the flow items.
      * @param singleMapper   the mapper function to apply to the single item.
-     * @param flowableMapper the mapper function to apply to the flow of items.
-     * @param <SM>           the type of the mapped single item.
      * @param <FM>           the type of the mapped flow items.
-     * @return a {@link FlowableWithSingle} that applies the mapper functions to the single item and the flow of items.
+     * @param <SM>           the type of the mapped single item.
+     * @return a {@link FlowableWithSingle} that applies the mapper functions to the single item and the flow items.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final <FM, SM> @NotNull FlowableWithSingle<FM, SM> mapBoth(
             final @NotNull Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
-        Checks.notNull(singleMapper, "Single mapper");
         Checks.notNull(flowableMapper, "Flowable mapper");
+        Checks.notNull(singleMapper, "Single mapper");
         return FlowableWithSingleMap.mapBoth(this, flowableMapper, singleMapper);
     }
 
@@ -145,6 +154,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param mapper the mapper function to apply to an error.
      * @return a {@link FlowableWithSingle} that applies the mapper function to an error.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull FlowableWithSingle<F, S> mapError(
@@ -160,6 +170,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      * @param singleConsumer the consumer of the single item.
      * @return a {@link FlowableWithSingle} that calls the consumer with the single item.
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull FlowableWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
@@ -183,6 +194,12 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
         }
     }
 
+    /**
+     * Special version of {@link #subscribeBoth(WithSingleSubscriber)} with a {@link FlowableWithSingleSubscriber}.
+     *
+     * @param subscriber the {@link FlowableWithSingleSubscriber}.
+     * @see #subscribeBoth(WithSingleSubscriber)
+     */
     @BackpressureSupport(BackpressureKind.SPECIAL)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final void subscribeBoth(final @NotNull FlowableWithSingleSubscriber<? super F, ? super S> subscriber) {
@@ -193,19 +210,21 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     protected abstract void subscribeBothActual(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber);
 
     /**
-     * Does {@link #subscribe()} to this Flowable and returns a future for the single item.
+     * {@link #subscribe() Subscribes} to this Flowable and returns a future for the single item.
      * <ul>
-     * <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.</li>
-     * <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
-     * FlowableWithSingle} completes but no single item was emitted.</li>
-     * <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
-     * errors before the single item was emitted.</li>
-     * <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already
-     * completed normally or exceptionally.</li>
+     *   <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FlowableWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already completed
+     *     normally or exceptionally.
      * </ul>
      *
-     * @return a future for the single item of type S.
+     * @return a future for the single item.
+     * @see #subscribe()
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture() {
@@ -216,20 +235,22 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Does {@link #subscribe()} to this Flowable and returns a future for the single item.
+     * {@link #subscribe(Consumer) Subscribes} to this Flowable and returns a future for the single item.
      * <ul>
-     * <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.</li>
-     * <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
-     * FlowableWithSingle} completes but no single item was emitted.</li>
-     * <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
-     * errors before the single item was emitted.</li>
-     * <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already
-     * completed normally or exceptionally.</li>
+     *   <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FlowableWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already completed
+     *     normally or exceptionally.
      * </ul>
      *
      * @param onNext see {@link #subscribe(Consumer)}
-     * @return a future for the single item of type S.
+     * @return a future for the single item.
+     * @see #subscribe(Consumer)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(final @NotNull Consumer<? super F> onNext) {
@@ -241,21 +262,23 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Does {@link #subscribe()} to this Flowable and returns a future for the single item.
+     * {@link #subscribe(Consumer, Consumer) Subscribes} to this Flowable and returns a future for the single item.
      * <ul>
-     * <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.</li>
-     * <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
-     * FlowableWithSingle} completes but no single item was emitted.</li>
-     * <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
-     * errors before the single item was emitted.</li>
-     * <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already
-     * completed normally or exceptionally.</li>
+     *   <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FlowableWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already completed
+     *     normally or exceptionally.
      * </ul>
      *
      * @param onNext  see {@link #subscribe(Consumer, Consumer)}
      * @param onError see {@link #subscribe(Consumer, Consumer)}
-     * @return a future for the single item of type S.
+     * @return a future for the single item.
+     * @see #subscribe(Consumer, Consumer)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
@@ -269,26 +292,30 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Does {@link #subscribe()} to this Flowable and returns a future for the single item.
+     * {@link #subscribe(Consumer, Consumer, Action) Subscribes} to this Flowable and returns a future for the single
+     * item.
      * <ul>
-     * <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.</li>
-     * <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
-     * FlowableWithSingle} completes but no single item was emitted.</li>
-     * <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
-     * errors before the single item was emitted.</li>
-     * <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already
-     * completed normally or exceptionally.</li>
+     *   <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FlowableWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already completed
+     *     normally or exceptionally.
      * </ul>
      *
      * @param onNext     see {@link #subscribe(Consumer, Consumer, Action)}
      * @param onError    see {@link #subscribe(Consumer, Consumer, Action)}
      * @param onComplete see {@link #subscribe(Consumer, Consumer, Action)}
-     * @return a future for the single item of type S.
+     * @return a future for the single item.
+     * @see #subscribe(Consumer, Consumer, Action)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
-            final @NotNull Consumer<? super F> onNext, final @NotNull Consumer<? super Throwable> onError,
+            final @NotNull Consumer<? super F> onNext,
+            final @NotNull Consumer<? super Throwable> onError,
             final @NotNull Action onComplete) {
 
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
@@ -299,20 +326,22 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Does {@link #subscribe()} to this Flowable and returns a future for the single item.
+     * {@link #subscribe(Subscriber) Subscribes} to this Flowable and returns a future for the single item.
      * <ul>
-     * <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.</li>
-     * <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
-     * FlowableWithSingle} completes but no single item was emitted.</li>
-     * <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
-     * errors before the single item was emitted.</li>
-     * <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already
-     * completed normally or exceptionally.</li>
+     *   <li>The future will complete with the single item if this {@link FlowableWithSingle} emits a single item.
+     *   <li>The future will complete exceptionally with a {@link NoSuchElementException} if this {@link
+     *     FlowableWithSingle} completes but no single item was emitted.
+     *   <li>The future will complete exceptionally with the exception emitted by this {@link FlowableWithSingle} if it
+     *     errors before the single item was emitted.
+     *   <li>Cancelling the future will cancel this {@link FlowableWithSingle} also when the future already completed
+     *     normally or exceptionally.
      * </ul>
      *
      * @param subscriber see {@link #subscribe(Subscriber)}
-     * @return a future for the single item of type S.
+     * @return a future for the single item.
+     * @see #subscribe(Subscriber)
      */
+    @CheckReturnValue
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(final @NotNull Subscriber<? super F> subscriber) {

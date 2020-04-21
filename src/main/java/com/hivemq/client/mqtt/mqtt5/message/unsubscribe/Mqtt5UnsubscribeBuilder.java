@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,30 +32,25 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
     /**
      * {@link Mqtt5UnsubscribeBuilder} that is complete which means all mandatory fields are set.
      */
-    // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            Mqtt5UnsubscribeBuilder,
-            Mqtt5UnsubscribeBuilderBase.Complete<Mqtt5UnsubscribeBuilder.Complete> {
-    // @formatter:on
+    interface Complete
+            extends Mqtt5UnsubscribeBuilder, Mqtt5UnsubscribeBuilderBase.Complete<Mqtt5UnsubscribeBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt5Unsubscribe}.
          *
          * @return the built {@link Mqtt5Unsubscribe}.
          */
+        @CheckReturnValue
         @NotNull Mqtt5Unsubscribe build();
     }
 
     /**
      * {@link Mqtt5UnsubscribeBuilder} that provides additional methods for the first Topic Filter.
      */
-    // @formatter:off
     @DoNotImplement
-    interface Start extends
-            Mqtt5UnsubscribeBuilder,
-            Mqtt5UnsubscribeBuilderBase.Start<Mqtt5UnsubscribeBuilder.Complete> {}
-    // @formatter:on
+    interface Start
+            extends Mqtt5UnsubscribeBuilder, Mqtt5UnsubscribeBuilderBase.Start<Mqtt5UnsubscribeBuilder.Complete> {}
 
     /**
      * Builder for a {@link Mqtt5Unsubscribe} that is applied to a parent.

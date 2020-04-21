@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientBuilder;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Builder for a {@link MqttClient}.
+ * Builder for an {@link MqttClient}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -36,6 +36,7 @@ public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuild
      *
      * @return the builder for the {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client Mqtt3Client}.
      */
+    @CheckReturnValue
     @NotNull Mqtt3ClientBuilder useMqttVersion3();
 
     /**
@@ -43,5 +44,6 @@ public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuild
      *
      * @return the builder for the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder useMqttVersion5();
 }

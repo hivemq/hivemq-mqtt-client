@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.lifecycle;
@@ -31,8 +30,10 @@ import org.jetbrains.annotations.NotNull;
 public class MqttClientDisconnectedContextImpl implements Mqtt5ClientDisconnectedContext {
 
     public static @NotNull MqttClientDisconnectedContext of(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttClientReconnector reconnector) {
 
         if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
             return Mqtt3ClientDisconnectedContextView.of(clientConfig, source, cause, reconnector);
@@ -46,8 +47,10 @@ public class MqttClientDisconnectedContextImpl implements Mqtt5ClientDisconnecte
     private final @NotNull MqttClientReconnector reconnector;
 
     private MqttClientDisconnectedContextImpl(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause,
+            final @NotNull MqttClientReconnector reconnector) {
 
         this.clientConfig = clientConfig;
         this.source = source;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.Collection;
@@ -43,6 +44,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                          factory.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B keyManagerFactory(@Nullable KeyManagerFactory keyManagerFactory);
 
     /**
@@ -52,6 +54,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                            manager factory
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B trustManagerFactory(@Nullable TrustManagerFactory trustManagerFactory);
 
     /**
@@ -61,6 +64,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                     communication framework).
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B cipherSuites(@Nullable Collection<@NotNull String> cipherSuites);
 
     /**
@@ -70,14 +74,28 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
      *                  framework).
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B protocols(@Nullable Collection<@NotNull String> protocols);
 
     /**
-     * Sets the {@link MqttClientSslConfig#getHandshakeTimeoutMs() handshake timeout}.
+     * Sets the {@link MqttClientSslConfig#getHandshakeTimeoutMs() SSL/TLS handshake timeout}.
+     * <p>
+     * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
      *
-     * @param timeout  the handshake timeout.
-     * @param timeUnit the time unit of the given timeout.
+     * @param timeout  the SSL/TLS handshake timeout or <code>0</code> to disable the timeout.
+     * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
+
+    /**
+     * Sets the optional user defined {@link MqttClientSslConfig#getHostnameVerifier() hostname verifier}.
+     *
+     * @param hostnameVerifier the hostname verifier or <code>null</code> to use https hostname verification.
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B hostnameVerifier(@Nullable HostnameVerifier hostnameVerifier);
 }

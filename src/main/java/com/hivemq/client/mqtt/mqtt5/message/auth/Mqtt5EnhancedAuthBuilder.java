@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.auth;
@@ -38,7 +37,7 @@ public interface Mqtt5EnhancedAuthBuilder {
      * @param data the auth data as byte array or <code>null</code> to remove any previously set auth data.
      * @return the builder.
      */
-    @NotNull Mqtt5EnhancedAuthBuilder data(@Nullable byte[] data);
+    @NotNull Mqtt5EnhancedAuthBuilder data(byte @Nullable [] data);
 
     /**
      * Sets the optional auth data.

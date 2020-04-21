@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
@@ -21,11 +20,9 @@ import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
@@ -37,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silvio Giebl
@@ -45,68 +44,81 @@ import javax.inject.Inject;
 @NotThreadSafe
 public class MqttIncomingPublishFlows {
 
-    private final @NotNull MqttSubscriptionFlows subscriptionFlows;
+    private final @NotNull MqttSubscribedPublishFlows subscribedFlows;
     private final @Nullable HandleList<MqttGlobalIncomingPublishFlow> @NotNull [] globalFlows;
 
     @Inject
-    MqttIncomingPublishFlows(final @NotNull MqttSubscriptionFlows subscriptionFlows) {
-        this.subscriptionFlows = subscriptionFlows;
+    MqttIncomingPublishFlows() {
+        subscribedFlows = new MqttSubscribedPublishFlowTree();
         //noinspection unchecked
         globalFlows = new HandleList[MqttGlobalPublishFilter.values().length];
     }
 
     public void subscribe(
-            final @NotNull MqttStatefulSubscribe subscribe, final @Nullable MqttSubscribedPublishFlow flow) {
+            final @NotNull MqttSubscribe subscribe,
+            final int subscriptionIdentifier,
+            final @Nullable MqttSubscribedPublishFlow flow) {
 
-        final ImmutableList<MqttSubscription> subscriptions = subscribe.stateless().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = subscribe.getSubscriptions();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < subscriptions.size(); i++) {
-            subscribe(subscriptions.get(i).getTopicFilter(), flow);
+            subscribedFlows.subscribe(subscriptions.get(i), subscriptionIdentifier, flow);
         }
-    }
-
-    void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscribedPublishFlow flow) {
-        subscriptionFlows.subscribe(topicFilter, flow);
     }
 
     public void subAck(
-            final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubAck subAck,
-            final @Nullable MqttSubscribedPublishFlow flow) {
+            final @NotNull MqttSubscribe subscribe,
+            final int subscriptionIdentifier,
+            final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
 
-        final ImmutableList<MqttSubscription> subscriptions = subscribe.stateless().getSubscriptions();
-        final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
+        final ImmutableList<MqttSubscription> subscriptions = subscribe.getSubscriptions();
         final boolean countNotMatching = subscriptions.size() > reasonCodes.size();
         for (int i = 0; i < subscriptions.size(); i++) {
-            if (countNotMatching || reasonCodes.get(i).isError()) {
-                remove(subscriptions.get(i).getTopicFilter(), flow);
-            }
+            subscribedFlows.suback(subscriptions.get(i).getTopicFilter(), subscriptionIdentifier,
+                    countNotMatching || reasonCodes.get(i).isError());
         }
     }
 
-    void remove(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscribedPublishFlow flow) {
-        subscriptionFlows.remove(topicFilter, flow);
-    }
+    public void unsubscribe(
+            final @NotNull MqttUnsubscribe unsubscribe,
+            final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes) {
 
-    public void unsubscribe(final @NotNull MqttStatefulUnsubscribe unsubscribe, final @NotNull MqttUnsubAck unsubAck) {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.stateless().getTopicFilters();
-        final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getTopicFilters();
         final boolean allSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
             if (allSuccess || !reasonCodes.get(i).isError()) {
-                unsubscribe(topicFilters.get(i));
+                subscribedFlows.unsubscribe(topicFilters.get(i));
             }
         }
     }
 
-    void unsubscribe(final @NotNull MqttTopicFilterImpl topicFilter) {
-        subscriptionFlows.unsubscribe(topicFilter, null);
-    }
-
     void cancel(final @NotNull MqttSubscribedPublishFlow flow) {
-        subscriptionFlows.cancel(flow);
+        subscribedFlows.cancel(flow);
     }
 
-    @NotNull HandleList<MqttIncomingPublishFlow> findMatching(final @NotNull MqttStatefulPublish publish) {
+    public void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
+        final int filter = flow.getFilter().ordinal();
+        HandleList<MqttGlobalIncomingPublishFlow> globalFlowsForFilter = globalFlows[filter];
+        if (globalFlowsForFilter == null) {
+            globalFlowsForFilter = new HandleList<>();
+            globalFlows[filter] = globalFlowsForFilter;
+        }
+        flow.setHandle(globalFlowsForFilter.add(flow));
+    }
+
+    void cancelGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
+        final int filter = flow.getFilter().ordinal();
+        final HandleList<MqttGlobalIncomingPublishFlow> globalFlowsForFilter = globalFlows[filter];
+        final Handle<MqttGlobalIncomingPublishFlow> handle = flow.getHandle();
+        if ((globalFlowsForFilter != null) && (handle != null)) {
+            globalFlowsForFilter.remove(handle);
+            if (globalFlowsForFilter.isEmpty()) {
+                globalFlows[filter] = null;
+            }
+        }
+    }
+
+    @NotNull MqttMatchingPublishFlows findMatching(final @NotNull MqttStatefulPublish publish) {
         final MqttMatchingPublishFlows matchingFlows = new MqttMatchingPublishFlows();
         findMatching(publish, matchingFlows);
         return matchingFlows;
@@ -115,7 +127,7 @@ public class MqttIncomingPublishFlows {
     void findMatching(
             final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
 
-        subscriptionFlows.findMatching(publish.stateless().getTopic(), matchingFlows);
+        subscribedFlows.findMatching(publish.stateless().getTopic(), matchingFlows);
         if (matchingFlows.subscriptionFound) {
             add(matchingFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
         } else {
@@ -127,30 +139,19 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
-        final int filter = flow.getFilter().ordinal();
-        HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
-        if (globalFlow == null) {
-            globalFlow = new HandleList<>();
-            globalFlows[filter] = globalFlow;
-        }
-        flow.setHandle(globalFlow.add(flow));
-    }
+    private static void add(
+            final @NotNull MqttMatchingPublishFlows matchingPublishFlows,
+            final @Nullable HandleList<MqttGlobalIncomingPublishFlow> globalFlows) {
 
-    void cancelGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
-        final int filter = flow.getFilter().ordinal();
-        final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
-        assert globalFlow != null;
-        final Handle<MqttGlobalIncomingPublishFlow> handle = flow.getHandle();
-        assert handle != null;
-        globalFlow.remove(handle);
-        if (globalFlow.isEmpty()) {
-            globalFlows[filter] = null;
+        if (globalFlows != null) {
+            for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlows.getFirst(); h != null; h = h.getNext()) {
+                matchingPublishFlows.add(h.getElement());
+            }
         }
     }
 
-    void clear(final @NotNull Throwable cause) {
-        subscriptionFlows.clear(cause);
+    public void clear(final @NotNull Throwable cause) {
+        subscribedFlows.clear(cause);
         for (int i = 0; i < globalFlows.length; i++) {
             final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[i];
             if (globalFlow != null) {
@@ -162,14 +163,7 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    private static void add(
-            final @NotNull HandleList<MqttIncomingPublishFlow> target,
-            final @Nullable HandleList<MqttGlobalIncomingPublishFlow> source) {
-
-        if (source != null) {
-            for (Handle<MqttGlobalIncomingPublishFlow> h = source.getFirst(); h != null; h = h.getNext()) {
-                target.add(h.getElement());
-            }
-        }
+    public @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> getSubscriptions() {
+        return subscribedFlows.getSubscriptions();
     }
 }

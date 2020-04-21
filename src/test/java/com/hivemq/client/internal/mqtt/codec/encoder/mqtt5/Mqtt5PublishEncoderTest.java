@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt5;
@@ -95,7 +94,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 new MqttPublish(MqttTopicImpl.of("topic"), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
                         MqttQos.AT_MOST_ONCE, false, 10, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
                         MqttUtf8StringImpl.of("myContentType"), MqttTopicImpl.of("responseTopic"),
-                        ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), userProperties);
+                        ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), userProperties, null);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
@@ -122,7 +121,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final MqttPublish publish =
                 new MqttPublish(MqttTopicImpl.of("topic"), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
                         MqttQos.AT_MOST_ONCE, false, MqttPublish.NO_MESSAGE_EXPIRY,
-                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, NO_USER_PROPERTIES);
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, NO_USER_PROPERTIES, null);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
@@ -146,7 +145,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_MOST_ONCE, true,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, false, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -171,7 +170,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, true, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -196,7 +195,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -221,7 +220,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expected, publish, 17, true, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -245,7 +244,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, NO_USER_PROPERTIES);
+                MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, NO_USER_PROPERTIES,
+                null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -271,7 +271,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false, 1000,
-                Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, NO_USER_PROPERTIES);
+                Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -298,7 +298,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8,
-                MqttUtf8StringImpl.of("myContentType"), null, null, NO_USER_PROPERTIES);
+                MqttUtf8StringImpl.of("myContentType"), null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -325,7 +325,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8, null,
-                MqttTopicImpl.of("responseTopic"), null, NO_USER_PROPERTIES);
+                MqttTopicImpl.of("responseTopic"), null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -353,7 +353,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5});
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8, null, null, correlationData,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -377,7 +377,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES);
+                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, 8, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -399,7 +399,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES);
+                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -421,7 +421,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES);
+                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 2, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -445,7 +445,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES);
+                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, 8, false, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -474,7 +474,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final MqttUserPropertiesImpl userProperties = getUserProperties(2);
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, userProperties);
+                MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, userProperties,
+                null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -498,7 +499,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES);
+                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntList.of(3));
     }
 
@@ -524,7 +525,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
-                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES);
+                MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null, NO_USER_PROPERTIES, null);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntList.of(3, 4));
     }
 
@@ -580,17 +581,17 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
         final MqttPublish publishQos0 = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_MOST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expectedQos0, publishQos0, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
 
         final MqttPublish publishQos1 = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_LEAST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expectedQos1, publishQos1, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
 
         final MqttPublish publishQos2 = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.EXACTLY_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
         encode(expectedQos2, publishQos2, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
@@ -600,7 +601,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[100]);
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_MOST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, correlationData,
-                NO_USER_PROPERTIES);
+                NO_USER_PROPERTIES, null);
 
 
         final MqttStatefulPublish publishInternal =
@@ -639,7 +640,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final MqttPublish publish =
                 new MqttPublish(MqttTopicImpl.of("topic"), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
                         MqttQos.AT_MOST_ONCE, false, MqttPublish.NO_MESSAGE_EXPIRY,
-                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, userProperties);
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, userProperties, null);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
@@ -685,15 +686,18 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final MqttPublish publish =
                 new MqttPublish(MqttTopicImpl.of("topic"), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
                         MqttQos.AT_MOST_ONCE, false, MqttPublish.NO_MESSAGE_EXPIRY,
-                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, correlationData, userProperties);
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, correlationData, userProperties, null);
 
         encode(expected.array(), publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
         expected.release();
     }
 
     private void encode(
-            final @NotNull byte[] expected, final @NotNull MqttPublish publish, final int packetIdentifier,
-            final boolean isDup, final @NotNull ImmutableIntList subscriptionIdentifiers) {
+            final @NotNull byte[] expected,
+            final @NotNull MqttPublish publish,
+            final int packetIdentifier,
+            final boolean isDup,
+            final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         final MqttStatefulPublish publishInternal =
                 publish.createStateful(packetIdentifier, isDup, DEFAULT_NO_TOPIC_ALIAS, subscriptionIdentifiers);
@@ -701,8 +705,12 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     }
 
     private void encode(
-            final @NotNull byte[] expected, final @NotNull MqttPublish publish, final int packetIdentifier,
-            final boolean isDup, int topicAlias, final boolean isNewTopicAlias,
+            final @NotNull byte[] expected,
+            final @NotNull MqttPublish publish,
+            final int packetIdentifier,
+            final boolean isDup,
+            int topicAlias,
+            final boolean isNewTopicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         if (isNewTopicAlias) {

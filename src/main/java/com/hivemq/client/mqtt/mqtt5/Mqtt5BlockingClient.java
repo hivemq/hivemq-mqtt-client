@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
-import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
-import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
-import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
@@ -46,7 +39,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Blocking API of a {@link Mqtt5Client}.
+ * Blocking API of an {@link Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -60,9 +53,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return see {@link #connect(Mqtt5Connect)}.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mqtt5ConnAck connect() {
-        return connect(MqttConnect.DEFAULT);
-    }
+    @NotNull Mqtt5ConnAck connect();
 
     /**
      * Connects this client with the given Connect message.
@@ -83,9 +74,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mqtt5ConnectBuilder.Send<Mqtt5ConnAck> connectWith() {
-        return new MqttConnectBuilder.Send<>(this::connect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5ConnectBuilder.Send<Mqtt5ConnAck> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -109,9 +99,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder.Send.Start<Mqtt5SubAck> subscribeWith() {
-        return new MqttSubscribeBuilder.Send<>(this::subscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5SubscribeBuilder.Send.Start<Mqtt5SubAck> subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -119,8 +108,21 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @param filter the filter with which all incoming Publish messages are filtered.
      * @return a {@link Mqtt5Publishes} instance that can be used to receive the Publish messages on the calling
      *         thread.
+     * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFilter filter);
+    @NotNull Mqtt5Publishes publishes(final @NotNull MqttGlobalPublishFilter filter);
+
+    /**
+     * Globally consumes all incoming Publish messages matching the given filter.
+     *
+     * @param filter                the filter with which all incoming Publish messages are filtered.
+     * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
+     * @return a {@link Mqtt5Publishes} instance that can be used to receive the Publish messages on the calling
+     *         thread.
+     * @see #publishes(MqttGlobalPublishFilter)
+     * @since 1.2
+     */
+    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
      * Unsubscribes this client with the given Unsubscribe message.
@@ -142,9 +144,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
-    default @NotNull Mqtt5UnsubscribeBuilder.Send.Start<Mqtt5UnsubAck> unsubscribeWith() {
-        return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5UnsubscribeBuilder.Send.Start<Mqtt5UnsubAck> unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -168,9 +169,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt5Publish)
      */
-    default @NotNull Mqtt5PublishBuilder.Send<Mqtt5PublishResult> publishWith() {
-        return new MqttPublishBuilder.Send<>(this::publish);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5PublishBuilder.Send<Mqtt5PublishResult> publishWith();
 
     /**
      * Re-authenticates this client.
@@ -185,9 +185,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      *
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default void disconnect() {
-        disconnect(MqttDisconnect.DEFAULT);
-    }
+    void disconnect();
 
     /**
      * Disconnects this client with the given Disconnect message.
@@ -205,11 +203,11 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the fluent builder for the Unsubscribe message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder.SendVoid disconnectWith() {
-        return new MqttDisconnectBuilder.SendVoid(this::disconnect);
-    }
+    @CheckReturnValue
+    @NotNull Mqtt5DisconnectBuilder.SendVoid disconnectWith();
 
     @Override
+    @CheckReturnValue
     default @NotNull Mqtt5BlockingClient toBlocking() {
         return this;
     }
@@ -223,9 +221,9 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         * <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt5Publishes}
-         * instance.</li>
-         * <li>Otherwise blocks the calling thread until a Publish message is received.</li>
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt5Publishes}
+         *     instance.
+         *   <li>Otherwise blocks the calling thread until a Publish message is received.
          * </ul>
          *
          * @return the received Publish message.
@@ -237,10 +235,9 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         * <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt5Publishes}
-         * instance.</li>
-         * <li>Otherwise blocks the calling thread until a Publish message is received or the given timeout
-         * applies.</li>
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt5Publishes}
+         *     instance.
+         *   <li>Otherwise blocks the calling thread until a Publish message is received or the given timeout applies.
          * </ul>
          *
          * @param timeout  the time to wait for a Publish messages to be received.

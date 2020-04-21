@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
@@ -100,7 +99,7 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
             }
             fullOverwriteTries = 0;
             if (fullOverwriteCost < OVERWRITE_COST_MAX) {
-                fullOverwriteCost += Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - fullOverwriteCost);
+                fullOverwriteCost += (byte) Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - fullOverwriteCost);
             }
             if (lowest.topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
                 newEntry.setNewTopicAlias(lowest.topicAlias);
@@ -136,7 +135,7 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
                 }
                 overwriteTries = 0;
                 if (overwriteCost < OVERWRITE_COST_MAX) {
-                    overwriteCost += Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - overwriteCost);
+                    overwriteCost += (byte) Math.min(OVERWRITE_COST_INC, OVERWRITE_COST_MAX - overwriteCost);
                 }
                 entry.setNewTopicAlias(higher.topicAlias);
                 higher.topicAlias = DEFAULT_NO_TOPIC_ALIAS;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.rx;
@@ -55,7 +54,7 @@ class RxFutureConverterTest {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Completable completable = Completable.create(emitter -> {
-            emitLatch.await(100, TimeUnit.MILLISECONDS);
+            emitLatch.await(1, TimeUnit.SECONDS);
             emitter.onComplete();
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -64,7 +63,7 @@ class RxFutureConverterTest {
         assertFalse(future.isDone());
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
     }
 
@@ -73,7 +72,7 @@ class RxFutureConverterTest {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Completable completable = Completable.create(emitter -> {
-            emitLatch.await(100, TimeUnit.MILLISECONDS);
+            emitLatch.await(1, TimeUnit.SECONDS);
             emitter.onError(new Exception("test"));
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -82,7 +81,7 @@ class RxFutureConverterTest {
         assertFalse(future.isDone());
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertTrue(future.isCompletedExceptionally());
         final ExecutionException exception = assertThrows(ExecutionException.class, future::get);
@@ -97,7 +96,7 @@ class RxFutureConverterTest {
         final Completable completable = Completable.create(emitter -> {
             subscribeLatch.countDown();
             try {
-                emitLatch.await(100, TimeUnit.MILLISECONDS);
+                emitLatch.await(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // ignore
             }
@@ -109,11 +108,11 @@ class RxFutureConverterTest {
         final CompletableFuture<Void> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
-        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(subscribeLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.cancel(false));
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
     }
@@ -129,7 +128,7 @@ class RxFutureConverterTest {
                 subscribeLatch.countDown();
                 final Thread thread = new Thread(() -> {
                     try {
-                        assertTrue(cancelLatch.await(100, TimeUnit.MILLISECONDS));
+                        assertTrue(cancelLatch.await(1, TimeUnit.SECONDS));
                     } catch (final InterruptedException e) {
                         fail(e);
                     }
@@ -146,11 +145,11 @@ class RxFutureConverterTest {
         final CompletableFuture<Void> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
-        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(subscribeLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.cancel(false));
         cancelLatch.countDown();
 
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
     }
@@ -189,7 +188,7 @@ class RxFutureConverterTest {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Maybe<String> maybe = Maybe.<String>create(emitter -> {
-            emitLatch.await(100, TimeUnit.MILLISECONDS);
+            emitLatch.await(1, TimeUnit.SECONDS);
             emitter.onSuccess("maybe");
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -198,7 +197,7 @@ class RxFutureConverterTest {
         assertFalse(future.isDone());
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         final Optional<String> optional = future.get();
         assertNotNull(optional);
@@ -211,7 +210,7 @@ class RxFutureConverterTest {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Maybe<String> maybe = Maybe.<String>create(emitter -> {
-            emitLatch.await(100, TimeUnit.MILLISECONDS);
+            emitLatch.await(1, TimeUnit.SECONDS);
             emitter.onComplete();
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -220,7 +219,7 @@ class RxFutureConverterTest {
         assertFalse(future.isDone());
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         final Optional<String> optional = future.get();
         assertNotNull(optional);
@@ -235,7 +234,7 @@ class RxFutureConverterTest {
         final Maybe<String> completable = Maybe.<String>create(emitter -> {
             subscribeLatch.countDown();
             try {
-                emitLatch.await(100, TimeUnit.MILLISECONDS);
+                emitLatch.await(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // ignore
             }
@@ -247,11 +246,11 @@ class RxFutureConverterTest {
         final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
-        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(subscribeLatch.await(1, TimeUnit.SECONDS));
         future.cancel(false);
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
     }
@@ -267,7 +266,7 @@ class RxFutureConverterTest {
                 subscribeLatch.countDown();
                 final Thread thread = new Thread(() -> {
                     try {
-                        assertTrue(cancelLatch.await(100, TimeUnit.MILLISECONDS));
+                        assertTrue(cancelLatch.await(1, TimeUnit.SECONDS));
                     } catch (final InterruptedException e) {
                         fail(e);
                     }
@@ -284,11 +283,11 @@ class RxFutureConverterTest {
         final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(maybe);
         assertFalse(future.isDone());
 
-        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(subscribeLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.cancel(false));
         cancelLatch.countDown();
 
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
     }
@@ -298,7 +297,7 @@ class RxFutureConverterTest {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Maybe<String> maybe = Maybe.<String>create(emitter -> {
-            emitLatch.await(100, TimeUnit.MILLISECONDS);
+            emitLatch.await(1, TimeUnit.SECONDS);
             emitter.onError(new Exception("test"));
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -307,7 +306,7 @@ class RxFutureConverterTest {
         assertFalse(future.isDone());
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertTrue(future.isCompletedExceptionally());
         final ExecutionException exception = assertThrows(ExecutionException.class, future::get);
@@ -335,7 +334,7 @@ class RxFutureConverterTest {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Single<String> single = Single.<String>create(emitter -> {
-            emitLatch.await(100, TimeUnit.MILLISECONDS);
+            emitLatch.await(1, TimeUnit.SECONDS);
             emitter.onSuccess("single");
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -344,7 +343,7 @@ class RxFutureConverterTest {
         assertFalse(future.isDone());
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertEquals("single", future.get());
     }
@@ -354,7 +353,7 @@ class RxFutureConverterTest {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Single<String> single = Single.<String>create(emitter -> {
-            emitLatch.await(100, TimeUnit.MILLISECONDS);
+            emitLatch.await(1, TimeUnit.SECONDS);
             emitter.onError(new Exception("test"));
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -363,7 +362,7 @@ class RxFutureConverterTest {
         assertFalse(future.isDone());
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertTrue(future.isCompletedExceptionally());
         final ExecutionException exception = assertThrows(ExecutionException.class, future::get);
@@ -378,7 +377,7 @@ class RxFutureConverterTest {
         final Single<String> completable = Single.<String>create(emitter -> {
             subscribeLatch.countDown();
             try {
-                emitLatch.await(100, TimeUnit.MILLISECONDS);
+                emitLatch.await(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // ignore
             }
@@ -390,11 +389,11 @@ class RxFutureConverterTest {
         final CompletableFuture<String> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
-        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(subscribeLatch.await(1, TimeUnit.SECONDS));
         future.cancel(false);
 
         emitLatch.countDown();
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
     }
@@ -410,7 +409,7 @@ class RxFutureConverterTest {
                 subscribeLatch.countDown();
                 final Thread thread = new Thread(() -> {
                     try {
-                        assertTrue(cancelLatch.await(100, TimeUnit.MILLISECONDS));
+                        assertTrue(cancelLatch.await(1, TimeUnit.SECONDS));
                     } catch (final InterruptedException e) {
                         fail(e);
                     }
@@ -427,16 +426,15 @@ class RxFutureConverterTest {
         final CompletableFuture<String> future = RxFutureConverter.toFuture(single);
         assertFalse(future.isDone());
 
-        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(subscribeLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.cancel(false));
         cancelLatch.countDown();
 
-        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(completedLatch.await(1, TimeUnit.SECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toCompletable_immediate() {
         final Completable completable = RxFutureConverter.toCompletable(CompletableFuture.completedFuture("test"));

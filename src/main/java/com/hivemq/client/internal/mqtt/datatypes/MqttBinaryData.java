@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -40,7 +39,7 @@ public final class MqttBinaryData {
      * @param byteBuf the byte buffer to decode from.
      * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
      */
-    public static @Nullable byte[] decode(final @NotNull ByteBuf byteBuf) {
+    public static byte @Nullable [] decode(final @NotNull ByteBuf byteBuf) {
         if (byteBuf.readableBytes() < 2) {
             return null;
         }
@@ -82,7 +81,7 @@ public final class MqttBinaryData {
      * @param binary  the byte array to encode.
      * @param byteBuf the byte buffer to encode to.
      */
-    public static void encode(final @NotNull byte[] binary, final @NotNull ByteBuf byteBuf) {
+    public static void encode(final byte @NotNull [] binary, final @NotNull ByteBuf byteBuf) {
         byteBuf.writeShort(binary.length);
         byteBuf.writeBytes(binary);
     }
@@ -115,7 +114,7 @@ public final class MqttBinaryData {
      * @param binary the byte array to check.
      * @return whether the byte array can be encoded as binary data.
      */
-    public static boolean isInRange(final @NotNull byte[] binary) {
+    public static boolean isInRange(final byte @NotNull [] binary) {
         return binary.length <= MAX_LENGTH;
     }
 
@@ -137,7 +136,7 @@ public final class MqttBinaryData {
      * @param binary the byte array to calculate the encoded length for.
      * @return the encoded length of the byte array.
      */
-    public static int encodedLength(final @NotNull byte[] binary) {
+    public static int encodedLength(final byte @NotNull [] binary) {
         return 2 + binary.length;
     }
 

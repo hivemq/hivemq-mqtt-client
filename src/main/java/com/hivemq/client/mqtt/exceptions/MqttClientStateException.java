@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.exceptions;
@@ -21,7 +20,7 @@ import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Exception that is used if an operation is called on a {@link com.hivemq.client.mqtt.MqttClient MqttClient} that is
+ * Exception that is used if an operation is called on an {@link com.hivemq.client.mqtt.MqttClient MqttClient} that is
  * not possible in its current state, e.g. a client can not publish if it is not connected.
  *
  * @author Silvio Giebl

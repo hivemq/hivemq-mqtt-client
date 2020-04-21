@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt3.message.publish;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
@@ -42,6 +42,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * @param topic the string representation of the Topic.
      * @return the builder that is now complete as the mandatory Topic is set.
      */
+    @CheckReturnValue
     @NotNull C topic(@NotNull String topic);
 
     /**
@@ -50,6 +51,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * @param topic the Topic.
      * @return the builder that is now complete as the mandatory Topic is set.
      */
+    @CheckReturnValue
     @NotNull C topic(@NotNull MqttTopic topic);
 
     /**
@@ -61,6 +63,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * @return the fluent builder for the Topic.
      * @see #topic(MqttTopic)
      */
+    @CheckReturnValue
     @NotNull MqttTopicBuilder.Nested<? extends C> topic();
 
     /**
@@ -77,7 +80,8 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param payload the payload as byte array or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
-        @NotNull C payload(@Nullable byte[] payload);
+        @CheckReturnValue
+        @NotNull C payload(byte @Nullable [] payload);
 
         /**
          * Sets the optional {@link Mqtt3Publish#getPayload() payload}.
@@ -85,6 +89,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param payload the payload as {@link ByteBuffer} or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C payload(@Nullable ByteBuffer payload);
 
         /**
@@ -93,6 +98,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param qos the QoS.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C qos(@NotNull MqttQos qos);
 
         /**
@@ -101,6 +107,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
          * @param retain whether the Publish message should be retained.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C retain(boolean retain);
     }
 }

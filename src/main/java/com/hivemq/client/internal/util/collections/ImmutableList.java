@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.util.collections;
@@ -234,7 +233,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
 
     @Override
     @Deprecated
-    default void sort(final Comparator<? super E> c) {
+    default void sort(final @Nullable Comparator<? super E> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -279,22 +278,36 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
             return capacity + (capacity >> 1);
         }
 
+        private @NotNull Object @NotNull [] ensureCapacity(final int capacity) {
+            assert capacity > 1;
+            if (array == null) {
+                array = new Object[Math.max(INITIAL_CAPACITY, capacity)];
+            } else if (capacity > array.length) {
+                array = Arrays.copyOf(array, Math.max(newCapacity(array.length), capacity), Object[].class);
+            }
+            if (this.e != null) {
+                array[0] = this.e;
+                this.e = null;
+            }
+            return array;
+        }
+
+        public void ensureFree(final int free) {
+            final int newCapacity = size + free;
+            if (newCapacity > 1) {
+                ensureCapacity(newCapacity);
+            }
+        }
+
         public @NotNull Builder<E> add(final @NotNull E e) {
             Checks.notNull(e, "Immutable list element");
             if (size == 0) {
                 this.e = e;
                 size = 1;
             } else {
-                if (array == null) {
-                    array = new Object[INITIAL_CAPACITY];
-                } else if (size == array.length) {
-                    array = Arrays.copyOf(array, newCapacity(array.length), Object[].class);
-                }
-                if (this.e != null) {
-                    array[0] = this.e;
-                    this.e = null;
-                }
-                array[size++] = e;
+                final int newSize = size + 1;
+                ensureCapacity(newSize)[size] = e;
+                size = newSize;
             }
             return this;
         }
@@ -310,15 +323,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
                     break;
                 default:
                     final int newSize = size + elementsSize;
-                    if (array == null) {
-                        array = new Object[Math.max(INITIAL_CAPACITY, newSize)];
-                    } else if (newSize > array.length) {
-                        array = Arrays.copyOf(array, Math.max(newCapacity(array.length), newSize), Object[].class);
-                    }
-                    if (this.e != null) {
-                        array[0] = this.e;
-                        this.e = null;
-                    }
+                    final Object[] array = ensureCapacity(newSize);
                     if ((elements instanceof List) && (elements instanceof RandomAccess)) {
                         //noinspection unchecked
                         final List<? extends E> list = (List<? extends E>) elements;
@@ -331,9 +336,13 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
                             array[i++] = Checks.notNull(e, "Immutable list");
                         }
                     }
-                    this.size = newSize;
+                    size = newSize;
             }
             return this;
+        }
+
+        public int getSize() {
+            return size;
         }
 
         public @NotNull ImmutableList<E> build() {

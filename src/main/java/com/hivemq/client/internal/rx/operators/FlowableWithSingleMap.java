@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.rx.operators;
@@ -35,17 +34,17 @@ import org.reactivestreams.Subscription;
  */
 public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, S, FM, SM> {
 
-    public static <FU, SU, F, S> @NotNull FlowableWithSingleMap<FU, SU, F, S> mapBoth(
-            final @NotNull FlowableWithSingle<FU, SU> source,
-            final @Nullable Function<? super FU, ? extends F> flowableMapper,
-            final @NotNull Function<? super SU, ? extends S> singleMapper) {
+    public static <F, S, FM, SM> @NotNull FlowableWithSingleMap<F, S, FM, SM> mapBoth(
+            final @NotNull FlowableWithSingle<F, S> source,
+            final @Nullable Function<? super F, ? extends FM> flowableMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FlowableWithSingleMap<>(source, flowableMapper, singleMapper);
     }
 
-    public static <FU, SU, S> @NotNull FlowableWithSingleMap<FU, SU, FU, S> mapSingle(
-            final @NotNull FlowableWithSingle<FU, SU> source,
-            final @NotNull Function<? super SU, ? extends S> singleMapper) {
+    public static <F, S, SM> @NotNull FlowableWithSingleMap<F, S, F, SM> mapSingle(
+            final @NotNull FlowableWithSingle<F, S> source,
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FlowableWithSingleMap<>(source, null, singleMapper);
     }
@@ -95,7 +94,8 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
         private @Nullable Subscription subscription;
 
         MapSubscriber(
-                final @NotNull T subscriber, final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                final @NotNull T subscriber,
+                final @Nullable Function<? super F, ? extends FM> flowableMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
             this.subscriber = subscriber;
@@ -173,7 +173,8 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
                 extends MapSubscriber<F, S, FM, SM, T> implements WithSingleConditionalSubscriber<F, S> {
 
             Conditional(
-                    final @NotNull T subscriber, final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                    final @NotNull T subscriber,
+                    final @Nullable Function<? super F, ? extends FM> flowableMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
                 super(subscriber, flowableMapper, singleMapper);

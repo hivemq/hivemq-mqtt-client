@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
@@ -48,6 +47,7 @@ import com.hivemq.client.internal.util.Ranges;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.internal.util.collections.IntIndex;
 import com.hivemq.client.internal.util.collections.NodeList;
+import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
@@ -88,36 +88,34 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttPublishFlowables publishFlowables;
 
+    // valid for session
     private final @NotNull SpscUnboundedArrayQueue<MqttPublishWithFlow> queue = new SpscUnboundedArrayQueue<>(32);
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntIndex<MqttPubOrRelWithFlow> pendingIndex = new IntIndex<>(INDEX_SPEC);
     private final @NotNull NodeList<MqttPubOrRelWithFlow> pending = new NodeList<>();
     private final @NotNull Ranges packetIdentifiers = new Ranges(1, 0);
 
-    private int sendMaximum;
+    // valid for connection
+    private final @NotNull IntIndex<MqttPubOrRelWithFlow> pendingIndex = new IntIndex<>(INDEX_SPEC);
     private @Nullable MqttPubOrRelWithFlow resendPending;
     private @Nullable MqttPublishWithFlow currentPending;
+    private int sendMaximum;
     private @Nullable MqttTopicAliasMapping topicAliasMapping;
+
     private @Nullable Subscription subscription;
     private int shrinkRequests;
 
     @Inject
-    MqttOutgoingQosHandler(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttPublishFlowables publishFlowables) {
-
+    MqttOutgoingQosHandler(final @NotNull MqttClientConfig clientConfig) {
         this.clientConfig = clientConfig;
-        this.publishFlowables = publishFlowables;
+        publishFlowables = new MqttPublishFlowables();
     }
 
     @Override
     public void onSessionStartOrResume(
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
-        super.onSessionStartOrResume(connectionConfig, eventLoop);
-
         final int oldSendMaximum = sendMaximum;
-        final int newSendMaximum = Math.min(
-                connectionConfig.getSendMaximum(),
+        final int newSendMaximum = Math.min(connectionConfig.getSendMaximum(),
                 UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING);
         sendMaximum = newSendMaximum;
         packetIdentifiers.resize(newSendMaximum);
@@ -140,10 +138,12 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         topicAliasMapping = connectionConfig.getSendTopicAliasMapping();
 
         pendingIndex.clear();
-        if ((pending.getFirst() != null) || (queuedCounter.get() > 0)) {
-            resendPending = pending.getFirst();
+        resendPending = pending.getFirst();
+        if ((resendPending != null) || (queuedCounter.get() > 0)) {
             eventLoop.execute(this);
         }
+
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
     }
 
     @Override
@@ -188,7 +188,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     @Override
     public void run() {
         if (!hasSession) {
-            clearQueued(MqttClientStateExceptions.notConnected());
+            if (!isRepublishIfSessionExpired()) {
+                clearQueued(MqttClientStateExceptions.notConnected());
+            }
             return;
         }
         final ChannelHandlerContext ctx = this.ctx;
@@ -260,8 +262,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private void writeQos0Publish(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPublishWithFlow publishWithFlow) {
 
-        ctx.write(
-                publishWithFlow.getPublish().createStateful(NO_PACKET_IDENTIFIER_QOS_0, false, topicAliasMapping),
+        ctx.write(publishWithFlow.getPublish().createStateful(NO_PACKET_IDENTIFIER_QOS_0, false, topicAliasMapping),
                 new DefaultContextPromise<>(ctx.channel(), publishWithFlow)).addListener(this);
     }
 
@@ -291,14 +292,14 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         pendingIndex.put(publishWithFlow);
         pending.add(publishWithFlow);
 
-        writeQos1Or2Publish(
-                ctx,
+        writeQos1Or2Publish(ctx,
                 publishWithFlow.getPublish().createStateful(packetIdentifier, false, topicAliasMapping),
                 publishWithFlow);
     }
 
     private void writeQos1Or2Publish(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttStatefulPublish publish,
             final @NotNull MqttPublishWithFlow publishWithFlow) {
 
         currentPending = publishWithFlow;
@@ -476,6 +477,13 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
 
+        pendingIndex.clear();
+        resendPending = null;
+
+        if (isRepublishIfSessionExpired()) {
+            return;
+        }
+
         for (MqttPubOrRelWithFlow current = pending.getFirst(); current != null; current = current.getNext()) {
             packetIdentifiers.returnId(current.packetIdentifier);
             if (current instanceof MqttPublishWithFlow) {
@@ -492,11 +500,12 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                 }
             }
         }
-        pendingIndex.clear();
         pending.clear();
-        resendPending = null;
-
         clearQueued(cause);
+    }
+
+    private boolean isRepublishIfSessionExpired() {
+        return clientConfig.isRepublishIfSessionExpired() && (clientConfig.getState() != MqttClientState.DISCONNECTED);
     }
 
     private void clearQueued(final @NotNull Throwable cause) {

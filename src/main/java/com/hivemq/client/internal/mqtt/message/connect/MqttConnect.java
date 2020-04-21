@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.connect;
@@ -55,10 +54,14 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     private final @Nullable MqttWillPublish willPublish;
 
     public MqttConnect(
-            final int keepAlive, final boolean cleanStart, final long sessionExpiryInterval,
-            final @NotNull MqttConnectRestrictions restrictions, final @Nullable MqttSimpleAuth simpleAuth,
+            final int keepAlive,
+            final boolean cleanStart,
+            final long sessionExpiryInterval,
+            final @NotNull MqttConnectRestrictions restrictions,
+            final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
-            final @Nullable MqttWillPublish willPublish, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final @Nullable MqttWillPublish willPublish,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.keepAlive = keepAlive;

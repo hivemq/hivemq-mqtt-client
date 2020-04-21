@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.Optional;
 public interface MqttClientSslConfig {
 
     /**
-     * The default handshake timeout in milliseconds.
+     * The default SSL/TLS handshake timeout in milliseconds.
      */
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
@@ -77,9 +78,15 @@ public interface MqttClientSslConfig {
     @NotNull Optional<@Immutable List<@NotNull String>> getProtocols();
 
     /**
-     * @return the handshake timeout in milliseconds.
+     * @return the SSL/TLS handshake timeout in milliseconds.
      */
     long getHandshakeTimeoutMs();
+
+    /**
+     * @return the optional user defined hostname verifier. If absent, https hostname verification is performed.
+     * @since 1.2
+     */
+    @NotNull Optional<HostnameVerifier> getHostnameVerifier();
 
     /**
      * Creates a builder for extending this secure transport configuration.

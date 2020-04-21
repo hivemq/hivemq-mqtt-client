@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.ioc;
@@ -27,8 +26,6 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelOption;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -40,16 +37,14 @@ abstract class ConnectionModule {
     @Provides
     static @NotNull Bootstrap provideBootstrap(final @NotNull MqttChannelInitializer channelInitializer) {
         return new Bootstrap().channelFactory(NettyEventLoopProvider.INSTANCE.getChannelFactory())
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                 .handler(channelInitializer);
     }
 
     @Provides
     @ConnectionScope
     static @NotNull MqttAuthHandler provideAuthHandler(
-            final @NotNull MqttConnect connect, final @NotNull Lazy<MqttConnectAuthHandler> connectAuthHandlerLazy,
+            final @NotNull MqttConnect connect,
+            final @NotNull Lazy<MqttConnectAuthHandler> connectAuthHandlerLazy,
             final @NotNull Lazy<MqttDisconnectOnAuthHandler> disconnectOnAuthHandlerLazy) {
 
         return (connect.getRawEnhancedAuthMechanism() == null) ? disconnectOnAuthHandlerLazy.get() :

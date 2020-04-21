@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -48,7 +47,8 @@ class MqttSharedTopicFilterImplTest {
     }
 
     private @Nullable MqttTopicFilterImpl from(
-            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
+            final @NotNull SharedTopicFilterSource source,
+            final @NotNull String shareName,
             final @NotNull String topicFilter) {
 
         if (source == SharedTopicFilterSource.SHARE_NAME_AND_TOPIC_FILTER) {
@@ -171,8 +171,10 @@ class MqttSharedTopicFilterImplTest {
     @ParameterizedTest
     @MethodSource("invalidShareNameOrTopicFilterFromByteBuf")
     void from_invalidShareNameOrTopicFilterByteBuf_returnsNull(
-            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
-            final @NotNull String topicFilter, @SuppressWarnings("unused") final @NotNull String message) {
+            final @NotNull SharedTopicFilterSource source,
+            final @NotNull String shareName,
+            final @NotNull String topicFilter,
+            @SuppressWarnings("unused") final @NotNull String message) {
 
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNull(mqtt5TopicFilter);
@@ -181,8 +183,10 @@ class MqttSharedTopicFilterImplTest {
     @ParameterizedTest
     @MethodSource("invalidShareNameOrTopicFilterFromStringAndFromShareNameAndTopicFilter")
     void from_invalidShareNameOrTopicFilterString_throws(
-            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
-            final @NotNull String topicFilter, final @NotNull String message) {
+            final @NotNull SharedTopicFilterSource source,
+            final @NotNull String shareName,
+            final @NotNull String topicFilter,
+            final @NotNull String message) {
 
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> from(source, shareName, topicFilter));
@@ -242,7 +246,8 @@ class MqttSharedTopicFilterImplTest {
     @MethodSource("validShareNameAndTopicFilter")
     void from_validShareNameAndTopicFilter(
             final @NotNull SharedTopicFilterSource source,
-            @SuppressWarnings("unused") final @NotNull String testDescription, final @NotNull String shareName,
+            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String shareName,
             final @NotNull String topicFilter) {
 
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);

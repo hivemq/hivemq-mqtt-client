@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.lifecycle;
@@ -32,7 +31,8 @@ import org.jetbrains.annotations.NotNull;
 public class MqttClientConnectedContextImpl implements Mqtt5ClientConnectedContext {
 
     public static @NotNull MqttClientConnectedContext of(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
 
         if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
@@ -46,7 +46,8 @@ public class MqttClientConnectedContextImpl implements Mqtt5ClientConnectedConte
     private final @NotNull MqttConnAck connAck;
 
     private MqttClientConnectedContextImpl(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
 
         this.clientConfig = clientConfig;

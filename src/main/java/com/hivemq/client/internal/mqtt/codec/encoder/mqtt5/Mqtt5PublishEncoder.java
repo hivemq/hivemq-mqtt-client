@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt5;
@@ -104,8 +103,12 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @Override
     @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulPublish message, final @NotNull MqttEncoderContext context,
-            final int encodedLength, final int remainingLength, final int propertyLength, final int omittedProperties) {
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull MqttEncoderContext context,
+            final int encodedLength,
+            final int remainingLength,
+            final int propertyLength,
+            final int omittedProperties) {
 
         final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && payload.isDirect()) {
@@ -122,8 +125,11 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @Override
     void encode(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int remainingLength,
-            final int propertyLength, final int omittedProperties) {
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int remainingLength,
+            final int propertyLength,
+            final int omittedProperties) {
 
         encodeFixedHeader(message, out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
@@ -150,7 +156,9 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     private void encodeVariableHeader(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         final MqttPublish stateless = message.stateless();
@@ -169,7 +177,9 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     private void encodeProperties(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         MqttVariableByteInteger.encode(propertyLength, out);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.netty;
@@ -35,7 +34,8 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
     default void bind(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress localAddress,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull SocketAddress localAddress,
             final @NotNull ChannelPromise promise) {
 
         ctx.bind(localAddress, promise);
@@ -43,8 +43,10 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
     default void connect(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress remoteAddress,
-            final @Nullable SocketAddress localAddress, final @NotNull ChannelPromise promise) {
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull SocketAddress remoteAddress,
+            final @Nullable SocketAddress localAddress,
+            final @NotNull ChannelPromise promise) {
 
         ctx.connect(remoteAddress, localAddress, promise);
     }
@@ -71,7 +73,8 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
     default void write(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg,
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg,
             final @NotNull ChannelPromise promise) {
 
         ctx.write(msg, promise);

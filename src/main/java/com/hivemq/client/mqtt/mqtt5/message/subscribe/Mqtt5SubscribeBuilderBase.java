@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Builder base for a {@link Mqtt5Subscribe}.
@@ -39,6 +42,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @param subscription the subscription.
      * @return the builder that is now complete as at least one subscription is set.
      */
+    @CheckReturnValue
     @NotNull C addSubscription(@NotNull Mqtt5Subscription subscription);
 
     /**
@@ -51,7 +55,41 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @return the fluent builder for the subscription.
      * @see #addSubscription(Mqtt5Subscription)
      */
+    @CheckReturnValue
     @NotNull Mqtt5SubscriptionBuilder.Nested<? extends C> addSubscription();
+
+    /**
+     * Adds {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of subscriptions}. At least
+     * one subscription is mandatory.
+     *
+     * @param subscriptions the subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull C addSubscriptions(@NotNull Mqtt5Subscription @NotNull ... subscriptions);
+
+    /**
+     * Adds a collection of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription in the collection is mandatory.
+     *
+     * @param subscriptions the collection of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull C addSubscriptions(@NotNull Collection<@NotNull ? extends Mqtt5Subscription> subscriptions);
+
+    /**
+     * Adds a stream of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription is mandatory.
+     *
+     * @param subscriptions the stream of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt5Subscription> subscriptions);
 
     /**
      * {@link Mqtt5SubscribeBuilderBase} that is complete which means all mandatory fields are set.
@@ -67,6 +105,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
          * @param userProperties the User Properties.
          * @return the builder.
          */
+        @CheckReturnValue
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
         /**
@@ -78,6 +117,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
          * @return the fluent builder for the User Properties.
          * @see #userProperties(Mqtt5UserProperties)
          */
+        @CheckReturnValue
         @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
     }
 

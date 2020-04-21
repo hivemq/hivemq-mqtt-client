@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
 
 import com.hivemq.client.internal.util.ByteArrayUtil;
-import com.hivemq.client.mqtt.datatypes.MqttTopic;
-import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -50,7 +47,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
     private int end;
     private final int allEnd;
 
-    private MqttTopicIterator(final @NotNull byte[] array, final int start, final int end, final int allEnd) {
+    private MqttTopicIterator(final byte @NotNull [] array, final int start, final int end, final int allEnd) {
         super(array);
         this.start = start;
         this.end = end;
@@ -84,7 +81,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
             throw new NoSuchElementException();
         }
         start = end + 1;
-        end = ByteArrayUtil.indexOf(array, start, (byte) MqttTopic.TOPIC_LEVEL_SEPARATOR);
+        end = ByteArrayUtil.indexOf(array, start, (byte) MqttTopicImpl.TOPIC_LEVEL_SEPARATOR);
         return this;
     }
 
@@ -103,7 +100,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
         final byte[] levelsArray = levels.getArray();
         final int levelsEnd = levels.getEnd();
         final int to = end + levelsArray.length - levelsEnd;
-        if ((to <= allEnd) && ((to == allEnd) || (array[to] == MqttTopic.TOPIC_LEVEL_SEPARATOR)) &&
+        if ((to <= allEnd) && ((to == allEnd) || (array[to] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR)) &&
                 ByteArrayUtil.equals(array, end + 1, to, levelsArray, levelsEnd + 1, levelsArray.length)) {
             start = end = to;
             return true;
@@ -171,7 +168,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
             if (array[index] == lb) {
                 index++;
                 levelsIndex++;
-            } else if (lb == MqttTopicFilter.SINGLE_LEVEL_WILDCARD) {
+            } else if (lb == MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD) {
                 while ((index < allEnd) && (array[index] != MqttTopicImpl.TOPIC_LEVEL_SEPARATOR)) {
                     index++;
                 }

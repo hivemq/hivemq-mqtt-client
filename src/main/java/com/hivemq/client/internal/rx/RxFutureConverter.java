@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.rx;
@@ -261,7 +260,8 @@ public final class RxFutureConverter {
         }
 
         private static <T> void complete(
-                final @NotNull MaybeObserver<? super T> observer, final @Nullable T t,
+                final @NotNull MaybeObserver<? super T> observer,
+                final @Nullable T t,
                 final @Nullable Throwable throwable) {
 
             if (throwable != null) {
@@ -318,7 +318,8 @@ public final class RxFutureConverter {
         }
 
         private static <T> void complete(
-                final @NotNull SingleObserver<? super T> observer, final @Nullable T t,
+                final @NotNull SingleObserver<? super T> observer,
+                final @Nullable T t,
                 final @Nullable Throwable throwable) {
 
             if (t != null) {

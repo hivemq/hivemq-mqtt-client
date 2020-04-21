@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
@@ -59,12 +58,13 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
             new IntIndex.Spec<>(MqttMessage.WithId::getPacketIdentifier);
 
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
-    private final @NotNull MqttIncomingPublishService incomingPublishService;
+    final @NotNull MqttIncomingPublishService incomingPublishService;
 
+    // valid for session
     private final @NotNull IntIndex<MqttMessage.WithId> messages = new IntIndex<>(INDEX_SPEC);
     // contains StatefulPublish with AT_LEAST_ONCE/EXACTLY_ONCE, MqttPubAck or MqttPubRec
 
+    // valid for connection
     private int receiveMaximum;
 
     @Inject
@@ -73,16 +73,15 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
             final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
 
         this.clientConfig = clientConfig;
-        this.incomingPublishFlows = incomingPublishFlows;
-        incomingPublishService = new MqttIncomingPublishService(this);
+        incomingPublishService = new MqttIncomingPublishService(this, incomingPublishFlows);
     }
 
     @Override
     public void onSessionStartOrResume(
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
-        super.onSessionStartOrResume(connectionConfig, eventLoop);
         receiveMaximum = connectionConfig.getReceiveMaximum();
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
     }
 
     @Override
@@ -237,7 +236,6 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     @Override
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
-        incomingPublishFlows.clear(cause);
         messages.clear();
     }
 
@@ -272,13 +270,5 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
             }
         }
         return pubCompBuilder.build();
-    }
-
-    @NotNull MqttIncomingPublishFlows getIncomingPublishFlows() {
-        return incomingPublishFlows;
-    }
-
-    @NotNull MqttIncomingPublishService getIncomingPublishService() {
-        return incomingPublishService;
     }
 }

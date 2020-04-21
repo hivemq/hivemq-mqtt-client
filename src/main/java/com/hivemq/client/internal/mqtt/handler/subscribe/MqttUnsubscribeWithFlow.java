@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
-import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
  */
 class MqttUnsubscribeWithFlow extends MqttSubOrUnsubWithFlow {
 
-    private final @NotNull MqttUnsubscribe unsubscribe;
+    final @NotNull MqttUnsubscribe unsubscribe;
     private final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> unsubAckFlow;
 
     MqttUnsubscribeWithFlow(
@@ -38,36 +36,8 @@ class MqttUnsubscribeWithFlow extends MqttSubOrUnsubWithFlow {
         this.unsubAckFlow = unsubAckFlow;
     }
 
-    @NotNull MqttUnsubscribe getMessage() {
-        return unsubscribe;
-    }
-
     @Override
     @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> getFlow() {
         return unsubAckFlow;
-    }
-
-    static class Stateful extends MqttSubOrUnsubWithFlow.Stateful {
-
-        private final @NotNull MqttStatefulUnsubscribe unsubscribe;
-        private final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> unsubAckFlow;
-
-        Stateful(
-                final @NotNull MqttStatefulUnsubscribe unsubscribe,
-                final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> unsubAckFlow) {
-
-            this.unsubscribe = unsubscribe;
-            this.unsubAckFlow = unsubAckFlow;
-        }
-
-        @Override
-        @NotNull MqttStatefulUnsubscribe getMessage() {
-            return unsubscribe;
-        }
-
-        @Override
-        @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> getFlow() {
-            return unsubAckFlow;
-        }
     }
 }

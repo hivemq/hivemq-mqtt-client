@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.decoder.mqtt3;
@@ -35,10 +34,14 @@ public class Mqtt3ClientMessageDecoders extends MqttMessageDecoders {
 
     @Inject
     Mqtt3ClientMessageDecoders(
-            final @NotNull Mqtt3ConnAckDecoder connAckDecoder, final @NotNull Mqtt3PublishDecoder publishDecoder,
-            final @NotNull Mqtt3PubAckDecoder pubAckDecoder, final @NotNull Mqtt3PubRecDecoder pubRecDecoder,
-            final @NotNull Mqtt3PubRelDecoder pubRelDecoder, final @NotNull Mqtt3PubCompDecoder pubCompDecoder,
-            final @NotNull Mqtt3SubAckDecoder subAckDecoder, final @NotNull Mqtt3UnsubAckDecoder unsubAckDecoder,
+            final @NotNull Mqtt3ConnAckDecoder connAckDecoder,
+            final @NotNull Mqtt3PublishDecoder publishDecoder,
+            final @NotNull Mqtt3PubAckDecoder pubAckDecoder,
+            final @NotNull Mqtt3PubRecDecoder pubRecDecoder,
+            final @NotNull Mqtt3PubRelDecoder pubRelDecoder,
+            final @NotNull Mqtt3PubCompDecoder pubCompDecoder,
+            final @NotNull Mqtt3SubAckDecoder subAckDecoder,
+            final @NotNull Mqtt3UnsubAckDecoder unsubAckDecoder,
             final @NotNull MqttPingRespDecoder pingRespDecoder) {
 
         decoders[Mqtt3MessageType.CONNACK.getCode()] = connAckDecoder;

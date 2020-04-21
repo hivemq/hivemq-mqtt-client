@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.datatypes;
@@ -100,7 +99,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @return the created UTF-8 encoded string or <code>null</code> if the byte array does not represent a valid UTF-8
      *         encoded String.
      */
-    public static @Nullable MqttUtf8StringImpl of(final @NotNull byte[] binary) {
+    public static @Nullable MqttUtf8StringImpl of(final byte @NotNull [] binary) {
         return (!MqttBinaryData.isInRange(binary) || isWellFormed(binary)) ? null : new MqttUtf8StringImpl(binary);
     }
 
@@ -138,7 +137,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @param binary the byte array with UTF-8 encoded data.
      * @return whether the byte array represents a well-formed UTF-8 encoded string.
      */
-    static boolean isWellFormed(final @NotNull byte[] binary) {
+    static boolean isWellFormed(final byte @NotNull [] binary) {
         if (Utf8Util.isWellFormed(binary) != 0) {
             return true;
         }
@@ -214,11 +213,11 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
         }
     }
 
-    private @Nullable byte[] binary;
+    private byte @Nullable [] binary;
     private @Nullable String string;
     private int conversions;
 
-    MqttUtf8StringImpl(final @NotNull byte[] binary) {
+    MqttUtf8StringImpl(final byte @NotNull [] binary) {
         this.binary = binary;
     }
 
@@ -283,7 +282,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      *
      * @return the UTF-8 encoded byte array.
      */
-    @NotNull byte[] toBinary() {
+    byte @NotNull [] toBinary() {
         byte[] binary = this.binary;
         if (binary == null) {
             final String string = this.string;

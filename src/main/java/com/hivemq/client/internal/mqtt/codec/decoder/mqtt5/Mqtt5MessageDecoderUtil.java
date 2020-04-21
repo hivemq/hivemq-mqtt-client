@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.codec.decoder.mqtt5;
@@ -167,7 +166,9 @@ final class Mqtt5MessageDecoderUtil {
     }
 
     static @NotNull ByteBuffer decodeBinaryDataOnlyOnce(
-            final @Nullable ByteBuffer current, final @NotNull String name, final @NotNull ByteBuf in,
+            final @Nullable ByteBuffer current,
+            final @NotNull String name,
+            final @NotNull ByteBuf in,
             final boolean direct) throws MqttDecoderException {
 
         if (current != null) {
@@ -225,7 +226,8 @@ final class Mqtt5MessageDecoderUtil {
     }
 
     static @NotNull MqttUtf8StringImpl decodeReasonStringIfRequested(
-            final @Nullable MqttUtf8StringImpl current, final @NotNull ByteBuf in,
+            final @Nullable MqttUtf8StringImpl current,
+            final @NotNull ByteBuf in,
             final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
         checkProblemInformationRequested("reason string", context);
@@ -234,7 +236,8 @@ final class Mqtt5MessageDecoderUtil {
 
     static @NotNull ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyIfRequested(
             final @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
-            final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context) throws MqttDecoderException {
+            final @NotNull ByteBuf in,
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
         checkProblemInformationRequested("user property", context);
         return decodeUserProperty(userPropertiesBuilder, in);

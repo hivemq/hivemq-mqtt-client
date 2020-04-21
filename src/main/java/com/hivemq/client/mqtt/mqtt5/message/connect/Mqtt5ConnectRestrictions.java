@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5.message.connect;
@@ -24,19 +23,20 @@ import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Restrictions set by the client in a {@link Mqtt5Connect MQTT 5 Connect message}.
+ * Restrictions set by the client in an {@link Mqtt5Connect MQTT 5 Connect message}.
  * <p>
  * These restrictions consist of:
  * <ul>
- * <li>Restrictions for the server.
+ *   <li>Restrictions for the server.
  * <p>
- * These are used to form the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForServer
- * Mqtt5ClientConnectionConfig.RestrictionsForServer}</li>
- * <li>Restrictions for the client set by the client itself.
+ *     These are used to form the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForServer
+ *     Mqtt5ClientConnectionConfig.RestrictionsForServer}
+ *   <li>Restrictions for the client set by the client itself.
  * <p>
- * These restrictions are used in conjunction with the {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions
- * Mqtt5ConnAckRestrictions} to form the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient
- * Mqtt5ClientConnectionConfig.RestrictionsForClient}.</li>
+ *     These restrictions are used in conjunction with the
+ *     {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions Mqtt5ConnAckRestrictions}
+ *     to form the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient
+ *     Mqtt5ClientConnectionConfig.RestrictionsForClient}.
  * </ul>
  *
  * @author Silvio Giebl

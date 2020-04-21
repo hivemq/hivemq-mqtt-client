@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.datatypes;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,8 +38,7 @@ public interface MqttSharedTopicFilterBuilder extends
      */
     // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.End,
+    interface Complete extends MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.End,
             MqttTopicFilterBuilderBase.SharedBase.Complete<
                     MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.Complete,
                     MqttSharedTopicFilterBuilder.End> {}
@@ -56,6 +55,7 @@ public interface MqttSharedTopicFilterBuilder extends
          *
          * @return the built {@link MqttSharedTopicFilter}.
          */
+        @CheckReturnValue
         @NotNull MqttSharedTopicFilter build();
     }
 
@@ -72,12 +72,9 @@ public interface MqttSharedTopicFilterBuilder extends
          *
          * @param <P> the type of the result when the built {@link MqttTopicFilter} is applied to the parent.
          */
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>, Nested.End<P>,
+        interface Complete<P> extends Nested<P>, Nested.End<P>,
                 MqttTopicFilterBuilderBase.SharedBase.Complete<Nested<P>, Nested.Complete<P>, Nested.End<P>> {}
-        // @formatter:on
 
         /**
          * End of a {@link Nested} that does not allow to add any more levels or wildcards.

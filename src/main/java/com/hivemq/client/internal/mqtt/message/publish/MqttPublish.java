@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.publish;
 
 import com.hivemq.client.annotations.Immutable;
+import com.hivemq.client.internal.checkpoint.Confirmable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
@@ -60,12 +60,20 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     private final @Nullable MqttTopicImpl responseTopic;
     private final @Nullable ByteBuffer correlationData;
 
+    private final @Nullable Confirmable confirmable;
+
     public MqttPublish(
-            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean retain, final long messageExpiryInterval,
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
+            final boolean retain,
+            final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
-            final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties) {
+            final @Nullable MqttUtf8StringImpl contentType,
+            final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable ByteBuffer correlationData,
+            final @NotNull MqttUserPropertiesImpl userProperties,
+            final @Nullable Confirmable confirmable) {
 
         super(userProperties);
         this.topic = topic;
@@ -77,6 +85,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         this.contentType = contentType;
         this.responseTopic = responseTopic;
         this.correlationData = correlationData;
+        this.confirmable = confirmable;
     }
 
     @Override
@@ -94,7 +103,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     @Override
-    public @NotNull byte[] getPayloadAsBytes() {
+    public byte @NotNull [] getPayloadAsBytes() {
         return ByteBufferUtil.copyBytes(payload);
     }
 
@@ -155,6 +164,18 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     @Override
+    public void acknowledge() {
+        final Confirmable confirmable = this.confirmable;
+        if (confirmable == null) {
+            throw new UnsupportedOperationException(
+                    "A publish must not be acknowledged if manual acknowledgement is not enabled");
+        }
+        if (!confirmable.confirm()) {
+            throw new IllegalStateException("A publish must not be acknowledged more than once");
+        }
+    }
+
+    @Override
     public @NotNull MqttWillPublish asWill() {
         return new MqttPublishBuilder.WillDefault(this).build();
     }
@@ -165,7 +186,9 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     public @NotNull MqttStatefulPublish createStateful(
-            final int packetIdentifier, final boolean dup, final int topicAlias,
+            final int packetIdentifier,
+            final boolean dup,
+            final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         return new MqttStatefulPublish(this, packetIdentifier, dup, topicAlias, subscriptionIdentifiers);
@@ -177,6 +200,11 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         final int topicAlias =
                 (topicAliasMapping == null) ? DEFAULT_NO_TOPIC_ALIAS : topicAliasMapping.onPublish(topic);
         return createStateful(packetIdentifier, dup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+    }
+
+    public @NotNull MqttPublish withConfirmable(final @NotNull Confirmable confirmable) {
+        return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
+                responseTopic, correlationData, getUserProperties(), confirmable);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Builder for a {@link Mqtt5Client}.
+ * Builder for an {@link Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -44,6 +44,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @param advancedConfig the advanced configuration.
      * @return the builder.
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder advancedConfig(@NotNull Mqtt5ClientAdvancedConfig advancedConfig);
 
     /**
@@ -55,6 +56,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the fluent builder for the advanced configuration.
      * @see #advancedConfig(Mqtt5ClientAdvancedConfig)
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientAdvancedConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
     /**
@@ -66,6 +68,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder simpleAuth(@Nullable Mqtt5SimpleAuth simpleAuth);
 
     /**
@@ -79,6 +82,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @see #simpleAuth(Mqtt5SimpleAuth)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5SimpleAuthBuilder.Nested<? extends Mqtt5ClientBuilder> simpleAuth();
 
     /**
@@ -90,6 +94,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder enhancedAuth(@Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism);
 
     /**
@@ -99,6 +104,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the builder.
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5ClientBuilder willPublish(@Nullable Mqtt5Publish willPublish);
 
     /**
@@ -112,6 +118,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @see #willPublish(Mqtt5Publish)
      * @since 1.1
      */
+    @CheckReturnValue
     @NotNull Mqtt5WillPublishBuilder.Nested<? extends Mqtt5ClientBuilder> willPublish();
 
     /**
@@ -119,6 +126,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5Client}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5Client build();
 
     /**
@@ -126,6 +134,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5RxClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5RxClient buildRx();
 
     /**
@@ -133,6 +142,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5AsyncClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5AsyncClient buildAsync();
 
     /**
@@ -140,5 +150,6 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the built {@link Mqtt5BlockingClient}.
      */
+    @CheckReturnValue
     @NotNull Mqtt5BlockingClient buildBlocking();
 }

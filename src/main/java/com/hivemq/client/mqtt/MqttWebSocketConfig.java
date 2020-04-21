@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,12 +35,22 @@ public interface MqttWebSocketConfig {
      */
     @NotNull String DEFAULT_SERVER_PATH = "";
     /**
+     * The default WebSocket query string.
+     */
+    @NotNull String DEFAULT_QUERY_STRING = "";
+    /**
      * The default WebSocket subprotocol.
      * <p>
      * See the <a href="https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name">WebSocket Subprotocol
      * Name Registry</a>
      */
     @NotNull String DEFAULT_MQTT_SUBPROTOCOL = "mqtt";
+    /**
+     * The default websocket handshake timeout in milliseconds.
+     *
+     * @since 1.2
+     */
+    int DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     /**
      * Creates a builder for a WebSocket configuration.
@@ -57,9 +67,20 @@ public interface MqttWebSocketConfig {
     @NotNull String getServerPath();
 
     /**
+     * @return the WebSocket query string.
+     */
+    @NotNull String getQueryString();
+
+    /**
      * @return the WebSocket subprotocol.
      */
     @NotNull String getSubprotocol();
+
+    /**
+     * @return the websocket handshake timeout in milliseconds.
+     * @since 1.2
+     */
+    int getHandshakeTimeoutMs();
 
     /**
      * Creates a builder for extending this WebSocket configuration.

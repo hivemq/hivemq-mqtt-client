@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
@@ -82,14 +81,23 @@ public class MqttAckSingle extends Single<Mqtt5PublishResult> {
         @Override
         void onNext(final @NotNull MqttPublishResult result) {
             if (result.acknowledged()) {
-                onNextUnsafe(result);
+                done(result);
             } else {
                 this.result = result;
             }
         }
 
         @CallByThread("Netty EventLoop")
-        private void onNextUnsafe(final @NotNull MqttPublishResult result) {
+        @Override
+        void acknowledged(final long acknowledged) {
+            final MqttPublishResult result = this.result;
+            assert (acknowledged == 1) && (result != null) : "a single publish must be acknowledged exactly once";
+            this.result = null;
+            done(result);
+        }
+
+        @CallByThread("Netty EventLoop")
+        private void done(final @NotNull MqttPublishResult result) {
             if (setDone()) {
                 final Throwable error = result.getRawError();
                 if (error == null) {
@@ -99,18 +107,6 @@ public class MqttAckSingle extends Single<Mqtt5PublishResult> {
                 }
             }
             outgoingQosHandler.request(1);
-        }
-
-        @CallByThread("Netty EventLoop")
-        @Override
-        void acknowledged(final long acknowledged) {
-            final MqttPublishResult result = this.result;
-            if ((acknowledged != 1) || (result == null)) {
-                throw new IllegalStateException(
-                        "A single publish must be acknowledged exactly once. This must not happen and is a bug.");
-            }
-            this.result = null;
-            onNextUnsafe(result);
         }
     }
 }

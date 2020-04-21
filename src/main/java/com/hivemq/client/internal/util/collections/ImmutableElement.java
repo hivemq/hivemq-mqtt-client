@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.util.collections;
@@ -72,7 +71,7 @@ import java.util.function.Consumer;
     }
 
     @Override
-    public <T> T @NotNull [] toArray(T @NotNull [] other) {
+    public <T> T @NotNull [] toArray(T @Nullable [] other) {
         Checks.notNull(other, "Array");
         if (other.length < 1) {
             //noinspection unchecked
@@ -110,7 +109,7 @@ import java.util.function.Consumer;
     }
 
     @Override
-    public void forEach(final @NotNull Consumer<? super E> consumer) {
+    public void forEach(final @Nullable Consumer<? super E> consumer) {
         Checks.notNull(consumer, "Consumer");
         consumer.accept(element);
     }
@@ -191,7 +190,7 @@ import java.util.function.Consumer;
         }
 
         @Override
-        public void forEachRemaining(final Consumer<? super E> consumer) {
+        public void forEachRemaining(final @Nullable Consumer<? super E> consumer) {
             Checks.notNull(consumer, "Consumer");
             if (hasNext()) {
                 consumer.accept(element);
@@ -205,7 +204,7 @@ import java.util.function.Consumer;
         private int size = 1;
 
         @Override
-        public boolean tryAdvance(final @NotNull Consumer<? super E> consumer) {
+        public boolean tryAdvance(final @Nullable Consumer<? super E> consumer) {
             Checks.notNull(consumer, "Consumer");
             if (size == 1) {
                 consumer.accept(element);
@@ -237,7 +236,7 @@ import java.util.function.Consumer;
         }
 
         @Override
-        public void forEachRemaining(final @NotNull Consumer<? super E> consumer) {
+        public void forEachRemaining(final @Nullable Consumer<? super E> consumer) {
             tryAdvance(consumer);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.message.subscribe.mqtt3;
@@ -28,7 +27,9 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -59,6 +60,36 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
 
     public @NotNull Mqtt3SubscriptionViewBuilder.Nested<B> addSubscription() {
         return new Mqtt3SubscriptionViewBuilder.Nested<>(this::addSubscription);
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Mqtt3Subscription @Nullable ... subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.length);
+        for (final Mqtt3Subscription subscription : subscriptions) {
+            addSubscription(subscription);
+        }
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(
+            final @Nullable Collection<@Nullable ? extends Mqtt3Subscription> subscriptions) {
+
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.size());
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable ? extends Mqtt3Subscription> subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
     }
 
     private @NotNull Mqtt3SubscriptionViewBuilder.Default getFirstSubscriptionBuilder() {
@@ -94,13 +125,14 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
+    private void ensureAtLeastOneSubscription() {
+        Checks.state(subscriptionsBuilder.getSize() > 0, "At least one subscription must be added.");
+    }
+
     public @NotNull Mqtt3SubscribeView build() {
         buildFirstSubscription();
-        final ImmutableList<MqttSubscription> subscriptions = subscriptionsBuilder.build();
-        if (subscriptions.isEmpty()) {
-            throw new IllegalStateException("At least one subscription must be added.");
-        }
-        return Mqtt3SubscribeView.of(subscriptions);
+        ensureAtLeastOneSubscription();
+        return Mqtt3SubscribeView.of(subscriptionsBuilder.build());
     }
 
     public static class Default extends Mqtt3SubscribeViewBuilder<Default>
@@ -113,7 +145,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         }
 
         @Override
-        protected @NotNull Mqtt3SubscribeViewBuilder.Default self() {
+        protected @NotNull Default self() {
             return this;
         }
     }
@@ -155,6 +187,23 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         @Override
         public @NotNull P send() {
             return parentConsumer.apply(build());
+        }
+    }
+
+    public static abstract class Publishes<P> extends Mqtt3SubscribeViewBuilder<Publishes<P>>
+            implements Mqtt3SubscribeBuilder.Publishes.Start.Complete<P>, Mqtt3SubscribeBuilder.Publishes.Args<P> {
+
+        protected boolean manualAcknowledgement;
+
+        @Override
+        protected @NotNull Publishes<P> self() {
+            return this;
+        }
+
+        @Override
+        public @NotNull Publishes<P> manualAcknowledgement(final boolean manualAcknowledgement) {
+            this.manualAcknowledgement = manualAcknowledgement;
+            return this;
         }
     }
 }

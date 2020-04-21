@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.mqtt.datatypes;
@@ -30,9 +29,9 @@ import java.util.List;
  * <p>
  * A Topic Filter has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}. Additionally it
  * <ul>
- * <li>must be at least one character long,</li>
- * <li>may contain one multi-level wildcard character ({@value #MULTI_LEVEL_WILDCARD}) at the end and</li>
- * <li>may contain multiple single-level wildcards ({@value #SINGLE_LEVEL_WILDCARD}).</li>
+ *   <li>must be at least one character long,
+ *   <li>may contain one multi-level wildcard character ({@value #MULTI_LEVEL_WILDCARD}) at the end and
+ *   <li>may contain multiple single-level wildcards ({@value #SINGLE_LEVEL_WILDCARD}).
  * </ul>
  *
  * @author Silvio Giebl

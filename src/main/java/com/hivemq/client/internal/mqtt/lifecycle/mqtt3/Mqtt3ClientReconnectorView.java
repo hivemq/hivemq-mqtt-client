@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
@@ -51,7 +50,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull <T> Mqtt3ClientReconnector reconnectWhen(
+    public @NotNull <T> Mqtt3ClientReconnectorView reconnectWhen(
             final @Nullable CompletableFuture<T> future,
             final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
@@ -62,6 +61,28 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     @Override
     public boolean isReconnect() {
         return delegate.isReconnect();
+    }
+
+    @Override
+    public @NotNull Mqtt3ClientReconnectorView resubscribeIfSessionExpired(final boolean resubscribe) {
+        delegate.resubscribeIfSessionExpired(resubscribe);
+        return this;
+    }
+
+    @Override
+    public boolean isResubscribeIfSessionExpired() {
+        return delegate.isResubscribeIfSessionExpired();
+    }
+
+    @Override
+    public @NotNull Mqtt3ClientReconnectorView republishIfSessionExpired(final boolean republish) {
+        delegate.republishIfSessionExpired(republish);
+        return this;
+    }
+
+    @Override
+    public boolean isRepublishIfSessionExpired() {
+        return delegate.isRepublishIfSessionExpired();
     }
 
     @Override
