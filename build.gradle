@@ -251,7 +251,7 @@ allprojects {
                         }
                     }
                 }
-                normal(MavenPublication) {
+                base(MavenPublication) {
                     from components.java
                     artifact tasks.javadocJar
                     artifact tasks.sourcesJar
