@@ -49,9 +49,9 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
 - Automatic and configurable **reconnect handling and message redelivery**
 - Automatic and configurable **resubscribe if the session expired**
 - **Manual message acknowledgment**
-  - Selectively enable manual acknowledgement for specific streams
+  - Selectively enable manual acknowledgment for specific streams
   - Acknowledge messages that are emitted to multiple streams independently per stream
-    (the client aggregates the acknowledgements before sending MQTT acknowledgements)
+    (the client aggregates the acknowledgments before sending MQTT acknowledgments)
   - Order of manual acknowledgment does not matter
     (the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification)
 - Lifecycle listeners
