@@ -75,7 +75,11 @@ backpressure support.
 <img src="https://www.openhab.org/openhab-logo.png" alt="openHAB" height="60px"/>
 ](https://www.openhab.org/) &nbsp;&nbsp; [
 <img src="https://eclipse.org/ditto/images/ditto.svg" alt="Eclipse Ditto" height="60px"/>
-](https://github.com/eclipse/ditto)
+](https://github.com/eclipse/ditto) &nbsp;&nbsp; [
+<img src="https://avatars3.githubusercontent.com/u/11352045?s=200&v=4" alt="Open Smart Grid Platform" height="60px"/>
+](https://github.com/OSGP/open-smart-grid-platform) &nbsp;&nbsp; [
+<img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" height="60px"/>
+](https://github.com/EXXETA/correomqtt)
 
 If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
 
