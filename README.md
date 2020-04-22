@@ -52,9 +52,9 @@ backpressure support.
 - Automatic and configurable **reconnect handling and message redelivery**
 - Automatic and configurable **resubscribe if the session expired**
 - **Manual message acknowledgment**
-  - Selectively enable manual acknowledgement for specific streams
+  - Selectively enable manual acknowledgment for specific streams
   - Acknowledge messages that are emitted to multiple streams independently per stream
-    (the client aggregates the acknowledgements before sending MQTT acknowledgements)
+    (the client aggregates the acknowledgments before sending MQTT acknowledgments)
   - Order of manual acknowledgment does not matter
     (the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification)
 - Lifecycle listeners
@@ -114,6 +114,20 @@ dependencies {
 
 If you use Maven, just include the following inside your `pom.xml` file.
 
+```xml
+<project>
+    ...
+    <dependencies>
+        <dependency>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+```
+
 NOTE: You have to set the compiler version to `1.8` or higher.
 
 ```xml
@@ -123,14 +137,6 @@ NOTE: You have to set the compiler version to `1.8` or higher.
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-    </dependencies>
     ...
 </project>
 ```
