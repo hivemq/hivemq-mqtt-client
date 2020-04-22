@@ -292,6 +292,7 @@ allprojects {
                 labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
                 version {
                     released = new Date()
+                    vcsTag = "v${project.version}"
                     gpg {
                         sign = true
                     }
