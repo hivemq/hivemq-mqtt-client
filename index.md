@@ -104,6 +104,14 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
 <img src="https://eclipse.org/ditto/images/ditto.svg" alt="Eclipse Ditto" class="user-img"/>
 </a>
 
+<a href="https://github.com/OSGP/open-smart-grid-platform" class="user-link">
+<img src="https://avatars3.githubusercontent.com/u/11352045?s=200&v=4" alt="Open Smart Grid Platform" class="user-img"/>
+</a>
+
+<a href="https://github.com/EXXETA/correomqtt" class="user-link">
+<img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" class="user-img"/>
+</a>
+
 </div>
 
 If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
