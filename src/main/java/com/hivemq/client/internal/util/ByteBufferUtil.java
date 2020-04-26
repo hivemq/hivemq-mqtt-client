@@ -42,10 +42,7 @@ public final class ByteBufferUtil {
     }
 
     public static @NotNull Optional<ByteBuffer> optionalReadOnly(final @Nullable ByteBuffer byteBuffer) {
-        if (byteBuffer == null) {
-            return Optional.empty();
-        }
-        return Optional.of(byteBuffer.asReadOnlyBuffer());
+        return (byteBuffer == null) ? Optional.empty() : Optional.of(byteBuffer.asReadOnlyBuffer());
     }
 
     public static byte @NotNull [] getBytes(final @NotNull ByteBuffer byteBuffer) {

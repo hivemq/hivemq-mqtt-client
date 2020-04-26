@@ -25,7 +25,8 @@ public final class ClassUtil {
 
     public static boolean isAvailable(final @NotNull String className) {
         try {
-            return Class.forName(className) != null;
+            Class.forName(className);
+            return true;
         } catch (final ClassNotFoundException e) {
             return false;
         }
