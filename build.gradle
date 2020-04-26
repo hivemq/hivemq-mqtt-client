@@ -109,12 +109,10 @@ allprojects {
     plugins.withType(JavaPlugin) {
         dependencies {
             def junit5Version = '5.5.1'
-            def junitPlatformVersion = '1.5.1'
 
             testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
             testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
             testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
-            testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
         }
 
         test {
@@ -268,6 +266,17 @@ allprojects {
                                 system = 'github'
                                 url = project.issuesUrl
                             }
+                            withXml {
+                                def dependenciesNode = asNode().get('dependencies') as NodeList
+                                if (!dependenciesNode.isEmpty()) {
+                                    dependenciesNode.get(0).each {
+                                        def optionalNode = it.get('optional') as NodeList
+                                        if (!optionalNode.isEmpty() && optionalNode.get(0).text() == 'true') {
+                                            it.get('scope').get(0).setValue('runtime')
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -332,7 +341,7 @@ features.each { feature ->
                     rootDependencyNode.appendNode('version', project.version)
                     rootDependencyNode.appendNode('scope', 'compile')
 
-                    configurations.getByName(feature + 'Implementation').allDependencies.each {
+                    configurations[feature + 'RuntimeElements'].allDependencies.each {
                         def dependencyNode = dependenciesNode.appendNode('dependency')
                         dependencyNode.appendNode('groupId', it.group)
                         dependencyNode.appendNode('artifactId', it.name)
@@ -355,7 +364,7 @@ publishing {
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
-                configurations.api.allDependencies.each {
+                configurations.apiElements.allDependencies.each {
                     def dependencyNode = dependenciesNode.appendNode('dependency')
                     dependencyNode.appendNode('groupId', it.group)
                     dependencyNode.appendNode('artifactId', it.name)
