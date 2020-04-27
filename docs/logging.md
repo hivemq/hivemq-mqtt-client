@@ -6,5 +6,3 @@ redirect_from: /docs/logging.html
 ---
 
 # Logging
-
-// TODO

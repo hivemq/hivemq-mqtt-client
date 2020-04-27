@@ -6,5 +6,3 @@ redirect_from: /docs/thread_management.html
 ---
 
 # Thread Management
-
-// TODO

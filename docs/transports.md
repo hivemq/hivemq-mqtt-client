@@ -7,5 +7,3 @@ redirect_from: /docs/transports.html
 ---
 
 # Transports
-
-// TODO

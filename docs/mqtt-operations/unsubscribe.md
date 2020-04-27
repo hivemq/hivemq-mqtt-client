@@ -7,5 +7,3 @@ redirect_from: /docs/mqtt_operations/unsubscribe.html
 ---
 
 # Unsubscribe
-
-// TODO

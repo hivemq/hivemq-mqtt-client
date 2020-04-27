@@ -8,8 +8,6 @@ redirect_from: /docs/security/auth.html
 
 # Authentication/Authorization
 
-// TODO
-
 ## Simple Auth
 
 ## Enhanced Auth

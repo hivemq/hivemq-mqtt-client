@@ -7,5 +7,3 @@ redirect_from: /docs/mqtt_operations/reauth.html
 ---
 
 # Reauthentication/-authorization
-
-// TODO

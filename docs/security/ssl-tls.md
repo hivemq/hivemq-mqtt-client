@@ -7,5 +7,3 @@ redirect_from: /docs/security/ssl_tls.html
 ---
 
 # SSL/TLS
-
-// TODO

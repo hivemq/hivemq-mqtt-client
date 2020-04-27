@@ -7,5 +7,3 @@ redirect_from: /docs/mqtt_operations/disconnect.html
 ---
 
 # Disconnect
-
-// TODO

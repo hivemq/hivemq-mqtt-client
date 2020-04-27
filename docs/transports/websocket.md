@@ -7,5 +7,3 @@ redirect_from: /docs/transports/websocket.html
 ---
 
 # WebSocket
-
-// TODO

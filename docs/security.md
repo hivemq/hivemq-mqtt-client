@@ -7,5 +7,3 @@ redirect_from: /docs/security.html
 ---
 
 # Security
-
-// TODO
