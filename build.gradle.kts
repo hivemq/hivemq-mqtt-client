@@ -50,6 +50,17 @@ allprojects {
         tasks.withType<JavaCompile> {
             options.encoding = "UTF-8"
         }
+
+        tasks.withType<Javadoc> {
+            options.encoding = "UTF-8"
+            exclude("**/internal/**")
+        }
+    }
+    plugins.withType<JavaLibraryPlugin> {
+        java {
+            withJavadocJar()
+            withSourcesJar()
+        }
     }
 }
 
@@ -168,31 +179,6 @@ tasks.jar {
     manifest.attributes["Export-Package"] = "com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*"
 }
 
-allprojects {
-    plugins.withType<JavaLibraryPlugin> {
-        tasks.javadoc {
-            options.encoding = "UTF-8"
-            exclude("**/internal/**")
-        }
-
-        tasks.register<Jar>("javadocJar") {
-            group = "documentation"
-            description = "Assembles a jar archive containing the javadoc."
-
-            from(tasks.javadoc)
-            archiveClassifier.set("javadoc")
-        }
-
-        tasks.register<Jar>("sourcesJar") {
-            group = "build"
-            description = "Assembles a jar archive containing the main sources."
-
-            from(sourceSets["main"].allSource)
-            archiveClassifier.set("sources")
-        }
-    }
-}
-
 tasks.shadowJar {
     archiveAppendix.set("shaded")
     archiveClassifier.set("")
@@ -229,8 +215,6 @@ allprojects {
 
         publishing.publications.create<MavenPublication>("base") {
             from(components["java"])
-            artifact(tasks["javadocJar"])
-            artifact(tasks["sourcesJar"])
             suppressAllPomMetadataWarnings()
         }
         afterEvaluate {
