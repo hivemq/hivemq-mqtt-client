@@ -71,7 +71,7 @@ You have to set the compiler version to `1.8` or higher.
 The HiveMQ MQTT Client provides optional features via additional modules.
 
 | Module name | Description |
-| ----------- | ------------- | ----------- |
+| ----------- | ----------- |
 | `hivemq-mqtt-client-websocket` | Adds dependencies for the WebSocket transport |
 | `hivemq-mqtt-client-proxy` | Adds dependencies for the proxy transport |
 | `hivemq-mqtt-client-epoll` | Adds dependencies for the native epoll socket implementation |

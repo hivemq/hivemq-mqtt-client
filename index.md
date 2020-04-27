@@ -10,7 +10,7 @@ nav_exclude: true
 
 # What is HiveMQ MQTT Client?
 
-HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client library with 
+HiveMQ MQTT Client is an MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client library with 
 different API flavours and backpressure support.
 
 HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hivemq.com/) and BMW CarIT.
@@ -27,7 +27,7 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
     [RxJava](https://github.com/ReactiveX/RxJava) and
     [Reactor](https://github.com/reactor/reactor-core) APIs are available
   - **Asynchronous API**: futures and callbacks
-  - **Blocking API**: quick start and testing
+  - **Blocking API**: for quick start and testing
   - Switch flexibly between flavours and use them concurrently
   - Flavours are clearly separated but have a consistent API style
 - **Backpressure support**:
