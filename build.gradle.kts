@@ -56,12 +56,6 @@ allprojects {
             exclude("**/internal/**")
         }
     }
-    plugins.withType<JavaLibraryPlugin> {
-        java {
-            withJavadocJar()
-            withSourcesJar()
-        }
-    }
 }
 
 
@@ -171,6 +165,11 @@ allprojects {
                     attributes["-removeheaders"] = "Private-Package"
                 }
             }
+        }
+
+        java {
+            withJavadocJar()
+            withSourcesJar()
         }
     }
 }
