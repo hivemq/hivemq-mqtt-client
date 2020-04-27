@@ -237,11 +237,11 @@ allprojects {
                         url.set("${project.extra["issuesUrl"]}")
                     }
                     withXml {
-                        (asNode().get("dependencies") as groovy.util.NodeList).forEach { dependencies ->
+                        (asNode()["dependencies"] as groovy.util.NodeList).forEach { dependencies ->
                             (dependencies as groovy.util.Node).children().forEach { dependency ->
                                 val dep = dependency as groovy.util.Node
-                                val optional = dep.get("optional") as groovy.util.NodeList
-                                val scope = dep.get("scope") as groovy.util.NodeList
+                                val optional = dep["optional"] as groovy.util.NodeList
+                                val scope = dep["scope"] as groovy.util.NodeList
                                 if (!optional.isEmpty() && (optional[0] as groovy.util.Node).text() == "true") {
                                     (scope[0] as groovy.util.Node).setValue("runtime")
                                 }
