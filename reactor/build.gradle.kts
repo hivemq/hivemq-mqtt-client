@@ -16,18 +16,18 @@ extra["prevVersion"] = "1.2.0"
 
 dependencies {
     api(rootProject)
-    api("io.projectreactor:reactor-core:3.3.4.RELEASE")
+    api("io.projectreactor:reactor-core:${property("reactor.version")}")
 
-    implementation("io.projectreactor.addons:reactor-adapter:3.3.3.RELEASE")
-    implementation("org.jetbrains:annotations:${rootProject.extra["jetbrainsAnnotationsVersion"]}")
+    implementation("io.projectreactor.addons:reactor-adapter:${property("reactor-adapter.version")}")
+    implementation("org.jetbrains:annotations:${property("jetbrains-annotations.version")}")
 }
 
 
 /* ******************** test ******************** */
 
 dependencies {
-    testImplementation("io.projectreactor:reactor-test:3.3.4.RELEASE")
-    testImplementation("com.google.guava:guava:24.1-jre")
+    testImplementation("io.projectreactor:reactor-test:${property("reactor.version")}")
+    testImplementation("com.google.guava:guava:${property("guava.version")}")
 }
 
 

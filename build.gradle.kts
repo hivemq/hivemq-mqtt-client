@@ -67,28 +67,21 @@ allprojects {
     }
 }
 
-extra["rxJavaVersion"] = "2.2.19"
-extra["nettyVersion"] = "4.1.48.Final"
-extra["daggerVersion"] = "2.27"
-extra["jcToolsVersion"] = "2.1.2"
-extra["slf4jVersion"] = "1.7.30"
-extra["jetbrainsAnnotationsVersion"] = "16.0.3"
-
 dependencies {
-    api("io.reactivex.rxjava2:rxjava:${project.extra["rxJavaVersion"]}")
+    api("io.reactivex.rxjava2:rxjava:${property("rxjava.version")}")
 
-    implementation("io.netty:netty-buffer:${project.extra["nettyVersion"]}")
-    implementation("io.netty:netty-codec:${project.extra["nettyVersion"]}")
-    implementation("io.netty:netty-common:${project.extra["nettyVersion"]}")
-    implementation("io.netty:netty-handler:${project.extra["nettyVersion"]}")
-    implementation("io.netty:netty-transport:${project.extra["nettyVersion"]}")
-    implementation("org.jctools:jctools-core:${project.extra["jcToolsVersion"]}")
-    implementation("org.jetbrains:annotations:${project.extra["jetbrainsAnnotationsVersion"]}")
-    implementation("com.google.dagger:dagger:${project.extra["daggerVersion"]}")
+    implementation("io.netty:netty-buffer:${property("netty.version")}")
+    implementation("io.netty:netty-codec:${property("netty.version")}")
+    implementation("io.netty:netty-common:${property("netty.version")}")
+    implementation("io.netty:netty-handler:${property("netty.version")}")
+    implementation("io.netty:netty-transport:${property("netty.version")}")
+    implementation("org.jctools:jctools-core:${property("jctools.version")}")
+    implementation("org.jetbrains:annotations:${property("jetbrains-annotations.version")}")
+    implementation("com.google.dagger:dagger:${property("dagger.version")}")
 
-    compileOnly("org.slf4j:slf4j-api:${project.extra["slf4jVersion"]}")
+    compileOnly("org.slf4j:slf4j-api:${property("slf4j.version")}")
 
-    annotationProcessor("com.google.dagger:dagger-compiler:${project.extra["daggerVersion"]}")
+    annotationProcessor("com.google.dagger:dagger-compiler:${property("dagger.version")}")
 }
 
 
@@ -102,9 +95,9 @@ features.forEach { feature ->
 }
 
 dependencies {
-    "websocketImplementation"("io.netty:netty-codec-http:${project.extra["nettyVersion"]}")
-    "proxyImplementation"("io.netty:netty-handler-proxy:${project.extra["nettyVersion"]}")
-    "epollImplementation"("io.netty:netty-transport-native-epoll:${project.extra["nettyVersion"]}:linux-x86_64")
+    "websocketImplementation"("io.netty:netty-codec-http:${property("netty.version")}")
+    "proxyImplementation"("io.netty:netty-handler-proxy:${property("netty.version")}")
+    "epollImplementation"("io.netty:netty-transport-native-epoll:${property("netty.version")}:linux-x86_64")
 }
 
 
@@ -113,11 +106,9 @@ dependencies {
 allprojects {
     plugins.withType<JavaPlugin> {
         dependencies {
-            val junit5Version = "5.5.1"
-
-            testImplementation("org.junit.jupiter:junit-jupiter-api:${junit5Version}")
-            testImplementation("org.junit.jupiter:junit-jupiter-params:${junit5Version}")
-            testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit5Version}")
+            testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit.jupiter.version")}")
+            testImplementation("org.junit.jupiter:junit-jupiter-params:${property("junit.jupiter.version")}")
+            testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit.jupiter.version")}")
         }
 
         tasks.test {
@@ -129,13 +120,13 @@ allprojects {
 }
 
 dependencies {
-    testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0")
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.1.7")
-    testImplementation("org.mockito:mockito-core:2.18.3")
-    testImplementation("org.bouncycastle:bcprov-jdk15on:1.59")
-    testImplementation("org.bouncycastle:bcpkix-jdk15on:1.59")
-    testImplementation("com.google.guava:guava:24.1-jre")
-    testRuntimeOnly("org.slf4j:slf4j-simple:${project.extra["slf4jVersion"]}")
+    testImplementation("nl.jqno.equalsverifier:equalsverifier:${property("equalsverifier.version")}")
+    testImplementation("org.mockito:mockito-core:${property("mockito.version")}")
+    testImplementation("com.google.guava:guava:${property("guava.version")}")
+    testImplementation("org.bouncycastle:bcprov-jdk15on:${property("bouncycastle.version")}")
+    testImplementation("org.bouncycastle:bcpkix-jdk15on:${property("bouncycastle.version")}")
+    testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:${property("paho.version")}")
+    testRuntimeOnly("org.slf4j:slf4j-simple:${property("slf4j.version")}")
 }
 
 

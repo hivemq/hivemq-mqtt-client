@@ -4,11 +4,11 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id("com.github.johnrengelman.shadow") version "4.0.4"
-        id("biz.aQute.bnd.builder") version "5.0.0"
-        id("com.github.hierynomus.license") version "0.14.0"
-        id("com.jfrog.bintray") version "1.8.4"
-        id("com.github.breadmoirai.github-release") version "2.2.9"
+        id("com.github.johnrengelman.shadow") version "${settings.extra["plugin.shadow.version"]}"
+        id("biz.aQute.bnd.builder") version "${settings.extra["plugin.bnd.version"]}"
+        id("com.github.hierynomus.license") version "${settings.extra["plugin.license.version"]}"
+        id("com.jfrog.bintray") version "${settings.extra["plugin.bintray.version"]}"
+        id("com.github.breadmoirai.github-release") version "${settings.extra["plugin.github-release.version"]}"
     }
 }
 
