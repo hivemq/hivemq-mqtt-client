@@ -216,6 +216,7 @@ allprojects {
             from(components["java"])
             suppressAllPomMetadataWarnings()
         }
+
         afterEvaluate {
             publishing.publications.withType<MavenPublication> {
                 pom {
@@ -255,47 +256,6 @@ allprojects {
                                 }
                             }
                         }
-                    }
-                }
-            }
-        }
-
-        project.apply(plugin = "com.jfrog.bintray")
-
-        bintray {
-            user = "${rootProject.extra["bintray_username"]}"
-            key = "${rootProject.extra["bintray_apiKey"]}"
-            publish = true
-            with(pkg) {
-                userOrg = "hivemq"
-                repo = "HiveMQ"
-                name = "hivemq-mqtt-client"
-                desc = project.description
-                websiteUrl = "${project.extra["githubUrl"]}"
-                issueTrackerUrl = "${project.extra["issuesUrl"]}"
-                vcsUrl = "${project.extra["githubUrl"]}.git"
-                setLicenses("${project.extra["licenseShortName"]}")
-                setLabels("mqtt", "mqtt-client", "iot", "internet-of-things", "rxjava2", "reactive-streams", "backpressure")
-                with(version) {
-                    released = Date().toString()
-                    vcsTag = "v${project.version}"
-                    with(gpg) {
-                        sign = true
-                    }
-                }
-            }
-        }
-        afterEvaluate {
-            bintray.setPublications(*publishing.publications.withType<MavenPublication>().names.toTypedArray())
-        }
-
-        // workaround for publishing gradle metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
-        tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
-            doFirst {
-                publishing.publications.withType<MavenPublication>().forEach { publication ->
-                    val moduleFile = File(File(File(project.buildDir, "publications"), publication.name), "module.json")
-                    if (moduleFile.exists()) {
-                        publication.artifact(moduleFile).extension = "module"
                     }
                 }
             }
@@ -340,6 +300,52 @@ publishing.publications.create<MavenPublication>("shaded") {
                     appendNode("artifactId", it.name)
                     appendNode("version", it.version)
                     appendNode("scope", "compile")
+                }
+            }
+        }
+    }
+}
+
+allprojects {
+    plugins.withType<JavaLibraryPlugin> {
+
+        project.apply(plugin = "com.jfrog.bintray")
+
+        bintray {
+            user = "${rootProject.extra["bintray_username"]}"
+            key = "${rootProject.extra["bintray_apiKey"]}"
+            publish = true
+            with(pkg) {
+                userOrg = "hivemq"
+                repo = "HiveMQ"
+                name = "hivemq-mqtt-client"
+                desc = project.description
+                websiteUrl = "${project.extra["githubUrl"]}"
+                issueTrackerUrl = "${project.extra["issuesUrl"]}"
+                vcsUrl = "${project.extra["githubUrl"]}.git"
+                setLicenses("${project.extra["licenseShortName"]}")
+                setLabels("mqtt", "mqtt-client", "iot", "internet-of-things", "rxjava2", "reactive-streams", "backpressure")
+                with(version) {
+                    released = Date().toString()
+                    vcsTag = "v${project.version}"
+                    with(gpg) {
+                        sign = true
+                    }
+                }
+            }
+        }
+        afterEvaluate {
+            bintray.setPublications(*publishing.publications.withType<MavenPublication>().names.toTypedArray())
+        }
+
+        // workaround for publishing gradle metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
+        tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
+            doFirst {
+                publishing.publications.withType<MavenPublication>().forEach { publication ->
+                    val moduleFile = File(File(File(project.buildDir, "publications"), publication.name), "module.json")
+                    if (moduleFile.exists()) {
+                        publication.artifact(moduleFile).extension = "module"
+                    }
                 }
             }
         }
