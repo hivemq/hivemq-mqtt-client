@@ -206,7 +206,7 @@ tasks.shadowJar {
 
 /* ******************** publishing ******************** */
 
-apply(from = "${project.rootDir}/gradle/publishing.gradle")
+apply(from = "${project.rootDir}/gradle/publishing.gradle.kts")
 
 allprojects {
     plugins.withType<MavenPublishPlugin> {
