@@ -87,9 +87,19 @@ dependencies {
 
 /* ******************** optional dependencies ******************** */
 
-val features = listOf("websocket", "proxy", "epoll")
+val features = listOf(
+        mapOf("name" to "websocket",
+                "readableName" to "HiveMQ MQTT Client WebSocket module",
+                "description" to "Adds dependencies for the WebSocket transport of the HiveMQ MQTT Client"),
+        mapOf("name" to "proxy",
+                "readableName" to "HiveMQ MQTT Client proxy module",
+                "description" to "Adds dependencies for the proxy transport of the HiveMQ MQTT Client"),
+        mapOf("name" to "epoll",
+                "readableName" to "HiveMQ MQTT Client epoll module",
+                "description" to "Adds dependencies for the native epoll socket implementation of the HiveMQ MQTT Client"))
+
 features.forEach { feature ->
-    java.registerFeature(feature) {
+    java.registerFeature(feature.getValue("name")) {
         usingSourceSet(sourceSets["main"])
     }
 }
@@ -255,8 +265,8 @@ allprojects {
 }
 
 features.forEach { feature ->
-    publishing.publications.create<MavenPublication>(feature) {
-        artifactId = project.name + "-" + feature
+    publishing.publications.create<MavenPublication>(feature.getValue("name")) {
+        artifactId = project.name + "-" + feature.getValue("name")
         pom.withXml {
             asNode().appendNode("dependencies").apply {
                 appendNode("dependency").apply {
@@ -265,7 +275,7 @@ features.forEach { feature ->
                     appendNode("version", project.version)
                     appendNode("scope", "compile")
                 }
-                configurations[feature + "RuntimeElements"].allDependencies.forEach {
+                configurations[feature.getValue("name") + "RuntimeElements"].allDependencies.forEach {
                     appendNode("dependency").apply {
                         appendNode("groupId", it.group)
                         appendNode("artifactId", it.name)
@@ -273,6 +283,12 @@ features.forEach { feature ->
                         appendNode("scope", "runtime")
                     }
                 }
+            }
+        }
+        afterEvaluate {
+            pom {
+                name.set(feature.getValue("readableName"))
+                description.set(feature.getValue("description"))
             }
         }
     }
