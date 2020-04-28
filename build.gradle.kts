@@ -87,19 +87,19 @@ dependencies {
 
 /* ******************** optional dependencies ******************** */
 
-val features = listOf(
-        mapOf("name" to "websocket",
-                "readableName" to "HiveMQ MQTT Client WebSocket module",
-                "description" to "Adds dependencies for the WebSocket transport of the HiveMQ MQTT Client"),
-        mapOf("name" to "proxy",
-                "readableName" to "HiveMQ MQTT Client proxy module",
-                "description" to "Adds dependencies for the proxy transport of the HiveMQ MQTT Client"),
-        mapOf("name" to "epoll",
-                "readableName" to "HiveMQ MQTT Client epoll module",
-                "description" to "Adds dependencies for the native epoll socket implementation of the HiveMQ MQTT Client"))
+val features = listOf("websocket", "proxy", "epoll")
 
 features.forEach { feature ->
-    java.registerFeature(feature.getValue("name")) {
+    project("${project.name}-$feature") {
+
+        apply(plugin = "base")
+
+        description = "Adds dependencies for the HiveMQ MQTT Client $feature module"
+        extra["moduleName"] = "com.hivemq.client.mqtt.$feature"
+        extra["readableName"] = "HiveMQ MQTT Client $feature module"
+    }
+
+    java.registerFeature(feature) {
         usingSourceSet(sourceSets["main"])
     }
 }
@@ -145,7 +145,7 @@ dependencies {
 allprojects {
     plugins.withType<JavaLibraryPlugin> {
 
-        project.apply(plugin = "biz.aQute.bnd.builder")
+        apply(plugin = "biz.aQute.bnd.builder")
 
         afterEvaluate {
             tasks.jar {
@@ -209,15 +209,7 @@ tasks.shadowJar {
 apply(from = "${project.rootDir}/gradle/publishing.gradle")
 
 allprojects {
-    plugins.withType<JavaLibraryPlugin> {
-
-        project.apply(plugin = "maven-publish")
-
-        publishing.publications.create<MavenPublication>("base") {
-            from(components["java"])
-            suppressAllPomMetadataWarnings()
-        }
-
+    plugins.withType<MavenPublishPlugin> {
         afterEvaluate {
             publishing.publications.withType<MavenPublication> {
                 pom {
@@ -264,38 +256,48 @@ allprojects {
     }
 }
 
+allprojects {
+    plugins.withType<JavaLibraryPlugin> {
+
+        apply(plugin = "maven-publish")
+
+        publishing.publications.create<MavenPublication>("base") {
+            from(components["java"])
+            suppressAllPomMetadataWarnings()
+        }
+    }
+}
+
 features.forEach { feature ->
-    publishing.publications.create<MavenPublication>(feature.getValue("name")) {
-        artifactId = project.name + "-" + feature.getValue("name")
-        pom.withXml {
-            asNode().appendNode("dependencies").apply {
-                appendNode("dependency").apply {
-                    appendNode("groupId", project.group)
-                    appendNode("artifactId", project.name)
-                    appendNode("version", project.version)
-                    appendNode("scope", "compile")
-                }
-                configurations[feature.getValue("name") + "RuntimeElements"].allDependencies.forEach {
+    project("${project.name}-$feature") {
+
+        apply(plugin = "maven-publish")
+
+        publishing.publications.create<MavenPublication>("base") {
+            pom.withXml {
+                asNode().appendNode("dependencies").apply {
                     appendNode("dependency").apply {
-                        appendNode("groupId", it.group)
-                        appendNode("artifactId", it.name)
-                        appendNode("version", it.version)
-                        appendNode("scope", "runtime")
+                        appendNode("groupId", rootProject.group)
+                        appendNode("artifactId", rootProject.name)
+                        appendNode("version", rootProject.version)
+                        appendNode("scope", "compile")
+                    }
+                    rootProject.configurations["${feature}RuntimeElements"].allDependencies.forEach {
+                        appendNode("dependency").apply {
+                            appendNode("groupId", it.group)
+                            appendNode("artifactId", it.name)
+                            appendNode("version", it.version)
+                            appendNode("scope", "runtime")
+                        }
                     }
                 }
-            }
-        }
-        afterEvaluate {
-            pom {
-                name.set(feature.getValue("readableName"))
-                description.set(feature.getValue("description"))
             }
         }
     }
 }
 
 publishing.publications.create<MavenPublication>("shaded") {
-    artifactId = project.name + "-shaded"
+    artifactId = "${project.name}-shaded"
     artifact(tasks["shadowJar"])
     artifact(tasks["javadocJar"])
     artifact(tasks["sourcesJar"])
@@ -314,9 +316,9 @@ publishing.publications.create<MavenPublication>("shaded") {
 }
 
 allprojects {
-    plugins.withType<JavaLibraryPlugin> {
+    plugins.withType<MavenPublishPlugin> {
 
-        project.apply(plugin = "com.jfrog.bintray")
+        apply(plugin = "com.jfrog.bintray")
 
         bintray {
             user = "${rootProject.extra["bintray_username"]}"
@@ -392,6 +394,6 @@ allprojects {
 
 allprojects {
     plugins.withType<JavaLibraryPlugin> {
-        project.apply(from = "${project.rootDir}/gradle/japicc.gradle")
+        apply(from = "${project.rootDir}/gradle/japicc.gradle")
     }
 }

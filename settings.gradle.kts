@@ -14,8 +14,7 @@ pluginManagement {
 
 rootProject.name = "hivemq-mqtt-client"
 
-include("examples")
-project(":examples").name = "hivemq-mqtt-client-examples"
-
-include("reactor")
-project(":reactor").name = "hivemq-mqtt-client-reactor"
+listOf("websocket", "proxy", "epoll", "reactor", "examples").forEach { module ->
+    include("${rootProject.name}-$module")
+    project(":${rootProject.name}-$module").projectDir = file(module)
+}
