@@ -142,7 +142,7 @@ fun addCheck(publication: MavenPublication, artifact: MavenArtifact) {
         outputs.files(report)
 
         doLast {
-            if (project.version == prevVersion) {
+            if (version == prevVersion) {
                 println("No previous version available")
 
                 throw StopExecutionException("No previous version available")
@@ -182,7 +182,7 @@ fun addCheck(publication: MavenPublication, artifact: MavenArtifact) {
 }
 
 plugins.withType<MavenPublishPlugin> {
-    project.the<PublishingExtension>().publications.withType<MavenPublication>().forEach { publication ->
+    the<PublishingExtension>().publications.withType<MavenPublication>().forEach { publication ->
         val artifact = publication.artifacts.find { it.extension == "jar" && it.classifier == null }
         if (artifact != null) {
             addCheck(publication, artifact)
