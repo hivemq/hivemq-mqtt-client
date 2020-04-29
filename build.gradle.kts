@@ -4,10 +4,10 @@ plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow")
     id("biz.aQute.bnd.builder")
-    id("com.github.hierynomus.license")
     id("maven-publish")
     id("com.jfrog.bintray")
     id("com.github.breadmoirai.github-release")
+    id("com.github.hierynomus.license")
     id("pmd")
 }
 

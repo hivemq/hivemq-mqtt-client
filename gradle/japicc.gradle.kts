@@ -122,7 +122,7 @@ val japiccNonImpl = tasks.register("japiccNonImpl") {
 }
 
 fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
-    val task = tasks.register("japiccCheck" + jarTaskProvider.name.capitalize()) {
+    val japiccCheck = tasks.register("japiccCheck" + jarTaskProvider.name.capitalize()) {
         group = "japicc"
         description = "Checks for binary and source incompatibility."
         dependsOn(japiccDownload, japiccNonImpl)
@@ -177,7 +177,7 @@ fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
         }
     }
     japicc {
-        dependsOn(task)
+        dependsOn(japiccCheck)
     }
 }
 
