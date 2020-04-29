@@ -1,22 +1,25 @@
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
-tasks.register("japicc") {
+val japicc = tasks.register("japicc") {
     group = "verification"
-
-    tasks["check"].dependsOn(this)
+}
+tasks.named("check") {
+    dependsOn(japicc)
 }
 
-if (rootProject.tasks.findByName("japiccDownload") == null) {
-    rootProject.tasks.register("japiccDownload") {
+var japiccDownload: TaskProvider<Task>
+try {
+    japiccDownload = rootProject.tasks.named("japiccDownload")
+} catch (e: Throwable) {
+    japiccDownload = rootProject.tasks.register("japiccDownload") {
         group = "japicc"
         description = "Download Java API Compliance Checker"
 
         val japiccVersion = "2.4"
         val workingDir = File(rootProject.buildDir, "japicc")
         val archive = File(workingDir, "japi-compliance-checker-$japiccVersion.zip")
-        val executable = File(workingDir, "japi-compliance-checker-$japiccVersion/japi-compliance-checker.pl")
-        extra["executable"] = executable
+        val executable by extra(File(workingDir, "japi-compliance-checker-$japiccVersion/japi-compliance-checker.pl"))
 
         outputs.files(executable)
 
@@ -34,14 +37,13 @@ if (rootProject.tasks.findByName("japiccDownload") == null) {
     }
 }
 
-tasks.register("japiccNonImpl") {
+val japiccNonImpl = tasks.register("japiccNonImpl") {
     group = "japicc"
     description = "List non impl interfaces"
 
     val workingDir = File(project.buildDir, "japicc")
-    val nonImplFile = File(workingDir, "non-impl")
+    val nonImplFile by extra(File(workingDir, "non-impl"))
     val sourceSet = project.the<JavaPluginConvention>().sourceSets["main"].java
-    extra["nonImplFile"] = nonImplFile
 
     inputs.files(sourceSet)
     outputs.files(nonImplFile)
@@ -120,18 +122,16 @@ tasks.register("japiccNonImpl") {
 }
 
 fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
-    tasks.register("japiccCheck${jarTaskProvider.name.capitalize()}") {
+    val task = tasks.register("japiccCheck" + jarTaskProvider.name.capitalize()) {
         group = "japicc"
         description = "Checks for binary and source incompatibility."
-
-        dependsOn(rootProject.tasks["japiccDownload"], tasks["japiccNonImpl"])
-        tasks["japicc"].dependsOn(this)
+        dependsOn(japiccDownload, japiccNonImpl)
 
         val jarTask = jarTaskProvider.get()
 
         val workingDir = File(project.buildDir, "japicc")
         val archiveName = jarTask.archiveBaseName.get() + jarTask.archiveAppendix.map { "-$it" }.getOrElse("")
-        val prevVersion = project.extra["prevVersion"] as String
+        val prevVersion: String by project.extra
         val prevJarName = "$archiveName-$prevVersion.jar"
         val prevJar = File(workingDir, prevJarName)
 
@@ -158,8 +158,8 @@ fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
 
             println("Checking binary and source compatibility with previous version")
 
-            val executable = rootProject.tasks["japiccDownload"].extra["executable"] as File
-            val nonImplFile = rootProject.tasks["japiccNonImpl"].extra["nonImplFile"] as File
+            val executable: File by japiccDownload.get().extra
+            val nonImplFile: File by japiccNonImpl.get().extra
             val command = listOf(
                     "perl", executable.path, "-lib", archiveName,
                     "-skip-internal-packages", "com.hivemq.client.internal",
@@ -175,6 +175,9 @@ fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
                 throw GradleException("Binary or source incompatibilities, code $returnCode")
             }
         }
+    }
+    japicc {
+        dependsOn(task)
     }
 }
 
