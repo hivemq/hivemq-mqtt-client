@@ -394,6 +394,6 @@ allprojects {
 
 allprojects {
     plugins.withType<JavaLibraryPlugin> {
-        apply(from = "${project.rootDir}/gradle/japicc.gradle")
+        apply(from = "${project.rootDir}/gradle/japicc.gradle.kts")
     }
 }
