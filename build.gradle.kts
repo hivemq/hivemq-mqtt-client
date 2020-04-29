@@ -324,7 +324,7 @@ allprojects {
             user = "${rootProject.extra["bintray_username"]}"
             key = "${rootProject.extra["bintray_apiKey"]}"
             publish = true
-            with(pkg) {
+            pkg.apply {
                 userOrg = "hivemq"
                 repo = "HiveMQ"
                 name = "hivemq-mqtt-client"
@@ -334,10 +334,10 @@ allprojects {
                 vcsUrl = "${project.extra["githubUrl"]}.git"
                 setLicenses("${project.extra["licenseShortName"]}")
                 setLabels("mqtt", "mqtt-client", "iot", "internet-of-things", "rxjava2", "reactive-streams", "backpressure")
-                with(version) {
+                version.apply {
                     released = Date().toString()
                     vcsTag = "v${project.version}"
-                    with(gpg) {
+                    gpg.apply {
                         sign = true
                     }
                 }
