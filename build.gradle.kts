@@ -350,10 +350,10 @@ allprojects {
         // workaround for publishing gradle metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
         tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
             doFirst {
-                publishing.publications.withType<MavenPublication>().forEach { publication ->
-                    val moduleFile = File(File(File(project.buildDir, "publications"), publication.name), "module.json")
+                publishing.publications.withType<MavenPublication>().forEach {
+                    val moduleFile = File(File(File(project.buildDir, "publications"), it.name), "module.json")
                     if (moduleFile.exists()) {
-                        publication.artifact(moduleFile).extension = "module"
+                        it.artifact(moduleFile).extension = "module"
                     }
                 }
             }
