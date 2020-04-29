@@ -121,38 +121,38 @@ val japiccNonImpl = tasks.register("japiccNonImpl") {
     }
 }
 
-fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
-    val japiccCheck = tasks.register("japiccCheck" + jarTaskProvider.name.capitalize()) {
+fun addCheck(publication: MavenPublication, artifact: MavenArtifact) {
+    val japiccCheck = tasks.register("japiccCheck-${publication.artifactId}") {
         group = "japicc"
         description = "Checks for binary and source incompatibility."
         dependsOn(japiccDownload, japiccNonImpl)
 
-        val jarTask = jarTaskProvider.get()
-
         val workingDir = File(project.buildDir, "japicc")
-        val archiveName = jarTask.archiveBaseName.get() + jarTask.archiveAppendix.map { "-$it" }.getOrElse("")
+        val groupId = publication.groupId
+        val artifactId = publication.artifactId
+        val version = publication.version
         val prevVersion: String by project.extra
-        val prevJarName = "$archiveName-$prevVersion.jar"
+        val prevJarName = "$artifactId-$prevVersion.jar"
         val prevJar = File(workingDir, prevJarName)
 
         val report = File(File(File(File(workingDir, "compat_reports"),
-                archiveName), "${prevVersion}_to_${project.version}"), "compat_report.html")
+                artifactId), "${prevVersion}_to_$version"), "compat_report.html")
 
-        inputs.files(jarTask)
+        inputs.files(artifact.buildDependencies.getDependencies(null))
         outputs.files(report)
 
         doLast {
-            println("Checking if previous version is available")
-
             if (project.version == prevVersion) {
-                throw StopExecutionException("No last semantic version available")
+                println("No previous version available")
+
+                throw StopExecutionException("No previous version available")
             }
 
-            println("Downloading previous version")
-
             if (!prevJar.exists()) {
+                println("Downloading previous version")
+
                 prevJar.parentFile.mkdirs()
-                val path = project.group.toString().replace(".", "/") + "/$archiveName/$prevVersion/$prevJarName"
+                val path = groupId.replace(".", "/") + "/$artifactId/$prevVersion/$prevJarName"
                 URL("${repositories.mavenCentral().url}$path").openStream().copyTo(prevJar.outputStream())
             }
 
@@ -161,13 +161,13 @@ fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
             val executable: File by japiccDownload.get().extra
             val nonImplFile: File by japiccNonImpl.get().extra
             val command = listOf(
-                    "perl", executable.path, "-lib", archiveName,
+                    "perl", executable.path, "-lib", artifactId,
                     "-skip-internal-packages", "com.hivemq.client.internal",
                     "-skip-internal-packages", "com.hivemq.shaded",
                     "-skip-internal-types", "com.hivemq.client.mqtt.mqtt(5|3).Mqtt(5|3)(Rx|Async|Blocking)Client",
                     "-non-impl", nonImplFile.path,
                     "-check-annotations", "-s",
-                    prevJar.path, jarTask.archiveFile.get().asFile.path)
+                    prevJar.path, artifact.file.path)
 
             val process = ProcessBuilder(command).directory(workingDir).start()
             val returnCode = process.waitFor()
@@ -181,9 +181,11 @@ fun addCheck(jarTaskProvider: TaskProvider<Jar>) {
     }
 }
 
-afterEvaluate {
-    addCheck(tasks.named<Jar>("jar"))
-    if (plugins.hasPlugin("com.github.johnrengelman.shadow")) {
-        addCheck(tasks.named<Jar>("shadowJar"))
+plugins.withType<MavenPublishPlugin> {
+    project.the<PublishingExtension>().publications.withType<MavenPublication>().forEach { publication ->
+        val artifact = publication.artifacts.find { it.extension == "jar" && it.classifier == null }
+        if (artifact != null) {
+            addCheck(publication, artifact)
+        }
     }
 }
