@@ -179,6 +179,7 @@ Maven
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
             <version>{{ site.version }}</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     ...
@@ -198,6 +199,7 @@ Maven
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
             <version>{{ site.version }}</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     ...
@@ -217,6 +219,7 @@ Maven
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
             <version>{{ site.version }}</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     ...
@@ -415,6 +418,7 @@ Maven
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     ...
@@ -434,6 +438,7 @@ Maven
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     ...
@@ -453,6 +458,7 @@ Maven
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     ...
