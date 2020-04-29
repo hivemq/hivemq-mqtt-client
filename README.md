@@ -151,6 +151,7 @@ For optional features you can choose to include additional modules:
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
             <version>1.2.0</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -158,6 +159,7 @@ For optional features you can choose to include additional modules:
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
             <version>1.2.0</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -165,6 +167,7 @@ For optional features you can choose to include additional modules:
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
             <version>1.2.0</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -258,6 +261,7 @@ dependencies {
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -265,6 +269,7 @@ dependencies {
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -272,6 +277,7 @@ dependencies {
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
