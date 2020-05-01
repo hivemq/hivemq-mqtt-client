@@ -41,7 +41,7 @@ allprojects {
 /* ******************** java ******************** */
 
 allprojects {
-    plugins.withType<JavaPlugin> {
+    plugins.withId("java") {
         java {
             sourceCompatibility = JavaVersion.VERSION_1_8
             targetCompatibility = JavaVersion.VERSION_1_8
@@ -92,7 +92,7 @@ val features = listOf("websocket", "proxy", "epoll")
 features.forEach { feature ->
     project("${project.name}-$feature") {
 
-        apply(plugin = "base")
+        plugins.apply("base")
 
         description = "Adds dependencies for the HiveMQ MQTT Client $feature module"
         extra["moduleName"] = "com.hivemq.client.mqtt.$feature"
@@ -114,7 +114,7 @@ dependencies {
 /* ******************** test ******************** */
 
 allprojects {
-    plugins.withType<JavaPlugin> {
+    plugins.withId("java") {
         dependencies {
             testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit.jupiter.version")}")
             testImplementation("org.junit.jupiter:junit-jupiter-params:${property("junit.jupiter.version")}")
@@ -143,9 +143,9 @@ dependencies {
 /* ******************** jars ******************** */
 
 allprojects {
-    plugins.withType<JavaLibraryPlugin> {
+    plugins.withId("java-library") {
 
-        apply(plugin = "biz.aQute.bnd.builder")
+        plugins.apply("biz.aQute.bnd.builder")
 
         afterEvaluate {
             tasks.jar {
@@ -206,10 +206,10 @@ tasks.shadowJar {
 
 /* ******************** publishing ******************** */
 
-apply(from = "${project.rootDir}/gradle/publishing.gradle.kts")
+apply("${project.rootDir}/gradle/publishing.gradle.kts")
 
 allprojects {
-    plugins.withType<MavenPublishPlugin> {
+    plugins.withId("maven-publish") {
         afterEvaluate {
             publishing.publications.withType<MavenPublication> {
                 pom {
@@ -257,9 +257,9 @@ allprojects {
 }
 
 allprojects {
-    plugins.withType<JavaLibraryPlugin> {
+    plugins.withId("java-library") {
 
-        apply(plugin = "maven-publish")
+        plugins.apply("maven-publish")
 
         publishing.publications.create<MavenPublication>("base") {
             from(components["java"])
@@ -271,7 +271,7 @@ allprojects {
 features.forEach { feature ->
     project("${project.name}-$feature") {
 
-        apply(plugin = "maven-publish")
+        plugins.apply("maven-publish")
 
         publishing.publications.create<MavenPublication>("base") {
             pom.withXml {
@@ -316,9 +316,9 @@ publishing.publications.create<MavenPublication>("shaded") {
 }
 
 allprojects {
-    plugins.withType<MavenPublishPlugin> {
+    plugins.withId("maven-publish") {
 
-        apply(plugin = "com.jfrog.bintray")
+        plugins.apply("com.jfrog.bintray")
 
         bintray {
             user = "${rootProject.extra["bintray_username"]}"
@@ -374,7 +374,7 @@ githubRelease {
 /* ******************** checks ******************** */
 
 allprojects {
-    apply(plugin = "com.github.hierynomus.license")
+    plugins.apply("com.github.hierynomus.license")
 
     license {
         header = File(project.rootDir, "HEADER")
@@ -383,8 +383,9 @@ allprojects {
 }
 
 allprojects {
-    plugins.withType<JavaPlugin> {
-        apply(plugin = "pmd")
+    plugins.withId("java") {
+
+        plugins.apply("pmd")
 
         pmd {
             toolVersion = "5.7.0"
@@ -392,8 +393,4 @@ allprojects {
     }
 }
 
-allprojects {
-    plugins.withType<JavaLibraryPlugin> {
-        apply(from = "${project.rootDir}/gradle/japicc.gradle.kts")
-    }
-}
+apply("${project.rootDir}/gradle/japicc.gradle.kts")
