@@ -34,5 +34,10 @@ dependencies {
 /* ******************** jars ******************** */
 
 tasks.jar {
-    manifest.attributes["Export-Package"] = "com.hivemq.client.mqtt.mqtt3.reactor, com.hivemq.client.mqtt.mqtt5.reactor, com.hivemq.client.rx.reactor"
+    withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+        bnd("Export-Package: " +
+                "com.hivemq.client.mqtt.mqtt3.reactor," +
+                "com.hivemq.client.mqtt.mqtt5.reactor," +
+                "com.hivemq.client.rx.reactor")
+    }
 }

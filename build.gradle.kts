@@ -149,21 +149,24 @@ allprojects {
 
         afterEvaluate {
             tasks.jar {
-                manifest {
-                    attributes["Automatic-Module-Name"] = project.extra["moduleName"]
-                    attributes["Bundle-Name"] = project.name
-                    attributes["Bundle-SymbolicName"] = project.extra["moduleName"]
-                    attributes["Bundle-Description"] = project.description
-                    attributes["Bundle-Vendor"] = project.extra["vendor"]
-                    attributes["Bundle-License"] = "${project.extra["licenseShortName"]}" +
-                            ";description=\"${project.extra["licenseReadableName"]}\"" +
-                            ";link=\"${project.extra["licenseUrl"]}\""
-                    attributes["Bundle-DocURL"] = project.extra["docUrl"]
-                    attributes["Bundle-SCM"] = "url=\"${project.extra["githubUrl"]}\"" +
-                            ";connection=\"${project.extra["scmConnection"]}\"" +
-                            ";developerConnection=\"${project.extra["scmDeveloperConnection"]}\""
-                    attributes["-consumer-policy"] = "\${range;[==,=+)}"
-                    attributes["-removeheaders"] = "Private-Package"
+                withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+                    bnd(
+                            "Automatic-Module-Name: ${project.extra["moduleName"]}",
+                            "Bundle-Name: ${project.name}",
+                            "Bundle-SymbolicName: ${project.extra["moduleName"]}",
+                            "Bundle-Description: ${project.description}",
+                            "Bundle-Vendor: ${project.extra["vendor"]}",
+                            "Bundle-License: " +
+                                    "${project.extra["licenseShortName"]};" +
+                                    "description=\"${project.extra["licenseReadableName"]}\";" +
+                                    "link=\"${project.extra["licenseUrl"]}\"",
+                            "Bundle-DocURL: ${project.extra["docUrl"]}",
+                            "Bundle-SCM: " +
+                                    "url=\"${project.extra["githubUrl"]}\";" +
+                                    "connection=\"${project.extra["scmConnection"]}\";" +
+                                    "developerConnection=\"${project.extra["scmDeveloperConnection"]}\"",
+                            "-consumer-policy: \${range;[==,=+)}",
+                            "-removeheaders: Private-Package")
                 }
             }
         }
@@ -176,7 +179,13 @@ allprojects {
 }
 
 tasks.jar {
-    manifest.attributes["Export-Package"] = "com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*"
+    withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+        bnd("Export-Package: " +
+                "com.hivemq.client.annotations.*," +
+                "com.hivemq.client.mqtt.*," +
+                "com.hivemq.client.rx.*," +
+                "com.hivemq.client.util.*")
+    }
 }
 
 tasks.shadowJar {
