@@ -8,16 +8,18 @@ val japiccDownload = tasks.register("japiccDownload") {
     val japiccVersion = "2.4"
     val workingDir = File(rootProject.buildDir, "japicc")
     val archive = File(workingDir, "japi-compliance-checker-$japiccVersion.zip")
-    val executable by extra(File(workingDir, "japi-compliance-checker-$japiccVersion/japi-compliance-checker.pl"))
+    val bin by extra(File(workingDir, "japi-compliance-checker-$japiccVersion"))
 
-    outputs.files(executable)
+    inputs.property("type", name)
+    inputs.property("japiccVersion", japiccVersion)
+    outputs.dir(bin)
+    outputs.cacheIf { true }
 
     doLast {
-        if (!archive.exists()) {
-            archive.parentFile.mkdirs()
-            val url = "https://github.com/lvc/japi-compliance-checker/archive/$japiccVersion.zip"
-            URL(url).openStream().copyTo(archive.outputStream())
-        }
+        archive.delete()
+        bin.delete()
+        val url = "https://github.com/lvc/japi-compliance-checker/archive/$japiccVersion.zip"
+        URL(url).openStream().copyTo(archive.outputStream())
         copy {
             from(zipTree(archive))
             into(workingDir)
@@ -45,8 +47,10 @@ allprojects {
                 val nonImplFile by extra(File(workingDir, "non-impl"))
                 val sourceSet = project.the<JavaPluginConvention>().sourceSets["main"].java
 
+                inputs.property("type", name)
                 inputs.files(sourceSet)
-                outputs.files(nonImplFile)
+                outputs.file(nonImplFile)
+                outputs.cacheIf { true }
 
                 doLast {
                     nonImplFile.delete()
@@ -121,11 +125,11 @@ allprojects {
                 }
             }
 
-            fun addCheck(publication: MavenPublication, artifact: MavenArtifact) {
-                val japiccCheck = tasks.register("japiccCheck-${publication.artifactId}") {
+            fun addArtifact(publication: MavenPublication, artifact: MavenArtifact) {
+
+                val japiccDownloadArtifact = tasks.register("japiccDownload-${publication.artifactId}") {
                     group = "japicc"
-                    description = "Runs binary and source incompatibility check for ${publication.artifactId}"
-                    dependsOn(japiccDownload, japiccNonImpl)
+                    description = "Downloads the previous version of ${publication.artifactId}"
 
                     val workingDir = File(project.buildDir, "japicc")
                     val groupId = publication.groupId
@@ -133,35 +137,52 @@ allprojects {
                     val version = publication.version
                     val prevVersion: String by project.extra
                     val prevJarName = "$artifactId-$prevVersion.jar"
-                    val prevJar = File(workingDir, prevJarName)
+                    val prevJar by extra(File(workingDir, prevJarName))
 
-                    val report = File(File(File(File(workingDir, "compat_reports"),
-                            artifactId), "${prevVersion}_to_$version"), "compat_report.html")
+                    inputs.property("type", name)
+                    inputs.property("prevVersion", prevVersion)
+                    outputs.file(prevJar)
+                    outputs.cacheIf { true }
 
-                    inputs.files(artifact.buildDependencies.getDependencies(null))
-                    outputs.files(report)
+                    onlyIf { version != prevVersion }
 
                     doLast {
-                        if (version == prevVersion) {
-                            println("No previous version available")
+                        prevJar.delete()
+                        val path = groupId.replace(".", "/") + "/$artifactId/$prevVersion/$prevJarName"
+                        URL("${repositories.mavenCentral().url}$path").openStream().copyTo(prevJar.outputStream())
+                    }
+                }
 
-                            throw StopExecutionException("No previous version available")
-                        }
+                val japiccArtifact = tasks.register("japicc-${publication.artifactId}") {
+                    group = "japicc"
+                    description = "Runs binary and source incompatibility check for ${publication.artifactId}"
 
-                        if (!prevJar.exists()) {
-                            println("Downloading previous version")
+                    val workingDir = File(project.buildDir, "japicc")
+                    val artifactId = publication.artifactId
+                    val version = publication.version
+                    val prevVersion: String by project.extra
+                    val prevJar: File by japiccDownloadArtifact.get().extra
+                    val bin: File by japiccDownload.get().extra
+                    val nonImplFile: File by japiccNonImpl.get().extra
+                    val report = File(File(File(File(workingDir, "compat_reports"),
+                            artifactId), "${prevVersion}_to_$version"), "compat_report.html")
+                    val sourceSet = project.the<JavaPluginConvention>().sourceSets["main"].java
 
-                            prevJar.parentFile.mkdirs()
-                            val path = groupId.replace(".", "/") + "/$artifactId/$prevVersion/$prevJarName"
-                            URL("${repositories.mavenCentral().url}$path").openStream().copyTo(prevJar.outputStream())
-                        }
+                    inputs.property("type", name)
+                    dependsOn(artifact.buildDependencies.getDependencies(null))
+                    inputs.files(sourceSet)
+                    inputs.files(japiccDownload)
+                    inputs.files(japiccNonImpl)
+                    inputs.files(japiccDownloadArtifact)
+                    outputs.file(report)
+                    outputs.cacheIf { true }
 
-                        println("Checking binary and source compatibility with previous version")
+                    onlyIf { prevJar.exists() }
 
-                        val executable: File by japiccDownload.get().extra
-                        val nonImplFile: File by japiccNonImpl.get().extra
+                    doLast {
                         val command = listOf(
-                                "perl", executable.path, "-lib", artifactId,
+                                "perl", File(bin, "japi-compliance-checker.pl").path,
+                                "-lib", artifactId,
                                 "-skip-internal-packages", "com.hivemq.client.internal",
                                 "-skip-internal-packages", "com.hivemq.shaded",
                                 "-skip-internal-types", "com.hivemq.client.mqtt.mqtt(5|3).Mqtt(5|3)(Rx|Async|Blocking)Client",
@@ -177,7 +198,7 @@ allprojects {
                     }
                 }
                 japicc {
-                    dependsOn(japiccCheck)
+                    dependsOn(japiccArtifact)
                 }
             }
 
@@ -185,7 +206,7 @@ allprojects {
                 the<PublishingExtension>().publications.withType<MavenPublication>().forEach { publication ->
                     val artifact = publication.artifacts.find { it.extension == "jar" && it.classifier == null }
                     if (artifact != null) {
-                        addCheck(publication, artifact)
+                        addArtifact(publication, artifact)
                     }
                 }
             }
