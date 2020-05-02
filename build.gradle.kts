@@ -17,7 +17,6 @@ plugins {
 allprojects {
     group = "com.hivemq"
     version = "1.2.0"
-
     description = "HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java " +
             "client library with different API flavours and backpressure support"
 
@@ -395,3 +394,14 @@ allprojects {
 }
 
 apply("${project.rootDir}/gradle/japicc.gradle.kts")
+
+
+/* ******************** build cache ******************** */
+
+allprojects {
+    normalization {
+        runtimeClasspath {
+            ignore("META-INF/MANIFEST.MF")
+        }
+    }
+}
