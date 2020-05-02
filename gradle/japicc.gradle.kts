@@ -45,7 +45,9 @@ allprojects {
 
                 val workingDir = File(project.buildDir, "japicc")
                 val nonImplFile by extra(File(workingDir, "non-impl"))
-                val sourceSet = project.the<JavaPluginConvention>().sourceSets["main"].java
+                val sourceSet by extra(project.the<JavaPluginConvention>().sourceSets["main"].java.filterNot {
+                    it.path.matches(Regex(".*/internal/.*"))
+                })
 
                 inputs.property("type", name)
                 inputs.files(sourceSet)
@@ -58,16 +60,18 @@ allprojects {
                     nonImplFile.createNewFile()
                     val writer = nonImplFile.bufferedWriter(StandardCharsets.UTF_8)
 
-                    sourceSet.visit {
-                        if (!file.isFile) return@visit
+                    sourceSet.forEach {
+                        if (!it.isFile) return@forEach
 
-                        val packageName = relativePath.parent.pathString.replace("/", ".").replace("\\", ".")
-
-                        val content = file.readText(StandardCharsets.UTF_8)
+                        val content = it.readText(StandardCharsets.UTF_8)
                                 .replace(Regex("//.*\n"), " ") // remove line comments
                                 .replace("\n", " ") // remove new lines
                                 .replace(Regex("/\\*.*?\\*/"), " ") // remove multi line comments
                                 .replace(Regex(" +"), " ") // remove unnecessary spaces
+
+                        val packageStart = content.indexOf("package ") + "package ".length
+                        val packageEnd = content.indexOf(";", packageStart)
+                        val packageName = content.substring(packageStart, packageEnd)
 
                         var index = 0
                         val classNames = mutableListOf<String>()
@@ -161,18 +165,19 @@ allprojects {
                     val artifactId = publication.artifactId
                     val version = publication.version
                     val prevVersion: String by project.extra
+                    val jar = artifact.file
                     val prevJar: File by japiccDownloadArtifact.get().extra
-                    val bin: File by japiccDownload.get().extra
+                    val sourceSet: List<File> by japiccNonImpl.get().extra
                     val nonImplFile: File by japiccNonImpl.get().extra
+                    val bin: File by japiccDownload.get().extra
                     val report = File(File(File(File(workingDir, "compat_reports"),
                             artifactId), "${prevVersion}_to_$version"), "compat_report.html")
-                    val sourceSet = project.the<JavaPluginConvention>().sourceSets["main"].java
 
                     inputs.property("type", name)
                     dependsOn(artifact.buildDependencies.getDependencies(null))
                     inputs.files(sourceSet)
-                    inputs.files(japiccDownload)
                     inputs.files(japiccNonImpl)
+                    inputs.files(japiccDownload)
                     inputs.files(japiccDownloadArtifact)
                     outputs.file(report)
                     outputs.cacheIf { true }
@@ -188,7 +193,7 @@ allprojects {
                                 "-skip-internal-types", "com.hivemq.client.mqtt.mqtt(5|3).Mqtt(5|3)(Rx|Async|Blocking)Client",
                                 "-non-impl", nonImplFile.path,
                                 "-check-annotations", "-s",
-                                prevJar.path, artifact.file.path)
+                                prevJar.path, jar.path)
 
                         val process = ProcessBuilder(command).directory(workingDir).start()
                         val returnCode = process.waitFor()
@@ -204,7 +209,7 @@ allprojects {
 
             afterEvaluate {
                 the<PublishingExtension>().publications.withType<MavenPublication>().forEach { publication ->
-                    val artifact = publication.artifacts.find { it.extension == "jar" && it.classifier == null }
+                    val artifact = publication.artifacts.find { (it.extension == "jar") && (it.classifier == null) }
                     if (artifact != null) {
                         addArtifact(publication, artifact)
                     }
