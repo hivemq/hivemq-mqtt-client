@@ -6,9 +6,9 @@ val japiccDownload = tasks.register("japiccDownload") {
     description = "Downloads the Java API Compliance Checker"
 
     val japiccVersion = "2.4"
-    val workingDir = File(rootProject.buildDir, "japicc")
-    val archive = File(workingDir, "japi-compliance-checker-$japiccVersion.zip")
-    val bin by extra(File(workingDir, "japi-compliance-checker-$japiccVersion"))
+    val workingDir = buildDir.resolve("japicc")
+    val archive = workingDir.resolve("japi-compliance-checker-$japiccVersion.zip")
+    val bin by extra(workingDir.resolve("japi-compliance-checker-$japiccVersion"))
 
     inputs.property("type", name)
     inputs.property("japiccVersion", japiccVersion)
@@ -43,8 +43,8 @@ allprojects {
                 group = "japicc"
                 description = "Lists interfaces that must not be implemented by library users"
 
-                val workingDir = File(project.buildDir, "japicc")
-                val nonImplFile by extra(File(workingDir, "non-impl"))
+                val workingDir = buildDir.resolve("japicc")
+                val nonImplFile by extra(workingDir.resolve("non-impl"))
                 val sourceSet by extra(project.the<JavaPluginConvention>().sourceSets["main"].java.filterNot {
                     it.path.matches(Regex(".*/internal/.*"))
                 })
@@ -135,13 +135,13 @@ allprojects {
                     group = "japicc"
                     description = "Downloads the previous version of ${publication.artifactId}"
 
-                    val workingDir = File(project.buildDir, "japicc")
+                    val workingDir = buildDir.resolve("japicc")
                     val groupId = publication.groupId
                     val artifactId = publication.artifactId
                     val version = publication.version
                     val prevVersion: String by project.extra
                     val prevJarName = "$artifactId-$prevVersion.jar"
-                    val prevJar by extra(File(workingDir, prevJarName))
+                    val prevJar by extra(workingDir.resolve(prevJarName))
 
                     inputs.property("type", name)
                     inputs.property("prevVersion", prevVersion)
@@ -161,7 +161,7 @@ allprojects {
                     group = "japicc"
                     description = "Runs binary and source incompatibility check for ${publication.artifactId}"
 
-                    val workingDir = File(project.buildDir, "japicc")
+                    val workingDir = buildDir.resolve("japicc")
                     val artifactId = publication.artifactId
                     val version = publication.version
                     val prevVersion: String by project.extra
@@ -170,8 +170,8 @@ allprojects {
                     val sourceSet: List<File> by japiccNonImpl.get().extra
                     val nonImplFile: File by japiccNonImpl.get().extra
                     val bin: File by japiccDownload.get().extra
-                    val report = File(File(File(File(workingDir, "compat_reports"),
-                            artifactId), "${prevVersion}_to_$version"), "compat_report.html")
+                    val report = workingDir.resolve(
+                            "compat_reports/$artifactId/${prevVersion}_to_$version/compat_report.html")
 
                     inputs.property("type", name)
                     dependsOn(artifact.buildDependencies.getDependencies(null))
@@ -186,7 +186,7 @@ allprojects {
 
                     doLast {
                         val command = listOf(
-                                "perl", File(bin, "japi-compliance-checker.pl").path,
+                                "perl", bin.resolve("japi-compliance-checker.pl").path,
                                 "-lib", artifactId,
                                 "-skip-internal-packages", "com.hivemq.client.internal",
                                 "-skip-internal-packages", "com.hivemq.shaded",

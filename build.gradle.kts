@@ -206,7 +206,7 @@ tasks.shadowJar {
 
 /* ******************** publishing ******************** */
 
-apply("${project.rootDir}/gradle/publishing.gradle.kts")
+apply("${rootDir}/gradle/publishing.gradle.kts")
 
 allprojects {
     plugins.withId("maven-publish") {
@@ -329,11 +329,11 @@ allprojects {
             bintray.setPublications(*publishing.publications.withType<MavenPublication>().names.toTypedArray())
         }
 
-        // workaround for publishing gradle metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
+        // workaround for publishing gradle module metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
         tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
             doFirst {
                 publishing.publications.withType<MavenPublication> {
-                    val moduleFile = File(File(File(project.buildDir, "publications"), name), "module.json")
+                    val moduleFile = buildDir.resolve("publications/$name/module.json")
                     if (moduleFile.exists()) {
                         artifact(moduleFile).extension = "module"
                     }
@@ -359,7 +359,7 @@ allprojects {
     plugins.apply("com.github.hierynomus.license")
 
     license {
-        header = File(project.rootDir, "HEADER")
+        header = rootDir.resolve("HEADER")
         mapping("java", "SLASHSTAR_STYLE")
     }
 }
@@ -375,7 +375,7 @@ allprojects {
     }
 }
 
-apply("${project.rootDir}/gradle/japicc.gradle.kts")
+apply("${rootDir}/gradle/japicc.gradle.kts")
 
 
 /* ******************** build cache ******************** */
