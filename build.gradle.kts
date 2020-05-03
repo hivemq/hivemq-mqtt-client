@@ -46,11 +46,11 @@ allprojects {
             targetCompatibility = JavaVersion.VERSION_1_8
         }
 
-        tasks.withType<JavaCompile> {
+        tasks.withType<JavaCompile>().configureEach {
             options.encoding = "UTF-8"
         }
 
-        tasks.withType<Javadoc> {
+        tasks.withType<Javadoc>().configureEach {
             options.encoding = "UTF-8"
             exclude("**/internal/**")
         }
@@ -211,7 +211,7 @@ apply("${project.rootDir}/gradle/publishing.gradle.kts")
 allprojects {
     plugins.withId("maven-publish") {
         afterEvaluate {
-            publishing.publications.withType<MavenPublication> {
+            publishing.publications.withType<MavenPublication>().configureEach {
                 pom {
                     name.set("${project.extra["readableName"]}")
                     description.set(project.description)
@@ -261,7 +261,7 @@ allprojects {
 
         plugins.apply("maven-publish")
 
-        publishing.publications.create<MavenPublication>("base") {
+        publishing.publications.register<MavenPublication>("base") {
             from(components["java"])
             suppressAllPomMetadataWarnings()
         }
@@ -271,14 +271,14 @@ allprojects {
 
         plugins.apply("maven-publish")
 
-        publishing.publications.create<MavenPublication>("base") {
+        publishing.publications.register<MavenPublication>("base") {
             from(components["javaPlatform"])
             suppressAllPomMetadataWarnings()
         }
     }
 }
 
-publishing.publications.create<MavenPublication>("shaded") {
+publishing.publications.register<MavenPublication>("shaded") {
     artifactId = "${project.name}-shaded"
     artifact(tasks["shadowJar"])
     artifact(tasks["javadocJar"])
@@ -332,10 +332,10 @@ allprojects {
         // workaround for publishing gradle metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
         tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
             doFirst {
-                publishing.publications.withType<MavenPublication>().forEach {
-                    val moduleFile = File(File(File(project.buildDir, "publications"), it.name), "module.json")
+                publishing.publications.withType<MavenPublication> {
+                    val moduleFile = File(File(File(project.buildDir, "publications"), name), "module.json")
                     if (moduleFile.exists()) {
-                        it.artifact(moduleFile).extension = "module"
+                        artifact(moduleFile).extension = "module"
                     }
                 }
             }

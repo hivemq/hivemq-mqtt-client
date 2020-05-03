@@ -208,10 +208,10 @@ allprojects {
             }
 
             afterEvaluate {
-                the<PublishingExtension>().publications.withType<MavenPublication>().forEach { publication ->
-                    val artifact = publication.artifacts.find { (it.extension == "jar") && (it.classifier == null) }
+                the<PublishingExtension>().publications.withType<MavenPublication>().configureEach {
+                    val artifact = artifacts.find { (it.extension == "jar") && (it.classifier == null) }
                     if (artifact != null) {
-                        addArtifact(publication, artifact)
+                        addArtifact(this, artifact)
                     }
                 }
             }
