@@ -88,17 +88,8 @@ dependencies {
 
 val features = listOf("websocket", "proxy", "epoll")
 
-features.forEach { feature ->
-    project("${project.name}-$feature") {
-
-        plugins.apply("base")
-
-        description = "Adds dependencies for the HiveMQ MQTT Client $feature module"
-        extra["moduleName"] = "com.hivemq.client.mqtt.$feature"
-        extra["readableName"] = "HiveMQ MQTT Client $feature module"
-    }
-
-    java.registerFeature(feature) {
+features.forEach {
+    java.registerFeature(it) {
         usingSourceSet(sourceSets["main"])
     }
 }
@@ -275,32 +266,14 @@ allprojects {
             suppressAllPomMetadataWarnings()
         }
     }
-}
 
-features.forEach { feature ->
-    project("${project.name}-$feature") {
+    plugins.withId("java-platform") {
 
         plugins.apply("maven-publish")
 
         publishing.publications.create<MavenPublication>("base") {
-            pom.withXml {
-                asNode().appendNode("dependencies").apply {
-                    appendNode("dependency").apply {
-                        appendNode("groupId", rootProject.group)
-                        appendNode("artifactId", rootProject.name)
-                        appendNode("version", rootProject.version)
-                        appendNode("scope", "compile")
-                    }
-                    rootProject.configurations["${feature}RuntimeElements"].allDependencies.forEach {
-                        appendNode("dependency").apply {
-                            appendNode("groupId", it.group)
-                            appendNode("artifactId", it.name)
-                            appendNode("version", it.version)
-                            appendNode("scope", "runtime")
-                        }
-                    }
-                }
-            }
+            from(components["javaPlatform"])
+            suppressAllPomMetadataWarnings()
         }
     }
 }
