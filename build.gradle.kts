@@ -26,12 +26,12 @@ allprojects {
     metadata {
         moduleName = "com.hivemq.client.mqtt"
         readableName = "HiveMQ MQTT Client"
-        license {
-            apache2()
-        }
         organization {
             name = "HiveMQ and the HiveMQ Community"
             url = "https://www.hivemq.com/"
+        }
+        license {
+            apache2()
         }
         developers {
             developer {
@@ -101,9 +101,7 @@ dependencies {
 
 /* ******************** optional dependencies ******************** */
 
-val features = listOf("websocket", "proxy", "epoll")
-
-features.forEach {
+listOf("websocket", "proxy", "epoll").forEach {
     java.registerFeature(it) {
         usingSourceSet(sourceSets["main"])
     }
@@ -184,7 +182,6 @@ tasks.shadowJar {
     dependencies {
         exclude(dependency("io.reactivex.rxjava2:rxjava"))
         exclude(dependency("org.reactivestreams:reactive-streams"))
-        exclude(dependency("org.slf4j:slf4j-api"))
     }
 
     val shadePrefix = "com.hivemq.client.internal.shaded."
