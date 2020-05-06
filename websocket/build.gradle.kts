@@ -7,8 +7,10 @@ plugins {
 
 description = "Adds dependencies for the HiveMQ MQTT Client websocket module"
 
-extra["moduleName"] = "com.hivemq.client.mqtt.websocket"
-extra["readableName"] = "HiveMQ MQTT Client websocket module"
+metadata {
+    moduleName = "com.hivemq.client.mqtt.websocket"
+    readableName = "HiveMQ MQTT Client websocket module"
+}
 
 
 /* ******************** dependencies ******************** */
