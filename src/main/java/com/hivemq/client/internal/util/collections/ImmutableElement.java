@@ -130,7 +130,7 @@ import java.util.function.Consumer;
         }
         final List<?> that = (List<?>) o;
 
-        return (that.size() == 1) && element.equals(Builder.first(that));
+        return (that.size() == 1) && element.equals(that.get(0));
     }
 
     @Override
