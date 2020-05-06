@@ -281,7 +281,7 @@ import java.util.function.Consumer;
 
         @Override
         public @NotNull ImmutableListIterator<E> listIterator(final int index) {
-            return new ArrayIterator(fromIndex, toIndex, Checks.cursorIndex(index, size()));
+            return new ArrayIterator(fromIndex, toIndex, fromIndex + Checks.cursorIndex(index, size()));
         }
 
         @Override
