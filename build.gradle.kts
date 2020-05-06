@@ -9,6 +9,7 @@ plugins {
     id("com.github.breadmoirai.github-release")
     id("com.github.hierynomus.license")
     id("pmd")
+    id("com.github.sgtsilvio.gradle.metadata")
 }
 
 
@@ -20,19 +21,33 @@ allprojects {
     description = "HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java " +
             "client library with different API flavours and backpressure support"
 
-    extra["moduleName"] = "com.hivemq.client.mqtt"
-    extra["readableName"] = "HiveMQ MQTT Client"
-    extra["vendor"] = "HiveMQ and the HiveMQ Community"
-    extra["githubOrg"] = "hivemq"
-    extra["githubRepo"] = "hivemq-mqtt-client"
-    extra["githubUrl"] = "https://github.com/${extra["githubOrg"]}/${extra["githubRepo"]}"
-    extra["scmConnection"] = "scm:git:git://github.com/${extra["githubOrg"]}/${extra["githubRepo"]}.git"
-    extra["scmDeveloperConnection"] = "scm:git:ssh://git@github.com/${extra["githubOrg"]}/${extra["githubRepo"]}.git"
-    extra["issuesUrl"] = "${extra["githubUrl"]}/issues"
-    extra["docUrl"] = "https://${extra["githubOrg"]}.github.io/${extra["githubRepo"]}/"
-    extra["licenseShortName"] = "Apache-2.0"
-    extra["licenseReadableName"] = "The Apache License, Version 2.0"
-    extra["licenseUrl"] = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    plugins.apply("com.github.sgtsilvio.gradle.metadata")
+
+    metadata {
+        moduleName = "com.hivemq.client.mqtt"
+        readableName = "HiveMQ MQTT Client"
+        license {
+            apache2()
+        }
+        organization {
+            name = "HiveMQ and the HiveMQ Community"
+            url = "https://www.hivemq.com/"
+        }
+        developers {
+            developer {
+                id = "SgtSilvio"
+                name = "Silvio Giebl"
+                email = "silvio.giebl@hivemq.com"
+            }
+        }
+        github {
+            org = "hivemq"
+            repo = "hivemq-mqtt-client"
+            pages()
+            issues()
+        }
+    }
+
     extra["prevVersion"] = "1.1.4"
 }
 
@@ -138,27 +153,9 @@ allprojects {
 
         plugins.apply("biz.aQute.bnd.builder")
 
-        afterEvaluate {
-            tasks.jar {
-                withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
-                    bnd(
-                            "Automatic-Module-Name: ${project.extra["moduleName"]}",
-                            "Bundle-Name: ${project.name}",
-                            "Bundle-SymbolicName: ${project.extra["moduleName"]}",
-                            "Bundle-Description: ${project.description}",
-                            "Bundle-Vendor: ${project.extra["vendor"]}",
-                            "Bundle-License: " +
-                                    "${project.extra["licenseShortName"]};" +
-                                    "description=\"${project.extra["licenseReadableName"]}\";" +
-                                    "link=\"${project.extra["licenseUrl"]}\"",
-                            "Bundle-DocURL: ${project.extra["docUrl"]}",
-                            "Bundle-SCM: " +
-                                    "url=\"${project.extra["githubUrl"]}\";" +
-                                    "connection=\"${project.extra["scmConnection"]}\";" +
-                                    "developerConnection=\"${project.extra["scmDeveloperConnection"]}\"",
-                            "-consumer-policy: \${range;[==,=+)}",
-                            "-removeheaders: Private-Package")
-                }
+        tasks.jar {
+            withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+                bnd("-consumer-policy: \${range;[==,=+)}", "-removeheaders: Private-Package")
             }
         }
 
@@ -209,54 +206,6 @@ tasks.shadowJar {
 apply("${rootDir}/gradle/publishing.gradle.kts")
 
 allprojects {
-    plugins.withId("maven-publish") {
-        afterEvaluate {
-            publishing.publications.withType<MavenPublication>().configureEach {
-                pom {
-                    name.set("${project.extra["readableName"]}")
-                    description.set(project.description)
-                    url.set("${project.extra["githubUrl"]}")
-                    licenses {
-                        license {
-                            name.set("${project.extra["licenseReadableName"]}")
-                            url.set("${project.extra["licenseUrl"]}")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id.set("SG")
-                            name.set("Silvio Giebl")
-                            email.set("silvio.giebl@hivemq.com")
-                        }
-                    }
-                    scm {
-                        connection.set("${project.extra["scmConnection"]}")
-                        developerConnection.set("${project.extra["scmDeveloperConnection"]}")
-                        url.set("${project.extra["githubUrl"]}")
-                    }
-                    issueManagement {
-                        system.set("github")
-                        url.set("${project.extra["issuesUrl"]}")
-                    }
-                    withXml {
-                        (asNode()["dependencies"] as groovy.util.NodeList).forEach { dependencies ->
-                            (dependencies as groovy.util.Node).children().forEach { dependency ->
-                                val dep = dependency as groovy.util.Node
-                                val optional = dep["optional"] as groovy.util.NodeList
-                                val scope = dep["scope"] as groovy.util.NodeList
-                                if (!optional.isEmpty() && (optional[0] as groovy.util.Node).text() == "true") {
-                                    (scope[0] as groovy.util.Node).setValue("runtime")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-allprojects {
     plugins.withId("java-library") {
 
         plugins.apply("maven-publish")
@@ -299,6 +248,27 @@ publishing.publications.register<MavenPublication>("shaded") {
 
 allprojects {
     plugins.withId("maven-publish") {
+        afterEvaluate {
+            publishing.publications.withType<MavenPublication>().configureEach {
+                pom.withXml {
+                    (asNode()["dependencies"] as groovy.util.NodeList).forEach { dependencies ->
+                        (dependencies as groovy.util.Node).children().forEach { dependency ->
+                            val dep = dependency as groovy.util.Node
+                            val optional = dep["optional"] as groovy.util.NodeList
+                            val scope = dep["scope"] as groovy.util.NodeList
+                            if (!optional.isEmpty() && (optional[0] as groovy.util.Node).text() == "true") {
+                                (scope[0] as groovy.util.Node).setValue("runtime")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+allprojects {
+    plugins.withId("maven-publish") {
 
         plugins.apply("com.jfrog.bintray")
 
@@ -311,10 +281,10 @@ allprojects {
                 repo = "HiveMQ"
                 name = "hivemq-mqtt-client"
                 desc = project.description
-                websiteUrl = "${project.extra["githubUrl"]}"
-                issueTrackerUrl = "${project.extra["issuesUrl"]}"
-                vcsUrl = "${project.extra["githubUrl"]}.git"
-                setLicenses("${project.extra["licenseShortName"]}")
+                websiteUrl = metadata.url
+                issueTrackerUrl = metadata.issueManagement.url
+                vcsUrl = metadata.scm.url
+                setLicenses(metadata.license.shortName)
                 setLabels("mqtt", "mqtt-client", "iot", "internet-of-things", "rxjava2", "reactive-streams", "backpressure")
                 version.apply {
                     released = Date().toString()
@@ -345,8 +315,8 @@ allprojects {
 
 githubRelease {
     token("${rootProject.extra["github_token"]}")
-    owner.set("${project.extra["githubOrg"]}")
-    repo.set("${project.extra["githubRepo"]}")
+    owner.set(metadata.github.org)
+    repo.set(metadata.github.repo)
     targetCommitish.set("master")
     tagName.set("v${project.version}")
     releaseName.set("${project.version}")

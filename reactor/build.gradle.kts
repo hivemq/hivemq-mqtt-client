@@ -7,8 +7,11 @@ plugins {
 
 description = "Reactor API for the HiveMQ MQTT Client"
 
-extra["moduleName"] = "com.hivemq.client.mqtt.reactor"
-extra["readableName"] = "HiveMQ MQTT Client reactor module"
+metadata {
+    moduleName = "com.hivemq.client.mqtt.reactor"
+    readableName = "HiveMQ MQTT Client reactor module"
+}
+
 extra["prevVersion"] = "1.2.0"
 
 

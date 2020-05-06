@@ -7,8 +7,10 @@ plugins {
 
 description = "Examples using the HiveMQ MQTT Client"
 
-extra["moduleName"] = "com.hivemq.client.mqtt.examples"
-extra["readableName"] = "HiveMQ MQTT Client examples"
+metadata {
+    moduleName = "com.hivemq.client.mqtt.examples"
+    readableName = "HiveMQ MQTT Client examples"
+}
 
 
 /* ******************** dependencies ******************** */
