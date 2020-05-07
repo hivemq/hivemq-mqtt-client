@@ -17,7 +17,6 @@ plugins {
 
 allprojects {
     group = "com.hivemq"
-    version = "1.2.0"
     description = "HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java " +
             "client library with different API flavours and backpressure support"
 
@@ -119,9 +118,9 @@ dependencies {
 allprojects {
     plugins.withId("java") {
         dependencies {
-            testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit.jupiter.version")}")
-            testImplementation("org.junit.jupiter:junit-jupiter-params:${property("junit.jupiter.version")}")
-            testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit.jupiter.version")}")
+            testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit-jupiter.version")}")
+            testImplementation("org.junit.jupiter:junit-jupiter-params:${property("junit-jupiter.version")}")
+            testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit-jupiter.version")}")
         }
 
         tasks.test {
