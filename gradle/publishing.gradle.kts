@@ -9,7 +9,7 @@ ext {
 }
 */
 if (file("${project.rootDir}/gradle/credentials.gradle").exists()) {
-    apply(from = "${project.rootDir}/gradle/credentials.gradle")
+    apply("${project.rootDir}/gradle/credentials.gradle")
 }
 
 /*
@@ -26,8 +26,8 @@ Credentials must be stored in the Travis repository settings (https://travis-ci.
 The environment variables are encrypted by Travis and get decrypted before each build.
 Availability must be restricted to the master branch (only needed for publishing releases).
 */
-listOf("bintray_username", "bintray_apiKey", "github_token").forEach { propName ->
-    if (!project.hasProperty(propName)) {
-        project.extra[propName] = "${System.getenv()[propName]}"
+listOf("bintray_username", "bintray_apiKey", "github_token").forEach {
+    if (!project.hasProperty(it)) {
+        project.extra[it] = System.getenv()[it]
     }
 }
