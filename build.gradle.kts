@@ -82,6 +82,7 @@ allprojects {
 
 dependencies {
     api("io.reactivex.rxjava2:rxjava:${property("rxjava.version")}")
+    api("org.reactivestreams:reactive-streams:${property("reactive-streams.version")}")
 
     implementation("io.netty:netty-buffer:${property("netty.version")}")
     implementation("io.netty:netty-codec:${property("netty.version")}")
