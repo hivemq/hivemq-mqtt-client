@@ -12,8 +12,6 @@ metadata {
     readableName = "HiveMQ MQTT Client reactor module"
 }
 
-extra["prevVersion"] = "1.2.0"
-
 
 /* ******************** dependencies ******************** */
 

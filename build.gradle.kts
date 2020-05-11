@@ -46,8 +46,6 @@ allprojects {
             issues()
         }
     }
-
-    extra["prevVersion"] = "1.1.4"
 }
 
 
