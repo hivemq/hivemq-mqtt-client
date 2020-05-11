@@ -66,7 +66,7 @@ allprojects {
 
         tasks.withType<Javadoc>().configureEach {
             options.encoding = "UTF-8"
-            exclude("**/internal/**")
+            (options as StandardJavadocDocletOptions).charSet = "UTF-8"
         }
     }
 }
@@ -90,7 +90,7 @@ dependencies {
     implementation("io.netty:netty-handler:${property("netty.version")}")
     implementation("io.netty:netty-transport:${property("netty.version")}")
     implementation("org.jctools:jctools-core:${property("jctools.version")}")
-    implementation("org.jetbrains:annotations:${property("jetbrains-annotations.version")}")
+    implementation("org.jetbrains:annotations:${property("annotations.version")}")
     implementation("com.google.dagger:dagger:${property("dagger.version")}")
 
     compileOnly("org.slf4j:slf4j-api:${property("slf4j.version")}")
@@ -160,6 +160,21 @@ allprojects {
         java {
             withJavadocJar()
             withSourcesJar()
+        }
+
+        tasks.javadoc {
+            exclude("**/internal/**")
+            (options as StandardJavadocDocletOptions).links(
+                    "https://docs.oracle.com/javase/8/docs/api/",
+                    "https://www.reactive-streams.org/reactive-streams-${project.property("reactive-streams.version")}-javadoc/",
+                    "https://javadoc.io/doc/io.reactivex.rxjava2/rxjava/${project.property("rxjava.version")}/",
+                    "https://javadoc.io/doc/io.projectreactor/reactor-core/${project.property("reactor.version")}/",
+                    "https://javadoc.io/doc/org.jetbrains/annotations/${project.property("annotations.version")}/")
+            if (project != rootProject) {
+                (options as StandardJavadocDocletOptions).linksOffline(
+                        "https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client/${rootProject.version}/",
+                        rootProject.tasks.javadoc.get().destinationDir?.path)
+            }
         }
     }
 }

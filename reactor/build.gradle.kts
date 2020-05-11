@@ -22,7 +22,7 @@ dependencies {
     api("io.projectreactor:reactor-core:${property("reactor.version")}")
 
     implementation("io.projectreactor.addons:reactor-adapter:${property("reactor-adapter.version")}")
-    implementation("org.jetbrains:annotations:${property("jetbrains-annotations.version")}")
+    implementation("org.jetbrains:annotations:${property("annotations.version")}")
 }
 
 
