@@ -178,11 +178,14 @@ tasks.shadowJar {
     archiveAppendix.set("shaded")
     archiveClassifier.set("")
 
-    // api: not shaded and relocated, added as dependencies in pom
-    dependencies {
-        exclude(dependency("io.reactivex.rxjava2:rxjava"))
-        exclude(dependency("org.reactivestreams:reactive-streams"))
-    }
+    configurations = listOf(project.run {
+        configurations.create("shaded") {
+            extendsFrom(configurations["runtimeClasspath"])
+            configurations["apiElements"].allDependencies.forEach {
+                exclude(it.group, it.name)
+            }
+        }
+    })
 
     val shadePrefix = "com.hivemq.client.internal.shaded."
     val shadeFilePrefix = shadePrefix.replace(".", "_")
