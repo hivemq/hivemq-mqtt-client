@@ -166,10 +166,12 @@ allprojects {
             exclude("**/internal/**")
             (options as StandardJavadocDocletOptions).links(
                     "https://docs.oracle.com/javase/8/docs/api/",
-                    "https://www.reactive-streams.org/reactive-streams-${project.property("reactive-streams.version")}-javadoc/",
                     "https://javadoc.io/doc/io.reactivex.rxjava2/rxjava/${project.property("rxjava.version")}/",
                     "https://javadoc.io/doc/io.projectreactor/reactor-core/${project.property("reactor.version")}/",
                     "https://javadoc.io/doc/org.jetbrains/annotations/${project.property("annotations.version")}/")
+            (options as StandardJavadocDocletOptions).linksOffline(
+                    "https://javadoc.io/doc/org.reactivestreams/reactive-streams/${project.property("reactive-streams.version")}/",
+                    "https://www.reactive-streams.org/reactive-streams-${project.property("reactive-streams.version")}-javadoc/")
             if (project != rootProject) {
                 (options as StandardJavadocDocletOptions).linksOffline(
                         "https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client/${rootProject.version}/",
