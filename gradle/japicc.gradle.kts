@@ -189,8 +189,6 @@ allprojects {
                                 "perl", bin.resolve("japi-compliance-checker.pl").path,
                                 "-lib", artifactId,
                                 "-skip-internal-packages", "com.hivemq.client.internal",
-                                "-skip-internal-packages", "com.hivemq.shaded",
-                                "-skip-internal-types", "com.hivemq.client.mqtt.mqtt(5|3).Mqtt(5|3)(Rx|Async|Blocking)Client",
                                 "-non-impl", nonImplFile.path,
                                 "-check-annotations", "-s",
                                 prevJar.path, jar.path)
