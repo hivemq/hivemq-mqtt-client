@@ -217,7 +217,7 @@ import java.util.function.Consumer;
         private final int fromIndex;
         private final int toIndex;
 
-        public SubArray(final @NotNull Object @NotNull [] array, final int fromIndex, final int toIndex) {
+        SubArray(final @NotNull Object @NotNull [] array, final int fromIndex, final int toIndex) {
             super(array);
             this.fromIndex = fromIndex;
             this.toIndex = toIndex;
@@ -264,6 +264,11 @@ import java.util.function.Consumer;
         }
 
         @Override
+        public int nextIndex() {
+            return index - getFromIndex();
+        }
+
+        @Override
         public boolean hasPrevious() {
             return index > getFromIndex();
         }
@@ -275,11 +280,6 @@ import java.util.function.Consumer;
             }
             //noinspection unchecked
             return (E) array[--index];
-        }
-
-        @Override
-        public int nextIndex() {
-            return index - getFromIndex();
         }
 
         @Override

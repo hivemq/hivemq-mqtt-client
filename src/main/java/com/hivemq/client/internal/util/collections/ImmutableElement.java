@@ -156,6 +156,11 @@ import java.util.function.Consumer;
         }
 
         @Override
+        public int nextIndex() {
+            return index;
+        }
+
+        @Override
         public boolean hasPrevious() {
             return index == 1;
         }
@@ -167,11 +172,6 @@ import java.util.function.Consumer;
             }
             index = 0;
             return element;
-        }
-
-        @Override
-        public int nextIndex() {
-            return index;
         }
 
         @Override
