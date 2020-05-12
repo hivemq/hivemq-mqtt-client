@@ -110,7 +110,7 @@ class ImmutableIntListTest {
         assertTrue(array1.isEmpty());
         assertEquals(0, array1.size());
 
-        assertSame(ImmutableEmptyList.class, array1.getClass());
+        assertSame(ImmutableEmptyIntList.class, array1.getClass());
     }
 
     @Test
