@@ -38,11 +38,6 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
     public int get(final int index) {
         Checks.index(index, 1);
         return element;
