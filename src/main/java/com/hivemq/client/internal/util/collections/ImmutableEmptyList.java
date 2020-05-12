@@ -140,6 +140,11 @@ import java.util.function.Consumer;
         }
 
         @Override
+        public int nextIndex() {
+            return 0;
+        }
+
+        @Override
         public boolean hasPrevious() {
             return false;
         }
@@ -147,11 +152,6 @@ import java.util.function.Consumer;
         @Override
         public @NotNull Object previous() {
             throw new NoSuchElementException();
-        }
-
-        @Override
-        public int nextIndex() {
-            return 0;
         }
 
         @Override
