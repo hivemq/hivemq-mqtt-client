@@ -129,7 +129,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
     }
 
     @Override
-    default boolean containsAll(final @NotNull Collection<?> c) {
+    default boolean containsAll(final @NotNull Collection<@Nullable ?> c) {
         Checks.notNull(c, "Collection");
         for (final Object o : c) {
             if (!contains(o)) {

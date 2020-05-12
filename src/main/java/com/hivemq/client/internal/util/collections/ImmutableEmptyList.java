@@ -21,7 +21,6 @@ import com.hivemq.client.internal.util.Checks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -48,11 +47,6 @@ import java.util.function.Consumer;
     }
 
     @Override
-    public boolean isEmpty() {
-        return true;
-    }
-
-    @Override
     public @NotNull Object get(final int index) {
         throw new IndexOutOfBoundsException("Empty list");
     }
@@ -69,17 +63,6 @@ import java.util.function.Consumer;
             other[0] = null;
         }
         return other;
-    }
-
-    @Override
-    public boolean contains(final @Nullable Object o) {
-        return false;
-    }
-
-    @Override
-    public boolean containsAll(final @Nullable Collection<?> c) {
-        Checks.notNull(c, "Collection");
-        return c.size() == 0;
     }
 
     @Override
