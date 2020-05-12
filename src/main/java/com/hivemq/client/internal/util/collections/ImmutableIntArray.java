@@ -32,7 +32,7 @@ import java.util.Arrays;
 
     ImmutableIntArray(final int @NotNull ... array) {
         this.array = array;
-        assert size() > 1;
+        assert array.length > 1;
     }
 
     @Override

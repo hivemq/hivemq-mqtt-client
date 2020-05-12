@@ -55,11 +55,6 @@ import java.util.function.Consumer;
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
     public @NotNull E get(final int index) {
         Checks.index(index, 1);
         return element;
@@ -81,11 +76,6 @@ import java.util.function.Consumer;
         }
         ((Object[]) other)[0] = element;
         return other;
-    }
-
-    @Override
-    public boolean contains(final @Nullable Object o) {
-        return element.equals(o);
     }
 
     @Override
@@ -193,8 +183,7 @@ import java.util.function.Consumer;
         public void forEachRemaining(final @Nullable Consumer<? super E> consumer) {
             Checks.notNull(consumer, "Consumer");
             if (hasNext()) {
-                consumer.accept(element);
-                index = 1;
+                consumer.accept(next());
             }
         }
     }
@@ -237,6 +226,7 @@ import java.util.function.Consumer;
 
         @Override
         public void forEachRemaining(final @Nullable Consumer<? super E> consumer) {
+            Checks.notNull(consumer, "Consumer");
             tryAdvance(consumer);
         }
     }

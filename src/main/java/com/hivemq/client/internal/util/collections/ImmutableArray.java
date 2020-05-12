@@ -45,7 +45,7 @@ import java.util.function.Consumer;
 
     ImmutableArray(final @NotNull Object @NotNull [] array) {
         this.array = array;
-        assert size() > 1;
+        assert array.length > 1;
     }
 
     int getFromIndex() {
@@ -59,11 +59,6 @@ import java.util.function.Consumer;
     @Override
     public int size() {
         return getToIndex() - getFromIndex();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
     }
 
     @Override
@@ -101,7 +96,7 @@ import java.util.function.Consumer;
         final int toIndex = getToIndex();
         for (int i = fromIndex; i < toIndex; i++) {
             if (o.equals(array[i])) {
-                return i;
+                return i - fromIndex;
             }
         }
         return -1;
@@ -116,7 +111,7 @@ import java.util.function.Consumer;
         final int toIndex = getToIndex();
         for (int i = toIndex - 1; i >= fromIndex; i--) {
             if (o.equals(array[i])) {
-                return i;
+                return i - fromIndex;
             }
         }
         return -1;
@@ -226,8 +221,8 @@ import java.util.function.Consumer;
             super(array);
             this.fromIndex = fromIndex;
             this.toIndex = toIndex;
-            assert size() > 1;
-            assert size() < array.length;
+            assert (toIndex - fromIndex) > 1;
+            assert (toIndex - fromIndex) < array.length;
         }
 
         @Override
@@ -264,7 +259,8 @@ import java.util.function.Consumer;
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            return get(index++);
+            //noinspection unchecked
+            return (E) array[index++];
         }
 
         @Override
@@ -277,17 +273,26 @@ import java.util.function.Consumer;
             if (!hasPrevious()) {
                 throw new NoSuchElementException();
             }
-            return get(--index);
+            //noinspection unchecked
+            return (E) array[--index];
         }
 
         @Override
         public int nextIndex() {
-            return index;
+            return index - getFromIndex();
         }
 
         @Override
         public int previousIndex() {
-            return index - 1;
+            return index - 1 - getFromIndex();
+        }
+
+        @Override
+        public void forEachRemaining(final @Nullable Consumer<? super E> consumer) {
+            Checks.notNull(consumer, "Consumer");
+            while (hasNext()) {
+                consumer.accept(next());
+            }
         }
     }
 }
