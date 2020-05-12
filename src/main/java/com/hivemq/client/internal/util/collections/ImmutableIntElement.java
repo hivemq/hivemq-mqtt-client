@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
         }
         final ImmutableIntList that = (ImmutableIntList) o;
 
-        return (that.size() == 0) && (element == that.get(0));
+        return (that.size() == 1) && (element == that.get(0));
     }
 
     @Override
