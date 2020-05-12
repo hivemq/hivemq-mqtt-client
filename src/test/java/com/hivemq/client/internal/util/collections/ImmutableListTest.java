@@ -33,13 +33,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class ImmutableListTest {
 
     private static @NotNull Stream<ImmutableList<String>> numberedList() {
-        return Stream.of(ImmutableList.of(), ImmutableList.of("0"), ImmutableList.of("0", "1"),
-                ImmutableList.of("0", "1", "2"), ImmutableList.of("x", "x", "x", "x").subList(2, 2),
+        // @formatter:off
+        return Stream.of(
+                ImmutableList.of(),
+                ImmutableList.of("0"),
+                ImmutableList.of("0", "1"),
+                ImmutableList.of("0", "1", "2"),
+                ImmutableList.of("x", "x", "x", "x").subList(2, 2),
                 ImmutableList.of("x", "x", "x", "x").subList(1, 3).subList(1, 1),
                 ImmutableList.of("x", "x", "0", "x", "x").subList(2, 3),
                 ImmutableList.of("x", "x", "0", "x", "x").subList(1, 4).subList(1, 2),
                 ImmutableList.of("x", "x", "0", "1", "2", "x", "x").subList(2, 5),
                 ImmutableList.of("x", "x", "0", "1", "2", "x", "x").subList(1, 6).subList(1, 4));
+        // @formatter:on
     }
 
     @Test

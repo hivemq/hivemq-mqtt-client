@@ -35,11 +35,6 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Override
-    public boolean isEmpty() {
-        return true;
-    }
-
-    @Override
     public int get(final int index) {
         throw new IndexOutOfBoundsException("Empty int list");
     }

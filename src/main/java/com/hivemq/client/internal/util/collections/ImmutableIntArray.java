@@ -41,11 +41,6 @@ import java.util.Arrays;
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
     public int get(final int index) {
         return array[Checks.index(index, array.length)];
     }
