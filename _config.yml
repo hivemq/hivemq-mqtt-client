@@ -3,6 +3,7 @@ description: A fast, asynchronous, reactive mqtt client library
 logo: assets/images/hivemq-mqtt-client-neg.svg
 version: 1.2.0
 android_retrofix_version: 0.3.5
+android_retrostreams_version: 1.7.2
 
 remote_theme: SgtSilvio/just-the-docs@merged
 color_scheme: dark

@@ -20,7 +20,7 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '{{ site.version }}'
+    implementation "com.hivemq:hivemq-mqtt-client:{{ site.version }}"
 }
 ```
 
@@ -91,7 +91,7 @@ Gradle
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '{{ site.version }}'
+    implementation "com.hivemq:hivemq-mqtt-client:{{ site.version }}"
 }
 ```
 
@@ -102,7 +102,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-websocket', version: '{{ site.version }}'
+    implementation "com.hivemq:hivemq-mqtt-client-websocket:{{ site.version }}"
 }
 ```
 
@@ -113,7 +113,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-proxy', version: '{{ site.version }}'
+    implementation "com.hivemq:hivemq-mqtt-client-proxy:{{ site.version }}"
 }
 ```
 
@@ -124,7 +124,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-epoll', version: '{{ site.version }}'
+    implementation "com.hivemq:hivemq-mqtt-client-epoll:{{ site.version }}"
 }
 ```
 
@@ -135,7 +135,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-reactor', version: '{{ site.version }}'
+    implementation "com.hivemq:hivemq-mqtt-client-reactor:{{ site.version }}"
 }
 ```
 
@@ -266,7 +266,7 @@ Gradle
 
 ```groovy
 dependencies {
-    implementaion group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '{{ site.version }}'
+    implementaion "com.hivemq:hivemq-mqtt-client-shaded:{{ site.version }}"
 }
 ```
 
@@ -305,7 +305,7 @@ Gradle
 ```groovy
 repositories {
     ...
-    maven { url 'https://jitpack.io' }
+    maven { url "https://jitpack.io" }
 }
 ```
 
@@ -316,7 +316,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT'
+    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT"
 }
 ```
 
@@ -327,7 +327,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT'
+    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT"
 }
 ```
 
@@ -338,7 +338,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT'
+    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT"
 }
 ```
 
@@ -349,7 +349,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT'
+    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT"
 }
 ```
 
@@ -360,7 +360,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT'
+    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT"
 }
 ```
 
