@@ -19,7 +19,7 @@ val japiccDownload = tasks.register("japiccDownload") {
         archive.delete()
         bin.delete()
         val url = "https://github.com/lvc/japi-compliance-checker/archive/$japiccVersion.zip"
-        URL(url).openStream().copyTo(archive.outputStream())
+        URL(url).openStream().use { input -> archive.outputStream().use { output -> input.copyTo(output) } }
         copy {
             from(zipTree(archive))
             into(workingDir)
@@ -153,7 +153,8 @@ allprojects {
                     doLast {
                         prevJar.delete()
                         val path = groupId.replace(".", "/") + "/$artifactId/$prevVersion/$prevJarName"
-                        URL("${repositories.mavenCentral().url}$path").openStream().copyTo(prevJar.outputStream())
+                        URL("${repositories.mavenCentral().url}$path").openStream()
+                                .use { input -> prevJar.outputStream().use { output -> input.copyTo(output) } }
                     }
                 }
 
