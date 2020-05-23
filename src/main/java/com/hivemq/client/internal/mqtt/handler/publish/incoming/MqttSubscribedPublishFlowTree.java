@@ -515,7 +515,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
             return (next == null) && (singleLevel == null) && (entries == null) && (multiLevelEntries == null);
         }
 
-        public void getSubscriptions(
+        void getSubscriptions(
                 final @Nullable MqttTopicLevel parentTopicLevels,
                 final @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> map,
                 final @NotNull Queue<@NotNull IteratorNode> nodes) {
