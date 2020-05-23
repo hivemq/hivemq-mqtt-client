@@ -9,7 +9,9 @@ plugins {
     id("com.github.breadmoirai.github-release")
     id("com.github.hierynomus.license")
     id("pmd")
+    id("com.github.sgtsilvio.gradle.utf8")
     id("com.github.sgtsilvio.gradle.metadata")
+    id("com.github.sgtsilvio.gradle.javadoc-links")
 }
 
 
@@ -58,14 +60,7 @@ allprojects {
             targetCompatibility = JavaVersion.VERSION_1_8
         }
 
-        tasks.withType<JavaCompile>().configureEach {
-            options.encoding = "UTF-8"
-        }
-
-        tasks.withType<Javadoc>().configureEach {
-            options.encoding = "UTF-8"
-            (options as StandardJavadocDocletOptions).charSet = "UTF-8"
-        }
+        plugins.apply("com.github.sgtsilvio.gradle.utf8")
     }
 }
 
@@ -160,21 +155,10 @@ allprojects {
             withSourcesJar()
         }
 
+        plugins.apply("com.github.sgtsilvio.gradle.javadoc-links")
+
         tasks.javadoc {
             exclude("**/internal/**")
-            (options as StandardJavadocDocletOptions).links(
-                    "https://docs.oracle.com/javase/8/docs/api/",
-                    "https://javadoc.io/doc/io.reactivex.rxjava2/rxjava/${project.property("rxjava.version")}/",
-                    "https://javadoc.io/doc/io.projectreactor/reactor-core/${project.property("reactor.version")}/",
-                    "https://javadoc.io/doc/org.jetbrains/annotations/${project.property("annotations.version")}/")
-            (options as StandardJavadocDocletOptions).linksOffline(
-                    "https://javadoc.io/doc/org.reactivestreams/reactive-streams/${project.property("reactive-streams.version")}/",
-                    "https://www.reactive-streams.org/reactive-streams-${project.property("reactive-streams.version")}-javadoc/")
-            if (project != rootProject) {
-                (options as StandardJavadocDocletOptions).linksOffline(
-                        "https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client/${rootProject.version}/",
-                        rootProject.tasks.javadoc.get().destinationDir?.path)
-            }
         }
     }
 }

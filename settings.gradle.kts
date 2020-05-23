@@ -9,7 +9,9 @@ pluginManagement {
         id("com.github.hierynomus.license") version "${extra["plugin.license.version"]}"
         id("com.jfrog.bintray") version "${extra["plugin.bintray.version"]}"
         id("com.github.breadmoirai.github-release") version "${extra["plugin.github-release.version"]}"
+        id("com.github.sgtsilvio.gradle.utf8") version "${extra["plugin.utf8.version"]}"
         id("com.github.sgtsilvio.gradle.metadata") version "${extra["plugin.metadata.version"]}"
+        id("com.github.sgtsilvio.gradle.javadoc-links") version "${extra["plugin.javadoc-links.version"]}"
     }
 }
 
