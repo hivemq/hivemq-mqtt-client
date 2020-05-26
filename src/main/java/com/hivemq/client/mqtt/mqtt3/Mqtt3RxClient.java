@@ -124,12 +124,19 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     @NotNull Mqtt3SubscribeBuilder.Nested.Start<Single<Mqtt3SubAck>> subscribeWith();
 
     /**
+     * Use {@link #subscribePublishes(Mqtt3Subscribe)}.
+     *
+     * @param subscribe use {@link #subscribePublishes(Mqtt3Subscribe)}.
+     * @return use {@link #subscribePublishes(Mqtt3Subscribe)}.
      * @deprecated use {@link #subscribePublishes(Mqtt3Subscribe)}.
      */
     @Deprecated
     @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
 
     /**
+     * Use {@link #subscribePublishesWith()}.
+     *
+     * @return use {@link #subscribePublishesWith()}.
      * @deprecated use {@link #subscribePublishesWith()}.
      */
     @Deprecated
