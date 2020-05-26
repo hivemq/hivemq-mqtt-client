@@ -127,12 +127,19 @@ public interface Mqtt5RxClient extends Mqtt5Client {
     @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith();
 
     /**
+     * Use {@link #subscribePublishes(Mqtt5Subscribe)}.
+     *
+     * @param subscribe use {@link #subscribePublishes(Mqtt5Subscribe)}.
+     * @return use {@link #subscribePublishes(Mqtt5Subscribe)}.
      * @deprecated use {@link #subscribePublishes(Mqtt5Subscribe)}.
      */
     @Deprecated
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
 
     /**
+     * Use {@link #subscribePublishesWith()}.
+     *
+     * @return use {@link #subscribePublishesWith()}.
      * @deprecated use {@link #subscribePublishesWith()}.
      */
     @Deprecated

@@ -96,6 +96,9 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B serverPort(int port);
 
     /**
+     * Use {@link #sslWithDefaultConfig()}.
+     *
+     * @return use {@link #sslWithDefaultConfig()}.
      * @deprecated use {@link #sslWithDefaultConfig()}.
      */
     @Deprecated
@@ -115,6 +118,10 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B sslWithDefaultConfig();
 
     /**
+     * Use {@link #sslConfig(MqttClientSslConfig)}.
+     *
+     * @param sslConfig use {@link #sslConfig(MqttClientSslConfig)}.
+     * @return use {@link #sslConfig(MqttClientSslConfig)}.
      * @deprecated use {@link #sslConfig(MqttClientSslConfig)}.
      */
     @Deprecated
@@ -134,6 +141,9 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B sslConfig(@Nullable MqttClientSslConfig sslConfig);
 
     /**
+     * Use {@link #sslConfig()}.
+     *
+     * @return use {@link #sslConfig()}.
      * @deprecated use {@link #sslConfig()}.
      */
     @Deprecated
@@ -155,6 +165,9 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull MqttClientSslConfigBuilder.Nested<? extends B> sslConfig();
 
     /**
+     * Use {@link #webSocketWithDefaultConfig()}.
+     *
+     * @return use {@link #webSocketWithDefaultConfig()}.
      * @deprecated use {@link #webSocketWithDefaultConfig()}.
      */
     @Deprecated
@@ -173,6 +186,10 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B webSocketWithDefaultConfig();
 
     /**
+     * Use {@link #webSocketConfig(MqttWebSocketConfig)}.
+     *
+     * @param webSocketConfig use {@link #webSocketConfig(MqttWebSocketConfig)}.
+     * @return use {@link #webSocketConfig(MqttWebSocketConfig)}.
      * @deprecated use {@link #webSocketConfig(MqttWebSocketConfig)}.
      */
     @Deprecated
@@ -192,6 +209,9 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B webSocketConfig(@Nullable MqttWebSocketConfig webSocketConfig);
 
     /**
+     * Use {@link #webSocketConfig()}.
+     *
+     * @return use {@link #webSocketConfig()}.
      * @deprecated use {@link #webSocketConfig()}.
      */
     @Deprecated
