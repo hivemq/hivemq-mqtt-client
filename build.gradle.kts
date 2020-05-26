@@ -19,8 +19,8 @@ plugins {
 
 allprojects {
     group = "com.hivemq"
-    description = "HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java " +
-            "client library with different API flavours and backpressure support"
+    description = "HiveMQ MQTT Client is an MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance " +
+            "Java client library with different API flavours and backpressure support"
 
     plugins.apply("com.github.sgtsilvio.gradle.metadata")
 
