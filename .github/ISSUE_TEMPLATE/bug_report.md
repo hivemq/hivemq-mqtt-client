@@ -18,4 +18,7 @@ assignees: ''
 
 ## Details
 - Affected HiveMQ MQTT Client version(s): 
-- Used JVM version:
+- Used JVM version: 
+- Used OS (name and version): 
+- Used MQTT version: 
+- Used MQTT broker (name and version):
