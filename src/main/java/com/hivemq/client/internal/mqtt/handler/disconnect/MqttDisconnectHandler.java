@@ -260,10 +260,10 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     private static class DisconnectingState implements Runnable {
 
         private final @NotNull Channel channel;
-        private final @NotNull MqttDisconnectEvent.ByUser disconnectEvent;
+        private final MqttDisconnectEvent.@NotNull ByUser disconnectEvent;
         private final @NotNull ScheduledFuture<?> timeoutFuture;
 
-        DisconnectingState(final @NotNull Channel channel, final @NotNull MqttDisconnectEvent.ByUser disconnectEvent) {
+        DisconnectingState(final @NotNull Channel channel, final MqttDisconnectEvent.@NotNull ByUser disconnectEvent) {
             this.channel = channel;
             this.disconnectEvent = disconnectEvent;
             timeoutFuture = channel.eventLoop().schedule(this, DISCONNECT_TIMEOUT, TimeUnit.SECONDS);

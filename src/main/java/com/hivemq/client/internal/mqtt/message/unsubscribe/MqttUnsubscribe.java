@@ -48,7 +48,7 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
     }
 
     @Override
-    public @NotNull MqttUnsubscribeBuilder.Default extend() {
+    public MqttUnsubscribeBuilder.@NotNull Default extend() {
         return new MqttUnsubscribeBuilder.Default(this);
     }
 

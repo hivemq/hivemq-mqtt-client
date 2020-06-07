@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  */
 public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>> {
 
-    private final @NotNull ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
+    private final ImmutableList.@NotNull Builder<MqttTopicFilterImpl> topicFiltersBuilder;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     MqttUnsubscribeBuilder() {
@@ -65,7 +65,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return self();
     }
 
-    public @NotNull MqttTopicFilterImplBuilder.Nested<B> addTopicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> addTopicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
@@ -107,7 +107,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return self();
     }
 
-    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userProperties() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
@@ -119,7 +119,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return addTopicFilter(topicFilter);
     }
 
-    public @NotNull MqttTopicFilterImplBuilder.Nested<B> topicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 

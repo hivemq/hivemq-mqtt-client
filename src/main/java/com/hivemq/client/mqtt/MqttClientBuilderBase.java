@@ -147,7 +147,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @deprecated use {@link #sslConfig()}.
      */
     @Deprecated
-    default @NotNull MqttClientSslConfigBuilder.Nested<? extends B> useSsl() {
+    default MqttClientSslConfigBuilder.@NotNull Nested<? extends B> useSsl() {
         return sslConfig();
     }
 
@@ -162,7 +162,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull MqttClientSslConfigBuilder.Nested<? extends B> sslConfig();
+    MqttClientSslConfigBuilder.@NotNull Nested<? extends B> sslConfig();
 
     /**
      * Use {@link #webSocketWithDefaultConfig()}.
@@ -215,7 +215,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @deprecated use {@link #webSocketConfig()}.
      */
     @Deprecated
-    default @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> useWebSocket() {
+    default MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> useWebSocket() {
         return webSocketConfig();
     }
 
@@ -230,7 +230,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> webSocketConfig();
+    MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> webSocketConfig();
 
     /**
      * Sets the {@link MqttClientConfig#getTransportConfig() transport configuration}.
@@ -253,7 +253,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull MqttClientTransportConfigBuilder.Nested<? extends B> transportConfig();
+    MqttClientTransportConfigBuilder.@NotNull Nested<? extends B> transportConfig();
 
     /**
      * Sets the {@link MqttClientConfig#getExecutorConfig() executor configuration}.
@@ -274,7 +274,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @see #executorConfig(MqttClientExecutorConfig)
      */
     @CheckReturnValue
-    @NotNull MqttClientExecutorConfigBuilder.Nested<? extends B> executorConfig();
+    MqttClientExecutorConfigBuilder.@NotNull Nested<? extends B> executorConfig();
 
     /**
      * Uses automatic reconnect with the default configuration.
@@ -307,7 +307,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull MqttClientAutoReconnectBuilder.Nested<? extends B> automaticReconnect();
+    MqttClientAutoReconnectBuilder.@NotNull Nested<? extends B> automaticReconnect();
 
     /**
      * Adds a listener which is notified when the client is connected (a successful ConnAck message is received).

@@ -51,7 +51,7 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
     }
 
     @Override
-    public @NotNull MqttSubscribeBuilder.Default extend() {
+    public MqttSubscribeBuilder.@NotNull Default extend() {
         return new MqttSubscribeBuilder.Default(this);
     }
 

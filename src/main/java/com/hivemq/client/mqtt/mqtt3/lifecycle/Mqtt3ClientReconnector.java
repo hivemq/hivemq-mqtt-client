@@ -61,7 +61,7 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
 
     @Override
     @CheckReturnValue
-    @NotNull MqttClientTransportConfigBuilder.Nested<? extends Mqtt3ClientReconnector> transportConfig();
+    MqttClientTransportConfigBuilder.@NotNull Nested<? extends Mqtt3ClientReconnector> transportConfig();
 
     /**
      * Sets a different Connect message the client will try to reconnect with.
@@ -81,7 +81,7 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt3ConnectBuilder.Nested<? extends Mqtt3ClientReconnector> connectWith();
+    Mqtt3ConnectBuilder.@NotNull Nested<? extends Mqtt3ClientReconnector> connectWith();
 
     /**
      * Returns the currently set Connect message the client will try to reconnect with.

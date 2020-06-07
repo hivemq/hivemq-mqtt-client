@@ -68,7 +68,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     }
 
     @Override
-    public @NotNull MqttWebSocketConfigImplBuilder.Default extend() {
+    public MqttWebSocketConfigImplBuilder.@NotNull Default extend() {
         return new MqttWebSocketConfigImplBuilder.Default(this);
     }
 

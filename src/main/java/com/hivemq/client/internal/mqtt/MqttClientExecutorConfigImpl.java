@@ -73,7 +73,7 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
     }
 
     @Override
-    public @NotNull MqttClientExecutorConfigImplBuilder.Default extend() {
+    public MqttClientExecutorConfigImplBuilder.@NotNull Default extend() {
         return new MqttClientExecutorConfigImplBuilder.Default(this);
     }
 

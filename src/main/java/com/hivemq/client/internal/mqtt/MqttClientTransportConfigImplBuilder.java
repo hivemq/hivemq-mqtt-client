@@ -187,7 +187,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return self();
     }
 
-    public @NotNull MqttClientSslConfigImplBuilder.Nested<B> sslConfig() {
+    public MqttClientSslConfigImplBuilder.@NotNull Nested<B> sslConfig() {
         return new MqttClientSslConfigImplBuilder.Nested<>(sslConfig, this::sslConfig);
     }
 
@@ -202,7 +202,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return self();
     }
 
-    public @NotNull MqttWebSocketConfigImplBuilder.Nested<B> webSocketConfig() {
+    public MqttWebSocketConfigImplBuilder.@NotNull Nested<B> webSocketConfig() {
         return new MqttWebSocketConfigImplBuilder.Nested<>(webSocketConfig, this::webSocketConfig);
     }
 
@@ -211,7 +211,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return self();
     }
 
-    public @NotNull MqttProxyConfigImplBuilder.Nested<B> proxyConfig() {
+    public MqttProxyConfigImplBuilder.@NotNull Nested<B> proxyConfig() {
         return new MqttProxyConfigImplBuilder.Nested<>(proxyConfig, this::proxyConfig);
     }
 

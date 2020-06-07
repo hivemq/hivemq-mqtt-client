@@ -64,7 +64,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * @see #topic(MqttTopic)
      */
     @CheckReturnValue
-    @NotNull MqttTopicBuilder.Nested<? extends C> topic();
+    MqttTopicBuilder.@NotNull Nested<? extends C> topic();
 
     /**
      * {@link Mqtt3PublishBuilderBase} that is complete which means all mandatory fields are set.

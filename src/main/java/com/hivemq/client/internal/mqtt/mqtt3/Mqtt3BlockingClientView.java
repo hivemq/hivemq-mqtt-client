@@ -81,7 +81,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3ConnectViewBuilder.Send<Mqtt3ConnAck> connectWith() {
+    public Mqtt3ConnectViewBuilder.@NotNull Send<Mqtt3ConnAck> connectWith() {
         return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
 
@@ -96,7 +96,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3SubscribeViewBuilder.Send<Mqtt3SubAck> subscribeWith() {
+    public Mqtt3SubscribeViewBuilder.@NotNull Send<Mqtt3SubAck> subscribeWith() {
         return new Mqtt3SubscribeViewBuilder.Send<>(this::subscribe);
     }
 
@@ -125,7 +125,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3UnsubscribeViewBuilder.SendVoid unsubscribeWith() {
+    public Mqtt3UnsubscribeViewBuilder.@NotNull SendVoid unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.SendVoid(this::unsubscribe);
     }
 
@@ -140,7 +140,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3PublishViewBuilder.SendVoid publishWith() {
+    public Mqtt3PublishViewBuilder.@NotNull SendVoid publishWith() {
         return new Mqtt3PublishViewBuilder.SendVoid(this::publish);
     }
 

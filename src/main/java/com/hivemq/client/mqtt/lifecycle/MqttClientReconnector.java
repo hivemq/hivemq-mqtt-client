@@ -204,7 +204,7 @@ public interface MqttClientReconnector {
      * @see #transportConfig(MqttClientTransportConfig)
      */
     @CheckReturnValue
-    @NotNull MqttClientTransportConfigBuilder.Nested<? extends MqttClientReconnector> transportConfig();
+    MqttClientTransportConfigBuilder.@NotNull Nested<? extends MqttClientReconnector> transportConfig();
 
     /**
      * Returns the currently set transport configuration the client will try to reconnect with.

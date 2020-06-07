@@ -80,7 +80,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     public static final @NotNull String NAME = "qos.outgoing";
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttOutgoingQosHandler.class);
-    private static final @NotNull IntIndex.Spec<MqttPubOrRelWithFlow> INDEX_SPEC =
+    private static final IntIndex.@NotNull Spec<MqttPubOrRelWithFlow> INDEX_SPEC =
             new IntIndex.Spec<>(x -> x.packetIdentifier);
     private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64; // TODO configurable
     private static final boolean QOS_2_COMPLETE_RESULT = false; // TODO configurable
@@ -226,7 +226,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
-    public void channelWritabilityChanged(final ChannelHandlerContext ctx) {
+    public void channelWritabilityChanged(final @NotNull ChannelHandlerContext ctx) {
         final Channel channel = ctx.channel();
         if (channel.isWritable()) {
             channel.eventLoop().execute(this);

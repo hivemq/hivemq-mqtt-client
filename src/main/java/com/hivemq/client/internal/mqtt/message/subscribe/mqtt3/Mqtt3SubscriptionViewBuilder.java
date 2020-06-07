@@ -58,7 +58,7 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
         return self();
     }
 
-    public @NotNull MqttTopicFilterImplBuilder.Nested<B> topicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 

@@ -40,9 +40,9 @@ import java.util.stream.Stream;
  */
 public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
-    private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionsBuilder;
+    private final ImmutableList.@NotNull Builder<MqttSubscription> subscriptionsBuilder;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-    private @Nullable MqttSubscriptionBuilder.Default firstSubscriptionBuilder;
+    private MqttSubscriptionBuilder.@Nullable Default firstSubscriptionBuilder;
 
     protected MqttSubscribeBuilder() {
         subscriptionsBuilder = ImmutableList.builder();
@@ -62,7 +62,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttSubscriptionBuilder.Nested<B> addSubscription() {
+    public MqttSubscriptionBuilder.@NotNull Nested<B> addSubscription() {
         return new MqttSubscriptionBuilder.Nested<>(this::addSubscription);
     }
 
@@ -101,11 +101,11 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userProperties() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
-    private @NotNull MqttSubscriptionBuilder.Default getFirstSubscriptionBuilder() {
+    private MqttSubscriptionBuilder.@NotNull Default getFirstSubscriptionBuilder() {
         if (firstSubscriptionBuilder == null) {
             firstSubscriptionBuilder = new MqttSubscriptionBuilder.Default();
         }
@@ -129,7 +129,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttTopicFilterImplBuilder.Nested<B> topicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 

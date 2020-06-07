@@ -60,7 +60,7 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
     }
 
     @Override
-    public @NotNull MqttClientAdvancedConfigBuilder.Default extend() {
+    public MqttClientAdvancedConfigBuilder.@NotNull Default extend() {
         return new MqttClientAdvancedConfigBuilder.Default(this);
     }
 

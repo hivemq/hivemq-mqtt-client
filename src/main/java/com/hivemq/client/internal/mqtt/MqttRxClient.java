@@ -90,7 +90,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull MqttConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith() {
+    public MqttConnectBuilder.@NotNull Nested<Single<Mqtt5ConnAck>> connectWith() {
         return new MqttConnectBuilder.Nested<>(this::connect);
     }
 
@@ -108,7 +108,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull MqttSubscribeBuilder.Nested<Single<Mqtt5SubAck>> subscribeWith() {
+    public MqttSubscribeBuilder.@NotNull Nested<Single<Mqtt5SubAck>> subscribeWith() {
         return new MqttSubscribeBuilder.Nested<>(this::subscribe);
     }
 
@@ -120,7 +120,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull MqttSubscribeBuilder.Nested<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
+    public MqttSubscribeBuilder.@NotNull Nested<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
         return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
     }
 
@@ -191,7 +191,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull MqttUnsubscribeBuilder.Nested<Single<Mqtt5UnsubAck>> unsubscribeWith() {
+    public MqttUnsubscribeBuilder.@NotNull Nested<Single<Mqtt5UnsubAck>> unsubscribeWith() {
         return new MqttUnsubscribeBuilder.Nested<>(this::unsubscribe);
     }
 
@@ -261,7 +261,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull MqttDisconnectBuilder.Nested<Completable> disconnectWith() {
+    public MqttDisconnectBuilder.@NotNull Nested<Completable> disconnectWith() {
         return new MqttDisconnectBuilder.Nested<>(this::disconnect);
     }
 

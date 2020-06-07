@@ -41,7 +41,7 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
      *
      * @return the created builder.
      */
-    static @NotNull Mqtt3UnsubscribeBuilder.Start builder() {
+    static Mqtt3UnsubscribeBuilder.@NotNull Start builder() {
         return new Mqtt3UnsubscribeViewBuilder.Default();
     }
 
@@ -60,5 +60,5 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt3UnsubscribeBuilder.Complete extend();
+    Mqtt3UnsubscribeBuilder.@NotNull Complete extend();
 }

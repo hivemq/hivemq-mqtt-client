@@ -60,7 +60,7 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
         return self();
     }
 
-    public @NotNull MqttClientInterceptorsBuilder.Nested<B> interceptors() {
+    public MqttClientInterceptorsBuilder.@NotNull Nested<B> interceptors() {
         return new MqttClientInterceptorsBuilder.Nested<>(interceptors, this::interceptors);
     }
 

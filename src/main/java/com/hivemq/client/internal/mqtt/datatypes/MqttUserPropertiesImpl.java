@@ -126,7 +126,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     }
 
     @Override
-    public @NotNull MqttUserPropertiesImplBuilder.Default extend() {
+    public MqttUserPropertiesImplBuilder.@NotNull Default extend() {
         return new MqttUserPropertiesImplBuilder.Default(this);
     }
 

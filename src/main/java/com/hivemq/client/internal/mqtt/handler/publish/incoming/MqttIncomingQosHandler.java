@@ -54,7 +54,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
         implements ContextFuture.Listener<MqttMessage.WithId> {
 
     public static final @NotNull String NAME = "qos.incoming";
-    private static final @NotNull IntIndex.Spec<MqttMessage.WithId> INDEX_SPEC =
+    private static final IntIndex.@NotNull Spec<MqttMessage.WithId> INDEX_SPEC =
             new IntIndex.Spec<>(MqttMessage.WithId::getPacketIdentifier);
 
     private final @NotNull MqttClientConfig clientConfig;

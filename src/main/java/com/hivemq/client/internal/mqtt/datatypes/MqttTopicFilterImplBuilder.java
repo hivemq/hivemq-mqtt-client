@@ -110,9 +110,8 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             return this;
         }
 
-        @NotNull
         @Override
-        public SharedDefault share(final @Nullable String shareName) {
+        public @NotNull SharedDefault share(final @Nullable String shareName) {
             if (stringBuilder == null) {
                 return new SharedDefault(shareName);
             }
