@@ -66,7 +66,7 @@ public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
     }
 
     @Override
-    public @NotNull MqttClientAutoReconnectImplBuilder.Default extend() {
+    public MqttClientAutoReconnectImplBuilder.@NotNull Default extend() {
         return new MqttClientAutoReconnectImplBuilder.Default(this);
     }
 }

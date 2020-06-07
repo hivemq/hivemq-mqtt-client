@@ -121,5 +121,5 @@ public interface MqttTopicFilter extends MqttUtf8String {
      *
      * @return the created builder.
      */
-    @NotNull MqttTopicFilterBuilder.Complete extend();
+    MqttTopicFilterBuilder.@NotNull Complete extend();
 }

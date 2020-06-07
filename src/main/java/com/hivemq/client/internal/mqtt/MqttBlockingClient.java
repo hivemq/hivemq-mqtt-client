@@ -103,7 +103,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull MqttConnectBuilder.Send<Mqtt5ConnAck> connectWith() {
+    public MqttConnectBuilder.@NotNull Send<Mqtt5ConnAck> connectWith() {
         return new MqttConnectBuilder.Send<>(this::connect);
     }
 
@@ -121,7 +121,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull MqttSubscribeBuilder.Send<Mqtt5SubAck> subscribeWith() {
+    public MqttSubscribeBuilder.@NotNull Send<Mqtt5SubAck> subscribeWith() {
         return new MqttSubscribeBuilder.Send<>(this::subscribe);
     }
 
@@ -153,7 +153,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull MqttUnsubscribeBuilder.Send<Mqtt5UnsubAck> unsubscribeWith() {
+    public MqttUnsubscribeBuilder.@NotNull Send<Mqtt5UnsubAck> unsubscribeWith() {
         return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
     }
 
@@ -168,7 +168,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull MqttPublishBuilder.Send<Mqtt5PublishResult> publishWith() {
+    public MqttPublishBuilder.@NotNull Send<Mqtt5PublishResult> publishWith() {
         return new MqttPublishBuilder.Send<>(this::publish);
     }
 
@@ -197,7 +197,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull MqttDisconnectBuilder.SendVoid disconnectWith() {
+    public MqttDisconnectBuilder.@NotNull SendVoid disconnectWith() {
         return new MqttDisconnectBuilder.SendVoid(this::disconnect);
     }
 

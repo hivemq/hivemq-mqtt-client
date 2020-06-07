@@ -61,7 +61,7 @@ public interface Mqtt5ClientReconnector extends MqttClientReconnector {
 
     @Override
     @CheckReturnValue
-    @NotNull MqttClientTransportConfigBuilder.Nested<? extends Mqtt5ClientReconnector> transportConfig();
+    MqttClientTransportConfigBuilder.@NotNull Nested<? extends Mqtt5ClientReconnector> transportConfig();
 
     /**
      * Sets a different Connect message the client will try to reconnect with.
@@ -81,7 +81,7 @@ public interface Mqtt5ClientReconnector extends MqttClientReconnector {
      * @see #connect(Mqtt5Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt5ConnectBuilder.Nested<? extends Mqtt5ClientReconnector> connectWith();
+    Mqtt5ConnectBuilder.@NotNull Nested<? extends Mqtt5ClientReconnector> connectWith();
 
     /**
      * Returns the currently set Connect message the client will try to reconnect with.

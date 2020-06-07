@@ -71,7 +71,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt3ConnectBuilder.Send<Mqtt3ConnAck> connectWith();
+    Mqtt3ConnectBuilder.@NotNull Send<Mqtt3ConnAck> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -96,7 +96,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith();
+    Mqtt3SubscribeBuilder.Send.@NotNull Start<Mqtt3SubAck> subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -137,7 +137,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt3UnsubscribeBuilder.SendVoid.Start unsubscribeWith();
+    Mqtt3UnsubscribeBuilder.SendVoid.@NotNull Start unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -156,7 +156,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #publish(Mqtt3Publish)
      */
     @CheckReturnValue
-    @NotNull Mqtt3PublishBuilder.SendVoid publishWith();
+    Mqtt3PublishBuilder.@NotNull SendVoid publishWith();
 
     /**
      * Disconnects this client with the given Disconnect message.

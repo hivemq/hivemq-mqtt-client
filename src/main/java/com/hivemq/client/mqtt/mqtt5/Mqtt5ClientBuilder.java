@@ -57,7 +57,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @see #advancedConfig(Mqtt5ClientAdvancedConfig)
      */
     @CheckReturnValue
-    @NotNull Mqtt5ClientAdvancedConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
+    Mqtt5ClientAdvancedConfigBuilder.@NotNull Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
     /**
      * Sets the optional {@link Mqtt5ClientConfig#getSimpleAuth() simple authentication and/or authorization related
@@ -83,7 +83,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull Mqtt5SimpleAuthBuilder.Nested<? extends Mqtt5ClientBuilder> simpleAuth();
+    Mqtt5SimpleAuthBuilder.@NotNull Nested<? extends Mqtt5ClientBuilder> simpleAuth();
 
     /**
      * Sets the {@link Mqtt5ClientConfig#getEnhancedAuthMechanism() enhanced authentication and/or authorization
@@ -119,7 +119,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull Mqtt5WillPublishBuilder.Nested<? extends Mqtt5ClientBuilder> willPublish();
+    Mqtt5WillPublishBuilder.@NotNull Nested<? extends Mqtt5ClientBuilder> willPublish();
 
     /**
      * Builds the {@link Mqtt5Client}.

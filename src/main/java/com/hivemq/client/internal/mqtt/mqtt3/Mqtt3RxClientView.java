@@ -100,7 +100,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Mqtt3ConnectViewBuilder.Nested<Single<Mqtt3ConnAck>> connectWith() {
+    public Mqtt3ConnectViewBuilder.@NotNull Nested<Single<Mqtt3ConnAck>> connectWith() {
         return new Mqtt3ConnectViewBuilder.Nested<>(this::connect);
     }
 
@@ -114,7 +114,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Mqtt3SubscribeViewBuilder.Nested<Single<Mqtt3SubAck>> subscribeWith() {
+    public Mqtt3SubscribeViewBuilder.@NotNull Nested<Single<Mqtt3SubAck>> subscribeWith() {
         return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribe);
     }
 
@@ -126,7 +126,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Mqtt3SubscribeViewBuilder.Nested<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
+    public Mqtt3SubscribeViewBuilder.@NotNull Nested<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
         return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
     }
 
@@ -177,7 +177,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Mqtt3UnsubscribeViewBuilder.Nested<Completable> unsubscribeWith() {
+    public Mqtt3UnsubscribeViewBuilder.@NotNull Nested<Completable> unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
     }
 

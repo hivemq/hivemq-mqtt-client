@@ -146,7 +146,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @see #sslConfig(MqttClientSslConfig)
      */
     @CheckReturnValue
-    @NotNull MqttClientSslConfigBuilder.Nested<? extends B> sslConfig();
+    MqttClientSslConfigBuilder.@NotNull Nested<? extends B> sslConfig();
 
     /**
      * Sets the {@link MqttClientTransportConfig#getWebSocketConfig() WebSocket transport configuration} to the default
@@ -177,7 +177,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @see #webSocketConfig(MqttWebSocketConfig)
      */
     @CheckReturnValue
-    @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> webSocketConfig();
+    MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> webSocketConfig();
 
     /**
      * Sets the optional {@link MqttClientTransportConfig#getProxyConfig() proxy configuration}.
@@ -201,7 +201,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @since 1.2
      */
     @CheckReturnValue
-    @NotNull MqttProxyConfigBuilder.Nested<? extends B> proxyConfig();
+    MqttProxyConfigBuilder.@NotNull Nested<? extends B> proxyConfig();
 
     /**
      * Sets the {@link MqttClientTransportConfig#getSocketConnectTimeoutMs() timeout for connecting the socket to the

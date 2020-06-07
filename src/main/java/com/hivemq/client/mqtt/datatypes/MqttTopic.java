@@ -80,5 +80,5 @@ public interface MqttTopic extends MqttUtf8String {
      *
      * @return the created builder.
      */
-    @NotNull MqttTopicBuilder.Complete extend();
+    MqttTopicBuilder.@NotNull Complete extend();
 }

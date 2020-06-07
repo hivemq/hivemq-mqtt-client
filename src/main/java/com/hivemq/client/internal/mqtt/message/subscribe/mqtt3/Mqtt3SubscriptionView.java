@@ -67,7 +67,7 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
     }
 
     @Override
-    public @NotNull Mqtt3SubscriptionViewBuilder.Default extend() {
+    public Mqtt3SubscriptionViewBuilder.@NotNull Default extend() {
         return new Mqtt3SubscriptionViewBuilder.Default(this);
     }
 

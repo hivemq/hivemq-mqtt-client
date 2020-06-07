@@ -38,7 +38,7 @@ import java.util.stream.Stream;
  */
 public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeViewBuilder<B>> {
 
-    private final @NotNull ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
+    private final ImmutableList.@NotNull Builder<MqttTopicFilterImpl> topicFiltersBuilder;
 
     Mqtt3UnsubscribeViewBuilder() {
         topicFiltersBuilder = ImmutableList.builder();
@@ -62,7 +62,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return self();
     }
 
-    public @NotNull MqttTopicFilterImplBuilder.Nested<B> addTopicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> addTopicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
@@ -107,7 +107,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return addTopicFilter(topicFilter);
     }
 
-    public @NotNull MqttTopicFilterImplBuilder.Nested<B> topicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 

@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 @ClientScope
 public interface ClientComponent {
 
-    @NotNull ConnectionComponent.Builder connectionComponentBuilder();
+    ConnectionComponent.@NotNull Builder connectionComponentBuilder();
 
     @NotNull MqttSubscriptionHandler subscriptionHandler();
 

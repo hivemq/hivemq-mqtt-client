@@ -78,7 +78,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt3ConnectBuilder.Send<CompletableFuture<Mqtt3ConnAck>> connectWith();
+    Mqtt3ConnectBuilder.@NotNull Send<CompletableFuture<Mqtt3ConnAck>> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -197,7 +197,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)
      */
     @CheckReturnValue
-    @NotNull Mqtt3SubscribeAndCallbackBuilder.Start subscribeWith();
+    Mqtt3SubscribeAndCallbackBuilder.@NotNull Start subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -282,7 +282,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt3UnsubscribeBuilder.Send.Start<CompletableFuture<Void>> unsubscribeWith();
+    Mqtt3UnsubscribeBuilder.Send.@NotNull Start<CompletableFuture<Void>> unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -308,7 +308,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #publish(Mqtt3Publish)
      */
     @CheckReturnValue
-    @NotNull Mqtt3PublishBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith();
+    Mqtt3PublishBuilder.@NotNull Send<CompletableFuture<Mqtt3Publish>> publishWith();
 
     /**
      * Disconnects this client.

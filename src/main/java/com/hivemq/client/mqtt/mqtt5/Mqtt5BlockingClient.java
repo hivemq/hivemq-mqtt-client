@@ -75,7 +75,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @see #connect(Mqtt5Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt5ConnectBuilder.Send<Mqtt5ConnAck> connectWith();
+    Mqtt5ConnectBuilder.@NotNull Send<Mqtt5ConnAck> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -100,7 +100,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt5SubscribeBuilder.Send.Start<Mqtt5SubAck> subscribeWith();
+    Mqtt5SubscribeBuilder.Send.@NotNull Start<Mqtt5SubAck> subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -145,7 +145,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt5UnsubscribeBuilder.Send.Start<Mqtt5UnsubAck> unsubscribeWith();
+    Mqtt5UnsubscribeBuilder.Send.@NotNull Start<Mqtt5UnsubAck> unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -170,7 +170,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @see #publish(Mqtt5Publish)
      */
     @CheckReturnValue
-    @NotNull Mqtt5PublishBuilder.Send<Mqtt5PublishResult> publishWith();
+    Mqtt5PublishBuilder.@NotNull Send<Mqtt5PublishResult> publishWith();
 
     /**
      * Re-authenticates this client.
@@ -204,7 +204,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @see #disconnect(Mqtt5Disconnect)
      */
     @CheckReturnValue
-    @NotNull Mqtt5DisconnectBuilder.SendVoid disconnectWith();
+    Mqtt5DisconnectBuilder.@NotNull SendVoid disconnectWith();
 
     @Override
     @CheckReturnValue

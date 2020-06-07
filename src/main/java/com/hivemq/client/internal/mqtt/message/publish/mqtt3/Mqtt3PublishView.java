@@ -130,7 +130,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @Override
-    public @NotNull Mqtt3PublishViewBuilder.Default extend() {
+    public Mqtt3PublishViewBuilder.@NotNull Default extend() {
         return new Mqtt3PublishViewBuilder.Default(this);
     }
 

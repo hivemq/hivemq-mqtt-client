@@ -55,7 +55,7 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     }
 
     @Override
-    public @NotNull Mqtt3SimpleAuthViewBuilder.Nested<Mqtt3RxClientViewBuilder> simpleAuth() {
+    public Mqtt3SimpleAuthViewBuilder.@NotNull Nested<Mqtt3RxClientViewBuilder> simpleAuth() {
         return new Mqtt3SimpleAuthViewBuilder.Nested<>(this::simpleAuth);
     }
 
@@ -67,7 +67,7 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     }
 
     @Override
-    public @NotNull Mqtt3PublishViewBuilder.WillNested<Mqtt3RxClientViewBuilder> willPublish() {
+    public Mqtt3PublishViewBuilder.@NotNull WillNested<Mqtt3RxClientViewBuilder> willPublish() {
         return new Mqtt3PublishViewBuilder.WillNested<>(this::willPublish);
     }
 

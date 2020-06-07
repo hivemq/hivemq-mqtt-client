@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  */
 public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserPropertiesImplBuilder<B>> {
 
-    private final @NotNull ImmutableList.Builder<MqttUserPropertyImpl> listBuilder;
+    private final ImmutableList.@NotNull Builder<MqttUserPropertyImpl> listBuilder;
 
     MqttUserPropertiesImplBuilder() {
         listBuilder = ImmutableList.builder();

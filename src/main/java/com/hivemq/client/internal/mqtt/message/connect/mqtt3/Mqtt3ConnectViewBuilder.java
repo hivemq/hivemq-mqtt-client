@@ -75,7 +75,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
         return self();
     }
 
-    public @NotNull Mqtt3SimpleAuthViewBuilder.Nested<B> simpleAuth() {
+    public Mqtt3SimpleAuthViewBuilder.@NotNull Nested<B> simpleAuth() {
         return new Mqtt3SimpleAuthViewBuilder.Nested<>(this::simpleAuth);
     }
 
@@ -85,7 +85,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
         return self();
     }
 
-    public @NotNull Mqtt3PublishViewBuilder.WillNested<B> willPublish() {
+    public Mqtt3PublishViewBuilder.@NotNull WillNested<B> willPublish() {
         return new Mqtt3PublishViewBuilder.WillNested<>(this::willPublish);
     }
 

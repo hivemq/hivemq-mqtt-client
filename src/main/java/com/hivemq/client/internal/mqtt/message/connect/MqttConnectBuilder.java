@@ -95,7 +95,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttConnectRestrictionsBuilder.Nested<B> restrictions() {
+    public MqttConnectRestrictionsBuilder.@NotNull Nested<B> restrictions() {
         return new MqttConnectRestrictionsBuilder.Nested<>(restrictions, this::restrictions);
     }
 
@@ -104,7 +104,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttSimpleAuthBuilder.Nested<B> simpleAuth() {
+    public MqttSimpleAuthBuilder.@NotNull Nested<B> simpleAuth() {
         return new MqttSimpleAuthBuilder.Nested<>(this::simpleAuth);
     }
 
@@ -119,7 +119,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttPublishBuilder.WillNested<B> willPublish() {
+    public MqttPublishBuilder.@NotNull WillNested<B> willPublish() {
         return new MqttPublishBuilder.WillNested<>(this::willPublish);
     }
 
@@ -128,7 +128,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userProperties() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 

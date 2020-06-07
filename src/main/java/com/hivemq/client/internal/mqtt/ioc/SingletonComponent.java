@@ -32,5 +32,5 @@ public interface SingletonComponent {
 
     @NotNull SingletonComponent INSTANCE = DaggerSingletonComponent.create();
 
-    @NotNull ClientComponent.Builder clientComponentBuilder();
+    ClientComponent.@NotNull Builder clientComponentBuilder();
 }

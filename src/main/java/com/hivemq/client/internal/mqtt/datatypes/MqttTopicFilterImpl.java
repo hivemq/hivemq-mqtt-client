@@ -372,7 +372,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     @Override
-    public @NotNull MqttTopicFilterImplBuilder.Default extend() {
+    public MqttTopicFilterImplBuilder.@NotNull Default extend() {
         return new MqttTopicFilterImplBuilder.Default(this);
     }
 }

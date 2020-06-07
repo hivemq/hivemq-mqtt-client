@@ -42,9 +42,9 @@ class MqttIncomingPublishService {
     final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
     private final @NotNull ChunkedArrayQueue<Object> qos0Queue = new ChunkedArrayQueue<>(32);
-    private final @NotNull ChunkedArrayQueue<Object>.Iterator qos0It = qos0Queue.iterator();
+    private final ChunkedArrayQueue<Object>.@NotNull Iterator qos0It = qos0Queue.iterator();
     private final @NotNull ChunkedArrayQueue<Object> qos1Or2Queue = new ChunkedArrayQueue<>(32);
-    private final @NotNull ChunkedArrayQueue<Object>.Iterator qos1Or2It = qos1Or2Queue.iterator();
+    private final ChunkedArrayQueue<Object>.@NotNull Iterator qos1Or2It = qos1Or2Queue.iterator();
 
     private long nextQoS1Or2PublishId = 1;
 

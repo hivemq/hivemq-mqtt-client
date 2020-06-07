@@ -40,7 +40,7 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
      *
      * @return the created builder.
      */
-    static @NotNull Mqtt5SubscribeBuilder.Start builder() {
+    static Mqtt5SubscribeBuilder.@NotNull Start builder() {
         return new MqttSubscribeBuilder.Default();
     }
 
@@ -65,5 +65,5 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt5SubscribeBuilder.Complete extend();
+    Mqtt5SubscribeBuilder.@NotNull Complete extend();
 }

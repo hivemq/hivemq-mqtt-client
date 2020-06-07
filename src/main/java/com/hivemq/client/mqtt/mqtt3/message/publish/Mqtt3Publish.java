@@ -96,5 +96,5 @@ public interface Mqtt3Publish extends Mqtt3Message {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt3PublishBuilder.Complete extend();
+    Mqtt3PublishBuilder.@NotNull Complete extend();
 }

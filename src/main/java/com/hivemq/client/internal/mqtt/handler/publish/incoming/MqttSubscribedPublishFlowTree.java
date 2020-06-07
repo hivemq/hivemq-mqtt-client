@@ -154,7 +154,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
     private static class TopicTreeNode {
 
-        private static final @NotNull Index.Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =
+        private static final Index.@NotNull Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =
                 new Index.Spec<>(node -> node.topicLevel, 4);
 
         private @Nullable TopicTreeNode parent;

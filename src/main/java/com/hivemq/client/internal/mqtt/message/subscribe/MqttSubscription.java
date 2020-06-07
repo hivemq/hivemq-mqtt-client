@@ -76,7 +76,7 @@ public class MqttSubscription implements Mqtt5Subscription {
     }
 
     @Override
-    public @NotNull MqttSubscriptionBuilder.Default extend() {
+    public MqttSubscriptionBuilder.@NotNull Default extend() {
         return new MqttSubscriptionBuilder.Default(this);
     }
 

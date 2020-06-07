@@ -187,7 +187,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
     }
 
     @Override
-    public @NotNull MqttTopicImplBuilder.Default extend() {
+    public MqttTopicImplBuilder.@NotNull Default extend() {
         return new MqttTopicImplBuilder.Default(this);
     }
 }

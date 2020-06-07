@@ -54,5 +54,5 @@ public interface Mqtt5WillPublish extends Mqtt5Publish {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt5WillPublishBuilder.Complete extendAsWill();
+    Mqtt5WillPublishBuilder.@NotNull Complete extendAsWill();
 }

@@ -84,7 +84,7 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
     }
 
     @Override
-    public @NotNull MqttProxyConfigImplBuilder.Default extend() {
+    public MqttProxyConfigImplBuilder.@NotNull Default extend() {
         return new MqttProxyConfigImplBuilder.Default(this);
     }
 

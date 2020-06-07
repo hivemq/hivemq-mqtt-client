@@ -33,7 +33,7 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
     private static final byte OVERWRITE_COST_MIN = 2;
     private static final byte OVERWRITE_COST_MAX = 126;
     private static final byte OVERWRITE_COST_INC = 2;
-    private static final @NotNull Index.Spec<Entry, String> INDEX_SPEC = new Index.Spec<>(entry -> entry.topic);
+    private static final Index.@NotNull Spec<Entry, String> INDEX_SPEC = new Index.Spec<>(entry -> entry.topic);
 
     private final int topicAliasMaximum;
     private final @NotNull Index<Entry, String> map = new Index<>(INDEX_SPEC);
