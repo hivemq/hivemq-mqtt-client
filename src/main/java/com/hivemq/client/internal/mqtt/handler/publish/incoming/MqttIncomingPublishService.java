@@ -22,7 +22,7 @@ import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
-import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
+import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulIncomingPublish;
 import com.hivemq.client.internal.util.collections.ChunkedArrayQueue;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -61,7 +61,7 @@ class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    void onPublishQos0(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
+    void onPublishQos0(final @NotNull MqttStatefulIncomingPublish publish, final int receiveMaximum) {
         if (qos0Queue.size() >= (2 * receiveMaximum)) { // TODO receiveMaximum
             LOGGER.warn("QoS 0 publish message dropped.");
             if (QOS_0_DROP_OLDEST) {
@@ -86,7 +86,7 @@ class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    boolean onPublishQos1Or2(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
+    boolean onPublishQos1Or2(final @NotNull MqttStatefulIncomingPublish publish, final int receiveMaximum) {
         if (qos1Or2Queue.size() >= (2 * receiveMaximum)) {
             return false; // flow control error
         }
@@ -102,7 +102,7 @@ class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    private @NotNull MqttMatchingPublishFlows onPublish(final @NotNull MqttStatefulPublish publish) {
+    private @NotNull MqttMatchingPublishFlows onPublish(final @NotNull MqttStatefulIncomingPublish publish) {
         final MqttMatchingPublishFlows flows = incomingPublishFlows.findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
@@ -124,7 +124,7 @@ class MqttIncomingPublishService {
 
         qos1Or2It.reset();
         while (qos1Or2It.hasNext()) {
-            final MqttStatefulPublish publish = (MqttStatefulPublish) qos1Or2It.next();
+            final MqttStatefulIncomingPublish publish = (MqttStatefulIncomingPublish) qos1Or2It.next();
             final MqttMatchingPublishFlows flows = (MqttMatchingPublishFlows) qos1Or2It.next();
             emit(publish, flows);
             if ((qos1Or2It.getIterated() == 2) && flows.isEmpty() && flows.areAcknowledged()) {
@@ -136,7 +136,7 @@ class MqttIncomingPublishService {
         }
         qos0It.reset();
         while (qos0It.hasNext()) {
-            final MqttStatefulPublish publish = (MqttStatefulPublish) qos0It.next();
+            final MqttStatefulIncomingPublish publish = (MqttStatefulIncomingPublish) qos0It.next();
             final MqttMatchingPublishFlows flows = (MqttMatchingPublishFlows) qos0It.next();
             emit(publish, flows);
             if ((qos0It.getIterated() == 2) && flows.isEmpty()) {
@@ -149,7 +149,7 @@ class MqttIncomingPublishService {
 
     @CallByThread("Netty EventLoop")
     private void emit(
-            final @NotNull MqttStatefulPublish statefulPublish, final @NotNull MqttMatchingPublishFlows flows) {
+            final @NotNull MqttStatefulIncomingPublish statefulPublish, final @NotNull MqttMatchingPublishFlows flows) {
 
         for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
             final MqttIncomingPublishFlow flow = h.getElement();

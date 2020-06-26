@@ -20,6 +20,7 @@ import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulIncomingPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -54,7 +55,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, null);
     }
 
-    public static @NotNull MqttStatefulPublish statefulDelegate(
+    public static @NotNull MqttStatefulIncomingPublish statefulDelegate(
             final @NotNull MqttPublish publish, final int packetIdentifier, final boolean dup) {
 
         return publish.createStateful(packetIdentifier, dup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,

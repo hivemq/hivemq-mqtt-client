@@ -37,7 +37,6 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
     private final boolean dup;
     private final int topicAlias;
     private final @NotNull ImmutableIntList subscriptionIdentifiers;
-    private long id;
 
     MqttStatefulPublish(
             final @NotNull MqttPublish publish,
@@ -66,14 +65,6 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
 
     public @NotNull ImmutableIntList getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(final long id) {
-        this.id = id;
     }
 
     @Override
