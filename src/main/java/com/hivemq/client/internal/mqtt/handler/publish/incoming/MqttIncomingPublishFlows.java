@@ -131,12 +131,12 @@ public class MqttIncomingPublishFlows {
     }
 
     private static void add(
-            final @NotNull MqttStatefulPublishWithFlows matchingPublishFlows,
+            final @NotNull MqttStatefulPublishWithFlows publishWithFlows,
             final @Nullable HandleList<MqttGlobalIncomingPublishFlow> globalFlows) {
 
         if (globalFlows != null) {
             for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlows.getFirst(); h != null; h = h.getNext()) {
-                matchingPublishFlows.add(h.getElement());
+                publishWithFlows.add(h.getElement());
             }
         }
     }
