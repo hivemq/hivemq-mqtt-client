@@ -26,22 +26,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
 
-    private final long id;
     private final @NotNull MqttIncomingPublishFlow flow;
-    private final @NotNull MqttMatchingPublishFlows flows;
+    private final @NotNull MqttStatefulPublishWithFlows publishWithFlows;
     private final @NotNull AtomicBoolean confirmed = new AtomicBoolean(false);
 
     MqttIncomingPublishConfirmable(
-            final long id, final @NotNull MqttIncomingPublishFlow flow, final @NotNull MqttMatchingPublishFlows flows) {
+            final @NotNull MqttIncomingPublishFlow flow, final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
 
-        this.id = id;
         this.flow = flow;
-        this.flows = flows;
+        this.publishWithFlows = publishWithFlows;
     }
 
     @Override
     public long getId() {
-        return id;
+        return publishWithFlows.id;
     }
 
     @Override
@@ -55,7 +53,7 @@ class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
 
     @Override
     public void run() {
-        flows.acknowledge(flow);
+        publishWithFlows.acknowledge(flow);
     }
 
     static class Qos0 implements Confirmable {

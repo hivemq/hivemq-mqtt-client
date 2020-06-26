@@ -21,7 +21,7 @@ import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoder;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
-import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulIncomingPublish;
+import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -47,7 +47,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
     Mqtt3PublishDecoder() {}
 
     @Override
-    public @NotNull MqttStatefulIncomingPublish decode(
+    public @NotNull MqttStatefulPublish decode(
             final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
             throws MqttDecoderException {
 

@@ -17,7 +17,10 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.annotations.NotThreadSafe;
-import com.hivemq.client.internal.mqtt.datatypes.*;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicIterator;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicLevel;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicLevels;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.internal.util.collections.Index;
@@ -90,13 +93,11 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
     }
 
     @Override
-    public void findMatching(
-            final @NotNull MqttTopicImpl topic, final @NotNull MqttMatchingPublishFlows matchingFlows) {
-
-        final MqttTopicIterator topicIterator = MqttTopicIterator.of(topic);
+    public void findMatching(final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
+        final MqttTopicIterator topicIterator = MqttTopicIterator.of(publishWithFlows.publish.stateless().getTopic());
         TopicTreeNode node = rootNode;
         while (node != null) {
-            node = node.findMatching(topicIterator, matchingFlows);
+            node = node.findMatching(topicIterator, publishWithFlows);
         }
     }
 
@@ -316,10 +317,10 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         }
 
         @Nullable TopicTreeNode findMatching(
-                final @NotNull MqttTopicIterator topicIterator, final @NotNull MqttMatchingPublishFlows matchingFlows) {
+                final @NotNull MqttTopicIterator topicIterator, final @NotNull MqttStatefulPublishWithFlows flows) {
 
             if (topicIterator.hasNext()) {
-                add(matchingFlows, multiLevelEntries);
+                add(flows, multiLevelEntries);
                 final MqttTopicLevel nextLevel = topicIterator.next();
                 final TopicTreeNode nextNode = (next == null) ? null : next.get(nextLevel);
                 final TopicTreeNode singleLevel = this.singleLevel;
@@ -340,24 +341,23 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
                 }
                 TopicTreeNode node = singleLevelNext;
                 while (node != null) {
-                    node = node.findMatching(fork, matchingFlows);
+                    node = node.findMatching(fork, flows);
                 }
                 return nextNodeNext;
             }
-            add(matchingFlows, entries);
-            add(matchingFlows, multiLevelEntries);
+            add(flows, entries);
+            add(flows, multiLevelEntries);
             return null;
         }
 
         private static void add(
-                final @NotNull MqttMatchingPublishFlows matchingFlows,
-                final @Nullable NodeList<TopicTreeEntry> entries) {
+                final @NotNull MqttStatefulPublishWithFlows flows, final @Nullable NodeList<TopicTreeEntry> entries) {
 
             if (entries != null) {
-                matchingFlows.subscriptionFound = true;
+                flows.subscriptionFound = true;
                 for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
                     if (entry.flow != null) {
-                        matchingFlows.add(entry.flow);
+                        flows.add(entry.flow);
                     }
                 }
             }
