@@ -40,10 +40,10 @@ class MqttIncomingPublishService {
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
     final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
-    private final @NotNull ChunkedArrayQueue<Object> qos0Queue = new ChunkedArrayQueue<>(32);
-    private final ChunkedArrayQueue<Object>.@NotNull Iterator qos0It = qos0Queue.iterator();
-    private final @NotNull ChunkedArrayQueue<Object> qos1Or2Queue = new ChunkedArrayQueue<>(32);
-    private final ChunkedArrayQueue<Object>.@NotNull Iterator qos1Or2It = qos1Or2Queue.iterator();
+    private final @NotNull ChunkedArrayQueue<MqttStatefulPublishWithFlows> qos0Queue = new ChunkedArrayQueue<>(32);
+    private final ChunkedArrayQueue<MqttStatefulPublishWithFlows>.@NotNull Iterator qos0It = qos0Queue.iterator();
+    private final @NotNull ChunkedArrayQueue<MqttStatefulPublishWithFlows> qos1Or2Queue = new ChunkedArrayQueue<>(32);
+    private final ChunkedArrayQueue<MqttStatefulPublishWithFlows>.@NotNull Iterator qos1Or2It = qos1Or2Queue.iterator();
 
     private long nextQoS1Or2PublishId = 1;
 
@@ -65,7 +65,7 @@ class MqttIncomingPublishService {
             LOGGER.warn("QoS 0 publish message dropped.");
             if (QOS_0_DROP_OLDEST) {
                 qos0It.reset();
-                final MqttStatefulPublishWithFlows flows = (MqttStatefulPublishWithFlows) qos0It.next();
+                final MqttStatefulPublishWithFlows flows = qos0It.next();
                 qos0It.remove();
                 for (Handle<MqttIncomingPublishFlow> h = flows.getFirst(); h != null; h = h.getNext()) {
                     if (h.getElement().dereference() == 0) {
@@ -119,7 +119,7 @@ class MqttIncomingPublishService {
 
         qos1Or2It.reset();
         while (qos1Or2It.hasNext()) {
-            final MqttStatefulPublishWithFlows publishWithFlows = (MqttStatefulPublishWithFlows) qos1Or2It.next();
+            final MqttStatefulPublishWithFlows publishWithFlows = qos1Or2It.next();
             emit(publishWithFlows);
             if ((qos1Or2It.getIterated() == 1) && publishWithFlows.isEmpty() && publishWithFlows.areAcknowledged()) {
                 qos1Or2It.remove();
@@ -130,7 +130,7 @@ class MqttIncomingPublishService {
         }
         qos0It.reset();
         while (qos0It.hasNext()) {
-            final MqttStatefulPublishWithFlows publishWithFlows = (MqttStatefulPublishWithFlows) qos0It.next();
+            final MqttStatefulPublishWithFlows publishWithFlows = qos0It.next();
             emit(publishWithFlows);
             if ((qos0It.getIterated() == 1) && publishWithFlows.isEmpty()) {
                 qos0It.remove();
