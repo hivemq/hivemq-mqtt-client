@@ -18,7 +18,8 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.google.common.collect.ImmutableSet;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
-import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
+import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import com.hivemq.client.internal.util.collections.HandleList;
@@ -74,7 +75,7 @@ abstract class MqttSubscribedPublishFlowsTest {
     })
     void subscribe_matchingTopicFilters_doMatch(
             final @NotNull String topic,
-            @ConvertWith(CsvToArray.class) final @NotNull String[] matchingTopicFilters,
+            @ConvertWith(CsvToArray.class) final String @NotNull [] matchingTopicFilters,
             final boolean acknowledge) {
 
         final MqttSubscribedPublishFlow[] matchingFlows = new MqttSubscribedPublishFlow[matchingTopicFilters.length];
@@ -91,11 +92,11 @@ abstract class MqttSubscribedPublishFlowsTest {
             }
         }
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertFalse(matching.isEmpty());
-        assertEquals(ImmutableSet.copyOf(matchingFlows), toSet(matching));
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertFalse(publishWithFlows.isEmpty());
+        assertEquals(ImmutableSet.copyOf(matchingFlows), toSet(publishWithFlows));
     }
 
     @ParameterizedTest
@@ -109,7 +110,7 @@ abstract class MqttSubscribedPublishFlowsTest {
     })
     void subscribe_matchingTopicFilters_doMatch_noFlow(
             final @NotNull String topic,
-            @ConvertWith(CsvToArray.class) final @NotNull String[] matchingTopicFilters,
+            @ConvertWith(CsvToArray.class) final String @NotNull [] matchingTopicFilters,
             final boolean acknowledge) {
 
         for (int i = 0; i < matchingTopicFilters.length; i++) {
@@ -122,10 +123,10 @@ abstract class MqttSubscribedPublishFlowsTest {
             }
         }
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -136,7 +137,7 @@ abstract class MqttSubscribedPublishFlowsTest {
     })
     void subscribe_nonMatchingTopicFilters_doNotMatch(
             final @NotNull String topic,
-            @ConvertWith(CsvToArray.class) final @NotNull String[] notMatchingTopicFilters) {
+            @ConvertWith(CsvToArray.class) final String @NotNull [] notMatchingTopicFilters) {
 
         for (int i = 0; i < notMatchingTopicFilters.length; i++) {
             final MqttSubscription subscription =
@@ -146,10 +147,10 @@ abstract class MqttSubscribedPublishFlowsTest {
             assertEquals(ImmutableSet.of(subscription.getTopicFilter()), toSet(flow.getTopicFilters()));
         }
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertFalse(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -160,7 +161,7 @@ abstract class MqttSubscribedPublishFlowsTest {
     })
     void subscribe_nonMatchingTopicFilters_doNotMatch_noFlow(
             final @NotNull String topic,
-            @ConvertWith(CsvToArray.class) final @NotNull String[] notMatchingTopicFilters) {
+            @ConvertWith(CsvToArray.class) final String @NotNull [] notMatchingTopicFilters) {
 
         for (int i = 0; i < notMatchingTopicFilters.length; i++) {
             final MqttSubscription subscription =
@@ -168,10 +169,10 @@ abstract class MqttSubscribedPublishFlowsTest {
             flows.subscribe(subscription, i, null);
         }
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertFalse(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -194,10 +195,10 @@ abstract class MqttSubscribedPublishFlowsTest {
         assertTrue(flow1.getTopicFilters().isEmpty());
         assertTrue(flow2.getTopicFilters().isEmpty());
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertFalse(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -216,10 +217,10 @@ abstract class MqttSubscribedPublishFlowsTest {
 
         flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter));
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertFalse(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -240,10 +241,10 @@ abstract class MqttSubscribedPublishFlowsTest {
         assertEquals(ImmutableSet.of(subscription1.getTopicFilter()), toSet(flow1.getTopicFilters()));
         assertEquals(ImmutableSet.of(subscription2.getTopicFilter()), toSet(flow2.getTopicFilters()));
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertEquals(ImmutableSet.of(flow1, flow2), toSet(matching));
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertEquals(ImmutableSet.of(flow1, flow2), toSet(publishWithFlows));
     }
 
     @ParameterizedTest
@@ -260,10 +261,10 @@ abstract class MqttSubscribedPublishFlowsTest {
 
         flows.unsubscribe(MqttTopicFilterImpl.of(matchingTopicFilter));
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -288,11 +289,11 @@ abstract class MqttSubscribedPublishFlowsTest {
         assertFalse(flow1.getTopicFilters().isEmpty());
         assertTrue(flow2.getTopicFilters().isEmpty());
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertFalse(matching.isEmpty());
-        assertEquals(ImmutableSet.of(flow1), toSet(matching));
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertFalse(publishWithFlows.isEmpty());
+        assertEquals(ImmutableSet.of(flow1), toSet(publishWithFlows));
     }
 
     @ParameterizedTest
@@ -313,10 +314,10 @@ abstract class MqttSubscribedPublishFlowsTest {
 
         flows.unsubscribe(MqttTopicFilterImpl.of(notMatchingTopicFilter));
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -332,17 +333,17 @@ abstract class MqttSubscribedPublishFlowsTest {
         flows.subscribe(subscription2, 2, flow2);
 
         flows.cancel(flow1);
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertFalse(matching.isEmpty());
-        assertEquals(ImmutableSet.of(flow2), toSet(matching));
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertFalse(publishWithFlows.isEmpty());
+        assertEquals(ImmutableSet.of(flow2), toSet(publishWithFlows));
 
         flows.cancel(flow2);
-        final MqttMatchingPublishFlows matching2 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching2);
-        assertTrue(matching2.subscriptionFound);
-        assertTrue(matching2.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows2);
+        assertTrue(publishWithFlows2.subscriptionFound);
+        assertTrue(publishWithFlows2.isEmpty());
     }
 
     @ParameterizedTest
@@ -355,11 +356,11 @@ abstract class MqttSubscribedPublishFlowsTest {
         flows.subscribe(subscription, 1, flow1);
 
         flows.cancel(flow2);
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertFalse(matching.isEmpty());
-        assertEquals(ImmutableSet.of(flow1), toSet(matching));
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertFalse(publishWithFlows.isEmpty());
+        assertEquals(ImmutableSet.of(flow1), toSet(publishWithFlows));
     }
 
     @Test
@@ -375,12 +376,14 @@ abstract class MqttSubscribedPublishFlowsTest {
         flows.unsubscribe(MqttTopicFilterImpl.of("test/topic"));
         flows.cancel(flow);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of("test/topic"), matching);
-        assertFalse(matching.subscriptionFound);
-        flows.findMatching(MqttTopicImpl.of("test/topic2"), matching);
-        assertTrue(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows("test/topic");
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows("test/topic2");
+        flows.findMatching(publishWithFlows2);
+        assertTrue(publishWithFlows2.subscriptionFound);
+        assertTrue(publishWithFlows2.isEmpty());
     }
 
     @ParameterizedTest
@@ -402,23 +405,22 @@ abstract class MqttSubscribedPublishFlowsTest {
                 new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter2).build();
         flows.subscribe(subscription1, 1, flow);
         flows.subscribe(subscription2, 2, flow);
-        assertEquals(
-                ImmutableSet.of(subscription1.getTopicFilter(), subscription2.getTopicFilter()),
+        assertEquals(ImmutableSet.of(subscription1.getTopicFilter(), subscription2.getTopicFilter()),
                 toSet(flow.getTopicFilters()));
 
         flows.suback(subscription1.getTopicFilter(), 1, true);
         assertEquals(ImmutableSet.of(subscription2.getTopicFilter()), toSet(flow.getTopicFilters()));
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertFalse(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
 
-        final MqttMatchingPublishFlows matching2 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic2), matching2);
-        assertTrue(matching2.subscriptionFound);
-        assertFalse(matching2.isEmpty());
-        assertEquals(ImmutableSet.of(flow), toSet(matching2));
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows(topic2);
+        flows.findMatching(publishWithFlows2);
+        assertTrue(publishWithFlows2.subscriptionFound);
+        assertFalse(publishWithFlows2.isEmpty());
+        assertEquals(ImmutableSet.of(flow), toSet(publishWithFlows2));
     }
 
     @ParameterizedTest
@@ -442,15 +444,15 @@ abstract class MqttSubscribedPublishFlowsTest {
 
         flows.suback(subscription1.getTopicFilter(), 1, true);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertFalse(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
 
-        final MqttMatchingPublishFlows matching2 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic2), matching2);
-        assertTrue(matching2.subscriptionFound);
-        assertTrue(matching2.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows(topic2);
+        flows.findMatching(publishWithFlows2);
+        assertTrue(publishWithFlows2.subscriptionFound);
+        assertTrue(publishWithFlows2.isEmpty());
     }
 
     @ParameterizedTest
@@ -469,11 +471,11 @@ abstract class MqttSubscribedPublishFlowsTest {
         assertTrue(flow1.getTopicFilters().isEmpty());
         assertEquals(ImmutableSet.of(subscription.getTopicFilter()), toSet(flow2.getTopicFilters()));
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertFalse(matching.isEmpty());
-        assertEquals(ImmutableSet.of(flow2), toSet(matching));
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertFalse(publishWithFlows.isEmpty());
+        assertEquals(ImmutableSet.of(flow2), toSet(publishWithFlows));
     }
 
     @ParameterizedTest
@@ -488,10 +490,10 @@ abstract class MqttSubscribedPublishFlowsTest {
 
         flows.suback(subscription.getTopicFilter(), 1, true);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertTrue(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -509,10 +511,10 @@ abstract class MqttSubscribedPublishFlowsTest {
         flows.subscribe(subscription2, 2, null);
         flows.subscribe(subscription3, 3, null);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic), matching);
-        assertFalse(matching.subscriptionFound);
-        assertTrue(matching.isEmpty());
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows(topic);
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @Test
@@ -557,15 +559,27 @@ abstract class MqttSubscribedPublishFlowsTest {
         verify(flow5).onError(cause);
         verify(flow6).onError(cause);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of("test/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test2/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic2/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter2"), matching);
-        flows.findMatching(MqttTopicImpl.of("abc/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("topic/abc"), matching);
-        assertFalse(matching.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows("test/topic");
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows("test/topic/filter");
+        flows.findMatching(publishWithFlows2);
+        assertFalse(publishWithFlows2.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows3 = newPublishWithFlows("test2/topic/filter");
+        flows.findMatching(publishWithFlows3);
+        assertFalse(publishWithFlows3.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows4 = newPublishWithFlows("test/topic2/filter");
+        flows.findMatching(publishWithFlows4);
+        assertFalse(publishWithFlows4.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows5 = newPublishWithFlows("test/topic/filter2");
+        flows.findMatching(publishWithFlows5);
+        assertFalse(publishWithFlows5.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows6 = newPublishWithFlows("abc/topic");
+        flows.findMatching(publishWithFlows6);
+        assertFalse(publishWithFlows6.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows7 = newPublishWithFlows("topic/abc");
+        flows.findMatching(publishWithFlows7);
+        assertFalse(publishWithFlows7.subscriptionFound);
     }
 
     @Test
@@ -596,15 +610,27 @@ abstract class MqttSubscribedPublishFlowsTest {
         final Exception cause = new Exception("test");
         flows.clear(cause);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of("test/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test2/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic2/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter2"), matching);
-        flows.findMatching(MqttTopicImpl.of("abc/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("topic/abc"), matching);
-        assertFalse(matching.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows("test/topic");
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows("test/topic/filter");
+        flows.findMatching(publishWithFlows2);
+        assertFalse(publishWithFlows2.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows3 = newPublishWithFlows("test2/topic/filter");
+        flows.findMatching(publishWithFlows3);
+        assertFalse(publishWithFlows3.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows4 = newPublishWithFlows("test/topic2/filter");
+        flows.findMatching(publishWithFlows4);
+        assertFalse(publishWithFlows4.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows5 = newPublishWithFlows("test/topic/filter2");
+        flows.findMatching(publishWithFlows5);
+        assertFalse(publishWithFlows5.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows6 = newPublishWithFlows("abc/topic");
+        flows.findMatching(publishWithFlows6);
+        assertFalse(publishWithFlows6.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows7 = newPublishWithFlows("topic/abc");
+        flows.findMatching(publishWithFlows7);
+        assertFalse(publishWithFlows7.subscriptionFound);
     }
 
     @Test
@@ -643,15 +669,27 @@ abstract class MqttSubscribedPublishFlowsTest {
         verify(flow5, never()).onError(cause);
         verify(flow6, never()).onError(cause);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of("test/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test2/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic2/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter2"), matching);
-        flows.findMatching(MqttTopicImpl.of("abc/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("topic/abc"), matching);
-        assertFalse(matching.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows("test/topic");
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows("test/topic/filter");
+        flows.findMatching(publishWithFlows2);
+        assertFalse(publishWithFlows2.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows3 = newPublishWithFlows("test2/topic/filter");
+        flows.findMatching(publishWithFlows3);
+        assertFalse(publishWithFlows3.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows4 = newPublishWithFlows("test/topic2/filter");
+        flows.findMatching(publishWithFlows4);
+        assertFalse(publishWithFlows4.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows5 = newPublishWithFlows("test/topic/filter2");
+        flows.findMatching(publishWithFlows5);
+        assertFalse(publishWithFlows5.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows6 = newPublishWithFlows("abc/topic");
+        flows.findMatching(publishWithFlows6);
+        assertFalse(publishWithFlows6.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows7 = newPublishWithFlows("topic/abc");
+        flows.findMatching(publishWithFlows7);
+        assertFalse(publishWithFlows7.subscriptionFound);
     }
 
     @Test
@@ -676,15 +714,34 @@ abstract class MqttSubscribedPublishFlowsTest {
         final Exception cause = new Exception("test");
         flows.clear(cause);
 
-        final MqttMatchingPublishFlows matching = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of("test/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test2/topic/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic2/filter"), matching);
-        flows.findMatching(MqttTopicImpl.of("test/topic/filter2"), matching);
-        flows.findMatching(MqttTopicImpl.of("abc/topic"), matching);
-        flows.findMatching(MqttTopicImpl.of("topic/abc"), matching);
-        assertFalse(matching.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows = newPublishWithFlows("test/topic");
+        flows.findMatching(publishWithFlows);
+        assertFalse(publishWithFlows.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows("test/topic/filter");
+        flows.findMatching(publishWithFlows2);
+        assertFalse(publishWithFlows2.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows3 = newPublishWithFlows("test2/topic/filter");
+        flows.findMatching(publishWithFlows3);
+        assertFalse(publishWithFlows3.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows4 = newPublishWithFlows("test/topic2/filter");
+        flows.findMatching(publishWithFlows4);
+        assertFalse(publishWithFlows4.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows5 = newPublishWithFlows("test/topic/filter2");
+        flows.findMatching(publishWithFlows5);
+        assertFalse(publishWithFlows5.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows6 = newPublishWithFlows("abc/topic");
+        flows.findMatching(publishWithFlows6);
+        assertFalse(publishWithFlows6.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows7 = newPublishWithFlows("topic/abc");
+        flows.findMatching(publishWithFlows7);
+        assertFalse(publishWithFlows7.subscriptionFound);
+    }
+
+    static @NotNull MqttStatefulPublishWithFlows newPublishWithFlows(final @NotNull String topic) {
+        return new MqttStatefulPublishWithFlows(new MqttPublishBuilder.Default().topic(topic)
+                .build()
+                .createStateful(1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
+                        MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS));
     }
 
     private static @NotNull MqttSubscribedPublishFlow mockSubscriptionFlow(final @NotNull String name) {

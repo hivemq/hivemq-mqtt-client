@@ -19,7 +19,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
-import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -113,15 +112,15 @@ class MqttSubscribedPublishFlowTreeTest extends MqttSubscribedPublishFlowsTest {
         flows.suback(subscription2.getTopicFilter(), 2, false);
         flows.suback(subscription3.getTopicFilter(), 3, false);
 
-        final MqttMatchingPublishFlows matching1 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic1), matching1);
-        assertTrue(matching1.subscriptionFound);
-        final MqttMatchingPublishFlows matching2 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic2), matching2);
-        assertTrue(matching2.subscriptionFound);
-        final MqttMatchingPublishFlows matching3 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic3), matching3);
-        assertTrue(matching3.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows1 = newPublishWithFlows(topic1);
+        flows.findMatching(publishWithFlows1);
+        assertTrue(publishWithFlows1.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows(topic2);
+        flows.findMatching(publishWithFlows2);
+        assertTrue(publishWithFlows1.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows3 = newPublishWithFlows(topic3);
+        flows.findMatching(publishWithFlows3);
+        assertTrue(publishWithFlows1.subscriptionFound);
 
         assertEquals(ImmutableMap.of(1, ImmutableList.of(subscription1), 2, ImmutableList.of(subscription2), 3,
                 ImmutableList.of(subscription3)), flows.getSubscriptions());
@@ -141,15 +140,15 @@ class MqttSubscribedPublishFlowTreeTest extends MqttSubscribedPublishFlowsTest {
                 fail();
         }
 
-        final MqttMatchingPublishFlows matching4 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic1), matching4);
-        assertFalse(matching4.subscriptionFound);
-        final MqttMatchingPublishFlows matching5 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic2), matching5);
-        assertFalse(matching5.subscriptionFound);
-        final MqttMatchingPublishFlows matching6 = new MqttMatchingPublishFlows();
-        flows.findMatching(MqttTopicImpl.of(topic3), matching6);
-        assertFalse(matching6.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows4 = newPublishWithFlows(topic1);
+        flows.findMatching(publishWithFlows4);
+        assertFalse(publishWithFlows4.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows5 = newPublishWithFlows(topic2);
+        flows.findMatching(publishWithFlows5);
+        assertFalse(publishWithFlows5.subscriptionFound);
+        final MqttStatefulPublishWithFlows publishWithFlows6 = newPublishWithFlows(topic3);
+        flows.findMatching(publishWithFlows6);
+        assertFalse(publishWithFlows6.subscriptionFound);
 
         assertTrue(flows.getSubscriptions().isEmpty());
     }

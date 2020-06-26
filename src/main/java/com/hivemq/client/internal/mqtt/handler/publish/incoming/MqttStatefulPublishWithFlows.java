@@ -17,6 +17,7 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.annotations.NotThreadSafe;
+import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.util.collections.HandleList;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,10 +25,17 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-class MqttMatchingPublishFlows extends HandleList<MqttIncomingPublishFlow> {
+class MqttStatefulPublishWithFlows extends HandleList<MqttIncomingPublishFlow> {
 
+    final @NotNull MqttStatefulPublish publish;
+    long id;
+    long connectionIndex;
     boolean subscriptionFound;
     private int missingAcknowledgements;
+
+    MqttStatefulPublishWithFlows(final @NotNull MqttStatefulPublish publish) {
+        this.publish = publish;
+    }
 
     @Override
     public @NotNull Handle<MqttIncomingPublishFlow> add(final @NotNull MqttIncomingPublishFlow flow) {
