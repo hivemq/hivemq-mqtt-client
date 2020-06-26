@@ -185,13 +185,13 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         return new MqttPublishBuilder.Default(this);
     }
 
-    public @NotNull MqttStatefulPublish createStateful(
+    public @NotNull MqttStatefulIncomingPublish createStateful(
             final int packetIdentifier,
             final boolean dup,
             final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
-        return new MqttStatefulPublish(this, packetIdentifier, dup, topicAlias, subscriptionIdentifiers);
+        return new MqttStatefulIncomingPublish(this, packetIdentifier, dup, topicAlias, subscriptionIdentifiers);
     }
 
     public @NotNull MqttStatefulPublish createStateful(
@@ -199,7 +199,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
         final int topicAlias =
                 (topicAliasMapping == null) ? DEFAULT_NO_TOPIC_ALIAS : topicAliasMapping.onPublish(topic);
-        return createStateful(packetIdentifier, dup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+        return new MqttStatefulPublish(this, packetIdentifier, dup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
     public @NotNull MqttPublish withConfirmable(final @NotNull Confirmable confirmable) {
