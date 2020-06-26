@@ -212,10 +212,11 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
 
         final Object prevMessage = messages.put(pubAckOrRec);
         if (prevMessage != publishWithFlows) {
-            // message has been overwritten by a new message because session state on server differs
             if (prevMessage == null) {
+                // session has expired in the meantime
                 messages.remove(pubAckOrRec.getPacketIdentifier());
             } else {
+                // message has been overwritten by a new message because session state on server differs
                 messages.put(prevMessage);
             }
             return false;
