@@ -23,10 +23,7 @@
               tabs.setActive(tabGroup, index);
               e.preventDefault();
               var afterTop = tabButton.getBoundingClientRect().top;
-              var scrollParent = custom.util.getScrollParent(tabButton);
-              if (scrollParent != null) {
-                scrollParent.scrollTop += afterTop - beforeTop;
-              }
+              document.documentElement.scrollTop += afterTop - beforeTop;
             });
           })(tabButtons[j], tabGroup, j);
         }
@@ -96,23 +93,6 @@
         element.removeAttribute('id');
       }
       return result;
-    }
-
-    util.getScrollParent = function (node) {
-      if (node == null) {
-        return null;
-      }
-      if (node.scrollTop != undefined) {
-        if (node.scrollTop != 0) {
-          return node;
-        }
-        node.scrollTop = 1;
-        if (node.scrollTop == 1) {
-          node.scrollTop = 0;
-          return node;
-        }
-      }
-      return custom.util.getScrollParent(node.parentNode);
     }
 
   })(custom.util = custom.util || {});

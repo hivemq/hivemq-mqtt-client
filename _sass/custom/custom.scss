@@ -99,6 +99,23 @@ type parameter: #507874
 // Overrides
 //
 
+html {
+  scroll-behavior: auto;
+}
+
+th,
+td {
+  font-size: 13px !important;
+
+  @include mq(sm) {
+    font-size: 14px !important;
+  }
+}
+
+th {
+  text-align: center;
+}
+
 ::selection {
     color: $grey-dk-300;
     background: $yellow-200;
@@ -110,6 +127,15 @@ b, strong {
 
 .main-content a {
     white-space: normal;
+}
+
+.search-active {
+  @include mq(md) {
+    .main {
+      right: 0;
+      left: 0;
+    }
+  }
 }
 
 
@@ -131,6 +157,7 @@ b, strong {
     text-align: center;
     background-color: $grey-dk-250;
     border-radius: $border-radius;
+    margin: 0;
 
     @include mq(md) {
         padding: 4rem 5rem;
@@ -174,6 +201,7 @@ b, strong {
 
 ul.tab, ul.tab-content {
     padding: 0;
+    margin: 0;
 
     > li::before {
         content: none;
@@ -275,6 +303,10 @@ ul.tab.tab-merge {
         padding-right: .75rem;
         padding-top: .5rem;
         padding-bottom: .75rem;
+
+        > :first-child {
+            margin-top: 0;
+        }
 
         > :last-child {
             margin-bottom: 0;

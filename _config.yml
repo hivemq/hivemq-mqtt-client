@@ -5,7 +5,7 @@ version: 1.2.0
 android_retrofix_version: 0.3.5
 android_retrostreams_version: 1.7.2
 
-remote_theme: SgtSilvio/just-the-docs@merged
+remote_theme: pmarsceill/just-the-docs@v0.3.0
 color_scheme: dark
 
 search_enabled: true
@@ -14,8 +14,8 @@ search:
   previews: 3
   preview_words_before: 5
   preview_words_after: 10
-  rel_url: false
   tokenizer_separator: /[\s\-/]+/
+  rel_url: false
   button: true
 
 aux_links:
