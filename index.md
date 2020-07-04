@@ -79,38 +79,47 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
 
 .user-img {
   display: block;
-  max-height: 100px;
+  max-height: 6rem;
   padding: 0.5rem;
-  border-radius: 4px;
+  border-radius: 0.5rem;
   background-color: white;
+  transition: transform 200ms ease;
+}
+
+.user-link:hover {
+  overflow: visible;
+}
+
+.user-link:hover .user-img {
+  transform: scale(1.05);
 }
 </style>
 
 <div class="users">
 
-<a href="https://github.com/bmwcarit" class="user-link">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/300px-BMW.svg.png" alt="BMW CarIT" class="user-img"/>
-</a>
+  <a href="https://github.com/bmwcarit" class="user-link">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/300px-BMW.svg.png" alt="BMW CarIT" class="user-img"/>
+  </a>
 
-<a href="https://github.com/bmwcarit/joynr" class="user-link">
-<img src="https://github.com/bmwcarit/joynr/raw/master/graphics/joynr-logo.png" alt="joynr" class="user-img"/>
-</a>
+  <a href="https://github.com/bmwcarit/joynr" class="user-link">
+    <img src="https://github.com/bmwcarit/joynr/raw/master/graphics/joynr-logo.png" alt="joynr" class="user-img"/>
+  </a>
 
-<a href="https://www.openhab.org/" class="user-link">
-<img src="https://www.openhab.org/openhab-logo.png" alt="openHAB" class="user-img"/>
-</a>
+  <a href="https://www.openhab.org/" class="user-link">
+    <img src="https://www.openhab.org/openhab-logo.png" alt="openHAB" class="user-img"/>
+  </a>
 
-<a href="https://github.com/eclipse/ditto" class="user-link">
-<img src="https://eclipse.org/ditto/images/ditto.svg" alt="Eclipse Ditto" class="user-img"/>
-</a>
+  <a href="https://github.com/eclipse/ditto" class="user-link">
+    <img src="https://eclipse.org/ditto/images/ditto.svg" alt="Eclipse Ditto" class="user-img"/>
+  </a>
 
-<a href="https://github.com/OSGP/open-smart-grid-platform" class="user-link">
-<img src="https://avatars3.githubusercontent.com/u/11352045?s=200&v=4" alt="Open Smart Grid Platform" class="user-img"/>
-</a>
+  <a href="https://github.com/OSGP/open-smart-grid-platform" class="user-link">
+    <img src="https://avatars3.githubusercontent.com/u/11352045?s=200&v=4" alt="Open Smart Grid Platform" class="user-img"/>
+  </a>
 
-<a href="https://github.com/EXXETA/correomqtt" class="user-link">
-<img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" class="user-img"/>
-</a>
+  <a href="https://github.com/EXXETA/correomqtt" class="user-link">
+    <img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" class="user-img"/>
+  </a>
 
 </div>
 
@@ -119,13 +128,42 @@ If you use the HiveMQ MQTT Client in a project that is not listed here, feel fre
 
 # Contributors
 
-<ul class="list-style-none">
+<style>
+.contributors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.contributor-link {
+  padding: 0.25rem;
+}
+
+.contributor-img {
+  display: block;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  transition: transform 200ms ease;
+}
+
+.contributor-link:hover {
+  overflow: visible;
+}
+
+.contributor-link:hover .contributor-img {
+  transform: scale(1.1);
+}
+</style>
+
+<div class="contributors">
 {% for contributor in site.github.contributors %}
-  <li class="d-inline-block mr-1">
-     <a href="{{ contributor.html_url }}"><img src="{{ contributor.avatar_url }}" width="32" height="32" alt="{{ contributor.login }}"/></a>
-  </li>
+  <a href="{{ contributor.html_url }}" class="contributor-link">
+    <img src="{{ contributor.avatar_url }}" alt="{{ contributor.login }}" class="contributor-img"/>
+  </a>
 {% endfor %}
-</ul>
+</div>
 
 
 {% include news.md %}
