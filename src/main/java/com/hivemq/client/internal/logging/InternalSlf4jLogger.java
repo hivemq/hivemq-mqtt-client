@@ -42,12 +42,27 @@ class InternalSlf4jLogger implements InternalLogger {
     }
 
     @Override
+    public void error(final @NotNull String format, final @NotNull Object arg) {
+        delegate.error(format, arg);
+    }
+
+    @Override
+    public void error(final @NotNull String format, final @NotNull Object arg1, final @NotNull Object arg2) {
+        delegate.error(format, arg1, arg2);
+    }
+
+    @Override
     public void warn(final @NotNull String message) {
         delegate.warn(message);
     }
 
     @Override
-    public void warn(final @NotNull String format, final @NotNull Object... args) {
-        delegate.warn(format, args);
+    public void warn(final @NotNull String format, final @NotNull Object arg) {
+        delegate.warn(format, arg);
+    }
+
+    @Override
+    public void warn(final @NotNull String format, final @NotNull Object arg1, final @NotNull Object arg2) {
+        delegate.warn(format, arg1, arg2);
     }
 }
