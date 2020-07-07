@@ -129,15 +129,6 @@ b, strong {
     white-space: normal;
 }
 
-.search-active {
-  @include mq(md) {
-    .main {
-      right: 0;
-      left: 0;
-    }
-  }
-}
-
 
 //
 // Buttons

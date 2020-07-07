@@ -5,7 +5,7 @@ version: 1.2.0
 android_retrofix_version: 0.3.5
 android_retrostreams_version: 1.7.2
 
-remote_theme: pmarsceill/just-the-docs@v0.3.0
+remote_theme: pmarsceill/just-the-docs@654da0a
 color_scheme: dark
 
 search_enabled: true
