@@ -34,7 +34,7 @@ public final class InternalLoggerFactory {
         if (SLF4J_AVAILABLE) {
             return new InternalSlf4jLogger(clazz);
         }
-        return new InternalNoopLogger(clazz);
+        return InternalNoopLogger.INSTANCE;
     }
 
     private InternalLoggerFactory() {}

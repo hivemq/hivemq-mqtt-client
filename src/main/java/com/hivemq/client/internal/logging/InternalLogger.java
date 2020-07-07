@@ -27,7 +27,13 @@ public interface InternalLogger {
 
     void error(@NotNull String message, @NotNull Throwable throwable);
 
+    void error(@NotNull String format, @NotNull Object arg);
+
+    void error(@NotNull String format, @NotNull Object arg1, @NotNull Object arg2);
+
     void warn(@NotNull String message);
 
-    void warn(@NotNull String format, @NotNull Object... args);
+    void warn(@NotNull String format, @NotNull Object arg);
+
+    void warn(@NotNull String format, @NotNull Object arg1, @NotNull Object arg2);
 }

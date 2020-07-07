@@ -23,7 +23,9 @@ import org.jetbrains.annotations.NotNull;
  */
 class InternalNoopLogger implements InternalLogger {
 
-    InternalNoopLogger(@SuppressWarnings("unused") final @NotNull Class<?> clazz) {}
+    static final @NotNull InternalLogger INSTANCE = new InternalNoopLogger();
+
+    private InternalNoopLogger() {}
 
     @Override
     public void error(final @NotNull String message) {}
@@ -32,8 +34,17 @@ class InternalNoopLogger implements InternalLogger {
     public void error(final @NotNull String message, final @NotNull Throwable throwable) {}
 
     @Override
+    public void error(final @NotNull String format, final @NotNull Object arg) {}
+
+    @Override
+    public void error(final @NotNull String format, final @NotNull Object arg1, final @NotNull Object arg2) {}
+
+    @Override
     public void warn(final @NotNull String message) {}
 
     @Override
-    public void warn(final @NotNull String format, final @NotNull Object... args) {}
+    public void warn(final @NotNull String format, final @NotNull Object arg) {}
+
+    @Override
+    public void warn(final @NotNull String format, final @NotNull Object arg1, final @NotNull Object arg2) {}
 }
