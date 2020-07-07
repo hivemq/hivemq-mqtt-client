@@ -33,8 +33,6 @@ import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubCompBuilde
 import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
 import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
-import com.hivemq.client.internal.netty.ContextFuture;
-import com.hivemq.client.internal.netty.DefaultContextPromise;
 import com.hivemq.client.internal.util.collections.IntIndex;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -53,7 +51,7 @@ import javax.inject.Inject;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttIncomingQosHandler extends MqttSessionAwareHandler implements ContextFuture.Listener<MqttPubRec> {
+public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
 
     public static final @NotNull String NAME = "qos.incoming";
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttIncomingQosHandler.class);
@@ -246,7 +244,8 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler implements C
             }
             case EXACTLY_ONCE: {
                 final MqttPubRec pubRec = buildPubRec(new MqttPubRecBuilder(publishWithFlows.publish));
-                final Object prevMessage = messages.put(pubRec);
+                final Object prevMessage = !pubRec.getReasonCode().isError() ? messages.put(pubRec) :
+                        messages.remove(pubRec.getPacketIdentifier());
                 if (ack(prevMessage, publishWithFlows) && (ctx != null)) {
                     writePubRec(ctx, pubRec);
                 }
@@ -276,20 +275,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler implements C
     }
 
     private void writePubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
-        if (pubRec.getReasonCode().isError()) {
-            ctx.writeAndFlush(pubRec, new DefaultContextPromise<>(ctx.channel(), pubRec)).addListener(this);
-        } else {
-            ctx.writeAndFlush(pubRec, ctx.voidPromise());
-        }
-    }
-
-    @Override
-    public void operationComplete(final @NotNull ContextFuture<? extends MqttPubRec> future) {
-        if (future.isSuccess()) {
-            messages.remove(future.getContext().getPacketIdentifier());
-        } else {
-            future.channel().pipeline().fireExceptionCaught(future.cause());
-        }
+        ctx.writeAndFlush(pubRec, ctx.voidPromise());
     }
 
     private void readPubRel(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRel pubRel) {
