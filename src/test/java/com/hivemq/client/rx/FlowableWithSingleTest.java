@@ -381,10 +381,9 @@ class FlowableWithSingleTest {
         final LinkedList<Object> list = new LinkedList<>();
         final String mainThreadName = Thread.currentThread().getName();
         flowableWithSingle //
-                .transformFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService)).doOnNext(s -> {
-                    singleLatch.await();
-                    flowableLatch.countDown();
-                })) //
+                .transformFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService))
+                        .doOnNext(s -> singleLatch.await())
+                        .doAfterNext(s -> flowableLatch.countDown())) //
                 .doOnSingle(s -> {
                     singleLatch.countDown();
                     flowableLatch.await();
@@ -392,9 +391,7 @@ class FlowableWithSingleTest {
                     list.add(s);
                 }) //
                 .doOnNext(s -> {
-                    if (s.equals("next2")) {
-                        assertEquals("test_thread", Thread.currentThread().getName());
-                    } else {
+                    if (!s.equals("next2")) {
                         assertEquals(mainThreadName, Thread.currentThread().getName());
                     }
                     list.add(s);
@@ -424,7 +421,7 @@ class FlowableWithSingleTest {
                             singleLatch.await();
                             flowableLatch.countDown();
                         }) //
-                        .doOnComplete(flowableLatch::countDown)) //
+                        .doAfterTerminate(flowableLatch::countDown)) //
                 .doOnSingle(s -> {
                     singleLatch.countDown();
                     flowableLatch.await();

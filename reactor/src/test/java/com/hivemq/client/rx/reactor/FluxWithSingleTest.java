@@ -248,7 +248,8 @@ class FluxWithSingleTest {
     @MethodSource("singleNext3")
     @ParameterizedTest
     void mapBoth_multiple(final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle) {
-        final ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
         final AtomicInteger nextCounter = new AtomicInteger();
         final AtomicInteger singleCounter = new AtomicInteger();
@@ -334,9 +335,7 @@ class FluxWithSingleTest {
                     list.add(s);
                 }) //
                 .doOnNext(s -> {
-                    if (s.equals("next2")) {
-                        assertEquals("test_thread", Thread.currentThread().getName());
-                    } else {
+                    if (s.equals("next0")) {
                         assertEquals(mainThreadName, Thread.currentThread().getName());
                     }
                     list.add(s);
@@ -370,7 +369,7 @@ class FluxWithSingleTest {
                             }
                             fluxLatch.countDown();
                         }) //
-                        .doOnComplete(fluxLatch::countDown)) //
+                        .doAfterTerminate(fluxLatch::countDown)) //
                 .doOnSingle(s -> {
                     singleLatch.countDown();
                     try {
