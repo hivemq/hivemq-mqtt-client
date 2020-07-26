@@ -48,8 +48,6 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
 
     private static class CombineSubscriber<F, S> implements FlowableWithSingleSubscriber<F, S>, Subscription {
 
-        private static final @NotNull Object COMPLETE = new Object();
-
         private final @NotNull Subscriber<? super Object> subscriber;
         private @Nullable Subscription subscription;
         private final @NotNull AtomicLong requested = new AtomicLong();
@@ -94,7 +92,7 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
         public void onComplete() {
             synchronized (this) {
                 if (queued != null) {
-                    done = COMPLETE;
+                    done = new Object();
                 } else {
                     subscriber.onComplete();
                 }

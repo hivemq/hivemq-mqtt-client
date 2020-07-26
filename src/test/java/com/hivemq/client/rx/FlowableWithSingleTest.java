@@ -31,6 +31,8 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -308,8 +310,7 @@ class FlowableWithSingleTest {
     @MethodSource("singleNext3")
     @ParameterizedTest
     void mapBoth_multiple(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
-        final ExecutorService executorService =
-                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+        final ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
         final AtomicInteger nextCounter = new AtomicInteger();
         final AtomicInteger singleCounter = new AtomicInteger();
@@ -341,6 +342,102 @@ class FlowableWithSingleTest {
 
         assertEquals(9, nextCounter.get());
         assertEquals(3, singleCounter.get());
+
+        executorService.shutdown();
+    }
+
+    @Test
+    void composeFlowable_sync_singleAtSamePosition() {
+        final FlowableWithSingleItem<String, String> flowableWithSingle =
+                new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), "single", 2);
+
+        final LinkedList<Object> list = new LinkedList<>();
+        final String mainThreadName = Thread.currentThread().getName();
+        flowableWithSingle.composeFlowable(upstream -> upstream.map(String::getBytes).map(String::new))
+                .doOnSingle(s -> {
+                    assertEquals(mainThreadName, Thread.currentThread().getName());
+                    list.add(s);
+                })
+                .doOnNext(s -> {
+                    assertEquals(mainThreadName, Thread.currentThread().getName());
+                    list.add(s);
+                })
+                .subscribe();
+
+        assertEquals(Arrays.asList("next0", "next1", "single", "next2"), list);
+    }
+
+    @Test
+    void composeFlowable_async_singleAtDifferentPositionButSerial() {
+        final FlowableWithSingleItem<String, String> flowableWithSingle =
+                new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), "single", 2);
+
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+
+        final CountDownLatch singleLatch = new CountDownLatch(1);
+        final CountDownLatch flowableLatch = new CountDownLatch(2);
+        final LinkedList<Object> list = new LinkedList<>();
+        final String mainThreadName = Thread.currentThread().getName();
+        flowableWithSingle //
+                .composeFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService)).doOnNext(s -> {
+                    singleLatch.await();
+                    flowableLatch.countDown();
+                })) //
+                .doOnSingle(s -> {
+                    singleLatch.countDown();
+                    flowableLatch.await();
+                    assertEquals(mainThreadName, Thread.currentThread().getName());
+                    list.add(s);
+                }) //
+                .doOnNext(s -> {
+                    if (s.equals("next2")) {
+                        assertEquals("test_thread", Thread.currentThread().getName());
+                    } else {
+                        assertEquals(mainThreadName, Thread.currentThread().getName());
+                    }
+                    list.add(s);
+                }) //
+                .blockingSubscribe();
+
+        assertEquals(Arrays.asList("single", "next0", "next1", "next2"), list);
+
+        executorService.shutdown();
+    }
+
+    @Test
+    void composeFlowable_async_earlierCompleteButSerial() {
+        final FlowableWithSingleItem<String, String> flowableWithSingle =
+                new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), "single", 2);
+
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+
+        final CountDownLatch singleLatch = new CountDownLatch(1);
+        final CountDownLatch flowableLatch = new CountDownLatch(2);
+        final LinkedList<Object> list = new LinkedList<>();
+        final String mainThreadName = Thread.currentThread().getName();
+        flowableWithSingle //
+                .composeFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService)).take(1) //
+                        .doOnNext(s -> {
+                            singleLatch.await();
+                            flowableLatch.countDown();
+                        }) //
+                        .doOnComplete(flowableLatch::countDown)) //
+                .doOnSingle(s -> {
+                    singleLatch.countDown();
+                    flowableLatch.await();
+                    assertEquals(mainThreadName, Thread.currentThread().getName());
+                    list.add(s);
+                }) //
+                .doOnNext(s -> {
+                    assertEquals(mainThreadName, Thread.currentThread().getName());
+                    list.add(s);
+                }) //
+                .doOnComplete(() -> assertEquals(mainThreadName, Thread.currentThread().getName())) //
+                .blockingSubscribe();
+
+        assertEquals(Arrays.asList("single", "next0"), list);
 
         executorService.shutdown();
     }

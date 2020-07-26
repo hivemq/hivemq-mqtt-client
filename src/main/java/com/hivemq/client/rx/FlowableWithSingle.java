@@ -18,6 +18,7 @@ package com.hivemq.client.rx;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.internal.rx.WithSingleStrictSubscriber;
+import com.hivemq.client.internal.rx.operators.FlowableWithSingleCompose;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMap;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMapError;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleObserveOn;
@@ -25,6 +26,7 @@ import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.BackpressureKind;
 import io.reactivex.annotations.BackpressureSupport;
@@ -179,6 +181,27 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
             singleConsumer.accept(s);
             return s;
         });
+    }
+
+    /**
+     * Transforms the {@link Flowable} part by applying a transformer function to it.
+     * <p>
+     * If the transformation applies asynchronous operators, the position of the single item in the flow of items may
+     * change. The single item and the flow of items are emitted serially, but it is not defined in which thread they
+     * are emitted.
+     *
+     * @param transformer the transformer function.
+     * @param <FT>        the type of the transformed flow items.
+     * @return a {@link FlowableWithSingle} with the transformed {@link Flowable} part.
+     */
+    @CheckReturnValue
+    @BackpressureSupport(BackpressureKind.PASS_THROUGH)
+    @SchedulerSupport(SchedulerSupport.NONE)
+    public final <FT> @NotNull FlowableWithSingle<FT, S> composeFlowable(
+            final @NotNull FlowableTransformer<F, FT> transformer) {
+
+        Checks.notNull(transformer, "Transformer");
+        return new FlowableWithSingleCompose<>(this, transformer);
     }
 
     @Override
