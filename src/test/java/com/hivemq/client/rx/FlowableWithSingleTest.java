@@ -310,7 +310,8 @@ class FlowableWithSingleTest {
     @MethodSource("singleNext3")
     @ParameterizedTest
     void mapBoth_multiple(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
-        final ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
         final AtomicInteger nextCounter = new AtomicInteger();
         final AtomicInteger singleCounter = new AtomicInteger();
@@ -347,13 +348,13 @@ class FlowableWithSingleTest {
     }
 
     @Test
-    void composeFlowable_sync_singleAtSamePosition() {
+    void transformFlowable_sync_singleAtSamePosition() {
         final FlowableWithSingleItem<String, String> flowableWithSingle =
                 new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), "single", 2);
 
         final LinkedList<Object> list = new LinkedList<>();
         final String mainThreadName = Thread.currentThread().getName();
-        flowableWithSingle.composeFlowable(upstream -> upstream.map(String::getBytes).map(String::new))
+        flowableWithSingle.transformFlowable(upstream -> upstream.map(String::getBytes).map(String::new))
                 .doOnSingle(s -> {
                     assertEquals(mainThreadName, Thread.currentThread().getName());
                     list.add(s);
@@ -368,7 +369,7 @@ class FlowableWithSingleTest {
     }
 
     @Test
-    void composeFlowable_async_singleAtDifferentPositionButSerial() {
+    void transformFlowable_async_singleAtDifferentPositionButSerial() {
         final FlowableWithSingleItem<String, String> flowableWithSingle =
                 new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), "single", 2);
 
@@ -380,7 +381,7 @@ class FlowableWithSingleTest {
         final LinkedList<Object> list = new LinkedList<>();
         final String mainThreadName = Thread.currentThread().getName();
         flowableWithSingle //
-                .composeFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService)).doOnNext(s -> {
+                .transformFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService)).doOnNext(s -> {
                     singleLatch.await();
                     flowableLatch.countDown();
                 })) //
@@ -406,7 +407,7 @@ class FlowableWithSingleTest {
     }
 
     @Test
-    void composeFlowable_async_earlierCompleteButSerial() {
+    void transformFlowable_async_earlierCompleteButSerial() {
         final FlowableWithSingleItem<String, String> flowableWithSingle =
                 new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), "single", 2);
 
@@ -418,7 +419,7 @@ class FlowableWithSingleTest {
         final LinkedList<Object> list = new LinkedList<>();
         final String mainThreadName = Thread.currentThread().getName();
         flowableWithSingle //
-                .composeFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService)).take(1) //
+                .transformFlowable(upstream -> upstream.observeOn(Schedulers.from(executorService)).take(1) //
                         .doOnNext(s -> {
                             singleLatch.await();
                             flowableLatch.countDown();

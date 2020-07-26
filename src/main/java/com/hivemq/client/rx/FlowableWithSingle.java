@@ -18,10 +18,10 @@ package com.hivemq.client.rx;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.internal.rx.WithSingleStrictSubscriber;
-import com.hivemq.client.internal.rx.operators.FlowableWithSingleCompose;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMap;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleMapError;
 import com.hivemq.client.internal.rx.operators.FlowableWithSingleObserveOn;
+import com.hivemq.client.internal.rx.operators.FlowableWithSingleTransform;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
@@ -184,24 +184,24 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Transforms the {@link Flowable} part by applying a transformer function to it.
+     * Modifies the upstream by transforming the {@link Flowable} part during subscribe.
      * <p>
      * If the transformation applies asynchronous operators, the position of the single item in the flow of items may
      * change. The single item and the flow of items are emitted serially, but it is not defined in which thread they
      * are emitted.
      *
-     * @param transformer the transformer function.
+     * @param transformer the transforming function.
      * @param <FT>        the type of the transformed flow items.
      * @return a {@link FlowableWithSingle} with the transformed {@link Flowable} part.
      */
     @CheckReturnValue
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public final <FT> @NotNull FlowableWithSingle<FT, S> composeFlowable(
+    public final <FT> @NotNull FlowableWithSingle<FT, S> transformFlowable(
             final @NotNull FlowableTransformer<F, FT> transformer) {
 
         Checks.notNull(transformer, "Transformer");
-        return new FlowableWithSingleCompose<>(this, transformer);
+        return new FlowableWithSingleTransform<>(this, transformer);
     }
 
     @Override

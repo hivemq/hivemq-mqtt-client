@@ -32,11 +32,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author Silvio Giebl
  */
-public class FlowableWithSingleCompose<F, FT, S> extends FlowableWithSingleOperator<F, S, FT, S> {
+public class FlowableWithSingleTransform<F, FT, S> extends FlowableWithSingleOperator<F, S, FT, S> {
 
     private final @NotNull FlowableTransformer<F, FT> transformer;
 
-    public FlowableWithSingleCompose(
+    public FlowableWithSingleTransform(
             final @NotNull FlowableWithSingle<F, S> source, final @NotNull FlowableTransformer<F, FT> transformer) {
 
         super(source);
