@@ -29,7 +29,7 @@ public class HandleList<E> extends NodeList<HandleList.Handle<E>> {
 
         private final @NotNull E element;
 
-        Handle(@NotNull final E element) {
+        Handle(final @NotNull E element) {
             this.element = element;
         }
 
