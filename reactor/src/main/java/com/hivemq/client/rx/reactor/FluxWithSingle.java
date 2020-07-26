@@ -20,11 +20,13 @@ import com.hivemq.client.internal.rx.reactor.CoreWithSingleStrictSubscriber;
 import com.hivemq.client.internal.rx.reactor.operators.FluxWithSingleFrom;
 import com.hivemq.client.internal.rx.reactor.operators.FluxWithSingleMap;
 import com.hivemq.client.internal.rx.reactor.operators.FluxWithSinglePublishOn;
+import com.hivemq.client.internal.rx.reactor.operators.FluxWithSingleTransform;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
@@ -110,7 +112,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      * Transform the single item emitted by this {@link FluxWithSingle} by applying a synchronous function to it.
      *
      * @param singleMapper the synchronous transforming {@link Function} for the single item.
-     * @param <SM>         the transformed type of the single item.
+     * @param <SM>         the type of the transformed single item.
      * @return a transformed {@link FluxWithSingle}.
      */
     public final <SM> @NotNull FluxWithSingle<F, SM> mapSingle(
@@ -125,8 +127,8 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      *
      * @param fluxMapper   the synchronous transforming {@link Function} for the flow of items.
      * @param singleMapper the synchronous transforming {@link Function} for the single item.
-     * @param <FM>         the transformed type of the flow items.
-     * @param <SM>         the transformed type of the single item.
+     * @param <FM>         the type of the transformed flow items.
+     * @param <SM>         the type of the transformed single item.
      * @return a transformed {@link FluxWithSingle}.
      */
     public final <FM, SM> @NotNull FluxWithSingle<FM, SM> mapBoth(
@@ -150,6 +152,24 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
             singleConsumer.accept(s);
             return s;
         });
+    }
+
+    /**
+     * Transforms the {@link Flux} part of this {@link FluxWithSingle} during subscribe.
+     * <p>
+     * If the transformation applies asynchronous operators, the position of the single item in the flow of items may
+     * change. The single item and the flow of items are emitted serially, but it is not defined in which thread they
+     * are emitted.
+     *
+     * @param transformer the transforming {@link Function}.
+     * @param <FT>        the type of the transformed flow items.
+     * @return a {@link FluxWithSingle} with the transformed {@link Flux} part.
+     */
+    public final <FT> @NotNull FluxWithSingle<FT, S> transformFlux(
+            final @NotNull Function<? super Flux<F>, ? extends Publisher<FT>> transformer) {
+
+        Checks.notNull(transformer, "Transformer");
+        return new FluxWithSingleTransform<>(this, transformer);
     }
 
     @Override
