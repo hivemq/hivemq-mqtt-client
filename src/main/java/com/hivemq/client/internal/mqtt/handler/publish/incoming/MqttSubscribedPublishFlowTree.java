@@ -112,6 +112,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
     @Override
     public @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> getSubscriptions() {
+        // we sort in reverse order of subscription identifiers so that newer subscriptions are first
         final Map<Integer, List<MqttSubscription>> map = new TreeMap<>(Comparator.reverseOrder());
         if (rootNode != null) {
             final Queue<IteratorNode> nodes = new LinkedList<>();
@@ -533,13 +534,11 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
             final MqttTopicLevel topicLevels = ((parentTopicLevels == null) || (topicLevel == null)) ? topicLevel :
                     MqttTopicLevels.concat(parentTopicLevels, topicLevel);
-            if (topicLevels != null) {
-                if (entries != null) {
-                    getSubscriptions(entries, topicLevels, false, map);
-                }
-                if (multiLevelEntries != null) {
-                    getSubscriptions(multiLevelEntries, topicLevels, true, map);
-                }
+            if (entries != null) {
+                getSubscriptions(entries, topicLevels, false, map);
+            }
+            if (multiLevelEntries != null) {
+                getSubscriptions(multiLevelEntries, topicLevels, true, map);
             }
             if (next != null) {
                 next.forEach(node -> nodes.add(new IteratorNode(node, topicLevels)));
@@ -551,21 +550,24 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
         private static void getSubscriptions(
                 final @NotNull NodeList<TopicTreeEntry> entries,
-                final @NotNull MqttTopicLevel topicLevels,
+                final @Nullable MqttTopicLevel topicLevels,
                 final boolean multiLevelWildcard,
                 final @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> map) {
 
+            // exact subscription = subscription without prefix, so no shared subscription
             boolean exactFound = false;
+            // iterate in reverse order to only include the newest exact subscription
             for (TopicTreeEntry entry = entries.getLast(); entry != null; entry = entry.getPrev()) {
                 if (entry.acknowledged) {
                     if (entry.topicFilterPrefix == null) {
                         if (exactFound) {
+                            // ignore older exact subscriptions as they are overwritten by the newest
                             continue;
                         }
                         exactFound = true;
                     }
                     final MqttTopicFilterImpl topicFilter =
-                            topicLevels.toFilter(entry.topicFilterPrefix, multiLevelWildcard);
+                            MqttTopicLevel.toFilter(entry.topicFilterPrefix, topicLevels, multiLevelWildcard);
                     assert topicFilter != null : "reconstructed topic filter must be valid";
                     final MqttQos qos = MqttSubscription.decodeQos(entry.subscriptionOptions);
                     assert qos != null : "reconstructed qos must be valid";

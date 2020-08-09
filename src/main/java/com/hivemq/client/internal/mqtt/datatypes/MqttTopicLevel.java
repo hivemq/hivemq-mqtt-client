@@ -60,26 +60,42 @@ public class MqttTopicLevel extends ByteArray {
         return this;
     }
 
-    public @Nullable MqttTopicFilterImpl toFilter(final byte @Nullable [] prefix, final boolean multiLevelWildcard) {
-        final byte[] bytes;
+    public static @Nullable MqttTopicFilterImpl toFilter(
+            final byte @Nullable [] prefix,
+            final @Nullable MqttTopicLevel topicLevel,
+            final boolean multiLevelWildcard) {
+
+        int length = 0;
         if (prefix != null) {
-            if (multiLevelWildcard) {
-                bytes = new byte[prefix.length + 1 + array.length + 2];
-                bytes[bytes.length - 2] = MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
-                bytes[bytes.length - 1] = MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD;
-            } else {
-                bytes = new byte[prefix.length + 1 + array.length];
+            length += prefix.length + 1;
+        }
+        if (topicLevel != null) {
+            length += topicLevel.array.length;
+        }
+        if (multiLevelWildcard) {
+            if (topicLevel != null) {
+                length++;
             }
-            System.arraycopy(prefix, 0, bytes, 0, prefix.length);
-            bytes[prefix.length] = MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
-            System.arraycopy(array, 0, bytes, prefix.length + 1, array.length);
-        } else if (multiLevelWildcard) {
-            bytes = new byte[array.length + 2];
-            System.arraycopy(array, 0, bytes, 0, array.length);
-            bytes[bytes.length - 2] = MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
-            bytes[bytes.length - 1] = MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD;
-        } else {
-            bytes = array;
+            length++;
+        }
+        final byte[] bytes = new byte[length];
+        int cursor = 0;
+        if (prefix != null) {
+            System.arraycopy(prefix, 0, bytes, cursor, prefix.length);
+            cursor += prefix.length;
+            bytes[cursor] = MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
+            cursor++;
+        }
+        if (topicLevel != null) {
+            System.arraycopy(topicLevel.array, 0, bytes, cursor, topicLevel.array.length);
+            cursor += topicLevel.array.length;
+        }
+        if (multiLevelWildcard) {
+            if (topicLevel != null) {
+                bytes[cursor] = MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
+                cursor++;
+            }
+            bytes[cursor] = MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD;
         }
         return MqttTopicFilterImpl.of(bytes);
     }
