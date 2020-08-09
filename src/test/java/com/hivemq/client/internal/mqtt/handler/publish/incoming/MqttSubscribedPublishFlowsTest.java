@@ -23,6 +23,7 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import com.hivemq.client.internal.util.collections.HandleList;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -742,6 +746,64 @@ abstract class MqttSubscribedPublishFlowsTest {
                 .build()
                 .createStateful(1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
                         MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS));
+    }
+
+    @Test
+    void getSubscriptions() {
+        final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
+                new MqttSubscriptionBuilder.Default().topicFilter("abc").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/abc").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("test/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/test/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("+/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/+/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("+/abc").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/+/abc").build());
+        for (int i = 0; i < subscriptions.size(); i++) {
+            flows.subscribe(subscriptions.get(i), i, null);
+            flows.suback(subscriptions.get(i).getTopicFilter(), i, false);
+        }
+        final Map<Integer, List<MqttSubscription>> allSubscriptions = flows.getSubscriptions();
+        for (int i = 0; i < subscriptions.size(); i++) {
+            assertEquals(ImmutableList.of(subscriptions.get(i)), allSubscriptions.get(i));
+        }
+        // check if sorted in reverse order
+        final AtomicInteger atomicInteger = new AtomicInteger(subscriptions.size());
+        allSubscriptions.forEach(
+                (subscriptionId, subscriptionsForId) -> assertEquals(atomicInteger.decrementAndGet(), subscriptionId));
+    }
+
+    @Test
+    void getSubscriptions_sameSubscriptionIdentifiers() {
+        final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
+                new MqttSubscriptionBuilder.Default().topicFilter("abc").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/abc").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("test/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/test/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("+/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/+/#").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("+/abc").build(),
+                new MqttSubscriptionBuilder.Default().topicFilter("$share/group/+/abc").build());
+        for (int i = 0; i < subscriptions.size(); i += 2) {
+            for (int j = 0; j < 2; j++) {
+                flows.subscribe(subscriptions.get(i + j), i, null);
+                flows.suback(subscriptions.get(i + j).getTopicFilter(), i, false);
+            }
+        }
+        final Map<Integer, List<MqttSubscription>> allSubscriptions = flows.getSubscriptions();
+        for (int i = 0; i < subscriptions.size(); i += 2) {
+            assertEquals(
+                    ImmutableSet.of(subscriptions.get(i), subscriptions.get(i + 1)),
+                    ImmutableSet.copyOf(allSubscriptions.get(i)));
+        }
+        // check if sorted in reverse order
+        final AtomicInteger atomicInteger = new AtomicInteger(subscriptions.size());
+        allSubscriptions.forEach(
+                (subscriptionId, subscriptionsForId) -> assertEquals(atomicInteger.addAndGet(-2), subscriptionId));
     }
 
     private static @NotNull MqttSubscribedPublishFlow mockSubscriptionFlow(final @NotNull String name) {
