@@ -69,7 +69,7 @@ public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
     }
 
     @Override
-    public @NotNull MqttClientInterceptorsBuilder.Default extend() {
+    public MqttClientInterceptorsBuilder.@NotNull Default extend() {
         return new MqttClientInterceptorsBuilder.Default(this);
     }
 

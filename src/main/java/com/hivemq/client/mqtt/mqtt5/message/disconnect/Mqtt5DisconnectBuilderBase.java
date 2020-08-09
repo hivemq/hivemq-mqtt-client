@@ -118,5 +118,5 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
      * @see #userProperties(Mqtt5UserProperties)
      */
     @CheckReturnValue
-    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
+    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends B> userProperties();
 }

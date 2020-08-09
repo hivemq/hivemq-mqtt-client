@@ -64,7 +64,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public static final @NotNull String NAME = "subscription";
     private static final @NotNull InternalLogger LOGGER =
             InternalLoggerFactory.getLogger(MqttSubscriptionHandler.class);
-    private static final @NotNull IntIndex.Spec<MqttSubOrUnsubWithFlow> INDEX_SPEC =
+    private static final IntIndex.@NotNull Spec<MqttSubOrUnsubWithFlow> INDEX_SPEC =
             new IntIndex.Spec<>(x -> x.packetIdentifier, 4);
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
 

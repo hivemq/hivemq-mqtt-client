@@ -50,7 +50,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
          */
         @Override
         @CheckReturnValue
-        @NotNull Mqtt5WillPublishBuilder.Complete asWill();
+        Mqtt5WillPublishBuilder.@NotNull Complete asWill();
 
         /**
          * Builds the {@link Mqtt5Publish}.

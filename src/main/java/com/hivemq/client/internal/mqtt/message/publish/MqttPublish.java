@@ -181,7 +181,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     @Override
-    public @NotNull MqttPublishBuilder.Default extend() {
+    public MqttPublishBuilder.@NotNull Default extend() {
         return new MqttPublishBuilder.Default(this);
     }
 

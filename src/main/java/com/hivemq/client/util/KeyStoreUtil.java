@@ -44,21 +44,21 @@ public class KeyStoreUtil {
     public static @NotNull TrustManagerFactory trustManagerFromKeystore(
             final @NotNull File trustStoreFile, final @NotNull String trustStorePassword) throws SSLException {
 
-        Checks.notNull(trustStoreFile, "Truststore file");
+        Checks.notNull(trustStoreFile, "Trust store file");
         try (final FileInputStream fileInputStream = new FileInputStream(trustStoreFile)) {
-            final KeyStore keyStoreTrust = KeyStore.getInstance(KEYSTORE_TYPE);
-            keyStoreTrust.load(fileInputStream, trustStorePassword.toCharArray());
+            final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
+            keyStore.load(fileInputStream, trustStorePassword.toCharArray());
 
-            final TrustManagerFactory tmFactory =
-                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmFactory.init(keyStoreTrust);
-            return tmFactory;
+            final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keyStore);
+            return tmf;
 
-        } catch (final KeyStoreException | IOException e2) {
-            throw new SSLException("Not able to open or read TrustStore '" + trustStoreFile.getAbsolutePath(), e2);
-        } catch (final NoSuchAlgorithmException | CertificateException e3) {
+        } catch (final KeyStoreException | IOException e) {
             throw new SSLException(
-                    "Not able to read certificate from TrustStore '" + trustStoreFile.getAbsolutePath(), e3);
+                    "Not able to open or read trust store '" + trustStoreFile.getAbsolutePath() + "'", e);
+        } catch (final NoSuchAlgorithmException | CertificateException e) {
+            throw new SSLException(
+                    "Not able to read certificate from trust store '" + trustStoreFile.getAbsolutePath() + "'", e);
         }
     }
 
@@ -67,7 +67,7 @@ public class KeyStoreUtil {
             final @NotNull String keyStorePassword,
             final @NotNull String privateKeyPassword) throws SSLException {
 
-        Checks.notNull(keyStoreFile, "Keystore file");
+        Checks.notNull(keyStoreFile, "Key store file");
         try (final FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
             final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStore.load(fileInputStream, keyStorePassword.toCharArray());
@@ -76,15 +76,16 @@ public class KeyStoreUtil {
             kmf.init(keyStore, privateKeyPassword.toCharArray());
             return kmf;
 
-        } catch (final UnrecoverableKeyException e1) {
+        } catch (final UnrecoverableKeyException e) {
             throw new SSLException(
-                    "Not able to recover key from KeyStore, please check your private-key-password and your keyStorePassword",
-                    e1);
-        } catch (final KeyStoreException | IOException e2) {
-            throw new SSLException("Not able to open or read KeyStore '" + keyStoreFile.getAbsolutePath(), e2);
+                    "Not able to recover key from key store, please check your private key password and your key store password",
+                    e);
+        } catch (final KeyStoreException | IOException e) {
+            throw new SSLException("Not able to open or read key store '" + keyStoreFile.getAbsolutePath() + "'", e);
 
-        } catch (final NoSuchAlgorithmException | CertificateException e3) {
-            throw new SSLException("Not able to read certificate from KeyStore '" + keyStoreFile.getAbsolutePath(), e3);
+        } catch (final NoSuchAlgorithmException | CertificateException e) {
+            throw new SSLException(
+                    "Not able to read certificate from key store '" + keyStoreFile.getAbsolutePath() + "'", e);
         }
     }
 }

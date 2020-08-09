@@ -82,7 +82,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #connect(Mqtt5Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt5ConnectBuilder.Send<CompletableFuture<Mqtt5ConnAck>> connectWith();
+    Mqtt5ConnectBuilder.@NotNull Send<CompletableFuture<Mqtt5ConnAck>> connectWith();
 
     /**
      * Subscribes this client with the given Subscribe message.
@@ -201,7 +201,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
      */
     @CheckReturnValue
-    @NotNull Mqtt5SubscribeAndCallbackBuilder.Start subscribeWith();
+    Mqtt5SubscribeAndCallbackBuilder.@NotNull Start subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -290,7 +290,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt5UnsubscribeBuilder.Send.Start<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith();
+    Mqtt5UnsubscribeBuilder.Send.@NotNull Start<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
@@ -320,7 +320,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #publish(Mqtt5Publish)
      */
     @CheckReturnValue
-    @NotNull Mqtt5PublishBuilder.Send<CompletableFuture<Mqtt5PublishResult>> publishWith();
+    Mqtt5PublishBuilder.@NotNull Send<CompletableFuture<Mqtt5PublishResult>> publishWith();
 
     /**
      * Re-authenticates this client.
@@ -366,7 +366,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #disconnect(Mqtt5Disconnect)
      */
     @CheckReturnValue
-    @NotNull Mqtt5DisconnectBuilder.Send<CompletableFuture<Void>> disconnectWith();
+    Mqtt5DisconnectBuilder.@NotNull Send<CompletableFuture<Void>> disconnectWith();
 
     @Override
     @CheckReturnValue

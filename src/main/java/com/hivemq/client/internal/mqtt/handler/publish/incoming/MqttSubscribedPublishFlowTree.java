@@ -17,7 +17,10 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.annotations.NotThreadSafe;
-import com.hivemq.client.internal.mqtt.datatypes.*;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicIterator;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicLevel;
+import com.hivemq.client.internal.mqtt.datatypes.MqttTopicLevels;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.internal.util.collections.Index;
@@ -63,7 +66,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         final MqttTopicIterator topicIterator = MqttTopicIterator.of(topicFilter);
         TopicTreeNode node = rootNode;
         while (node != null) {
-            node = node.suback(topicIterator, subscriptionIdentifier, error);
+            node = node.suback(topicIterator, topicFilter, subscriptionIdentifier, error);
         }
         compact();
     }
@@ -73,7 +76,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         final MqttTopicIterator topicIterator = MqttTopicIterator.of(topicFilter);
         TopicTreeNode node = rootNode;
         while (node != null) {
-            node = node.unsubscribe(topicIterator);
+            node = node.unsubscribe(topicIterator, topicFilter);
         }
         compact();
     }
@@ -90,13 +93,11 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
     }
 
     @Override
-    public void findMatching(
-            final @NotNull MqttTopicImpl topic, final @NotNull MqttMatchingPublishFlows matchingFlows) {
-
-        final MqttTopicIterator topicIterator = MqttTopicIterator.of(topic);
+    public void findMatching(final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
+        final MqttTopicIterator topicIterator = MqttTopicIterator.of(publishWithFlows.publish.stateless().getTopic());
         TopicTreeNode node = rootNode;
         while (node != null) {
-            node = node.findMatching(topicIterator, matchingFlows);
+            node = node.findMatching(topicIterator, publishWithFlows);
         }
     }
 
@@ -111,6 +112,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
     @Override
     public @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> getSubscriptions() {
+        // we sort in reverse order of subscription identifiers so that newer subscriptions are first
         final Map<Integer, List<MqttSubscription>> map = new TreeMap<>(Comparator.reverseOrder());
         if (rootNode != null) {
             final Queue<IteratorNode> nodes = new LinkedList<>();
@@ -154,7 +156,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
     private static class TopicTreeNode {
 
-        private static final @NotNull Index.Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =
+        private static final Index.@NotNull Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =
                 new Index.Spec<>(node -> node.topicLevel, 4);
 
         private @Nullable TopicTreeNode parent;
@@ -209,17 +211,20 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         }
 
         @Nullable TopicTreeNode suback(
-                final @NotNull MqttTopicIterator topicIterator, final int subscriptionIdentifier, final boolean error) {
+                final @NotNull MqttTopicIterator topicIterator,
+                final @NotNull MqttTopicFilterImpl topicFilter,
+                final int subscriptionIdentifier,
+                final boolean error) {
 
             if (topicIterator.hasNext()) {
                 return traverseNext(topicIterator);
             }
             if (topicIterator.hasMultiLevelWildcard()) {
-                if (suback(multiLevelEntries, subscriptionIdentifier, error)) {
+                if (suback(multiLevelEntries, topicFilter, subscriptionIdentifier, error)) {
                     multiLevelEntries = null;
                 }
             } else {
-                if (suback(entries, subscriptionIdentifier, error)) {
+                if (suback(entries, topicFilter, subscriptionIdentifier, error)) {
                     entries = null;
                 }
             }
@@ -229,38 +234,43 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
         private static boolean suback(
                 final @Nullable NodeList<TopicTreeEntry> entries,
+                final @NotNull MqttTopicFilterImpl topicFilter,
                 final int subscriptionIdentifier,
                 final boolean error) {
 
             if (entries != null) {
+                final byte[] topicFilterPrefix = topicFilter.getPrefix();
                 for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
-                    if (entry.subscriptionIdentifier == subscriptionIdentifier) {
+                    if ((entry.subscriptionIdentifier == subscriptionIdentifier) &&
+                            Arrays.equals(topicFilterPrefix, entry.topicFilterPrefix)) {
                         if (!error) {
                             entry.acknowledged = true;
-                            return false;
+                        } else {
+                            if (entry.flow != null) {
+                                assert entry.handle != null : "entry.flow != null -> entry.handle != null";
+                                entry.flow.getTopicFilters().remove(entry.handle);
+                            }
+                            entries.remove(entry);
                         }
-                        if (entry.flow != null) {
-                            assert entry.handle != null : "entry.flow != null -> entry.handle != null";
-                            entry.flow.getTopicFilters().remove(entry.handle);
-                        }
-                        entries.remove(entry);
-                        return entries.isEmpty();
                     }
                 }
+                return entries.isEmpty();
             }
             return false;
         }
 
-        @Nullable TopicTreeNode unsubscribe(final @NotNull MqttTopicIterator topicIterator) {
+        @Nullable TopicTreeNode unsubscribe(
+                final @NotNull MqttTopicIterator topicIterator, final @NotNull MqttTopicFilterImpl topicFilter) {
+
             if (topicIterator.hasNext()) {
                 return traverseNext(topicIterator);
             }
             if (topicIterator.hasMultiLevelWildcard()) {
-                if (unsubscribe(multiLevelEntries)) {
+                if (unsubscribe(multiLevelEntries, topicFilter)) {
                     multiLevelEntries = null;
                 }
             } else {
-                if (unsubscribe(entries)) {
+                if (unsubscribe(entries, topicFilter)) {
                     entries = null;
                 }
             }
@@ -268,10 +278,13 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
             return null;
         }
 
-        private static boolean unsubscribe(final @Nullable NodeList<TopicTreeEntry> entries) {
+        private static boolean unsubscribe(
+                final @Nullable NodeList<TopicTreeEntry> entries, final @NotNull MqttTopicFilterImpl topicFilter) {
+
             if (entries != null) {
+                final byte[] topicFilterPrefix = topicFilter.getPrefix();
                 for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
-                    if (entry.acknowledged) {
+                    if (Arrays.equals(topicFilterPrefix, entry.topicFilterPrefix) && entry.acknowledged) {
                         if (entry.flow != null) {
                             assert entry.handle != null : "entry.flow != null -> entry.handle != null";
                             entry.flow.getTopicFilters().remove(entry.handle);
@@ -316,10 +329,10 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         }
 
         @Nullable TopicTreeNode findMatching(
-                final @NotNull MqttTopicIterator topicIterator, final @NotNull MqttMatchingPublishFlows matchingFlows) {
+                final @NotNull MqttTopicIterator topicIterator, final @NotNull MqttStatefulPublishWithFlows flows) {
 
             if (topicIterator.hasNext()) {
-                add(matchingFlows, multiLevelEntries);
+                add(flows, multiLevelEntries);
                 final MqttTopicLevel nextLevel = topicIterator.next();
                 final TopicTreeNode nextNode = (next == null) ? null : next.get(nextLevel);
                 final TopicTreeNode singleLevel = this.singleLevel;
@@ -340,24 +353,23 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
                 }
                 TopicTreeNode node = singleLevelNext;
                 while (node != null) {
-                    node = node.findMatching(fork, matchingFlows);
+                    node = node.findMatching(fork, flows);
                 }
                 return nextNodeNext;
             }
-            add(matchingFlows, entries);
-            add(matchingFlows, multiLevelEntries);
+            add(flows, entries);
+            add(flows, multiLevelEntries);
             return null;
         }
 
         private static void add(
-                final @NotNull MqttMatchingPublishFlows matchingFlows,
-                final @Nullable NodeList<TopicTreeEntry> entries) {
+                final @NotNull MqttStatefulPublishWithFlows flows, final @Nullable NodeList<TopicTreeEntry> entries) {
 
             if (entries != null) {
-                matchingFlows.subscriptionFound = true;
+                flows.subscriptionFound = true;
                 for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
                     if (entry.flow != null) {
-                        matchingFlows.add(entry.flow);
+                        flows.add(entry.flow);
                     }
                 }
             }
@@ -515,20 +527,18 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
             return (next == null) && (singleLevel == null) && (entries == null) && (multiLevelEntries == null);
         }
 
-        public void getSubscriptions(
+        void getSubscriptions(
                 final @Nullable MqttTopicLevel parentTopicLevels,
                 final @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> map,
                 final @NotNull Queue<@NotNull IteratorNode> nodes) {
 
             final MqttTopicLevel topicLevels = ((parentTopicLevels == null) || (topicLevel == null)) ? topicLevel :
                     MqttTopicLevels.concat(parentTopicLevels, topicLevel);
-            if (topicLevels != null) {
-                if (entries != null) {
-                    getSubscriptions(entries, topicLevels, false, map);
-                }
-                if (multiLevelEntries != null) {
-                    getSubscriptions(multiLevelEntries, topicLevels, true, map);
-                }
+            if (entries != null) {
+                getSubscriptions(entries, topicLevels, false, map);
+            }
+            if (multiLevelEntries != null) {
+                getSubscriptions(multiLevelEntries, topicLevels, true, map);
             }
             if (next != null) {
                 next.forEach(node -> nodes.add(new IteratorNode(node, topicLevels)));
@@ -540,21 +550,24 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
         private static void getSubscriptions(
                 final @NotNull NodeList<TopicTreeEntry> entries,
-                final @NotNull MqttTopicLevel topicLevels,
+                final @Nullable MqttTopicLevel topicLevels,
                 final boolean multiLevelWildcard,
                 final @NotNull Map<@NotNull Integer, @NotNull List<@NotNull MqttSubscription>> map) {
 
+            // exact subscription = subscription without prefix, so no shared subscription
             boolean exactFound = false;
+            // iterate in reverse order to only include the newest exact subscription
             for (TopicTreeEntry entry = entries.getLast(); entry != null; entry = entry.getPrev()) {
                 if (entry.acknowledged) {
                     if (entry.topicFilterPrefix == null) {
                         if (exactFound) {
+                            // ignore older exact subscriptions as they are overwritten by the newest
                             continue;
                         }
                         exactFound = true;
                     }
                     final MqttTopicFilterImpl topicFilter =
-                            topicLevels.toFilter(entry.topicFilterPrefix, multiLevelWildcard);
+                            MqttTopicLevel.toFilter(entry.topicFilterPrefix, topicLevels, multiLevelWildcard);
                     assert topicFilter != null : "reconstructed topic filter must be valid";
                     final MqttQos qos = MqttSubscription.decodeQos(entry.subscriptionOptions);
                     assert qos != null : "reconstructed qos must be valid";

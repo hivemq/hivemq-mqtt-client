@@ -84,7 +84,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @see #simpleAuth(Mqtt3SimpleAuth)
      */
     @CheckReturnValue
-    @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends B> simpleAuth();
+    Mqtt3SimpleAuthBuilder.@NotNull Nested<? extends B> simpleAuth();
 
     /**
      * Sets the optional {@link Mqtt3Connect#getWillPublish() Will Publish}.
@@ -106,5 +106,5 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @see #willPublish(Mqtt3Publish)
      */
     @CheckReturnValue
-    @NotNull Mqtt3WillPublishBuilder.Nested<? extends B> willPublish();
+    Mqtt3WillPublishBuilder.@NotNull Nested<? extends B> willPublish();
 }

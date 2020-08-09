@@ -83,7 +83,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt3ConnectBuilder.Nested<Single<Mqtt3ConnAck>> connectWith();
+    Mqtt3ConnectBuilder.@NotNull Nested<Single<Mqtt3ConnAck>> connectWith();
 
     /**
      * Creates a {@link Single} for subscribing this client with the given Subscribe message.
@@ -121,19 +121,26 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt3SubscribeBuilder.Nested.Start<Single<Mqtt3SubAck>> subscribeWith();
+    Mqtt3SubscribeBuilder.Nested.@NotNull Start<Single<Mqtt3SubAck>> subscribeWith();
 
     /**
+     * Use {@link #subscribePublishes(Mqtt3Subscribe)}.
+     *
+     * @param subscribe use {@link #subscribePublishes(Mqtt3Subscribe)}.
+     * @return use {@link #subscribePublishes(Mqtt3Subscribe)}.
      * @deprecated use {@link #subscribePublishes(Mqtt3Subscribe)}.
      */
     @Deprecated
     @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
 
     /**
+     * Use {@link #subscribePublishesWith()}.
+     *
+     * @return use {@link #subscribePublishesWith()}.
      * @deprecated use {@link #subscribePublishesWith()}.
      */
     @Deprecated
-    @NotNull Mqtt3SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
+    Mqtt3SubscribeBuilder.Nested.@NotNull Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
@@ -207,7 +214,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @since 1.2
      */
     @CheckReturnValue
-    @NotNull Mqtt3SubscribeBuilder.Publishes.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribePublishesWith();
+    Mqtt3SubscribeBuilder.Publishes.@NotNull Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribePublishesWith();
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
@@ -280,7 +287,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Completable> unsubscribeWith();
+    Mqtt3UnsubscribeBuilder.Nested.@NotNull Start<Completable> unsubscribeWith();
 
     /**
      * Creates a {@link Flowable} for publishing the Publish messages emitted by the given {@link Flowable}.

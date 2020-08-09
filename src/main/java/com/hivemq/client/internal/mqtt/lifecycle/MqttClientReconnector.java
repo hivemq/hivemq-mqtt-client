@@ -150,7 +150,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientTransportConfigImplBuilder.Nested<MqttClientReconnector> transportConfig() {
+    public MqttClientTransportConfigImplBuilder.@NotNull Nested<MqttClientReconnector> transportConfig() {
         checkInEventLoop();
         return new MqttClientTransportConfigImplBuilder.Nested<>(transportConfig, this::transportConfig);
     }
@@ -169,7 +169,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttConnectBuilder.Nested<MqttClientReconnector> connectWith() {
+    public MqttConnectBuilder.@NotNull Nested<MqttClientReconnector> connectWith() {
         checkInEventLoop();
         return new MqttConnectBuilder.Nested<>(connect, this::connect);
     }

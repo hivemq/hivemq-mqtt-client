@@ -52,11 +52,11 @@ backpressure support.
 - Automatic and configurable **reconnect handling and message redelivery**
 - Automatic and configurable **resubscribe if the session expired**
 - **Manual message acknowledgment**
-  - Selectively enable manual acknowledgement only for specific streams
-  - Acknowledge messages emitted to multiple streams independently per stream,
-    the client aggregates the acknowledgements before sending MQTT acknowledgements
-  - Order of manual acknowledgment does not matter,
-    the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification
+  - Selectively enable manual acknowledgment for specific streams
+  - Acknowledge messages that are emitted to multiple streams independently per stream
+    (the client aggregates the acknowledgments before sending MQTT acknowledgments)
+  - Order of manual acknowledgment does not matter
+    (the client automatically ensures the order of MQTT acknowledgments for 100% compatibility with the MQTT specification)
 - Lifecycle listeners
   - When connected
   - When disconnected or connection failed
@@ -75,7 +75,11 @@ backpressure support.
 <img src="https://www.openhab.org/openhab-logo.png" alt="openHAB" height="60px"/>
 ](https://www.openhab.org/) &nbsp;&nbsp; [
 <img src="https://eclipse.org/ditto/images/ditto.svg" alt="Eclipse Ditto" height="60px"/>
-](https://github.com/eclipse/ditto)
+](https://github.com/eclipse/ditto) &nbsp;&nbsp; [
+<img src="https://avatars3.githubusercontent.com/u/11352045?s=200&v=4" alt="Open Smart Grid Platform" height="60px"/>
+](https://github.com/OSGP/open-smart-grid-platform) &nbsp;&nbsp; [
+<img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" height="60px"/>
+](https://github.com/EXXETA/correomqtt)
 
 If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
 
@@ -110,6 +114,20 @@ dependencies {
 
 If you use Maven, just include the following inside your `pom.xml` file.
 
+```xml
+<project>
+    ...
+    <dependencies>
+        <dependency>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+```
+
 NOTE: You have to set the compiler version to `1.8` or higher.
 
 ```xml
@@ -119,14 +137,6 @@ NOTE: You have to set the compiler version to `1.8` or higher.
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-    </dependencies>
     ...
 </project>
 ```
@@ -141,6 +151,7 @@ For optional features you can choose to include additional modules:
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
             <version>1.2.0</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -148,6 +159,7 @@ For optional features you can choose to include additional modules:
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
             <version>1.2.0</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -155,6 +167,7 @@ For optional features you can choose to include additional modules:
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
             <version>1.2.0</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -248,6 +261,7 @@ dependencies {
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -255,6 +269,7 @@ dependencies {
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
@@ -262,6 +277,7 @@ dependencies {
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
             <version>develop-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>

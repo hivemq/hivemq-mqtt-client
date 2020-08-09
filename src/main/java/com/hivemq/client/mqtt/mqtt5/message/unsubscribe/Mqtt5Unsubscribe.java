@@ -41,7 +41,7 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
      *
      * @return the created builder.
      */
-    static @NotNull Mqtt5UnsubscribeBuilder.Start builder() {
+    static Mqtt5UnsubscribeBuilder.@NotNull Start builder() {
         return new MqttUnsubscribeBuilder.Default();
     }
 
@@ -65,5 +65,5 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt5UnsubscribeBuilder.Complete extend();
+    Mqtt5UnsubscribeBuilder.@NotNull Complete extend();
 }

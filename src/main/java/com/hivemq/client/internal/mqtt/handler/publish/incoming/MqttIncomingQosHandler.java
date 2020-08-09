@@ -17,13 +17,14 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.annotations.CallByThread;
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import com.hivemq.client.internal.mqtt.handler.MqttSessionAwareHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
-import com.hivemq.client.internal.mqtt.message.MqttMessage;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.publish.puback.MqttPubAck;
 import com.hivemq.client.internal.mqtt.message.publish.puback.MqttPubAckBuilder;
@@ -32,9 +33,8 @@ import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubCompBuilde
 import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
 import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
-import com.hivemq.client.internal.netty.ContextFuture;
-import com.hivemq.client.internal.netty.DefaultContextPromise;
 import com.hivemq.client.internal.util.collections.IntIndex;
+import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
@@ -43,6 +43,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCo
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
@@ -50,22 +51,28 @@ import javax.inject.Inject;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttIncomingQosHandler extends MqttSessionAwareHandler
-        implements ContextFuture.Listener<MqttMessage.WithId> {
+public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
 
     public static final @NotNull String NAME = "qos.incoming";
-    private static final @NotNull IntIndex.Spec<MqttMessage.WithId> INDEX_SPEC =
-            new IntIndex.Spec<>(MqttMessage.WithId::getPacketIdentifier);
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttIncomingQosHandler.class);
+    private static final IntIndex.@NotNull Spec<Object> INDEX_SPEC = new IntIndex.Spec<>(value -> {
+        if (value instanceof MqttStatefulPublishWithFlows) {
+            return ((MqttStatefulPublishWithFlows) value).publish.getPacketIdentifier();
+        } else {
+            return ((MqttPubRec) value).getPacketIdentifier();
+        }
+    });
 
     private final @NotNull MqttClientConfig clientConfig;
     final @NotNull MqttIncomingPublishService incomingPublishService;
 
     // valid for session
-    private final @NotNull IntIndex<MqttMessage.WithId> messages = new IntIndex<>(INDEX_SPEC);
-    // contains StatefulPublish with AT_LEAST_ONCE/EXACTLY_ONCE, MqttPubAck or MqttPubRec
+    private final @NotNull IntIndex<Object> messages = new IntIndex<>(INDEX_SPEC);
+    // contains MqttStatefulPublishWithFlows with AT_LEAST_ONCE/EXACTLY_ONCE or MqttPubRec
 
     // valid for connection
     private int receiveMaximum;
+    private long connectionIndex;
 
     @Inject
     MqttIncomingQosHandler(
@@ -81,6 +88,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
         receiveMaximum = connectionConfig.getReceiveMaximum();
+        connectionIndex++;
         super.onSessionStartOrResume(connectionConfig, eventLoop);
     }
 
@@ -110,122 +118,189 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPublishQos0(final @NotNull MqttStatefulPublish publish) {
-        incomingPublishService.onPublishQos0(publish, receiveMaximum);
+        incomingPublishService.onPublishQos0(new MqttStatefulPublishWithFlows(publish), receiveMaximum);
     }
 
     private void readPublishQos1(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
-        final MqttMessage.WithId prevMessage = messages.putIfAbsent(publish);
+        final MqttStatefulPublishWithFlows publishWithFlows = new MqttStatefulPublishWithFlows(publish);
+        publishWithFlows.connectionIndex = connectionIndex;
+        final Object prevMessage = messages.putIfAbsent(publishWithFlows);
         if (prevMessage == null) { // new message
-            readNewPublishQos1Or2(ctx, publish);
-        } else if ((prevMessage instanceof MqttStatefulPublish) &&
-                (((MqttStatefulPublish) prevMessage).stateless().getQos() == MqttQos.AT_LEAST_ONCE)) { // resent message
-            checkDupFlagSet(ctx, publish);
-        } else if (prevMessage instanceof MqttPubAck) { // resent message and already acknowledged
-            if (checkDupFlagSet(ctx, publish)) {
-                writePubAck(ctx, (MqttPubAck) prevMessage);
+            if (!readNewPublishQos1Or2(ctx, publishWithFlows)) {
+                messages.remove(publish.getPacketIdentifier());
             }
-        } else { // EXACTLY_ONCE or MqttPubRec
+        } else if (prevMessage instanceof MqttStatefulPublishWithFlows) {
+            final MqttStatefulPublishWithFlows prevPublishWithFlows = (MqttStatefulPublishWithFlows) prevMessage;
+            if (prevPublishWithFlows.publish.stateless().getQos() == MqttQos.AT_LEAST_ONCE) {
+                if (prevPublishWithFlows.connectionIndex == connectionIndex) {
+                    if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {
+                        LOGGER.error("QoS 1 PUBLISH ({}) must not be resent ({}) during the same connection",
+                                prevPublishWithFlows.publish, publish);
+                        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                                "QoS 1 PUBLISH must not be resent during the same connection");
+                    } else { // resent message during the same connection & MQTT 3
+                        checkDupFlagSet(ctx, publish);
+                    }
+                } else { // resent message or new message because session state on server differs, can not distinguish
+                    messages.put(publishWithFlows);
+                    if (!readNewPublishQos1Or2(ctx, publishWithFlows)) {
+                        messages.put(prevMessage);
+                    }
+                }
+            } else { // EXACTLY_ONCE
+                LOGGER.error("QoS 1 PUBLISH ({}) must not carry the same packet identifier as a QoS 2 PUBLISH ({})",
+                        publish, prevPublishWithFlows.publish);
+                MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                        "QoS 1 PUBLISH must not carry the same packet identifier as a QoS 2 PUBLISH");
+            }
+        } else { // MqttPubRec
+            LOGGER.error("QoS 1 PUBLISH ({}) must not carry the same packet identifier as a QoS 2 PUBLISH ({})",
+                    publish, prevMessage);
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "QoS 1 PUBLISH must not be received with the same packet identifier as a QoS 2 PUBLISH");
+                    "QoS 1 PUBLISH must not carry the same packet identifier as a QoS 2 PUBLISH");
         }
     }
 
     private void readPublishQos2(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
-        final MqttMessage.WithId prevMessage = messages.putIfAbsent(publish);
+        final MqttStatefulPublishWithFlows publishWithFlows = new MqttStatefulPublishWithFlows(publish);
+        publishWithFlows.connectionIndex = connectionIndex;
+        final Object prevMessage = messages.putIfAbsent(publishWithFlows);
         if (prevMessage == null) { // new message
-            readNewPublishQos1Or2(ctx, publish);
-        } else if ((prevMessage instanceof MqttStatefulPublish) &&
-                (((MqttStatefulPublish) prevMessage).stateless().getQos() == MqttQos.EXACTLY_ONCE)) { // resent message
-            checkDupFlagSet(ctx, publish);
-        } else if (prevMessage instanceof MqttPubRec) { // resent message and already acknowledged
+            if (!readNewPublishQos1Or2(ctx, publishWithFlows)) {
+                messages.remove(publish.getPacketIdentifier());
+            }
+        } else if (prevMessage instanceof MqttStatefulPublishWithFlows) {
+            final MqttStatefulPublishWithFlows prevPublishWithFlows = (MqttStatefulPublishWithFlows) prevMessage;
+            if (prevPublishWithFlows.publish.stateless().getQos() == MqttQos.EXACTLY_ONCE) {
+                if (prevPublishWithFlows.connectionIndex == connectionIndex) {
+                    if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {
+                        LOGGER.error("QoS 2 PUBLISH ({}) must not be resent ({}) during the same connection",
+                                prevPublishWithFlows.publish, publish);
+                        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                                "QoS 2 PUBLISH must not be resent during the same connection");
+                    } else { // resent message during the same connection & MQTT 3
+                        checkDupFlagSet(ctx, publish);
+                    }
+                } else { // resent message
+                    prevPublishWithFlows.connectionIndex = connectionIndex;
+                    checkDupFlagSet(ctx, publish);
+                }
+            } else { // AT_LEAST_ONCE
+                if (prevPublishWithFlows.connectionIndex == connectionIndex) {
+                    LOGGER.error("QoS 2 PUBLISH ({}) must not carry the same packet identifier as a QoS 1 PUBLISH ({})",
+                            publish, prevPublishWithFlows.publish);
+                    MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                            "QoS 2 PUBLISH must not carry the same packet identifier as a QoS 1 PUBLISH");
+                } else { // new message because session state on server differs
+                    messages.put(publishWithFlows);
+                    if (!readNewPublishQos1Or2(ctx, publishWithFlows)) {
+                        messages.put(prevMessage);
+                    }
+                }
+            }
+        } else { // MqttPubRec, resent message and already acknowledged
             if (checkDupFlagSet(ctx, publish)) {
                 writePubRec(ctx, (MqttPubRec) prevMessage);
             }
-        } else { // AT_LEAST_ONCE or MqttPubAck
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "QoS 2 PUBLISH must not be received with the same packet identifier as a QoS 1 PUBLISH");
         }
     }
 
-    private void readNewPublishQos1Or2(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean readNewPublishQos1Or2(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
 
-        if (!incomingPublishService.onPublishQos1Or2(publish, receiveMaximum)) {
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED,
-                    "Received more QoS 1 and/or 2 PUBLISHes than allowed by Receive Maximum");
+        if (incomingPublishService.onPublishQos1Or2(publishWithFlows, receiveMaximum)) {
+            return true;
         }
+        LOGGER.error("Received more QoS 1 and/or 2 PUBLISH messages ({}) than allowed by receive maximum ({})",
+                publishWithFlows.publish, receiveMaximum);
+        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED,
+                "Received more QoS 1 and/or 2 PUBLISH messages than allowed by receive maximum");
+        return false;
     }
 
     private boolean checkDupFlagSet(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
 
-        if (!publish.isDup()) {
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "DUP flag must be set for a resent QoS " + publish.stateless().getQos().getCode() + " PUBLISH");
-            return false;
+        if (publish.isDup()) {
+            return true;
         }
-        return true;
+        LOGGER.error("DUP flag must be set for a resent PUBLISH ({})", publish);
+        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                "DUP flag must be set for a resent QoS " + publish.stateless().getQos().getCode() + " PUBLISH");
+        return false;
     }
 
     @CallByThread("Netty EventLoop")
-    void ack(final @NotNull MqttStatefulPublish publish) {
-        switch (publish.stateless().getQos()) {
-            case AT_LEAST_ONCE:
-                final MqttPubAck pubAck = buildPubAck(new MqttPubAckBuilder(publish));
-                messages.put(pubAck);
-                if (ctx != null) {
+    void ack(final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
+        switch (publishWithFlows.publish.stateless().getQos()) {
+            case AT_LEAST_ONCE: {
+                final MqttPubAck pubAck = buildPubAck(new MqttPubAckBuilder(publishWithFlows.publish));
+                final Object prevMessage = messages.remove(pubAck.getPacketIdentifier());
+                if (ack(prevMessage, publishWithFlows) && (ctx != null)) {
                     writePubAck(ctx, pubAck);
                 }
                 break;
-            case EXACTLY_ONCE:
-                final MqttPubRec pubRec = buildPubRec(new MqttPubRecBuilder(publish));
-                messages.put(pubRec);
-                if (ctx != null) {
+            }
+            case EXACTLY_ONCE: {
+                final MqttPubRec pubRec = buildPubRec(new MqttPubRecBuilder(publishWithFlows.publish));
+                final Object prevMessage = !pubRec.getReasonCode().isError() ? messages.put(pubRec) :
+                        messages.remove(pubRec.getPacketIdentifier());
+                if (ack(prevMessage, publishWithFlows) && (ctx != null)) {
                     writePubRec(ctx, pubRec);
                 }
                 break;
+            }
         }
+    }
+
+    private boolean ack(
+            final @Nullable Object prevMessage, final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
+
+        if (prevMessage != publishWithFlows) {
+            if (prevMessage == null) {
+                // session has expired in the meantime
+                messages.remove(publishWithFlows.publish.getPacketIdentifier());
+            } else {
+                // message has been overwritten by a new message because session state on server differs
+                messages.put(prevMessage);
+            }
+            return false;
+        }
+        return publishWithFlows.connectionIndex == connectionIndex;
     }
 
     private void writePubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubAck pubAck) {
-        ctx.writeAndFlush(pubAck, new DefaultContextPromise<>(ctx.channel(), pubAck)).addListener(this);
+        ctx.writeAndFlush(pubAck, ctx.voidPromise());
     }
 
     private void writePubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
-        if (pubRec.getReasonCode().isError()) {
-            ctx.writeAndFlush(pubRec, new DefaultContextPromise<>(ctx.channel(), pubRec)).addListener(this);
-        } else {
-            ctx.writeAndFlush(pubRec, ctx.voidPromise());
-        }
-    }
-
-    @Override
-    public void operationComplete(final @NotNull ContextFuture<? extends MqttMessage.WithId> future) {
-        if (future.isSuccess()) {
-            messages.remove(future.getContext().getPacketIdentifier());
-        } else {
-            future.channel().pipeline().fireExceptionCaught(future.cause());
-        }
+        ctx.writeAndFlush(pubRec, ctx.voidPromise());
     }
 
     private void readPubRel(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRel pubRel) {
-        final MqttMessage.WithId prevMessage = messages.remove(pubRel.getPacketIdentifier());
+        final Object prevMessage = messages.remove(pubRel.getPacketIdentifier());
         if (prevMessage instanceof MqttPubRec) { // normal case
             writePubComp(ctx, buildPubComp(new MqttPubCompBuilder(pubRel)));
         } else if (prevMessage == null) { // may be resent
             writePubComp(
                     ctx, buildPubComp(new MqttPubCompBuilder(pubRel).reasonCode(
                             Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND)));
-        } else if ((prevMessage instanceof MqttStatefulPublish) &&
-                (((MqttStatefulPublish) prevMessage).stateless().getQos() ==
-                        MqttQos.EXACTLY_ONCE)) { // PubRec not sent yet
+        } else { // MqttStatefulPublishWithFlows
+            final MqttStatefulPublishWithFlows publishWithFlows = (MqttStatefulPublishWithFlows) prevMessage;
             messages.put(prevMessage); // revert
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "PUBREL must not be received with the same packet identifier as a QoS 2 PUBLISH when no PUBREC has been sent yet");
-        } else { // MqttQos.AT_LEAST_ONCE or MqttPubAck
-            messages.put(prevMessage); // revert
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "PUBREL must not be received with the same packet identifier as a QoS 1 PUBLISH");
+            if (publishWithFlows.publish.stateless().getQos() == MqttQos.EXACTLY_ONCE) { // PubRec not sent yet
+                LOGGER.error(
+                        "PUBREL ({}) must not carry the same packet identifier as an unacknowledged QoS 2 PUBLISH ({})",
+                        pubRel, publishWithFlows.publish);
+                MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                        "PUBREL must not carry the same packet identifier as an unacknowledged QoS 2 PUBLISH");
+            } else { // AT_LEAST_ONCE
+                LOGGER.error("PUBREL ({}) must not carry the same packet identifier as a QoS 1 PUBLISH ({})", pubRel,
+                        publishWithFlows.publish);
+                MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                        "PUBREL must not carry the same packet identifier as a QoS 1 PUBLISH");
+            }
         }
     }
 

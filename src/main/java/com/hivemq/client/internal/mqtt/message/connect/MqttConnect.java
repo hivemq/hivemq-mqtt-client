@@ -121,7 +121,7 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     }
 
     @Override
-    public @NotNull MqttConnectBuilder.Default extend() {
+    public MqttConnectBuilder.@NotNull Default extend() {
         return new MqttConnectBuilder.Default(this);
     }
 

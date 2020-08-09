@@ -135,5 +135,5 @@ public interface Mqtt5Publish extends Mqtt5Message {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt5PublishBuilder.Complete extend();
+    Mqtt5PublishBuilder.@NotNull Complete extend();
 }

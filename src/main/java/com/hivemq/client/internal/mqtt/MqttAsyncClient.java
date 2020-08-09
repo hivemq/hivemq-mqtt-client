@@ -117,7 +117,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull MqttConnectBuilder.Send<CompletableFuture<Mqtt5ConnAck>> connectWith() {
+    public MqttConnectBuilder.@NotNull Send<CompletableFuture<Mqtt5ConnAck>> connectWith() {
         return new MqttConnectBuilder.Send<>(this::connect);
     }
 
@@ -232,7 +232,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull MqttUnsubscribeBuilder.Send<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith() {
+    public MqttUnsubscribeBuilder.@NotNull Send<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith() {
         return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
     }
 
@@ -244,7 +244,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull MqttPublishBuilder.Send<CompletableFuture<Mqtt5PublishResult>> publishWith() {
+    public MqttPublishBuilder.@NotNull Send<CompletableFuture<Mqtt5PublishResult>> publishWith() {
         return new MqttPublishBuilder.Send<>(this::publish);
     }
 
@@ -266,7 +266,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull MqttDisconnectBuilder.Send<CompletableFuture<Void>> disconnectWith() {
+    public MqttDisconnectBuilder.@NotNull Send<CompletableFuture<Void>> disconnectWith() {
         return new MqttDisconnectBuilder.Send<>(this::disconnect);
     }
 

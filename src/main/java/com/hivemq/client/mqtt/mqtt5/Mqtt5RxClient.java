@@ -86,7 +86,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #connect(Mqtt5Connect)
      */
     @CheckReturnValue
-    @NotNull Mqtt5ConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith();
+    Mqtt5ConnectBuilder.@NotNull Nested<Single<Mqtt5ConnAck>> connectWith();
 
     /**
      * Creates a {@link Single} for subscribing this client with the given Subscribe message.
@@ -124,19 +124,26 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith();
+    Mqtt5SubscribeBuilder.Nested.@NotNull Start<Single<Mqtt5SubAck>> subscribeWith();
 
     /**
+     * Use {@link #subscribePublishes(Mqtt5Subscribe)}.
+     *
+     * @param subscribe use {@link #subscribePublishes(Mqtt5Subscribe)}.
+     * @return use {@link #subscribePublishes(Mqtt5Subscribe)}.
      * @deprecated use {@link #subscribePublishes(Mqtt5Subscribe)}.
      */
     @Deprecated
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
 
     /**
+     * Use {@link #subscribePublishesWith()}.
+     *
+     * @return use {@link #subscribePublishesWith()}.
      * @deprecated use {@link #subscribePublishesWith()}.
      */
     @Deprecated
-    @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
+    Mqtt5SubscribeBuilder.Nested.@NotNull Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
 
     /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
@@ -210,7 +217,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @since 1.2
      */
     @CheckReturnValue
-    @NotNull Mqtt5SubscribeBuilder.Publishes.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribePublishesWith();
+    Mqtt5SubscribeBuilder.Publishes.@NotNull Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribePublishesWith();
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.
@@ -287,7 +294,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt5UnsubscribeBuilder.Nested.Start<Single<Mqtt5UnsubAck>> unsubscribeWith();
+    Mqtt5UnsubscribeBuilder.Nested.@NotNull Start<Single<Mqtt5UnsubAck>> unsubscribeWith();
 
     /**
      * Creates a {@link Flowable} for publishing the Publish messages emitted by the given {@link Flowable}.
@@ -363,7 +370,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #disconnect(Mqtt5Disconnect)
      */
     @CheckReturnValue
-    @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith();
+    Mqtt5DisconnectBuilder.@NotNull Nested<Completable> disconnectWith();
 
     @Override
     @CheckReturnValue

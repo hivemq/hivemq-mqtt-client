@@ -85,5 +85,5 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
      *
      * @return the created builder.
      */
-    @NotNull MqttSharedTopicFilterBuilder.Complete extendShared();
+    MqttSharedTopicFilterBuilder.@NotNull Complete extendShared();
 }

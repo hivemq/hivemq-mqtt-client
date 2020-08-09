@@ -46,8 +46,8 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     private @Nullable MqttClientTransportConfigImpl transportConfig = MqttClientTransportConfigImpl.DEFAULT;
     private @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
     private @Nullable MqttClientAutoReconnectImpl autoReconnect;
-    private @Nullable ImmutableList.Builder<MqttClientConnectedListener> connectedListenersBuilder;
-    private @Nullable ImmutableList.Builder<MqttClientDisconnectedListener> disconnectedListenersBuilder;
+    private ImmutableList.@Nullable Builder<MqttClientConnectedListener> connectedListenersBuilder;
+    private ImmutableList.@Nullable Builder<MqttClientDisconnectedListener> disconnectedListenersBuilder;
 
     protected MqttRxClientBuilderBase() {}
 
@@ -127,7 +127,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    public @NotNull MqttClientTransportConfigImplBuilder.Nested<B> transportConfig() {
+    public MqttClientTransportConfigImplBuilder.@NotNull Nested<B> transportConfig() {
         return new MqttClientTransportConfigImplBuilder.Nested<>(this, this::transportConfig);
     }
 
@@ -137,7 +137,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    public @NotNull MqttClientExecutorConfigImplBuilder.Nested<B> executorConfig() {
+    public MqttClientExecutorConfigImplBuilder.@NotNull Nested<B> executorConfig() {
         return new MqttClientExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
     }
 
@@ -152,7 +152,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    public @NotNull MqttClientAutoReconnectImplBuilder.Nested<B> automaticReconnect() {
+    public MqttClientAutoReconnectImplBuilder.@NotNull Nested<B> automaticReconnect() {
         return new MqttClientAutoReconnectImplBuilder.Nested<>(autoReconnect, this::automaticReconnect);
     }
 

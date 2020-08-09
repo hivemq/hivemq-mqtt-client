@@ -122,7 +122,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     }
 
     @Override
-    public @NotNull MqttClientSslConfigImplBuilder.Default extend() {
+    public MqttClientSslConfigImplBuilder.@NotNull Default extend() {
         return new MqttClientSslConfigImplBuilder.Default(this);
     }
 

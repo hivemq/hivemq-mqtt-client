@@ -19,7 +19,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
-import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
@@ -118,34 +117,26 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    @NotNull MqttMatchingPublishFlows findMatching(final @NotNull MqttStatefulPublish publish) {
-        final MqttMatchingPublishFlows matchingFlows = new MqttMatchingPublishFlows();
-        findMatching(publish, matchingFlows);
-        return matchingFlows;
-    }
-
-    void findMatching(
-            final @NotNull MqttStatefulPublish publish, final @NotNull MqttMatchingPublishFlows matchingFlows) {
-
-        subscribedFlows.findMatching(publish.stateless().getTopic(), matchingFlows);
-        if (matchingFlows.subscriptionFound) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
+    void findMatching(final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
+        subscribedFlows.findMatching(publishWithFlows);
+        if (publishWithFlows.subscriptionFound) {
+            add(publishWithFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
         } else {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.UNSOLICITED.ordinal()]);
+            add(publishWithFlows, globalFlows[MqttGlobalPublishFilter.UNSOLICITED.ordinal()]);
         }
-        add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL.ordinal()]);
-        if (matchingFlows.isEmpty()) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.REMAINING.ordinal()]);
+        add(publishWithFlows, globalFlows[MqttGlobalPublishFilter.ALL.ordinal()]);
+        if (publishWithFlows.isEmpty()) {
+            add(publishWithFlows, globalFlows[MqttGlobalPublishFilter.REMAINING.ordinal()]);
         }
     }
 
     private static void add(
-            final @NotNull MqttMatchingPublishFlows matchingPublishFlows,
+            final @NotNull MqttStatefulPublishWithFlows publishWithFlows,
             final @Nullable HandleList<MqttGlobalIncomingPublishFlow> globalFlows) {
 
         if (globalFlows != null) {
             for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlows.getFirst(); h != null; h = h.getNext()) {
-                matchingPublishFlows.add(h.getElement());
+                publishWithFlows.add(h.getElement());
             }
         }
     }

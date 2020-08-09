@@ -110,7 +110,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientTransportConfigImplBuilder.Nested<Mqtt3ClientReconnectorView> transportConfig() {
+    public MqttClientTransportConfigImplBuilder.@NotNull Nested<Mqtt3ClientReconnectorView> transportConfig() {
         return new MqttClientTransportConfigImplBuilder.Nested<>(getTransportConfig(), this::transportConfig);
     }
 
@@ -126,7 +126,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ConnectViewBuilder.Nested<Mqtt3ClientReconnectorView> connectWith() {
+    public Mqtt3ConnectViewBuilder.@NotNull Nested<Mqtt3ClientReconnectorView> connectWith() {
         return new Mqtt3ConnectViewBuilder.Nested<>(getConnect(), this::connect);
     }
 

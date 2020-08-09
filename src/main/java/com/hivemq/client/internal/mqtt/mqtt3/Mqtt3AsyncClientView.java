@@ -105,7 +105,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull Mqtt3ConnectViewBuilder.Send<CompletableFuture<Mqtt3ConnAck>> connectWith() {
+    public Mqtt3ConnectViewBuilder.@NotNull Send<CompletableFuture<Mqtt3ConnAck>> connectWith() {
         return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
 
@@ -221,7 +221,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull Mqtt3UnsubscribeViewBuilder.Send<CompletableFuture<Void>> unsubscribeWith() {
+    public Mqtt3UnsubscribeViewBuilder.@NotNull Send<CompletableFuture<Void>> unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.Send<>(this::unsubscribe);
     }
 
@@ -241,7 +241,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull Mqtt3PublishViewBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith() {
+    public Mqtt3PublishViewBuilder.@NotNull Send<CompletableFuture<Mqtt3Publish>> publishWith() {
         return new Mqtt3PublishViewBuilder.Send<>(this::publish);
     }
 

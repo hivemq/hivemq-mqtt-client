@@ -39,7 +39,7 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
      *
      * @return the created builder.
      */
-    static @NotNull Mqtt3SubscribeBuilder.Start builder() {
+    static Mqtt3SubscribeBuilder.@NotNull Start builder() {
         return new Mqtt3SubscribeViewBuilder.Default();
     }
 
@@ -59,5 +59,5 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt3SubscribeBuilder.Complete extend();
+    Mqtt3SubscribeBuilder.@NotNull Complete extend();
 }

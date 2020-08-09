@@ -116,7 +116,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     }
 
     @Override
-    public @NotNull MqttClientTransportConfigImplBuilder.Default extend() {
+    public MqttClientTransportConfigImplBuilder.@NotNull Default extend() {
         return new MqttClientTransportConfigImplBuilder.Default(this);
     }
 

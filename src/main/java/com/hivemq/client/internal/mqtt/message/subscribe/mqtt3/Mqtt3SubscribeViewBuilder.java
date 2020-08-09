@@ -36,8 +36,8 @@ import java.util.stream.Stream;
  */
 public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuilder<B>> {
 
-    private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionsBuilder;
-    private @Nullable Mqtt3SubscriptionViewBuilder.Default firstSubscriptionBuilder;
+    private final ImmutableList.@NotNull Builder<MqttSubscription> subscriptionsBuilder;
+    private Mqtt3SubscriptionViewBuilder.@Nullable Default firstSubscriptionBuilder;
 
     protected Mqtt3SubscribeViewBuilder() {
         subscriptionsBuilder = ImmutableList.builder();
@@ -58,7 +58,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull Mqtt3SubscriptionViewBuilder.Nested<B> addSubscription() {
+    public Mqtt3SubscriptionViewBuilder.@NotNull Nested<B> addSubscription() {
         return new Mqtt3SubscriptionViewBuilder.Nested<>(this::addSubscription);
     }
 
@@ -92,7 +92,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    private @NotNull Mqtt3SubscriptionViewBuilder.Default getFirstSubscriptionBuilder() {
+    private Mqtt3SubscriptionViewBuilder.@NotNull Default getFirstSubscriptionBuilder() {
         if (firstSubscriptionBuilder == null) {
             firstSubscriptionBuilder = new Mqtt3SubscriptionViewBuilder.Default();
         }
@@ -116,7 +116,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull MqttTopicFilterImplBuilder.Nested<B> topicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 

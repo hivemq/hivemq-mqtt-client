@@ -78,7 +78,7 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
     }
 
     @Override
-    public @NotNull MqttDisconnectBuilder.Default extend() {
+    public MqttDisconnectBuilder.@NotNull Default extend() {
         return new MqttDisconnectBuilder.Default(this);
     }
 

@@ -79,7 +79,7 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     }
 
     @Override
-    public @NotNull MqttUserPropertiesImplBuilder.Nested<MqttAuthBuilder> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<MqttAuthBuilder> userProperties() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
