@@ -120,7 +120,7 @@ allprojects {
         tasks.test {
             useJUnitPlatform()
             maxHeapSize = "1g"
-            maxParallelForks = Runtime.getRuntime().availableProcessors()
+            maxParallelForks = 1.coerceAtLeast(Runtime.getRuntime().availableProcessors() / 2)
             jvmArgs("-XX:+UseParallelGC")
         }
     }
