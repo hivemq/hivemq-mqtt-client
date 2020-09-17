@@ -340,6 +340,7 @@ allprojects {
 
         pmd {
             toolVersion = "5.7.0"
+            incrementalAnalysis.set(false)
         }
     }
 }
