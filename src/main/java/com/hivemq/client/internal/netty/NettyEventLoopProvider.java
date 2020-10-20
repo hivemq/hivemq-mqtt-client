@@ -119,10 +119,11 @@ public class NettyEventLoopProvider {
     public synchronized void releaseEventLoop(final @Nullable Executor executor) {
         final Entry entry = entries.get(executor);
         if (--entry.referenceCount == 0) {
+            entries.remove(executor);
             if (!(executor instanceof MultithreadEventLoopGroup)) {
+                // shutdownGracefully must be the last statement so everything is cleaned up even if it throws
                 entry.eventLoopGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS);
             }
-            entries.remove(executor);
         }
     }
 
