@@ -17,8 +17,8 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.InetSocketAddressUtil;
-import com.hivemq.client.mqtt.MqttClientTlsConfig;
 import com.hivemq.client.mqtt.MqttProxyConfig;
+import com.hivemq.client.mqtt.MqttTlsConfig;
 import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
 
     private final @NotNull InetSocketAddress serverAddress;
     private final @Nullable InetSocketAddress localAddress;
-    private final @Nullable MqttClientTlsConfigImpl tlsConfig;
+    private final @Nullable MqttTlsConfigImpl tlsConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @Nullable MqttProxyConfigImpl proxyConfig;
     private final int socketConnectTimeoutMs;
@@ -48,7 +48,7 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
     MqttTransportConfigImpl(
             final @NotNull InetSocketAddress serverAddress,
             final @Nullable InetSocketAddress localAddress,
-            final @Nullable MqttClientTlsConfigImpl tlsConfig,
+            final @Nullable MqttTlsConfigImpl tlsConfig,
             final @Nullable MqttWebSocketConfigImpl webSocketConfig,
             final @Nullable MqttProxyConfigImpl proxyConfig,
             final int socketConnectTimeoutMs,
@@ -82,11 +82,11 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
     }
 
     @Override
-    public @NotNull Optional<MqttClientTlsConfig> getTlsConfig() {
+    public @NotNull Optional<MqttTlsConfig> getTlsConfig() {
         return Optional.ofNullable(tlsConfig);
     }
 
-    public @Nullable MqttClientTlsConfigImpl getRawTlsConfig() {
+    public @Nullable MqttTlsConfigImpl getRawTlsConfig() {
         return tlsConfig;
     }
 

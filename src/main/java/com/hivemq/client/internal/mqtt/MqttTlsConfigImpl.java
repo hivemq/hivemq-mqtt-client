@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.MqttClientTlsConfig;
+import com.hivemq.client.mqtt.MqttTlsConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ import java.util.Optional;
  * @author David Katz
  * @author Silvio Giebl
  */
-public class MqttClientTlsConfigImpl implements MqttClientTlsConfig {
+public class MqttTlsConfigImpl implements MqttTlsConfig {
 
     static final @Nullable HostnameVerifier DEFAULT_HOSTNAME_VERIFIER;
 
@@ -44,8 +44,8 @@ public class MqttClientTlsConfigImpl implements MqttClientTlsConfig {
         DEFAULT_HOSTNAME_VERIFIER = hostnameVerifier;
     }
 
-    static final @NotNull MqttClientTlsConfigImpl DEFAULT =
-            new MqttClientTlsConfigImpl(null, null, null, null, (int) DEFAULT_HANDSHAKE_TIMEOUT_MS,
+    static final @NotNull MqttTlsConfigImpl DEFAULT =
+            new MqttTlsConfigImpl(null, null, null, null, (int) DEFAULT_HANDSHAKE_TIMEOUT_MS,
                     DEFAULT_HOSTNAME_VERIFIER);
 
     private final @Nullable KeyManagerFactory keyManagerFactory;
@@ -55,7 +55,7 @@ public class MqttClientTlsConfigImpl implements MqttClientTlsConfig {
     private final int handshakeTimeoutMs;
     private final @Nullable HostnameVerifier hostnameVerifier;
 
-    MqttClientTlsConfigImpl(
+    MqttTlsConfigImpl(
             final @Nullable KeyManagerFactory keyManagerFactory,
             final @Nullable TrustManagerFactory trustManagerFactory,
             final @Nullable ImmutableList<String> cipherSuites,
@@ -122,8 +122,8 @@ public class MqttClientTlsConfigImpl implements MqttClientTlsConfig {
     }
 
     @Override
-    public MqttClientTlsConfigImplBuilder.@NotNull Default extend() {
-        return new MqttClientTlsConfigImplBuilder.Default(this);
+    public MqttTlsConfigImplBuilder.@NotNull Default extend() {
+        return new MqttTlsConfigImplBuilder.Default(this);
     }
 
     @Override
@@ -131,10 +131,10 @@ public class MqttClientTlsConfigImpl implements MqttClientTlsConfig {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MqttClientTlsConfigImpl)) {
+        if (!(o instanceof MqttTlsConfigImpl)) {
             return false;
         }
-        final MqttClientTlsConfigImpl that = (MqttClientTlsConfigImpl) o;
+        final MqttTlsConfigImpl that = (MqttTlsConfigImpl) o;
 
         return Objects.equals(keyManagerFactory, that.keyManagerFactory) &&
                 Objects.equals(trustManagerFactory, that.trustManagerFactory) &&
