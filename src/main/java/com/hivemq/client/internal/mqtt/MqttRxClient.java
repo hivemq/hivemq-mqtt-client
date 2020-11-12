@@ -57,6 +57,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.internal.fuseable.ScalarCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.reactivestreams.Publisher;
 
 /**
  * @author Silvio Giebl
@@ -192,19 +193,19 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull Flowable<Mqtt5PublishResult> publish(final @Nullable Flowable<Mqtt5Publish> publishFlowable) {
-        Checks.notNull(publishFlowable, "Publish flowable");
+    public @NotNull Flowable<Mqtt5PublishResult> publish(final @NotNull Publisher<Mqtt5Publish> publisher) {
+        Checks.notNull(publisher, "Publisher");
 
-        return publish(publishFlowable, PUBLISH_MAPPER);
+        return publish(publisher, PUBLISH_MAPPER);
     }
 
     public <P> @NotNull Flowable<Mqtt5PublishResult> publish(
-            final @NotNull Flowable<P> publishFlowable, final @NotNull Function<P, MqttPublish> publishMapper) {
+            final @NotNull Publisher<P> publisher, final @NotNull Function<P, MqttPublish> publishMapper) {
 
         final Scheduler applicationScheduler = clientConfig.getExecutorConfig().getApplicationScheduler();
-        if (publishFlowable instanceof ScalarCallable) {
+        if (publisher instanceof ScalarCallable) {
             //noinspection unchecked
-            final P publish = ((ScalarCallable<P>) publishFlowable).call();
+            final P publish = ((ScalarCallable<P>) publisher).call();
             if (publish == null) {
                 return Flowable.empty();
             }
@@ -217,7 +218,8 @@ public class MqttRxClient implements Mqtt5RxClient {
             return new MqttAckSingleFlowable(clientConfig, mqttPublish).observeOn(applicationScheduler, true);
         }
         return new MqttAckFlowable(
-                clientConfig, publishFlowable.subscribeOn(applicationScheduler).map(publishMapper)).observeOn(
+                clientConfig,
+                Flowable.fromPublisher(publisher).subscribeOn(applicationScheduler).map(publishMapper)).observeOn(
                 applicationScheduler, true);
     }
 

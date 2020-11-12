@@ -37,6 +37,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 /**
  * Reactive API of an {@link Mqtt5Client}.
@@ -285,7 +286,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Publishing is performed lazy and asynchronous. When subscribing (in terms of Reactive Streams) to the returned
      * {@link Flowable} the client subscribes (in terms of Reactive Streams) to the given {@link Flowable}.
      *
-     * @param publishFlowable the source of the Publish messages to publish.
+     * @param publisher the source of the Publish messages to publish.
      * @return the {@link Flowable} which
      *         <ul>
      *           <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,
@@ -296,7 +297,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         </ul>
      */
     @CheckReturnValue
-    @NotNull Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
+    @NotNull Flowable<Mqtt5PublishResult> publish(@NotNull Publisher<Mqtt5Publish> publisher);
 
     /**
      * Creates a {@link Completable} for re-authenticating this client.

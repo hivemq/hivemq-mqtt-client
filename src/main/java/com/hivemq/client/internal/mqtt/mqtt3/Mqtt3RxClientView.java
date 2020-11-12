@@ -53,6 +53,7 @@ import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.reactivestreams.Publisher;
 
 /**
  * @author Silvio Giebl
@@ -170,10 +171,10 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Flowable<Mqtt3PublishResult> publish(final @Nullable Flowable<Mqtt3Publish> publishFlowable) {
-        Checks.notNull(publishFlowable, "Publish flowable");
+    public @NotNull Flowable<Mqtt3PublishResult> publish(final @NotNull Publisher<Mqtt3Publish> publisher) {
+        Checks.notNull(publisher, "Publisher");
 
-        return delegate.publish(publishFlowable, PUBLISH_MAPPER)
+        return delegate.publish(publisher, PUBLISH_MAPPER)
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
                 .map(Mqtt3PublishResultView.MAPPER);
     }
