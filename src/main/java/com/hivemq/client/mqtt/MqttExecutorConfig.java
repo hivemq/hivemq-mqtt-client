@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImplBuilder;
+import com.hivemq.client.internal.mqtt.MqttExecutorConfigImplBuilder;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ import java.util.concurrent.Executor;
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientExecutorConfig {
+public interface MqttExecutorConfig {
 
     @NotNull Scheduler DEFAULT_APPLICATION_SCHEDULER = Schedulers.computation();
 
@@ -42,8 +42,8 @@ public interface MqttClientExecutorConfig {
      *
      * @return the created builder for an executor configuration.
      */
-    static @NotNull MqttClientExecutorConfigBuilder builder() {
-        return new MqttClientExecutorConfigImplBuilder.Default();
+    static @NotNull MqttExecutorConfigBuilder builder() {
+        return new MqttExecutorConfigImplBuilder.Default();
     }
 
     /**
@@ -67,5 +67,5 @@ public interface MqttClientExecutorConfig {
      * @return the created builder.
      * @since 1.1
      */
-    @NotNull MqttClientExecutorConfigBuilder extend();
+    @NotNull MqttExecutorConfigBuilder extend();
 }

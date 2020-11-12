@@ -195,19 +195,19 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B executorConfig(@NotNull MqttClientExecutorConfig executorConfig);
+    @NotNull B executorConfig(@NotNull MqttExecutorConfig executorConfig);
 
     /**
-     * Fluent counterpart of {@link #executorConfig(MqttClientExecutorConfig)}.
+     * Fluent counterpart of {@link #executorConfig(MqttExecutorConfig)}.
      * <p>
-     * Calling {@link MqttClientExecutorConfigBuilder.Nested#applyExecutorConfig()} on the returned builder has the
-     * effect of extending the current executor configuration.
+     * Calling {@link MqttExecutorConfigBuilder.Nested#applyExecutorConfig()} on the returned builder has the effect of
+     * extending the current executor configuration.
      *
      * @return the fluent builder for the executor configuration.
-     * @see #executorConfig(MqttClientExecutorConfig)
+     * @see #executorConfig(MqttExecutorConfig)
      */
     @CheckReturnValue
-    MqttClientExecutorConfigBuilder.@NotNull Nested<? extends B> executorConfig();
+    MqttExecutorConfigBuilder.@NotNull Nested<? extends B> executorConfig();
 
     /**
      * Uses automatic reconnect with the default configuration.

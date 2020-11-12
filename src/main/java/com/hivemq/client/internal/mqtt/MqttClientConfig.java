@@ -52,7 +52,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @NotNull MqttVersion mqttVersion;
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
     private final @NotNull MqttTransportConfigImpl transportConfig;
-    private final @NotNull MqttClientExecutorConfigImpl executorConfig;
+    private final @NotNull MqttExecutorConfigImpl executorConfig;
     private final @NotNull MqttClientAdvancedConfig advancedConfig;
     private final @NotNull ConnectDefaults connectDefaults;
     private final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners;
@@ -75,7 +75,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull MqttVersion mqttVersion,
             final @NotNull MqttClientIdentifierImpl clientIdentifier,
             final @NotNull MqttTransportConfigImpl transportConfig,
-            final @NotNull MqttClientExecutorConfigImpl executorConfig,
+            final @NotNull MqttExecutorConfigImpl executorConfig,
             final @NotNull MqttClientAdvancedConfig advancedConfig,
             final @NotNull ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
@@ -121,7 +121,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull MqttClientExecutorConfigImpl getExecutorConfig() {
+    public @NotNull MqttExecutorConfigImpl getExecutorConfig() {
         return executorConfig;
     }
 

@@ -24,11 +24,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Silvio Giebl
  */
-class MqttClientExecutorConfigImplTest {
+class MqttExecutorConfigImplTest {
 
     @Test
     void equals() {
-        EqualsVerifier.forClass(MqttClientExecutorConfigImpl.class)
+        EqualsVerifier.forClass(MqttExecutorConfigImpl.class)
                 .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("applicationScheduler")
                 .suppress(Warning.STRICT_INHERITANCE)

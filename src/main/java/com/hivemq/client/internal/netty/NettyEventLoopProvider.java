@@ -19,7 +19,7 @@ package com.hivemq.client.internal.netty;
 import com.hivemq.client.internal.annotations.ThreadSafe;
 import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
-import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttExecutorConfigImpl;
 import com.hivemq.client.internal.util.ClassUtil;
 import io.netty.channel.ChannelFactory;
 import io.netty.channel.EventLoop;
@@ -96,7 +96,7 @@ public class NettyEventLoopProvider {
 
             } else if (executor instanceof MultithreadEventLoopGroup) {
                 eventLoopGroup = (MultithreadEventLoopGroup) executor;
-                if ((threadCount != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
+                if ((threadCount != MqttExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
                         (eventLoopGroup.executorCount() != threadCount)) {
                     LOGGER.warn("Tried to use a different amount of Netty threads for the provided event loop. " +
                             "Using {} threads instead of {}", eventLoopGroup.executorCount(), threadCount);
@@ -107,7 +107,7 @@ public class NettyEventLoopProvider {
             entry = new Entry(eventLoopGroup);
             entries.put(executor, entry);
         } else {
-            if ((threadCount != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
+            if ((threadCount != MqttExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
                     (entry.eventLoopGroup.executorCount() != threadCount)) {
                 LOGGER.warn("Tried to use a different amount of Netty threads for the same executor. " +
                         "Using {} threads instead of {}", entry.eventLoopGroup.executorCount(), threadCount);

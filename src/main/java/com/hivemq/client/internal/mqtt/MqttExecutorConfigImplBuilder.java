@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
-import com.hivemq.client.mqtt.MqttClientExecutorConfigBuilder;
+import com.hivemq.client.mqtt.MqttExecutorConfigBuilder;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,15 +28,15 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientExecutorConfigImplBuilder<B>> {
+public abstract class MqttExecutorConfigImplBuilder<B extends MqttExecutorConfigImplBuilder<B>> {
 
     private @Nullable Executor nettyExecutor;
-    private int nettyThreads = MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS;
-    private @NotNull Scheduler applicationScheduler = MqttClientExecutorConfigImpl.DEFAULT_APPLICATION_SCHEDULER;
+    private int nettyThreads = MqttExecutorConfigImpl.DEFAULT_NETTY_THREADS;
+    private @NotNull Scheduler applicationScheduler = MqttExecutorConfigImpl.DEFAULT_APPLICATION_SCHEDULER;
 
-    MqttClientExecutorConfigImplBuilder() {}
+    MqttExecutorConfigImplBuilder() {}
 
-    MqttClientExecutorConfigImplBuilder(final @NotNull MqttClientExecutorConfigImpl executorConfig) {
+    MqttExecutorConfigImplBuilder(final @NotNull MqttExecutorConfigImpl executorConfig) {
         nettyExecutor = executorConfig.getRawNettyExecutor();
         nettyThreads = executorConfig.getRawNettyThreads();
         applicationScheduler = executorConfig.getApplicationScheduler();
@@ -63,16 +63,15 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
         return self();
     }
 
-    public @NotNull MqttClientExecutorConfigImpl build() {
-        return new MqttClientExecutorConfigImpl(nettyExecutor, nettyThreads, applicationScheduler);
+    public @NotNull MqttExecutorConfigImpl build() {
+        return new MqttExecutorConfigImpl(nettyExecutor, nettyThreads, applicationScheduler);
     }
 
-    public static class Default extends MqttClientExecutorConfigImplBuilder<Default>
-            implements MqttClientExecutorConfigBuilder {
+    public static class Default extends MqttExecutorConfigImplBuilder<Default> implements MqttExecutorConfigBuilder {
 
         public Default() {}
 
-        Default(final @NotNull MqttClientExecutorConfigImpl executorConfig) {
+        Default(final @NotNull MqttExecutorConfigImpl executorConfig) {
             super(executorConfig);
         }
 
@@ -82,14 +81,14 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
         }
     }
 
-    public static class Nested<P> extends MqttClientExecutorConfigImplBuilder<Nested<P>>
-            implements MqttClientExecutorConfigBuilder.Nested<P> {
+    public static class Nested<P> extends MqttExecutorConfigImplBuilder<Nested<P>>
+            implements MqttExecutorConfigBuilder.Nested<P> {
 
-        private final @NotNull Function<? super MqttClientExecutorConfigImpl, P> parentConsumer;
+        private final @NotNull Function<? super MqttExecutorConfigImpl, P> parentConsumer;
 
         Nested(
-                final @NotNull MqttClientExecutorConfigImpl executorConfig,
-                final @NotNull Function<? super MqttClientExecutorConfigImpl, P> parentConsumer) {
+                final @NotNull MqttExecutorConfigImpl executorConfig,
+                final @NotNull Function<? super MqttExecutorConfigImpl, P> parentConsumer) {
 
             super(executorConfig);
             this.parentConsumer = parentConsumer;

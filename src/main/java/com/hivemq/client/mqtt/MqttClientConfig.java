@@ -95,7 +95,7 @@ public interface MqttClientConfig {
     /**
      * @return the executor configuration of the client.
      */
-    @NotNull MqttClientExecutorConfig getExecutorConfig();
+    @NotNull MqttExecutorConfig getExecutorConfig();
 
     /**
      * @return the optional automatic reconnect strategy of the client.

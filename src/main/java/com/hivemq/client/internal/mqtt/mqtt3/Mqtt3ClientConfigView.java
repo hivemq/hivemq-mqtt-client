@@ -22,8 +22,8 @@ import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import com.hivemq.client.mqtt.MqttClientExecutorConfig;
 import com.hivemq.client.mqtt.MqttClientState;
+import com.hivemq.client.mqtt.MqttExecutorConfig;
 import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
@@ -67,7 +67,7 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @NotNull MqttClientExecutorConfig getExecutorConfig() {
+    public @NotNull MqttExecutorConfig getExecutorConfig() {
         return delegate.getExecutorConfig();
     }
 
