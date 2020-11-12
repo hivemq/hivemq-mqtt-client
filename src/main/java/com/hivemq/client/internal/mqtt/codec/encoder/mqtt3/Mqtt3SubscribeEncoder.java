@@ -74,7 +74,7 @@ public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulSubsc
         for (int i = 0; i < subscriptions.size(); i++) {
             final MqttSubscription subscription = subscriptions.get(i);
             subscription.getTopicFilter().encode(out);
-            out.writeByte(subscription.getQos().getCode());
+            out.writeByte(subscription.getMaxQos().getCode());
         }
     }
 }

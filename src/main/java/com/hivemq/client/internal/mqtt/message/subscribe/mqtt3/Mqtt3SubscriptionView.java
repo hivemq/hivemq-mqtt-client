@@ -31,9 +31,9 @@ import org.jetbrains.annotations.Nullable;
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
     private static @NotNull MqttSubscription delegate(
-            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos) {
+            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos maxQos) {
 
-        return new MqttSubscription(topicFilter, qos, false, Mqtt5RetainHandling.SEND, false);
+        return new MqttSubscription(topicFilter, maxQos, false, Mqtt5RetainHandling.SEND, false);
     }
 
     static @NotNull Mqtt3SubscriptionView of(
@@ -58,8 +58,8 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
     }
 
     @Override
-    public @NotNull MqttQos getQos() {
-        return delegate.getQos();
+    public @NotNull MqttQos getMaxQos() {
+        return delegate.getMaxQos();
     }
 
     public @NotNull MqttSubscription getDelegate() {
@@ -72,7 +72,7 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
     }
 
     private @NotNull String toAttributeString() {
-        return "topicFilter=" + getTopicFilter() + ", qos=" + getQos();
+        return "topicFilter=" + getTopicFilter() + ", maxQos=" + getMaxQos();
     }
 
     @Override

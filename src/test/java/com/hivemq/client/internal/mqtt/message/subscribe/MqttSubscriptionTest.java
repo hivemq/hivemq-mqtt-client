@@ -30,7 +30,7 @@ class MqttSubscriptionTest {
     void equals() {
         EqualsVerifier.forClass(MqttSubscription.class)
                 .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
-                .withNonnullFields("topicFilter", "qos", "retainHandling")
+                .withNonnullFields("topicFilter", "maxQos", "retainHandling")
                 .suppress(Warning.STRICT_INHERITANCE)
                 .verify();
     }

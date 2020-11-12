@@ -52,9 +52,9 @@ public interface Mqtt3Subscription {
     @NotNull MqttTopicFilter getTopicFilter();
 
     /**
-     * @return the QoS of this Subscription.
+     * @return the maximum QoS of this Subscription.
      */
-    @NotNull MqttQos getQos();
+    @NotNull MqttQos getMaxQos();
 
     /**
      * Creates a builder for extending this Subscription.

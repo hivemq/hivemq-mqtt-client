@@ -73,12 +73,12 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
     interface Complete<C extends Mqtt3SubscriptionBuilderBase.Complete<C>> extends Mqtt3SubscriptionBuilderBase<C> {
 
         /**
-         * Sets the {@link Mqtt3Subscription#getQos() QoS}.
+         * Sets the {@link Mqtt3Subscription#getMaxQos() maximum QoS}.
          *
-         * @param qos the QoS.
+         * @param maxQos the maximum QoS.
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C qos(@NotNull MqttQos qos);
+        @NotNull C maxQos(@NotNull MqttQos maxQos);
     }
 }

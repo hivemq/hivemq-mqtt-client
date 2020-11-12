@@ -36,7 +36,7 @@ import java.util.function.Function;
 public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<B>> {
 
     private @Nullable MqttTopicFilterImpl topicFilter;
-    private @NotNull MqttQos qos = MqttSubscription.DEFAULT_QOS;
+    private @NotNull MqttQos maxQos = MqttSubscription.DEFAULT_QOS;
     private boolean noLocal = MqttSubscription.DEFAULT_NO_LOCAL;
     private @NotNull Mqtt5RetainHandling retainHandling = MqttSubscription.DEFAULT_RETAIN_HANDLING;
     private boolean retainAsPublished = MqttSubscription.DEFAULT_RETAIN_AS_PUBLISHED;
@@ -45,7 +45,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
 
     MqttSubscriptionBuilder(final @NotNull MqttSubscription subscription) {
         topicFilter = subscription.getTopicFilter();
-        qos = subscription.getQos();
+        maxQos = subscription.getMaxQos();
         noLocal = subscription.isNoLocal();
         retainHandling = subscription.getRetainHandling();
         retainAsPublished = subscription.isRetainAsPublished();
@@ -67,8 +67,8 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull B qos(final @Nullable MqttQos qos) {
-        this.qos = Checks.notNull(qos, "QoS");
+    public @NotNull B maxQos(final @Nullable MqttQos maxQos) {
+        this.maxQos = Checks.notNull(maxQos, "Maximum QoS");
         return self();
     }
 
@@ -92,7 +92,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
         Checks.state(
                 !(topicFilter.isShared() && noLocal),
                 "It is a Protocol Error to set no local to true on a Shared Subscription.");
-        return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
+        return new MqttSubscription(topicFilter, maxQos, noLocal, retainHandling, retainAsPublished);
     }
 
     public static class Default extends MqttSubscriptionBuilder<Default> implements Mqtt5SubscriptionBuilder.Complete {

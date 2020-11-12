@@ -60,14 +60,14 @@ class Mqtt3SubscribeViewBuilderTest {
         final Mqtt3Subscription mqtt3Subscription = subscriptions.get(0);
 
         assertEquals("test", mqtt3Subscription.getTopicFilter().toString());
-        assertEquals(MqttQos.EXACTLY_ONCE, mqtt3Subscription.getQos());
+        assertEquals(MqttQos.EXACTLY_ONCE, mqtt3Subscription.getMaxQos());
     }
 
     @Test
     void addSubscription_correct_subscription_custom_properties() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscription(subscription).build();
 
@@ -77,14 +77,14 @@ class Mqtt3SubscribeViewBuilderTest {
         final Mqtt3Subscription mqtt3Subscription = subscriptions.get(0);
 
         assertEquals("test", mqtt3Subscription.getTopicFilter().toString());
-        assertEquals(MqttQos.AT_LEAST_ONCE, mqtt3Subscription.getQos());
+        assertEquals(MqttQos.AT_LEAST_ONCE, mqtt3Subscription.getMaxQos());
     }
 
     @Test
     void addSubscription_fluent_subscription_is_finished_if_addSubscription_is_used() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3SubscribeBuilder.Start subscribeBuilder = Mqtt3Subscribe.builder();
         subscribeBuilder.topicFilter("fluent");
@@ -100,10 +100,10 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscription_fluent_subscription_is_finished_if_addSubscription_is_used_second_time() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("test2").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test2").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3SubscribeBuilder.Start subscribeBuilder = Mqtt3Subscribe.builder();
         subscribeBuilder.topicFilter("fluent");
@@ -159,7 +159,7 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_error_when_subscription_is_implemented() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final List<Mqtt3Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);
@@ -173,13 +173,13 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_correct_use_list() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3Subscription subscription3 =
-                Mqtt3Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final List<Mqtt3Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);
@@ -195,13 +195,13 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_correct_use_set() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3Subscription subscription3 =
-                Mqtt3Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final Set<Mqtt3Subscription> subscriptions = new HashSet<>();
         subscriptions.add(subscription);
@@ -217,13 +217,13 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_correct_use_map() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3Subscription subscription3 =
-                Mqtt3Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final Map<String, Mqtt3Subscription> subscriptions = new LinkedHashMap<>();
         subscriptions.put("1", subscription);
@@ -239,13 +239,13 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_correct_use_array() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3Subscription subscription3 =
-                Mqtt3Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final Mqtt3Subscription[] subscriptions = new Mqtt3Subscription[]{
                 subscription, subscription2, subscription3
@@ -268,7 +268,7 @@ class Mqtt3SubscribeViewBuilderTest {
                 .addSubscriptions(subscriptions.stream()
                         .map(topicFilter -> Mqtt3Subscription.builder()
                                 .topicFilter(topicFilter)
-                                .qos(MqttQos.AT_LEAST_ONCE)
+                                .maxQos(MqttQos.AT_LEAST_ONCE)
                                 .build()))
                 .build();
 
@@ -283,13 +283,13 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_fluent_subscription_is_finished_if_addSubscriptions_is_used() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3Subscription subscription3 =
-                Mqtt3Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final List<Mqtt3Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);
@@ -312,13 +312,13 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_fluent_subscription_is_finished_if_addSubscriptions_is_used_second_time() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3Subscription subscription3 =
-                Mqtt3Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final ImmutableList<Mqtt3Subscription> subscriptions = ImmutableList.of(subscription, subscription2);
 
@@ -344,13 +344,13 @@ class Mqtt3SubscribeViewBuilderTest {
     void addSubscriptions_fluent_subscription_and_addSubscription() {
 
         final Mqtt3Subscription subscription =
-                Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt3Subscription subscription2 =
-                Mqtt3Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt3Subscription subscription3 =
-                Mqtt3Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt3Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final List<Mqtt3Subscription> subscriptions = new LinkedList<>();
         subscriptions.add(subscription);
