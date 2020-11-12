@@ -34,6 +34,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 /**
  * Reactive API of an {@link Mqtt3Client}.
@@ -278,7 +279,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * Publishing is performed lazy and asynchronous. When subscribing (in terms of Reactive Streams) to the returned
      * {@link Flowable} the client subscribes (in terms of Reactive Streams) to the given {@link Flowable}.
      *
-     * @param publishFlowable the source of the Publish messages to publish.
+     * @param publisher the source of the Publish messages to publish.
      * @return the {@link Flowable} which
      *         <ul>
      *           <li>emits {@link Mqtt3PublishResult}s each corresponding to a Publish message,
@@ -289,7 +290,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         </ul>
      */
     @CheckReturnValue
-    @NotNull Flowable<Mqtt3PublishResult> publish(@NotNull Flowable<Mqtt3Publish> publishFlowable);
+    @NotNull Flowable<Mqtt3PublishResult> publish(@NotNull Publisher<Mqtt3Publish> publisher);
 
     /**
      * Creates a {@link Completable} for disconnecting this client.
