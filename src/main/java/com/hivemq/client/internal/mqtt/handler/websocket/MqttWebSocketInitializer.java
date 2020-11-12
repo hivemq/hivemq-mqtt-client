@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.handler.websocket;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
@@ -61,7 +61,7 @@ public class MqttWebSocketInitializer {
 
         final URI uri;
         try {
-            final MqttClientTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
+            final MqttTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
             final InetSocketAddress serverAddress = transportConfig.getServerAddress();
             uri = new URI((transportConfig.getRawTlsConfig() == null) ? "ws" : "wss", null,
                     serverAddress.getHostString(), serverAddress.getPort(), "/" + webSocketConfig.getServerPath(),

@@ -18,8 +18,8 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.InetSocketAddressUtil;
 import com.hivemq.client.mqtt.MqttClientTlsConfig;
-import com.hivemq.client.mqtt.MqttClientTransportConfig;
 import com.hivemq.client.mqtt.MqttProxyConfig;
+import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,11 +31,11 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientTransportConfigImpl implements MqttClientTransportConfig {
+public class MqttTransportConfigImpl implements MqttTransportConfig {
 
-    public static final @NotNull MqttClientTransportConfigImpl DEFAULT =
-            new MqttClientTransportConfigImpl(InetSocketAddressUtil.create(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT),
-                    null, null, null, null, DEFAULT_SOCKET_CONNECT_TIMEOUT_MS, DEFAULT_MQTT_CONNECT_TIMEOUT_MS);
+    public static final @NotNull MqttTransportConfigImpl DEFAULT =
+            new MqttTransportConfigImpl(InetSocketAddressUtil.create(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT), null,
+                    null, null, null, DEFAULT_SOCKET_CONNECT_TIMEOUT_MS, DEFAULT_MQTT_CONNECT_TIMEOUT_MS);
 
     private final @NotNull InetSocketAddress serverAddress;
     private final @Nullable InetSocketAddress localAddress;
@@ -45,7 +45,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     private final int socketConnectTimeoutMs;
     private final int mqttConnectTimeoutMs;
 
-    MqttClientTransportConfigImpl(
+    MqttTransportConfigImpl(
             final @NotNull InetSocketAddress serverAddress,
             final @Nullable InetSocketAddress localAddress,
             final @Nullable MqttClientTlsConfigImpl tlsConfig,
@@ -119,8 +119,8 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     }
 
     @Override
-    public MqttClientTransportConfigImplBuilder.@NotNull Default extend() {
-        return new MqttClientTransportConfigImplBuilder.Default(this);
+    public MqttTransportConfigImplBuilder.@NotNull Default extend() {
+        return new MqttTransportConfigImplBuilder.Default(this);
     }
 
     @Override
@@ -128,10 +128,10 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MqttClientTransportConfigImpl)) {
+        if (!(o instanceof MqttTransportConfigImpl)) {
             return false;
         }
-        final MqttClientTransportConfigImpl that = (MqttClientTransportConfigImpl) o;
+        final MqttTransportConfigImpl that = (MqttTransportConfigImpl) o;
 
         return serverAddress.equals(that.serverAddress) && Objects.equals(localAddress, that.localAddress) &&
                 Objects.equals(tlsConfig, that.tlsConfig) && Objects.equals(webSocketConfig, that.webSocketConfig) &&

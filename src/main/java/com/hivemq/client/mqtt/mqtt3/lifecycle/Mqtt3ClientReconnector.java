@@ -18,8 +18,8 @@ package com.hivemq.client.mqtt.mqtt3.lifecycle;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.MqttClientTransportConfig;
-import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
+import com.hivemq.client.mqtt.MqttTransportConfig;
+import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
 import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
@@ -57,11 +57,11 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
     @NotNull Mqtt3ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     @Override
-    @NotNull Mqtt3ClientReconnector transportConfig(@NotNull MqttClientTransportConfig transportConfig);
+    @NotNull Mqtt3ClientReconnector transportConfig(@NotNull MqttTransportConfig transportConfig);
 
     @Override
     @CheckReturnValue
-    MqttClientTransportConfigBuilder.@NotNull Nested<? extends Mqtt3ClientReconnector> transportConfig();
+    MqttTransportConfigBuilder.@NotNull Nested<? extends Mqtt3ClientReconnector> transportConfig();
 
     /**
      * Sets a different Connect message the client will try to reconnect with.

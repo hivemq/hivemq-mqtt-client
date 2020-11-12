@@ -173,20 +173,20 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull B transportConfig(@NotNull MqttClientTransportConfig transportConfig);
+    @NotNull B transportConfig(@NotNull MqttTransportConfig transportConfig);
 
     /**
-     * Fluent counterpart of {@link #transportConfig(MqttClientTransportConfig)}.
+     * Fluent counterpart of {@link #transportConfig(MqttTransportConfig)}.
      * <p>
-     * Calling {@link MqttClientTransportConfigBuilder.Nested#applyTransportConfig()} on the returned builder has the
-     * effect of extending the current transport configuration.
+     * Calling {@link MqttTransportConfigBuilder.Nested#applyTransportConfig()} on the returned builder has the effect
+     * of extending the current transport configuration.
      *
      * @return the fluent builder for the transport configuration.
-     * @see #transportConfig(MqttClientTransportConfig)
+     * @see #transportConfig(MqttTransportConfig)
      * @since 1.1
      */
     @CheckReturnValue
-    MqttClientTransportConfigBuilder.@NotNull Nested<? extends B> transportConfig();
+    MqttTransportConfigBuilder.@NotNull Nested<? extends B> transportConfig();
 
     /**
      * Sets the {@link MqttClientConfig#getExecutorConfig() executor configuration}.

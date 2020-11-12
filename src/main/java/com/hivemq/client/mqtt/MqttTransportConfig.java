@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImplBuilder;
+import com.hivemq.client.internal.mqtt.MqttTransportConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -30,7 +30,7 @@ import java.util.Optional;
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientTransportConfig {
+public interface MqttTransportConfig {
 
     /**
      * The default server host.
@@ -70,8 +70,8 @@ public interface MqttClientTransportConfig {
      *
      * @return the created builder for a transport configuration.
      */
-    static @NotNull MqttClientTransportConfigBuilder builder() {
-        return new MqttClientTransportConfigImplBuilder.Default();
+    static @NotNull MqttTransportConfigBuilder builder() {
+        return new MqttTransportConfigImplBuilder.Default();
     }
 
     /**
@@ -118,5 +118,5 @@ public interface MqttClientTransportConfig {
      *
      * @return the created builder.
      */
-    @NotNull MqttClientTransportConfigBuilder extend();
+    @NotNull MqttTransportConfigBuilder extend();
 }

@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * @author Silvio Giebl
  */
-class MqttClientTransportConfigImplTest {
+class MqttTransportConfigImplTest {
 
     @Test
     void equals() throws NoSuchAlgorithmException {
@@ -37,8 +37,7 @@ class MqttClientTransportConfigImplTest {
         final TrustManagerFactory tmf1 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         final TrustManagerFactory tmf2 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 
-        EqualsVerifier.forClass(MqttClientTransportConfigImpl.class)
-                .suppress(Warning.STRICT_INHERITANCE)
+        EqualsVerifier.forClass(MqttTransportConfigImpl.class).suppress(Warning.STRICT_INHERITANCE)
                 .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("serverAddress")
                 .withPrefabValues(KeyManagerFactory.class, kmf1, kmf2)

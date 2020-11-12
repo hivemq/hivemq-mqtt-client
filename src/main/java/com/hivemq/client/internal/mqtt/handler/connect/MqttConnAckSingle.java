@@ -19,7 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.connect;
 import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientDisconnectedContextImpl;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
@@ -85,7 +85,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                     .build()
                     .bootstrap();
 
-            final MqttClientTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
+            final MqttTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
 
             bootstrap.group(eventLoop)
                     .connect(transportConfig.getRemoteAddress(), transportConfig.getRawLocalAddress())

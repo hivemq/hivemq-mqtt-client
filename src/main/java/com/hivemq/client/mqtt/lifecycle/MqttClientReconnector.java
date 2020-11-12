@@ -18,8 +18,8 @@ package com.hivemq.client.mqtt.lifecycle;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.MqttClientTransportConfig;
-import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
+import com.hivemq.client.mqtt.MqttTransportConfig;
+import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -192,29 +192,29 @@ public interface MqttClientReconnector {
      * @param transportConfig the transport configuration the client will try to reconnect with.
      * @return this reconnector.
      */
-    @NotNull MqttClientReconnector transportConfig(@NotNull MqttClientTransportConfig transportConfig);
+    @NotNull MqttClientReconnector transportConfig(@NotNull MqttTransportConfig transportConfig);
 
     /**
-     * Fluent counterpart of {@link #transportConfig(MqttClientTransportConfig)}.
+     * Fluent counterpart of {@link #transportConfig(MqttTransportConfig)}.
      * <p>
-     * Calling {@link MqttClientTransportConfigBuilder.Nested#applyTransportConfig()} on the returned builder has the
-     * effect of extending the current transport configuration.
+     * Calling {@link MqttTransportConfigBuilder.Nested#applyTransportConfig()} on the returned builder has the effect
+     * of extending the current transport configuration.
      *
      * @return the fluent builder for the transport configuration.
-     * @see #transportConfig(MqttClientTransportConfig)
+     * @see #transportConfig(MqttTransportConfig)
      */
     @CheckReturnValue
-    MqttClientTransportConfigBuilder.@NotNull Nested<? extends MqttClientReconnector> transportConfig();
+    MqttTransportConfigBuilder.@NotNull Nested<? extends MqttClientReconnector> transportConfig();
 
     /**
      * Returns the currently set transport configuration the client will try to reconnect with.
      * <p>
-     * If the {@link #transportConfig(MqttClientTransportConfig)} method has not been called before (including previous
-     * {@link MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the transport configuration
-     * the client was connected with or the {@link com.hivemq.client.mqtt.MqttClientConfig#getTransportConfig() default
+     * If the {@link #transportConfig(MqttTransportConfig)} method has not been called before (including previous {@link
+     * MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the transport configuration the
+     * client was connected with or the {@link com.hivemq.client.mqtt.MqttClientConfig#getTransportConfig() default
      * transport configuration} if it has not been connected yet.
      *
      * @return the transport configuration.
      */
-    @NotNull MqttClientTransportConfig getTransportConfig();
+    @NotNull MqttTransportConfig getTransportConfig();
 }

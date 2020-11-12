@@ -48,7 +48,7 @@ public class MqttClientConnectionConfig
     private static final int FLAG_CLEAN_START = 1 << 8;
     private static final int FLAG_CLEAN_STOP = 1 << 9;
 
-    private final @NotNull MqttClientTransportConfigImpl transportConfig;
+    private final @NotNull MqttTransportConfigImpl transportConfig;
     private final short keepAlive;
     private volatile int sessionExpiryInterval;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
@@ -63,7 +63,7 @@ public class MqttClientConnectionConfig
     private final int flags;
 
     public MqttClientConnectionConfig(
-            final @NotNull MqttClientTransportConfigImpl transportConfig,
+            final @NotNull MqttTransportConfigImpl transportConfig,
             final int keepAlive,
             final boolean cleanStart,
             final boolean cleanStop,
@@ -135,7 +135,7 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+    public @NotNull MqttTransportConfigImpl getTransportConfig() {
         return transportConfig;
     }
 

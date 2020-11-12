@@ -51,7 +51,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull MqttVersion mqttVersion;
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
-    private final @NotNull MqttClientTransportConfigImpl transportConfig;
+    private final @NotNull MqttTransportConfigImpl transportConfig;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
     private final @NotNull MqttClientAdvancedConfig advancedConfig;
     private final @NotNull ConnectDefaults connectDefaults;
@@ -66,7 +66,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull AtomicReference<@NotNull MqttClientState> state;
     private volatile @Nullable MqttClientConnectionConfig connectionConfig;
-    private @NotNull MqttClientTransportConfigImpl currentTransportConfig;
+    private @NotNull MqttTransportConfigImpl currentTransportConfig;
     private @Nullable SslContext currentSslContext;
     private boolean resubscribeIfSessionExpired;
     private boolean republishIfSessionExpired;
@@ -74,7 +74,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion,
             final @NotNull MqttClientIdentifierImpl clientIdentifier,
-            final @NotNull MqttClientTransportConfigImpl transportConfig,
+            final @NotNull MqttTransportConfigImpl transportConfig,
             final @NotNull MqttClientExecutorConfigImpl executorConfig,
             final @NotNull MqttClientAdvancedConfig advancedConfig,
             final @NotNull ConnectDefaults connectDefaults,
@@ -116,7 +116,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+    public @NotNull MqttTransportConfigImpl getTransportConfig() {
         return transportConfig;
     }
 
@@ -236,11 +236,11 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.connectionConfig = connectionConfig;
     }
 
-    public @NotNull MqttClientTransportConfigImpl getCurrentTransportConfig() {
+    public @NotNull MqttTransportConfigImpl getCurrentTransportConfig() {
         return currentTransportConfig;
     }
 
-    public void setCurrentTransportConfig(final @NotNull MqttClientTransportConfigImpl currentTransportConfig) {
+    public void setCurrentTransportConfig(final @NotNull MqttTransportConfigImpl currentTransportConfig) {
         if (!this.currentTransportConfig.equals(currentTransportConfig)) {
             this.currentTransportConfig = currentTransportConfig;
             currentSslContext = null;
