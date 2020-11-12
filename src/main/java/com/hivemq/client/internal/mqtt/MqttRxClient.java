@@ -113,18 +113,6 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
-            final @NotNull Mqtt5Subscribe subscribe) {
-
-        return subscribePublishes(subscribe);
-    }
-
-    @Override
-    public MqttSubscribeBuilder.@NotNull Nested<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
-        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
-    }
-
-    @Override
     public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
             final @Nullable Mqtt5Subscribe subscribe) {
 

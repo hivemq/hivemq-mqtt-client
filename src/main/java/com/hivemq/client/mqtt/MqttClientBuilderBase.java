@@ -96,17 +96,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B serverPort(int port);
 
     /**
-     * Use {@link #sslWithDefaultConfig()}.
-     *
-     * @return use {@link #sslWithDefaultConfig()}.
-     * @deprecated use {@link #sslWithDefaultConfig()}.
-     */
-    @Deprecated
-    default @NotNull B useSslWithDefaultConfig() {
-        return sslWithDefaultConfig();
-    }
-
-    /**
      * Sets the {@link MqttClientConfig#getSslConfig() secure transport configuration} to the default configuration.
      * <p>
      * This means that the systems default trust store, ciphers and protocols are used.
@@ -118,18 +107,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B sslWithDefaultConfig();
 
     /**
-     * Use {@link #sslConfig(MqttClientSslConfig)}.
-     *
-     * @param sslConfig use {@link #sslConfig(MqttClientSslConfig)}.
-     * @return use {@link #sslConfig(MqttClientSslConfig)}.
-     * @deprecated use {@link #sslConfig(MqttClientSslConfig)}.
-     */
-    @Deprecated
-    default @NotNull B useSsl(final @Nullable MqttClientSslConfig sslConfig) {
-        return sslConfig(sslConfig);
-    }
-
-    /**
      * Sets the optional {@link MqttClientConfig#getSslConfig() secure transport configuration}.
      *
      * @param sslConfig the secure transport configuration or <code>null</code> to remove any previously set secure
@@ -139,17 +116,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      */
     @CheckReturnValue
     @NotNull B sslConfig(@Nullable MqttClientSslConfig sslConfig);
-
-    /**
-     * Use {@link #sslConfig()}.
-     *
-     * @return use {@link #sslConfig()}.
-     * @deprecated use {@link #sslConfig()}.
-     */
-    @Deprecated
-    default MqttClientSslConfigBuilder.@NotNull Nested<? extends B> useSsl() {
-        return sslConfig();
-    }
 
     /**
      * Fluent counterpart of {@link #sslConfig(MqttClientSslConfig)}.
@@ -165,17 +131,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     MqttClientSslConfigBuilder.@NotNull Nested<? extends B> sslConfig();
 
     /**
-     * Use {@link #webSocketWithDefaultConfig()}.
-     *
-     * @return use {@link #webSocketWithDefaultConfig()}.
-     * @deprecated use {@link #webSocketWithDefaultConfig()}.
-     */
-    @Deprecated
-    default @NotNull B useWebSocketWithDefaultConfig() {
-        return webSocketWithDefaultConfig();
-    }
-
-    /**
      * Sets the {@link MqttClientConfig#getWebSocketConfig() WebSocket transport configuration} to the default
      * configuration.
      *
@@ -184,18 +139,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      */
     @CheckReturnValue
     @NotNull B webSocketWithDefaultConfig();
-
-    /**
-     * Use {@link #webSocketConfig(MqttWebSocketConfig)}.
-     *
-     * @param webSocketConfig use {@link #webSocketConfig(MqttWebSocketConfig)}.
-     * @return use {@link #webSocketConfig(MqttWebSocketConfig)}.
-     * @deprecated use {@link #webSocketConfig(MqttWebSocketConfig)}.
-     */
-    @Deprecated
-    default @NotNull B useWebSocket(final @Nullable MqttWebSocketConfig webSocketConfig) {
-        return webSocketConfig(webSocketConfig);
-    }
 
     /**
      * Sets the optional {@link MqttClientConfig#getWebSocketConfig() WebSocket transport configuration}.
@@ -207,17 +150,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      */
     @CheckReturnValue
     @NotNull B webSocketConfig(@Nullable MqttWebSocketConfig webSocketConfig);
-
-    /**
-     * Use {@link #webSocketConfig()}.
-     *
-     * @return use {@link #webSocketConfig()}.
-     * @deprecated use {@link #webSocketConfig()}.
-     */
-    @Deprecated
-    default MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> useWebSocket() {
-        return webSocketConfig();
-    }
 
     /**
      * Fluent counterpart of {@link #webSocketConfig(MqttWebSocketConfig)}.

@@ -119,18 +119,6 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
-            final @NotNull Mqtt3Subscribe subscribe) {
-
-        return subscribePublishes(subscribe);
-    }
-
-    @Override
-    public Mqtt3SubscribeViewBuilder.@NotNull Nested<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
-        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
-    }
-
-    @Override
     public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
             final @Nullable Mqtt3Subscribe subscribe) {
 

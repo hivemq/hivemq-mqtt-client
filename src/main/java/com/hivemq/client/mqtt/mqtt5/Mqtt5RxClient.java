@@ -127,25 +127,6 @@ public interface Mqtt5RxClient extends Mqtt5Client {
     Mqtt5SubscribeBuilder.Nested.@NotNull Start<Single<Mqtt5SubAck>> subscribeWith();
 
     /**
-     * Use {@link #subscribePublishes(Mqtt5Subscribe)}.
-     *
-     * @param subscribe use {@link #subscribePublishes(Mqtt5Subscribe)}.
-     * @return use {@link #subscribePublishes(Mqtt5Subscribe)}.
-     * @deprecated use {@link #subscribePublishes(Mqtt5Subscribe)}.
-     */
-    @Deprecated
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
-
-    /**
-     * Use {@link #subscribePublishesWith()}.
-     *
-     * @return use {@link #subscribePublishesWith()}.
-     * @deprecated use {@link #subscribePublishesWith()}.
-     */
-    @Deprecated
-    Mqtt5SubscribeBuilder.Nested.@NotNull Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith();
-
-    /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
      * <p>
      * The returned {@link FlowableWithSingle} represents the source of the SubAck message corresponding to the given
