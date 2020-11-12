@@ -134,19 +134,19 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B tlsConfig(@Nullable MqttClientTlsConfig tlsConfig);
+    @NotNull B tlsConfig(@Nullable MqttTlsConfig tlsConfig);
 
     /**
-     * Fluent counterpart of {@link #tlsConfig(MqttClientTlsConfig)}.
+     * Fluent counterpart of {@link #tlsConfig(MqttTlsConfig)}.
      * <p>
-     * Calling {@link MqttClientTlsConfigBuilder.Nested#applyTlsConfig()} on the returned builder has the effect of
-     * extending the current transport layer security configuration.
+     * Calling {@link MqttTlsConfigBuilder.Nested#applyTlsConfig()} on the returned builder has the effect of extending
+     * the current transport layer security configuration.
      *
      * @return the fluent builder for the transport layer security configuration.
-     * @see #tlsConfig(MqttClientTlsConfig)
+     * @see #tlsConfig(MqttTlsConfig)
      */
     @CheckReturnValue
-    MqttClientTlsConfigBuilder.@NotNull Nested<? extends B> tlsConfig();
+    MqttTlsConfigBuilder.@NotNull Nested<? extends B> tlsConfig();
 
     /**
      * Sets the {@link MqttTransportConfig#getWebSocketConfig() WebSocket transport configuration} to the default

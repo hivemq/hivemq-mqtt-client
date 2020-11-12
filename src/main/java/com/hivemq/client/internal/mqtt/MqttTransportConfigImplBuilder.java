@@ -18,8 +18,8 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.InetSocketAddressUtil;
-import com.hivemq.client.mqtt.MqttClientTlsConfig;
 import com.hivemq.client.mqtt.MqttProxyConfig;
+import com.hivemq.client.mqtt.MqttTlsConfig;
 import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
     private @NotNull Object serverHost = MqttTransportConfigImpl.DEFAULT_SERVER_HOST; // String or InetAddress
     private int serverPort = -1;
     private @Nullable InetSocketAddress localAddress;
-    private @Nullable MqttClientTlsConfigImpl tlsConfig;
+    private @Nullable MqttTlsConfigImpl tlsConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private @Nullable MqttProxyConfigImpl proxyConfig;
     private int socketConnectTimeoutMs = MqttTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
@@ -176,17 +176,17 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
     }
 
     public @NotNull B tlsWithDefaultConfig() {
-        this.tlsConfig = MqttClientTlsConfigImpl.DEFAULT;
+        this.tlsConfig = MqttTlsConfigImpl.DEFAULT;
         return self();
     }
 
-    public @NotNull B tlsConfig(final @Nullable MqttClientTlsConfig tlsConfig) {
-        this.tlsConfig = Checks.notImplementedOrNull(tlsConfig, MqttClientTlsConfigImpl.class, "TLS config");
+    public @NotNull B tlsConfig(final @Nullable MqttTlsConfig tlsConfig) {
+        this.tlsConfig = Checks.notImplementedOrNull(tlsConfig, MqttTlsConfigImpl.class, "TLS config");
         return self();
     }
 
-    public MqttClientTlsConfigImplBuilder.@NotNull Nested<B> tlsConfig() {
-        return new MqttClientTlsConfigImplBuilder.Nested<>(tlsConfig, this::tlsConfig);
+    public MqttTlsConfigImplBuilder.@NotNull Nested<B> tlsConfig() {
+        return new MqttTlsConfigImplBuilder.Nested<>(tlsConfig, this::tlsConfig);
     }
 
     public @NotNull B webSocketWithDefaultConfig() {

@@ -16,8 +16,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.tls;
 
-import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImpl;
-import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImplBuilder;
+import com.hivemq.client.internal.mqtt.MqttTlsConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttTlsConfigImplBuilder;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -56,7 +56,7 @@ class MqttTlsInitializerTest {
         final TrustManagerFactory tmf = null;
 
         final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientTlsConfigImplBuilder.Default().trustManagerFactory(tmf).build());
+                new MqttTlsConfigImplBuilder.Default().trustManagerFactory(tmf).build());
 
         assertNotNull(sslEngine);
         assertTrue(sslEngine.getUseClientMode());
@@ -72,9 +72,7 @@ class MqttTlsInitializerTest {
         final ImmutableList<String> cipherSuite = getFirstSupportedCipherSuite();
 
         final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientTlsConfigImplBuilder.Default().trustManagerFactory(tmf)
-                        .cipherSuites(cipherSuite)
-                        .build());
+                new MqttTlsConfigImplBuilder.Default().trustManagerFactory(tmf).cipherSuites(cipherSuite).build());
 
         assertNotNull(sslEngine);
 
@@ -92,9 +90,7 @@ class MqttTlsInitializerTest {
         final ImmutableList<String> cipherSuites = getOtherSupportedCipherSuites();
 
         final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientTlsConfigImplBuilder.Default().trustManagerFactory(tmf)
-                        .cipherSuites(cipherSuites)
-                        .build());
+                new MqttTlsConfigImplBuilder.Default().trustManagerFactory(tmf).cipherSuites(cipherSuites).build());
 
         assertNotNull(sslEngine);
 
@@ -115,7 +111,7 @@ class MqttTlsInitializerTest {
         final ImmutableList<String> protocol = ImmutableList.of("TLSv1");
 
         final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientTlsConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocol).build());
+                new MqttTlsConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocol).build());
 
         assertNotNull(sslEngine);
 
@@ -133,7 +129,7 @@ class MqttTlsInitializerTest {
         final ImmutableList<String> protocols = ImmutableList.of("TLSv1.1", "TLSv1.2");
 
         final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientTlsConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocols).build());
+                new MqttTlsConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocols).build());
 
         assertNotNull(sslEngine);
 
@@ -181,7 +177,7 @@ class MqttTlsInitializerTest {
     }
 
     private static @NotNull SSLEngine createSslEngine(
-            final @NotNull Channel channel, final @NotNull MqttClientTlsConfigImpl tlsConfig) throws SSLException {
+            final @NotNull Channel channel, final @NotNull MqttTlsConfigImpl tlsConfig) throws SSLException {
 
         return MqttTlsInitializer.createSslContext(tlsConfig).newEngine(channel.alloc());
     }

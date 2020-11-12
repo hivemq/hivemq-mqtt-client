@@ -104,7 +104,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     @Override
-    public @NotNull B tlsConfig(final @Nullable MqttClientTlsConfig tlsConfig) {
+    public @NotNull B tlsConfig(final @Nullable MqttTlsConfig tlsConfig) {
         return super.tlsConfig(tlsConfig);
     }
 

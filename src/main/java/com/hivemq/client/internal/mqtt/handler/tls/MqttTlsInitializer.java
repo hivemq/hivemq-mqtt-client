@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.handler.tls;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttTlsConfigImpl;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.SslContext;
@@ -44,7 +44,7 @@ public final class MqttTlsInitializer {
     public static void initChannel(
             final @NotNull Channel channel,
             final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttClientTlsConfigImpl tlsConfig,
+            final @NotNull MqttTlsConfigImpl tlsConfig,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
@@ -79,7 +79,7 @@ public final class MqttTlsInitializer {
         channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler).addLast(MqttTlsAdapterHandler.NAME, tlsAdapterHandler);
     }
 
-    static @NotNull SslContext createSslContext(final @NotNull MqttClientTlsConfigImpl tlsConfig) throws SSLException {
+    static @NotNull SslContext createSslContext(final @NotNull MqttTlsConfigImpl tlsConfig) throws SSLException {
         final ImmutableList<String> protocols = tlsConfig.getRawProtocols();
 
         return SslContextBuilder.forClient()

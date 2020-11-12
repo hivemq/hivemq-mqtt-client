@@ -18,7 +18,7 @@ package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
-import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImplBuilder;
+import com.hivemq.client.internal.mqtt.MqttTlsConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HostnameVerifier;
@@ -35,7 +35,7 @@ import java.util.Optional;
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientTlsConfig {
+public interface MqttTlsConfig {
 
     /**
      * The default TLS handshake timeout in milliseconds.
@@ -47,8 +47,8 @@ public interface MqttClientTlsConfig {
      *
      * @return the created builder for a transport layer security configuration.
      */
-    static @NotNull MqttClientTlsConfigBuilder builder() {
-        return new MqttClientTlsConfigImplBuilder.Default();
+    static @NotNull MqttTlsConfigBuilder builder() {
+        return new MqttTlsConfigImplBuilder.Default();
     }
 
     /**
@@ -94,5 +94,5 @@ public interface MqttClientTlsConfig {
      * @return the created builder.
      * @since 1.1
      */
-    @NotNull MqttClientTlsConfigBuilder extend();
+    @NotNull MqttTlsConfigBuilder extend();
 }

@@ -26,13 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Christian Hoff
  */
-class MqttClientTlsConfigBuilderTest {
+class MqttTlsConfigBuilderTest {
 
     @Test
     void cipherSuites_simple() {
         final List<String> expectedCipherSuites = Arrays.asList("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305");
 
-        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().cipherSuites(expectedCipherSuites).build();
+        final MqttTlsConfig tlsConfig = MqttTlsConfig.builder().cipherSuites(expectedCipherSuites).build();
 
         assertNotNull(tlsConfig.getCipherSuites());
         assertTrue(tlsConfig.getCipherSuites().isPresent());
@@ -41,7 +41,7 @@ class MqttClientTlsConfigBuilderTest {
 
     @Test
     void cipherSuites_null() {
-        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().cipherSuites(null).build();
+        final MqttTlsConfig tlsConfig = MqttTlsConfig.builder().cipherSuites(null).build();
 
         assertNotNull(tlsConfig.getCipherSuites());
         assertFalse(tlsConfig.getCipherSuites().isPresent());
@@ -51,7 +51,7 @@ class MqttClientTlsConfigBuilderTest {
     void protocols_simple() {
         final List<String> expectedProtocols = Arrays.asList("TLSv1.2", "TLSv1.1");
 
-        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().protocols(expectedProtocols).build();
+        final MqttTlsConfig tlsConfig = MqttTlsConfig.builder().protocols(expectedProtocols).build();
 
         assertNotNull(tlsConfig.getProtocols());
         assertTrue(tlsConfig.getProtocols().isPresent());
@@ -60,7 +60,7 @@ class MqttClientTlsConfigBuilderTest {
 
     @Test
     void protocols_null() {
-        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().protocols(null).build();
+        final MqttTlsConfig tlsConfig = MqttTlsConfig.builder().protocols(null).build();
 
         assertNotNull(tlsConfig.getProtocols());
         assertFalse(tlsConfig.getProtocols().isPresent());

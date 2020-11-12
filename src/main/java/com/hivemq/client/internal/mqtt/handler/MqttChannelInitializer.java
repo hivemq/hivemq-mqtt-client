@@ -17,8 +17,8 @@
 package com.hivemq.client.internal.mqtt.handler;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttProxyConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttTlsConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImpl;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
@@ -114,7 +114,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     }
 
     private void initTls(final @NotNull Channel channel) {
-        final MqttClientTlsConfigImpl tlsConfig = clientConfig.getCurrentTransportConfig().getRawTlsConfig();
+        final MqttTlsConfigImpl tlsConfig = clientConfig.getCurrentTransportConfig().getRawTlsConfig();
         if (tlsConfig == null) {
             initWebsocket(channel);
         } else {

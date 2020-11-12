@@ -88,7 +88,7 @@ public interface MqttTransportConfig {
     /**
      * @return the optional transport layer security configuration.
      */
-    @NotNull Optional<MqttClientTlsConfig> getTlsConfig();
+    @NotNull Optional<MqttTlsConfig> getTlsConfig();
 
     /**
      * @return the optional WebSocket transport configuration.
