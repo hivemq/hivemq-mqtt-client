@@ -124,25 +124,6 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     Mqtt3SubscribeBuilder.Nested.@NotNull Start<Single<Mqtt3SubAck>> subscribeWith();
 
     /**
-     * Use {@link #subscribePublishes(Mqtt3Subscribe)}.
-     *
-     * @param subscribe use {@link #subscribePublishes(Mqtt3Subscribe)}.
-     * @return use {@link #subscribePublishes(Mqtt3Subscribe)}.
-     * @deprecated use {@link #subscribePublishes(Mqtt3Subscribe)}.
-     */
-    @Deprecated
-    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
-
-    /**
-     * Use {@link #subscribePublishesWith()}.
-     *
-     * @return use {@link #subscribePublishesWith()}.
-     * @deprecated use {@link #subscribePublishesWith()}.
-     */
-    @Deprecated
-    Mqtt3SubscribeBuilder.Nested.@NotNull Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith();
-
-    /**
      * Creates a {@link FlowableWithSingle} for subscribing this client with the given Subscribe message.
      * <p>
      * The returned {@link FlowableWithSingle} represents the source of the SubAck message corresponding to the given

@@ -92,17 +92,19 @@ class Mqtt3ClientExample {
                 .build();
         // define what to do with the publishes that match the subscription. This does not subscribe until rxJava's subscribe is called
         // NOTE: you can also subscribe without the stream, and then handle the incoming publishes on client.allPublishes()
-        final Flowable<Mqtt3Publish> subscribeScenario = client.subscribeStream(subscribeMessage).doOnSingle(subAck -> {
-            subscribedLatch.countDown();
-            System.out.println("subscribed to " + topic + ": return codes: " + subAck.getReturnCodes());
-        }).doOnNext(publish -> {
-            if (publish.getPayload().isPresent()) {
-                final int receivedCount = this.receivedCount.incrementAndGet();
-                final String message = new String(publish.getPayloadAsBytes());
-                System.out.println("received message with payload '" + message + "' on topic '" + publish.getTopic() +
-                        "' received count: " + receivedCount);
-            } else {
-                System.out.println("received message without payload on topic '" + publish.getTopic() + "'");
+        final Flowable<Mqtt3Publish> subscribeScenario =
+                client.subscribePublishes(subscribeMessage).doOnSingle(subAck -> {
+                    subscribedLatch.countDown();
+                    System.out.println("subscribed to " + topic + ": return codes: " + subAck.getReturnCodes());
+                }).doOnNext(publish -> {
+                    if (publish.getPayload().isPresent()) {
+                        final int receivedCount = this.receivedCount.incrementAndGet();
+                        final String message = new String(publish.getPayloadAsBytes());
+                        System.out.println(
+                                "received message with payload '" + message + "' on topic '" + publish.getTopic() +
+                                        "' received count: " + receivedCount);
+                    } else {
+                        System.out.println("received message without payload on topic '" + publish.getTopic() + "'");
             }
         });
 
