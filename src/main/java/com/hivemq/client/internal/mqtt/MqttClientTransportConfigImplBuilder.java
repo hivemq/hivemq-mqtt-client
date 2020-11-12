@@ -30,15 +30,13 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static com.hivemq.client.mqtt.MqttClient.*;
-
 /**
  * @author Silvio Giebl
  */
 public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientTransportConfigImplBuilder<B>> {
 
     private @Nullable InetSocketAddress serverAddress;
-    private @NotNull Object serverHost = DEFAULT_SERVER_HOST; // String or InetAddress
+    private @NotNull Object serverHost = MqttClientTransportConfigImpl.DEFAULT_SERVER_HOST; // String or InetAddress
     private int serverPort = -1;
     private @Nullable InetSocketAddress localAddress;
     private @Nullable MqttClientSslConfigImpl sslConfig;
@@ -245,14 +243,14 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         }
         if (sslConfig == null) {
             if (webSocketConfig == null) {
-                return DEFAULT_SERVER_PORT;
+                return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT;
             }
-            return DEFAULT_SERVER_PORT_WEBSOCKET;
+            return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET;
         }
         if (webSocketConfig == null) {
-            return DEFAULT_SERVER_PORT_SSL;
+            return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_SSL;
         }
-        return DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
+        return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
     }
 
     @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
