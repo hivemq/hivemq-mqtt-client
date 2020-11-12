@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * @author Silvio Giebl
  */
-class MqttClientSslConfigImplTest {
+class MqttClientTlsConfigImplTest {
 
     @Test
     void equals() throws NoSuchAlgorithmException {
@@ -37,7 +37,7 @@ class MqttClientSslConfigImplTest {
         final TrustManagerFactory tmf1 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         final TrustManagerFactory tmf2 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 
-        EqualsVerifier.forClass(MqttClientSslConfigImpl.class)
+        EqualsVerifier.forClass(MqttClientTlsConfigImpl.class)
                 .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withPrefabValues(KeyManagerFactory.class, kmf1, kmf2)
                 .withPrefabValues(TrustManagerFactory.class, tmf1, tmf2)

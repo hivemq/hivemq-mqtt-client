@@ -116,7 +116,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     @NotNull B localPort(int port);
 
     /**
-     * Sets the {@link MqttClientTransportConfig#getSslConfig() secure transport configuration} to the default
+     * Sets the {@link MqttClientTransportConfig#getTlsConfig() transport layer security configuration} to the default
      * configuration.
      * <p>
      * This means that the systems default trust store, ciphers and protocols are used.
@@ -124,29 +124,29 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B sslWithDefaultConfig();
+    @NotNull B tlsWithDefaultConfig();
 
     /**
-     * Sets the optional {@link MqttClientTransportConfig#getSslConfig() secure transport configuration}.
+     * Sets the optional {@link MqttClientTransportConfig#getTlsConfig() transport layer security configuration}.
      *
-     * @param sslConfig the secure transport configuration or <code>null</code> to remove any previously set secure
-     *                  transport configuration.
+     * @param tlsConfig the transport layer security configuration or <code>null</code> to remove any previously set
+     *                  transport layer security configuration.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B sslConfig(@Nullable MqttClientSslConfig sslConfig);
+    @NotNull B tlsConfig(@Nullable MqttClientTlsConfig tlsConfig);
 
     /**
-     * Fluent counterpart of {@link #sslConfig(MqttClientSslConfig)}.
+     * Fluent counterpart of {@link #tlsConfig(MqttClientTlsConfig)}.
      * <p>
-     * Calling {@link MqttClientSslConfigBuilder.Nested#applySslConfig()} on the returned builder has the effect of
-     * extending the current secure transport configuration.
+     * Calling {@link MqttClientTlsConfigBuilder.Nested#applyTlsConfig()} on the returned builder has the effect of
+     * extending the current transport layer security configuration.
      *
-     * @return the fluent builder for the secure transport configuration.
-     * @see #sslConfig(MqttClientSslConfig)
+     * @return the fluent builder for the transport layer security configuration.
+     * @see #tlsConfig(MqttClientTlsConfig)
      */
     @CheckReturnValue
-    MqttClientSslConfigBuilder.@NotNull Nested<? extends B> sslConfig();
+    MqttClientTlsConfigBuilder.@NotNull Nested<? extends B> tlsConfig();
 
     /**
      * Sets the {@link MqttClientTransportConfig#getWebSocketConfig() WebSocket transport configuration} to the default

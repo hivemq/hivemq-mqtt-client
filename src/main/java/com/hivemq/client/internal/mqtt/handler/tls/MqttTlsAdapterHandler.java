@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.client.internal.mqtt.handler.ssl;
+package com.hivemq.client.internal.mqtt.handler.tls;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-class MqttSslAdapterHandler extends ChannelInboundHandlerAdapter {
+class MqttTlsAdapterHandler extends ChannelInboundHandlerAdapter {
 
     public static final @NotNull String NAME = "ssl.adapter";
 
@@ -43,7 +43,7 @@ class MqttSslAdapterHandler extends ChannelInboundHandlerAdapter {
     private final @NotNull BiConsumer<Channel, Throwable> onError;
     private boolean handshakeDone = false;
 
-    public MqttSslAdapterHandler(
+    public MqttTlsAdapterHandler(
             final @NotNull SslHandler sslHandler,
             final @NotNull String host,
             final @Nullable HostnameVerifier hostnameVerifier,

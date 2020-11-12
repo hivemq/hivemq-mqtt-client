@@ -18,7 +18,7 @@ package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
-import com.hivemq.client.internal.mqtt.MqttClientSslConfigImplBuilder;
+import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HostnameVerifier;
@@ -28,27 +28,27 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Configuration for a secure transport to use by {@link MqttClient MQTT clients}.
+ * Configuration for transport layer security to use by {@link MqttClient MQTT clients}.
  *
  * @author Christoph Schäbel
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientSslConfig {
+public interface MqttClientTlsConfig {
 
     /**
-     * The default SSL/TLS handshake timeout in milliseconds.
+     * The default TLS handshake timeout in milliseconds.
      */
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     /**
-     * Creates a builder for a secure transport configuration.
+     * Creates a builder for a transport layer security configuration.
      *
-     * @return the created builder for a secure transport configuration.
+     * @return the created builder for a transport layer security configuration.
      */
-    static @NotNull MqttClientSslConfigBuilder builder() {
-        return new MqttClientSslConfigImplBuilder.Default();
+    static @NotNull MqttClientTlsConfigBuilder builder() {
+        return new MqttClientTlsConfigImplBuilder.Default();
     }
 
     /**
@@ -78,7 +78,7 @@ public interface MqttClientSslConfig {
     @NotNull Optional<@Immutable List<@NotNull String>> getProtocols();
 
     /**
-     * @return the SSL/TLS handshake timeout in milliseconds.
+     * @return the TLS handshake timeout in milliseconds.
      */
     long getHandshakeTimeoutMs();
 
@@ -89,10 +89,10 @@ public interface MqttClientSslConfig {
     @NotNull Optional<HostnameVerifier> getHostnameVerifier();
 
     /**
-     * Creates a builder for extending this secure transport configuration.
+     * Creates a builder for extending this transport layer security configuration.
      *
      * @return the created builder.
      * @since 1.1
      */
-    @NotNull MqttClientSslConfigBuilder extend();
+    @NotNull MqttClientTlsConfigBuilder extend();
 }

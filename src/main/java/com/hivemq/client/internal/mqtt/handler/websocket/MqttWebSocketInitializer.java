@@ -63,7 +63,7 @@ public class MqttWebSocketInitializer {
         try {
             final MqttClientTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
             final InetSocketAddress serverAddress = transportConfig.getServerAddress();
-            uri = new URI((transportConfig.getRawSslConfig() == null) ? "ws" : "wss", null,
+            uri = new URI((transportConfig.getRawTlsConfig() == null) ? "ws" : "wss", null,
                     serverAddress.getHostString(), serverAddress.getPort(), "/" + webSocketConfig.getServerPath(),
                     webSocketConfig.getQueryString(), null);
         } catch (final URISyntaxException e) {

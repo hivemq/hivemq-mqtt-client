@@ -28,17 +28,17 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Builder base for a {@link MqttClientSslConfig}.
+ * Builder base for a {@link MqttClientTlsConfig}.
  *
  * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBuilderBase<B>> {
+public interface MqttClientTlsConfigBuilderBase<B extends MqttClientTlsConfigBuilderBase<B>> {
 
     /**
-     * Sets the optional user defined {@link MqttClientSslConfig#getKeyManagerFactory() key manager factory}.
+     * Sets the optional user defined {@link MqttClientTlsConfig#getKeyManagerFactory() key manager factory}.
      *
      * @param keyManagerFactory the key manager factory or <code>null</code> to remove any previously set key manager
      *                          factory.
@@ -48,7 +48,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B keyManagerFactory(@Nullable KeyManagerFactory keyManagerFactory);
 
     /**
-     * Sets the optional user defined {@link MqttClientSslConfig#getTrustManagerFactory() trust manager factory}.
+     * Sets the optional user defined {@link MqttClientTlsConfig#getTrustManagerFactory() trust manager factory}.
      *
      * @param trustManagerFactory the trust manager factory or <code>null</code> to remove any previously set trust
      *                            manager factory
@@ -58,7 +58,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B trustManagerFactory(@Nullable TrustManagerFactory trustManagerFactory);
 
     /**
-     * Sets the optional user defined {@link MqttClientSslConfig#getCipherSuites() cipher suites}.
+     * Sets the optional user defined {@link MqttClientTlsConfig#getCipherSuites() cipher suites}.
      *
      * @param cipherSuites the cipher suites or <code>null</code> to use the default cipher suites of Netty (network
      *                     communication framework).
@@ -68,7 +68,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B cipherSuites(@Nullable Collection<@NotNull String> cipherSuites);
 
     /**
-     * Sets the optional user defined {@link MqttClientSslConfig#getProtocols() protocols}.
+     * Sets the optional user defined {@link MqttClientTlsConfig#getProtocols() protocols}.
      *
      * @param protocols the protocols or <code>null</code> to use the default protocols of Netty (network communication
      *                  framework).
@@ -78,11 +78,11 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B protocols(@Nullable Collection<@NotNull String> protocols);
 
     /**
-     * Sets the {@link MqttClientSslConfig#getHandshakeTimeoutMs() SSL/TLS handshake timeout}.
+     * Sets the {@link MqttClientTlsConfig#getHandshakeTimeoutMs() TLS handshake timeout}.
      * <p>
      * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
      *
-     * @param timeout  the SSL/TLS handshake timeout or <code>0</code> to disable the timeout.
+     * @param timeout  the TLS handshake timeout or <code>0</code> to disable the timeout.
      * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
      * @return the builder.
      */
@@ -90,7 +90,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 
     /**
-     * Sets the optional user defined {@link MqttClientSslConfig#getHostnameVerifier() hostname verifier}.
+     * Sets the optional user defined {@link MqttClientTlsConfig#getHostnameVerifier() hostname verifier}.
      *
      * @param hostnameVerifier the hostname verifier or <code>null</code> to use https hostname verification.
      * @return the builder.

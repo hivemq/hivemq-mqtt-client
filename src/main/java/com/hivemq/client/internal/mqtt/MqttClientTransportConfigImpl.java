@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.InetSocketAddressUtil;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
+import com.hivemq.client.mqtt.MqttClientTlsConfig;
 import com.hivemq.client.mqtt.MqttClientTransportConfig;
 import com.hivemq.client.mqtt.MqttProxyConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
@@ -39,7 +39,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
 
     private final @NotNull InetSocketAddress serverAddress;
     private final @Nullable InetSocketAddress localAddress;
-    private final @Nullable MqttClientSslConfigImpl sslConfig;
+    private final @Nullable MqttClientTlsConfigImpl tlsConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @Nullable MqttProxyConfigImpl proxyConfig;
     private final int socketConnectTimeoutMs;
@@ -48,7 +48,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     MqttClientTransportConfigImpl(
             final @NotNull InetSocketAddress serverAddress,
             final @Nullable InetSocketAddress localAddress,
-            final @Nullable MqttClientSslConfigImpl sslConfig,
+            final @Nullable MqttClientTlsConfigImpl tlsConfig,
             final @Nullable MqttWebSocketConfigImpl webSocketConfig,
             final @Nullable MqttProxyConfigImpl proxyConfig,
             final int socketConnectTimeoutMs,
@@ -56,7 +56,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
 
         this.serverAddress = serverAddress;
         this.localAddress = localAddress;
-        this.sslConfig = sslConfig;
+        this.tlsConfig = tlsConfig;
         this.webSocketConfig = webSocketConfig;
         this.proxyConfig = proxyConfig;
         this.socketConnectTimeoutMs = socketConnectTimeoutMs;
@@ -82,12 +82,12 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     }
 
     @Override
-    public @NotNull Optional<MqttClientSslConfig> getSslConfig() {
-        return Optional.ofNullable(sslConfig);
+    public @NotNull Optional<MqttClientTlsConfig> getTlsConfig() {
+        return Optional.ofNullable(tlsConfig);
     }
 
-    public @Nullable MqttClientSslConfigImpl getRawSslConfig() {
-        return sslConfig;
+    public @Nullable MqttClientTlsConfigImpl getRawTlsConfig() {
+        return tlsConfig;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
         final MqttClientTransportConfigImpl that = (MqttClientTransportConfigImpl) o;
 
         return serverAddress.equals(that.serverAddress) && Objects.equals(localAddress, that.localAddress) &&
-                Objects.equals(sslConfig, that.sslConfig) && Objects.equals(webSocketConfig, that.webSocketConfig) &&
+                Objects.equals(tlsConfig, that.tlsConfig) && Objects.equals(webSocketConfig, that.webSocketConfig) &&
                 Objects.equals(proxyConfig, that.proxyConfig) &&
                 (socketConnectTimeoutMs == that.socketConnectTimeoutMs) &&
                 (mqttConnectTimeoutMs == that.mqttConnectTimeoutMs);
@@ -144,7 +144,7 @@ public class MqttClientTransportConfigImpl implements MqttClientTransportConfig 
     public int hashCode() {
         int result = serverAddress.hashCode();
         result = 31 * result + Objects.hashCode(localAddress);
-        result = 31 * result + Objects.hashCode(sslConfig);
+        result = 31 * result + Objects.hashCode(tlsConfig);
         result = 31 * result + Objects.hashCode(webSocketConfig);
         result = 31 * result + Objects.hashCode(proxyConfig);
         result = 31 * result + Integer.hashCode(socketConnectTimeoutMs);

@@ -18,7 +18,7 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.MqttClientSslConfigBuilder;
+import com.hivemq.client.mqtt.MqttClientTlsConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,25 +32,25 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConfigImplBuilder<B>> {
+public abstract class MqttClientTlsConfigImplBuilder<B extends MqttClientTlsConfigImplBuilder<B>> {
 
     private @Nullable KeyManagerFactory keyManagerFactory;
     private @Nullable TrustManagerFactory trustManagerFactory;
     private @Nullable ImmutableList<String> cipherSuites;
     private @Nullable ImmutableList<String> protocols;
-    private int handshakeTimeoutMs = (int) MqttClientSslConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
-    private @Nullable HostnameVerifier hostnameVerifier = MqttClientSslConfigImpl.DEFAULT_HOSTNAME_VERIFIER;
+    private int handshakeTimeoutMs = (int) MqttClientTlsConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @Nullable HostnameVerifier hostnameVerifier = MqttClientTlsConfigImpl.DEFAULT_HOSTNAME_VERIFIER;
 
-    MqttClientSslConfigImplBuilder() {}
+    MqttClientTlsConfigImplBuilder() {}
 
-    MqttClientSslConfigImplBuilder(final @Nullable MqttClientSslConfigImpl sslConfig) {
-        if (sslConfig != null) {
-            keyManagerFactory = sslConfig.getRawKeyManagerFactory();
-            trustManagerFactory = sslConfig.getRawTrustManagerFactory();
-            cipherSuites = sslConfig.getRawCipherSuites();
-            protocols = sslConfig.getRawProtocols();
-            handshakeTimeoutMs = (int) sslConfig.getHandshakeTimeoutMs();
-            hostnameVerifier = sslConfig.getRawHostnameVerifier();
+    MqttClientTlsConfigImplBuilder(final @Nullable MqttClientTlsConfigImpl tlsConfig) {
+        if (tlsConfig != null) {
+            keyManagerFactory = tlsConfig.getRawKeyManagerFactory();
+            trustManagerFactory = tlsConfig.getRawTrustManagerFactory();
+            cipherSuites = tlsConfig.getRawCipherSuites();
+            protocols = tlsConfig.getRawProtocols();
+            handshakeTimeoutMs = (int) tlsConfig.getHandshakeTimeoutMs();
+            hostnameVerifier = tlsConfig.getRawHostnameVerifier();
         }
     }
 
@@ -85,21 +85,21 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
     public @NotNull B hostnameVerifier(final @Nullable HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier =
-                (hostnameVerifier == null) ? MqttClientSslConfigImpl.DEFAULT_HOSTNAME_VERIFIER : hostnameVerifier;
+                (hostnameVerifier == null) ? MqttClientTlsConfigImpl.DEFAULT_HOSTNAME_VERIFIER : hostnameVerifier;
         return self();
     }
 
-    public @NotNull MqttClientSslConfigImpl build() {
-        return new MqttClientSslConfigImpl(
+    public @NotNull MqttClientTlsConfigImpl build() {
+        return new MqttClientTlsConfigImpl(
                 keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs, hostnameVerifier);
     }
 
-    public static class Default extends MqttClientSslConfigImplBuilder<Default> implements MqttClientSslConfigBuilder {
+    public static class Default extends MqttClientTlsConfigImplBuilder<Default> implements MqttClientTlsConfigBuilder {
 
         public Default() {}
 
-        Default(final @Nullable MqttClientSslConfigImpl sslConfig) {
-            super(sslConfig);
+        Default(final @Nullable MqttClientTlsConfigImpl tlsConfig) {
+            super(tlsConfig);
         }
 
         @Override
@@ -108,16 +108,16 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
         }
     }
 
-    public static class Nested<P> extends MqttClientSslConfigImplBuilder<Nested<P>>
-            implements MqttClientSslConfigBuilder.Nested<P> {
+    public static class Nested<P> extends MqttClientTlsConfigImplBuilder<Nested<P>>
+            implements MqttClientTlsConfigBuilder.Nested<P> {
 
-        private final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer;
+        private final @NotNull Function<? super MqttClientTlsConfigImpl, P> parentConsumer;
 
         Nested(
-                final @Nullable MqttClientSslConfigImpl sslConfig,
-                final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer) {
+                final @Nullable MqttClientTlsConfigImpl tlsConfig,
+                final @NotNull Function<? super MqttClientTlsConfigImpl, P> parentConsumer) {
 
-            super(sslConfig);
+            super(tlsConfig);
             this.parentConsumer = parentConsumer;
         }
 
@@ -127,7 +127,7 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
         }
 
         @Override
-        public @NotNull P applySslConfig() {
+        public @NotNull P applyTlsConfig() {
             return parentConsumer.apply(build());
         }
     }

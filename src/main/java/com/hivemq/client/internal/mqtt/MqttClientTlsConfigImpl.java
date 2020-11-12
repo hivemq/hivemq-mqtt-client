@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
+import com.hivemq.client.mqtt.MqttClientTlsConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ import java.util.Optional;
  * @author David Katz
  * @author Silvio Giebl
  */
-public class MqttClientSslConfigImpl implements MqttClientSslConfig {
+public class MqttClientTlsConfigImpl implements MqttClientTlsConfig {
 
     static final @Nullable HostnameVerifier DEFAULT_HOSTNAME_VERIFIER;
 
@@ -44,8 +44,8 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         DEFAULT_HOSTNAME_VERIFIER = hostnameVerifier;
     }
 
-    static final @NotNull MqttClientSslConfigImpl DEFAULT =
-            new MqttClientSslConfigImpl(null, null, null, null, (int) DEFAULT_HANDSHAKE_TIMEOUT_MS,
+    static final @NotNull MqttClientTlsConfigImpl DEFAULT =
+            new MqttClientTlsConfigImpl(null, null, null, null, (int) DEFAULT_HANDSHAKE_TIMEOUT_MS,
                     DEFAULT_HOSTNAME_VERIFIER);
 
     private final @Nullable KeyManagerFactory keyManagerFactory;
@@ -55,7 +55,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     private final int handshakeTimeoutMs;
     private final @Nullable HostnameVerifier hostnameVerifier;
 
-    MqttClientSslConfigImpl(
+    MqttClientTlsConfigImpl(
             final @Nullable KeyManagerFactory keyManagerFactory,
             final @Nullable TrustManagerFactory trustManagerFactory,
             final @Nullable ImmutableList<String> cipherSuites,
@@ -122,8 +122,8 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     }
 
     @Override
-    public MqttClientSslConfigImplBuilder.@NotNull Default extend() {
-        return new MqttClientSslConfigImplBuilder.Default(this);
+    public MqttClientTlsConfigImplBuilder.@NotNull Default extend() {
+        return new MqttClientTlsConfigImplBuilder.Default(this);
     }
 
     @Override
@@ -131,10 +131,10 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MqttClientSslConfigImpl)) {
+        if (!(o instanceof MqttClientTlsConfigImpl)) {
             return false;
         }
-        final MqttClientSslConfigImpl that = (MqttClientSslConfigImpl) o;
+        final MqttClientTlsConfigImpl that = (MqttClientTlsConfigImpl) o;
 
         return Objects.equals(keyManagerFactory, that.keyManagerFactory) &&
                 Objects.equals(trustManagerFactory, that.trustManagerFactory) &&

@@ -73,10 +73,10 @@ public interface MqttClientConfig {
     }
 
     /**
-     * @return the optional secure transport configuration of the client.
+     * @return the optional transport layer security configuration of the client.
      */
-    default @NotNull Optional<MqttClientSslConfig> getSslConfig() {
-        return getTransportConfig().getSslConfig();
+    default @NotNull Optional<MqttClientTlsConfig> getTlsConfig() {
+        return getTransportConfig().getTlsConfig();
     }
 
     /**
