@@ -101,17 +101,17 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
+    public @NotNull PublishesView publishes(final @Nullable MqttGlobalPublishFilter filter) {
         return publishes(filter, false);
     }
 
     @Override
-    public @NotNull Mqtt3Publishes publishes(
+    public @NotNull PublishesView publishes(
             final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
 
-        return new Mqtt3PublishesView(delegate.publishes(filter, manualAcknowledgement));
+        return new PublishesView(delegate.publishes(filter, manualAcknowledgement));
     }
 
     @Override
@@ -168,11 +168,11 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         return new Mqtt3AsyncClientView(delegate.toAsync());
     }
 
-    private static class Mqtt3PublishesView implements Mqtt3Publishes {
+    private static class PublishesView implements Publishes {
 
-        private final @NotNull Mqtt5BlockingClient.Mqtt5Publishes delegate;
+        private final @NotNull Mqtt5BlockingClient.Publishes delegate;
 
-        Mqtt3PublishesView(final @NotNull Mqtt5BlockingClient.Mqtt5Publishes delegate) {
+        PublishesView(final @NotNull Mqtt5BlockingClient.Publishes delegate) {
             this.delegate = delegate;
         }
 
