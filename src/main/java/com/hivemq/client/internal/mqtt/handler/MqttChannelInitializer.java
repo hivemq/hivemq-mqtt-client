@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.handler;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttProxyConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImpl;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
@@ -27,7 +27,7 @@ import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import com.hivemq.client.internal.mqtt.handler.proxy.MqttProxyInitializer;
-import com.hivemq.client.internal.mqtt.handler.ssl.MqttSslInitializer;
+import com.hivemq.client.internal.mqtt.handler.tls.MqttTlsInitializer;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -46,7 +46,7 @@ import javax.inject.Inject;
  * Initializes:
  * <ul>
  *   <li>the proxy handlers (optional)
- *   <li>the SSL/TLS handlers (optional)
+ *   <li>the TLS handlers (optional)
  *   <li>the WebSocket handlers (optional)
  *   <li>the basic MQTT handlers: Encoder, AuthHandler, ConnectHandler, DisconnectHandler
  * </ul>
@@ -107,18 +107,18 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     private void initProxy(final @NotNull Channel channel) {
         final MqttProxyConfigImpl proxyConfig = clientConfig.getCurrentTransportConfig().getRawProxyConfig();
         if (proxyConfig == null) {
-            initSsl(channel);
+            initTls(channel);
         } else {
-            MqttProxyInitializer.initChannel(channel, clientConfig, proxyConfig, this::initSsl, this::onError);
+            MqttProxyInitializer.initChannel(channel, clientConfig, proxyConfig, this::initTls, this::onError);
         }
     }
 
-    private void initSsl(final @NotNull Channel channel) {
-        final MqttClientSslConfigImpl sslConfig = clientConfig.getCurrentTransportConfig().getRawSslConfig();
-        if (sslConfig == null) {
+    private void initTls(final @NotNull Channel channel) {
+        final MqttClientTlsConfigImpl tlsConfig = clientConfig.getCurrentTransportConfig().getRawTlsConfig();
+        if (tlsConfig == null) {
             initWebsocket(channel);
         } else {
-            MqttSslInitializer.initChannel(channel, clientConfig, sslConfig, this::initWebsocket, this::onError);
+            MqttTlsInitializer.initChannel(channel, clientConfig, tlsConfig, this::initWebsocket, this::onError);
         }
     }
 

@@ -18,7 +18,7 @@ package com.hivemq.client.example;
 
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.MqttClientBuilder;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
+import com.hivemq.client.mqtt.MqttClientTlsConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3RxClient;
@@ -168,7 +168,7 @@ class Mqtt3ClientExample {
                 MqttClient.builder().identifier(UUID.randomUUID().toString()).serverHost(server).serverPort(port);
 
         if (usesSsl) {
-            mqttClientBuilder.sslConfig(MqttClientSslConfig.builder()
+            mqttClientBuilder.tlsConfig(MqttClientTlsConfig.builder()
                     .keyManagerFactory(keyManagerFactory)
                     .trustManagerFactory(trustManagerFactory)
                     .build());

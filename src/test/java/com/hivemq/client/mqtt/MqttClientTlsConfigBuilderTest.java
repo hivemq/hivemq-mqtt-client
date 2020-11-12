@@ -26,43 +26,43 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Christian Hoff
  */
-class MqttClientSslConfigBuilderTest {
+class MqttClientTlsConfigBuilderTest {
 
     @Test
     void cipherSuites_simple() {
         final List<String> expectedCipherSuites = Arrays.asList("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305");
 
-        final MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().cipherSuites(expectedCipherSuites).build();
+        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().cipherSuites(expectedCipherSuites).build();
 
-        assertNotNull(sslConfig.getCipherSuites());
-        assertTrue(sslConfig.getCipherSuites().isPresent());
-        assertEquals(sslConfig.getCipherSuites().get(), expectedCipherSuites);
+        assertNotNull(tlsConfig.getCipherSuites());
+        assertTrue(tlsConfig.getCipherSuites().isPresent());
+        assertEquals(tlsConfig.getCipherSuites().get(), expectedCipherSuites);
     }
 
     @Test
     void cipherSuites_null() {
-        final MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().cipherSuites(null).build();
+        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().cipherSuites(null).build();
 
-        assertNotNull(sslConfig.getCipherSuites());
-        assertFalse(sslConfig.getCipherSuites().isPresent());
+        assertNotNull(tlsConfig.getCipherSuites());
+        assertFalse(tlsConfig.getCipherSuites().isPresent());
     }
 
     @Test
     void protocols_simple() {
         final List<String> expectedProtocols = Arrays.asList("TLSv1.2", "TLSv1.1");
 
-        final MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().protocols(expectedProtocols).build();
+        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().protocols(expectedProtocols).build();
 
-        assertNotNull(sslConfig.getProtocols());
-        assertTrue(sslConfig.getProtocols().isPresent());
-        assertEquals(sslConfig.getProtocols().get(), expectedProtocols);
+        assertNotNull(tlsConfig.getProtocols());
+        assertTrue(tlsConfig.getProtocols().isPresent());
+        assertEquals(tlsConfig.getProtocols().get(), expectedProtocols);
     }
 
     @Test
     void protocols_null() {
-        final MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().protocols(null).build();
+        final MqttClientTlsConfig tlsConfig = MqttClientTlsConfig.builder().protocols(null).build();
 
-        assertNotNull(sslConfig.getProtocols());
-        assertFalse(sslConfig.getProtocols().isPresent());
+        assertNotNull(tlsConfig.getProtocols());
+        assertFalse(tlsConfig.getProtocols().isPresent());
     }
 }

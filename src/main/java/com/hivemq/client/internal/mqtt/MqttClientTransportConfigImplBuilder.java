@@ -18,7 +18,7 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.InetSocketAddressUtil;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
+import com.hivemq.client.mqtt.MqttClientTlsConfig;
 import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
 import com.hivemq.client.mqtt.MqttProxyConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
@@ -39,7 +39,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     private @NotNull Object serverHost = MqttClientTransportConfigImpl.DEFAULT_SERVER_HOST; // String or InetAddress
     private int serverPort = -1;
     private @Nullable InetSocketAddress localAddress;
-    private @Nullable MqttClientSslConfigImpl sslConfig;
+    private @Nullable MqttClientTlsConfigImpl tlsConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private @Nullable MqttProxyConfigImpl proxyConfig;
     private int socketConnectTimeoutMs = MqttClientTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
@@ -56,7 +56,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         serverHost = builder.serverHost;
         serverPort = builder.serverPort;
         localAddress = builder.localAddress;
-        sslConfig = builder.sslConfig;
+        tlsConfig = builder.tlsConfig;
         webSocketConfig = builder.webSocketConfig;
         proxyConfig = builder.proxyConfig;
         socketConnectTimeoutMs = builder.socketConnectTimeoutMs;
@@ -66,7 +66,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
     void set(final @NotNull MqttClientTransportConfigImpl transportConfig) {
         serverAddress = transportConfig.getServerAddress();
         localAddress = transportConfig.getRawLocalAddress();
-        sslConfig = transportConfig.getRawSslConfig();
+        tlsConfig = transportConfig.getRawTlsConfig();
         webSocketConfig = transportConfig.getRawWebSocketConfig();
         proxyConfig = transportConfig.getRawProxyConfig();
         socketConnectTimeoutMs = transportConfig.getSocketConnectTimeoutMs();
@@ -175,18 +175,18 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         return self();
     }
 
-    public @NotNull B sslWithDefaultConfig() {
-        this.sslConfig = MqttClientSslConfigImpl.DEFAULT;
+    public @NotNull B tlsWithDefaultConfig() {
+        this.tlsConfig = MqttClientTlsConfigImpl.DEFAULT;
         return self();
     }
 
-    public @NotNull B sslConfig(final @Nullable MqttClientSslConfig sslConfig) {
-        this.sslConfig = Checks.notImplementedOrNull(sslConfig, MqttClientSslConfigImpl.class, "SSL config");
+    public @NotNull B tlsConfig(final @Nullable MqttClientTlsConfig tlsConfig) {
+        this.tlsConfig = Checks.notImplementedOrNull(tlsConfig, MqttClientTlsConfigImpl.class, "TLS config");
         return self();
     }
 
-    public MqttClientSslConfigImplBuilder.@NotNull Nested<B> sslConfig() {
-        return new MqttClientSslConfigImplBuilder.Nested<>(sslConfig, this::sslConfig);
+    public MqttClientTlsConfigImplBuilder.@NotNull Nested<B> tlsConfig() {
+        return new MqttClientTlsConfigImplBuilder.Nested<>(tlsConfig, this::tlsConfig);
     }
 
     public @NotNull B webSocketWithDefaultConfig() {
@@ -241,20 +241,20 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         if (serverPort != -1) {
             return serverPort;
         }
-        if (sslConfig == null) {
+        if (tlsConfig == null) {
             if (webSocketConfig == null) {
                 return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT;
             }
             return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET;
         }
         if (webSocketConfig == null) {
-            return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_SSL;
+            return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_TLS;
         }
-        return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
+        return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET_TLS;
     }
 
     @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
-        return new MqttClientTransportConfigImpl(getServerAddress(), localAddress, sslConfig, webSocketConfig,
+        return new MqttClientTransportConfigImpl(getServerAddress(), localAddress, tlsConfig, webSocketConfig,
                 proxyConfig, socketConnectTimeoutMs, mqttConnectTimeoutMs);
     }
 

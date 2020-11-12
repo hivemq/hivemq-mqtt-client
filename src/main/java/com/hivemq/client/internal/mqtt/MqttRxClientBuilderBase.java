@@ -98,14 +98,14 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     @Override
-    public @NotNull B sslWithDefaultConfig() {
+    public @NotNull B tlsWithDefaultConfig() {
         transportConfig = null;
-        return super.sslWithDefaultConfig();
+        return super.tlsWithDefaultConfig();
     }
 
     @Override
-    public @NotNull B sslConfig(final @Nullable MqttClientSslConfig sslConfig) {
-        return super.sslConfig(sslConfig);
+    public @NotNull B tlsConfig(final @Nullable MqttClientTlsConfig tlsConfig) {
+        return super.tlsConfig(tlsConfig);
     }
 
     @Override

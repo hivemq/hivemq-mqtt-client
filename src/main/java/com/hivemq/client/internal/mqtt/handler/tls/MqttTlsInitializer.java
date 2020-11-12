@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.hivemq.client.internal.mqtt.handler.ssl;
+package com.hivemq.client.internal.mqtt.handler.tls;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttClientTlsConfigImpl;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.SslContext;
@@ -37,14 +37,14 @@ import java.util.function.Consumer;
  * @author Christoph Schäbel
  * @author Silvio Giebl
  */
-public final class MqttSslInitializer {
+public final class MqttTlsInitializer {
 
-    private static final @NotNull String SSL_HANDLER_NAME = "ssl";
+    private static final @NotNull String SSL_HANDLER_NAME = "tls";
 
     public static void initChannel(
             final @NotNull Channel channel,
             final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttClientSslConfigImpl sslConfig,
+            final @NotNull MqttClientTlsConfigImpl tlsConfig,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
 
@@ -54,7 +54,7 @@ public final class MqttSslInitializer {
         try {
             SslContext sslContext = clientConfig.getCurrentSslContext();
             if (sslContext == null) {
-                sslContext = createSslContext(sslConfig);
+                sslContext = createSslContext(tlsConfig);
                 clientConfig.setCurrentSslContext(sslContext);
             }
             sslHandler = sslContext.newHandler(channel.alloc(), serverAddress.getHostString(), serverAddress.getPort());
@@ -63,32 +63,32 @@ public final class MqttSslInitializer {
             return;
         }
 
-        sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
+        sslHandler.setHandshakeTimeoutMillis(tlsConfig.getHandshakeTimeoutMs());
 
-        final HostnameVerifier hostnameVerifier = sslConfig.getRawHostnameVerifier();
+        final HostnameVerifier hostnameVerifier = tlsConfig.getRawHostnameVerifier();
         if (hostnameVerifier == null) {
             final SSLParameters sslParameters = sslHandler.engine().getSSLParameters();
             sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
             sslHandler.engine().setSSLParameters(sslParameters);
         }
 
-        final MqttSslAdapterHandler sslAdapterHandler =
-                new MqttSslAdapterHandler(sslHandler, serverAddress.getHostString(), hostnameVerifier, onSuccess,
+        final MqttTlsAdapterHandler tlsAdapterHandler =
+                new MqttTlsAdapterHandler(sslHandler, serverAddress.getHostString(), hostnameVerifier, onSuccess,
                         onError);
 
-        channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler).addLast(MqttSslAdapterHandler.NAME, sslAdapterHandler);
+        channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler).addLast(MqttTlsAdapterHandler.NAME, tlsAdapterHandler);
     }
 
-    static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-        final ImmutableList<String> protocols = sslConfig.getRawProtocols();
+    static @NotNull SslContext createSslContext(final @NotNull MqttClientTlsConfigImpl tlsConfig) throws SSLException {
+        final ImmutableList<String> protocols = tlsConfig.getRawProtocols();
 
         return SslContextBuilder.forClient()
-                .trustManager(sslConfig.getRawTrustManagerFactory())
-                .keyManager(sslConfig.getRawKeyManagerFactory())
+                .trustManager(tlsConfig.getRawTrustManagerFactory())
+                .keyManager(tlsConfig.getRawKeyManagerFactory())
                 .protocols((protocols == null) ? null : protocols.toArray(new String[0]))
-                .ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE)
+                .ciphers(tlsConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE)
                 .build();
     }
 
-    private MqttSslInitializer() {}
+    private MqttTlsInitializer() {}
 }

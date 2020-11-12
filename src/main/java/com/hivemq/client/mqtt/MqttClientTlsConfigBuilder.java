@@ -21,35 +21,35 @@ import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Builder for a {@link MqttClientSslConfig}.
+ * Builder for a {@link MqttClientTlsConfig}.
  *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientSslConfigBuilder extends MqttClientSslConfigBuilderBase<MqttClientSslConfigBuilder> {
+public interface MqttClientTlsConfigBuilder extends MqttClientTlsConfigBuilderBase<MqttClientTlsConfigBuilder> {
 
     /**
-     * Builds the {@link MqttClientSslConfig}.
+     * Builds the {@link MqttClientTlsConfig}.
      *
-     * @return the built {@link MqttClientSslConfig}.
+     * @return the built {@link MqttClientTlsConfig}.
      */
     @CheckReturnValue
-    @NotNull MqttClientSslConfig build();
+    @NotNull MqttClientTlsConfig build();
 
     /**
-     * Builder for a {@link MqttClientSslConfig} that is applied to a parent.
+     * Builder for a {@link MqttClientTlsConfig} that is applied to a parent.
      *
-     * @param <P> the type of the result when the built {@link MqttClientSslConfig} is applied to the parent.
+     * @param <P> the type of the result when the built {@link MqttClientTlsConfig} is applied to the parent.
      */
     @DoNotImplement
-    interface Nested<P> extends MqttClientSslConfigBuilderBase<Nested<P>> {
+    interface Nested<P> extends MqttClientTlsConfigBuilderBase<Nested<P>> {
 
         /**
-         * Builds the {@link MqttClientSslConfig} and applies it to the parent.
+         * Builds the {@link MqttClientTlsConfig} and applies it to the parent.
          *
-         * @return the result when the built {@link MqttClientSslConfig} is applied to the parent.
+         * @return the result when the built {@link MqttClientTlsConfig} is applied to the parent.
          */
-        @NotNull P applySslConfig();
+        @NotNull P applyTlsConfig();
     }
 }
