@@ -62,8 +62,8 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public final @NotNull FlowableWithSingle<F, S> observeOnBoth(final @NotNull Scheduler scheduler) {
-        return observeOnBoth(scheduler, false, bufferSize());
+    public final @NotNull FlowableWithSingle<F, S> observeBothOn(final @NotNull Scheduler scheduler) {
+        return observeBothOn(scheduler, false, bufferSize());
     }
 
     /**
@@ -79,10 +79,10 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public final @NotNull FlowableWithSingle<F, S> observeOnBoth(
+    public final @NotNull FlowableWithSingle<F, S> observeBothOn(
             final @NotNull Scheduler scheduler, final boolean delayError) {
 
-        return observeOnBoth(scheduler, delayError, bufferSize());
+        return observeBothOn(scheduler, delayError, bufferSize());
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @CheckReturnValue
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public final @NotNull FlowableWithSingle<F, S> observeOnBoth(
+    public final @NotNull FlowableWithSingle<F, S> observeBothOn(
             final @NotNull Scheduler scheduler, final boolean delayError, final int bufferSize) {
 
         Checks.notNull(scheduler, "Scheduler");
