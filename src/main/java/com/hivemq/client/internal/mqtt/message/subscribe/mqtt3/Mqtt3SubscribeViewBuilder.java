@@ -120,8 +120,8 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull B qos(final @Nullable MqttQos qos) {
-        getFirstSubscriptionBuilder().qos(qos);
+    public @NotNull B maxQos(final @Nullable MqttQos maxQos) {
+        getFirstSubscriptionBuilder().maxQos(maxQos);
         return self();
     }
 

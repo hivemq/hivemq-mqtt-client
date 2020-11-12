@@ -64,9 +64,9 @@ public interface Mqtt5Subscription {
     @NotNull MqttTopicFilter getTopicFilter();
 
     /**
-     * @return the QoS of this Subscription.
+     * @return the maximum QoS of this Subscription.
      */
-    @NotNull MqttQos getQos();
+    @NotNull MqttQos getMaxQos();
 
     /**
      * @return whether the client must not receive messages published by itself. The default is {@link

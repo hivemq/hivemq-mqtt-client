@@ -61,7 +61,7 @@ class MqttSubscribeBuilderTest {
         final Mqtt5Subscription mqtt5Subscription = subscriptions.get(0);
 
         assertEquals("test", mqtt5Subscription.getTopicFilter().toString());
-        assertEquals(MqttQos.EXACTLY_ONCE, mqtt5Subscription.getQos());
+        assertEquals(MqttQos.EXACTLY_ONCE, mqtt5Subscription.getMaxQos());
         assertFalse(mqtt5Subscription.isNoLocal());
         assertFalse(mqtt5Subscription.isRetainAsPublished());
         assertEquals(Mqtt5RetainHandling.SEND, mqtt5Subscription.getRetainHandling());
@@ -72,7 +72,7 @@ class MqttSubscribeBuilderTest {
 
         final Mqtt5Subscription subscription = Mqtt5Subscription.builder()
                 .topicFilter("test")
-                .qos(MqttQos.AT_LEAST_ONCE)
+                .maxQos(MqttQos.AT_LEAST_ONCE)
                 .noLocal(true)
                 .retainAsPublished(true)
                 .retainHandling(Mqtt5RetainHandling.DO_NOT_SEND)
@@ -86,7 +86,7 @@ class MqttSubscribeBuilderTest {
         final Mqtt5Subscription mqtt5Subscription = subscriptions.get(0);
 
         assertEquals("test", mqtt5Subscription.getTopicFilter().toString());
-        assertEquals(MqttQos.AT_LEAST_ONCE, mqtt5Subscription.getQos());
+        assertEquals(MqttQos.AT_LEAST_ONCE, mqtt5Subscription.getMaxQos());
         assertTrue(mqtt5Subscription.isNoLocal());
         assertTrue(mqtt5Subscription.isRetainAsPublished());
         assertEquals(Mqtt5RetainHandling.DO_NOT_SEND, mqtt5Subscription.getRetainHandling());
@@ -96,7 +96,7 @@ class MqttSubscribeBuilderTest {
     void addSubscription_fluent_subscription_is_finished_if_addSubscription_is_used() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5SubscribeBuilder.Start subscribeBuilder = Mqtt5Subscribe.builder();
         subscribeBuilder.topicFilter("fluent");
@@ -112,10 +112,10 @@ class MqttSubscribeBuilderTest {
     void addSubscription_fluent_subscription_is_finished_if_addSubscription_is_used_second_time() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("test2").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test2").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5SubscribeBuilder.Start subscribeBuilder = Mqtt5Subscribe.builder();
         subscribeBuilder.topicFilter("fluent");
@@ -171,7 +171,7 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_error_when_subscription_is_implemented() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final List<Mqtt5Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);
@@ -185,13 +185,13 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_correct_use_list() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5Subscription subscription3 =
-                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final List<Mqtt5Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);
@@ -211,13 +211,13 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_correct_use_set() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5Subscription subscription3 =
-                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final Set<Mqtt5Subscription> subscriptions = new HashSet<>();
         subscriptions.add(subscription);
@@ -233,13 +233,13 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_correct_use_map() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5Subscription subscription3 =
-                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final Map<String, Mqtt5Subscription> subscriptions = new LinkedHashMap<>();
         subscriptions.put("1", subscription);
@@ -255,13 +255,13 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_correct_use_array() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5Subscription subscription3 =
-                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final Mqtt5Subscription[] subscriptions = new Mqtt5Subscription[]{
                 subscription, subscription2, subscription3
@@ -284,7 +284,7 @@ class MqttSubscribeBuilderTest {
                 .addSubscriptions(subscriptions.stream()
                         .map(topicFilter -> Mqtt5Subscription.builder()
                                 .topicFilter(topicFilter)
-                                .qos(MqttQos.AT_LEAST_ONCE)
+                                .maxQos(MqttQos.AT_LEAST_ONCE)
                                 .build()))
                 .build();
 
@@ -299,13 +299,13 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_fluent_subscription_is_finished_if_addSubscriptions_is_used() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5Subscription subscription3 =
-                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final ImmutableList<Mqtt5Subscription> subscriptions =
                 ImmutableList.of(subscription, subscription2, subscription3);
@@ -326,13 +326,13 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_fluent_subscription_is_finished_if_addSubscriptions_is_used_second_time() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5Subscription subscription3 =
-                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final List<Mqtt5Subscription> subscriptions = new LinkedList<>();
         subscriptions.add(subscription);
@@ -360,13 +360,13 @@ class MqttSubscribeBuilderTest {
     void addSubscriptions_fluent_subscription_and_addSubscription() {
 
         final Mqtt5Subscription subscription =
-                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("test").maxQos(MqttQos.AT_LEAST_ONCE).build();
 
         final Mqtt5Subscription subscription2 =
-                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("multiple").maxQos(MqttQos.AT_MOST_ONCE).build();
 
         final Mqtt5Subscription subscription3 =
-                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+                Mqtt5Subscription.builder().topicFilter("subscriptions").maxQos(MqttQos.EXACTLY_ONCE).build();
 
         final List<Mqtt5Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(subscription);

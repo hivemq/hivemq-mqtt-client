@@ -36,14 +36,14 @@ import java.util.function.Function;
 public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionViewBuilder<B>> {
 
     private @Nullable MqttTopicFilterImpl topicFilter;
-    private @NotNull MqttQos qos = Mqtt3SubscriptionView.DEFAULT_QOS;
+    private @NotNull MqttQos maxQos = Mqtt3SubscriptionView.DEFAULT_QOS;
 
     Mqtt3SubscriptionViewBuilder() {}
 
     Mqtt3SubscriptionViewBuilder(final @NotNull Mqtt3SubscriptionView subscription) {
         final MqttSubscription delegate = subscription.getDelegate();
         topicFilter = delegate.getTopicFilter();
-        qos = delegate.getQos();
+        maxQos = delegate.getMaxQos();
     }
 
     abstract @NotNull B self();
@@ -62,14 +62,14 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull B qos(final @Nullable MqttQos qos) {
-        this.qos = Checks.notNull(qos, "QoS");
+    public @NotNull B maxQos(final @Nullable MqttQos maxQos) {
+        this.maxQos = Checks.notNull(maxQos, "Maximum QoS");
         return self();
     }
 
     public @NotNull Mqtt3SubscriptionView build() {
         Checks.notNull(topicFilter, "Topic filter");
-        return Mqtt3SubscriptionView.of(topicFilter, qos);
+        return Mqtt3SubscriptionView.of(topicFilter, maxQos);
     }
 
     public static class Default extends Mqtt3SubscriptionViewBuilder<Default>

@@ -569,8 +569,8 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
                     final MqttTopicFilterImpl topicFilter =
                             MqttTopicLevel.toFilter(entry.topicFilterPrefix, topicLevels, multiLevelWildcard);
                     assert topicFilter != null : "reconstructed topic filter must be valid";
-                    final MqttQos qos = MqttSubscription.decodeQos(entry.subscriptionOptions);
-                    assert qos != null : "reconstructed qos must be valid";
+                    final MqttQos maxQos = MqttSubscription.decodeMaxQos(entry.subscriptionOptions);
+                    assert maxQos != null : "reconstructed maxQos must be valid";
                     final boolean noLocal = MqttSubscription.decodeNoLocal(entry.subscriptionOptions);
                     final Mqtt5RetainHandling retainHandling =
                             MqttSubscription.decodeRetainHandling(entry.subscriptionOptions);
@@ -578,7 +578,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
                     final boolean retainAsPublished =
                             MqttSubscription.decodeRetainAsPublished(entry.subscriptionOptions);
                     final MqttSubscription subscription =
-                            new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
+                            new MqttSubscription(topicFilter, maxQos, noLocal, retainHandling, retainAsPublished);
                     map.computeIfAbsent(entry.subscriptionIdentifier, k -> new LinkedList<>()).add(subscription);
                 }
             }

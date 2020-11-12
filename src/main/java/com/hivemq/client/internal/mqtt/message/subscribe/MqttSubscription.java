@@ -31,20 +31,20 @@ import org.jetbrains.annotations.Nullable;
 public class MqttSubscription implements Mqtt5Subscription {
 
     private final @NotNull MqttTopicFilterImpl topicFilter;
-    private final @NotNull MqttQos qos;
+    private final @NotNull MqttQos maxQos;
     private final boolean noLocal;
     private final @NotNull Mqtt5RetainHandling retainHandling;
     private final boolean retainAsPublished;
 
     public MqttSubscription(
             final @NotNull MqttTopicFilterImpl topicFilter,
-            final @NotNull MqttQos qos,
+            final @NotNull MqttQos maxQos,
             final boolean noLocal,
             final @NotNull Mqtt5RetainHandling retainHandling,
             final boolean retainAsPublished) {
 
         this.topicFilter = topicFilter;
-        this.qos = qos;
+        this.maxQos = maxQos;
         this.noLocal = noLocal;
         this.retainHandling = retainHandling;
         this.retainAsPublished = retainAsPublished;
@@ -56,8 +56,8 @@ public class MqttSubscription implements Mqtt5Subscription {
     }
 
     @Override
-    public @NotNull MqttQos getQos() {
-        return qos;
+    public @NotNull MqttQos getMaxQos() {
+        return maxQos;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MqttSubscription implements Mqtt5Subscription {
     }
 
     private @NotNull String toAttributeString() {
-        return "topicFilter=" + topicFilter + ", qos=" + qos + ", noLocal=" + noLocal + ", retainHandling=" +
+        return "topicFilter=" + topicFilter + ", maxQos=" + maxQos + ", noLocal=" + noLocal + ", retainHandling=" +
                 retainHandling + ", retainAsPublished=" + retainAsPublished;
     }
 
@@ -100,14 +100,14 @@ public class MqttSubscription implements Mqtt5Subscription {
         }
         final MqttSubscription that = (MqttSubscription) o;
 
-        return topicFilter.equals(that.topicFilter) && (qos == that.qos) && (noLocal == that.noLocal) &&
+        return topicFilter.equals(that.topicFilter) && (maxQos == that.maxQos) && (noLocal == that.noLocal) &&
                 (retainHandling == that.retainHandling) && (retainAsPublished == that.retainAsPublished);
     }
 
     @Override
     public int hashCode() {
         int result = topicFilter.hashCode();
-        result = 31 * result + qos.hashCode();
+        result = 31 * result + maxQos.hashCode();
         result = 31 * result + Boolean.hashCode(noLocal);
         result = 31 * result + retainHandling.hashCode();
         result = 31 * result + Boolean.hashCode(retainAsPublished);
@@ -123,11 +123,11 @@ public class MqttSubscription implements Mqtt5Subscription {
         if (noLocal) {
             subscriptionOptions |= 0b0000_0100;
         }
-        subscriptionOptions |= qos.getCode();
+        subscriptionOptions |= maxQos.getCode();
         return subscriptionOptions;
     }
 
-    public static @Nullable MqttQos decodeQos(final byte subscriptionOptions) {
+    public static @Nullable MqttQos decodeMaxQos(final byte subscriptionOptions) {
         return MqttQos.fromCode(subscriptionOptions & 0b0000_0011);
     }
 

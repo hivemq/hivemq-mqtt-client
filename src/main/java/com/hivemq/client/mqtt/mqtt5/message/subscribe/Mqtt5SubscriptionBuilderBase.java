@@ -73,13 +73,13 @@ public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilder
     interface Complete<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> extends Mqtt5SubscriptionBuilderBase<C> {
 
         /**
-         * Sets the {@link Mqtt5Subscription#getQos() QoS}.
+         * Sets the {@link Mqtt5Subscription#getMaxQos() maximum QoS}.
          *
-         * @param qos the QoS.
+         * @param maxQos the maximum QoS.
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C qos(@NotNull MqttQos qos);
+        @NotNull C maxQos(@NotNull MqttQos maxQos);
 
         /**
          * Sets whether the subscription is {@link Mqtt5Subscription#isNoLocal() not local}.
