@@ -44,7 +44,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     private @NotNull MqttClientIdentifierImpl identifier =
             MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
     private @Nullable MqttTransportConfigImpl transportConfig = MqttTransportConfigImpl.DEFAULT;
-    private @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    private @NotNull MqttExecutorConfigImpl executorConfig = MqttExecutorConfigImpl.DEFAULT;
     private @Nullable MqttClientAutoReconnectImpl autoReconnect;
     private ImmutableList.@Nullable Builder<MqttClientConnectedListener> connectedListenersBuilder;
     private ImmutableList.@Nullable Builder<MqttClientDisconnectedListener> disconnectedListenersBuilder;
@@ -131,14 +131,13 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return new MqttTransportConfigImplBuilder.Nested<>(this, this::transportConfig);
     }
 
-    public @NotNull B executorConfig(final @Nullable MqttClientExecutorConfig executorConfig) {
-        this.executorConfig =
-                Checks.notImplemented(executorConfig, MqttClientExecutorConfigImpl.class, "Executor config");
+    public @NotNull B executorConfig(final @Nullable MqttExecutorConfig executorConfig) {
+        this.executorConfig = Checks.notImplemented(executorConfig, MqttExecutorConfigImpl.class, "Executor config");
         return self();
     }
 
-    public MqttClientExecutorConfigImplBuilder.@NotNull Nested<B> executorConfig() {
-        return new MqttClientExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
+    public MqttExecutorConfigImplBuilder.@NotNull Nested<B> executorConfig() {
+        return new MqttExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
     }
 
     public @NotNull B automaticReconnectWithDefaultConfig() {

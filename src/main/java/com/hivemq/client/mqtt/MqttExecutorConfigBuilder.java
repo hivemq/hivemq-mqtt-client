@@ -21,35 +21,34 @@ import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Builder for a {@link MqttClientExecutorConfig}.
+ * Builder for a {@link MqttExecutorConfig}.
  *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientExecutorConfigBuilder
-        extends MqttClientExecutorConfigBuilderBase<MqttClientExecutorConfigBuilder> {
+public interface MqttExecutorConfigBuilder extends MqttExecutorConfigBuilderBase<MqttExecutorConfigBuilder> {
 
     /**
-     * Builds the {@link MqttClientExecutorConfig}.
+     * Builds the {@link MqttExecutorConfig}.
      *
-     * @return the built {@link MqttClientExecutorConfig}.
+     * @return the built {@link MqttExecutorConfig}.
      */
     @CheckReturnValue
-    @NotNull MqttClientExecutorConfig build();
+    @NotNull MqttExecutorConfig build();
 
     /**
-     * Builder for a {@link MqttClientExecutorConfig} that is applied to a parent.
+     * Builder for a {@link MqttExecutorConfig} that is applied to a parent.
      *
-     * @param <P> the type of the result when the built {@link MqttClientExecutorConfig} is applied to the parent.
+     * @param <P> the type of the result when the built {@link MqttExecutorConfig} is applied to the parent.
      */
     @DoNotImplement
-    interface Nested<P> extends MqttClientExecutorConfigBuilderBase<Nested<P>> {
+    interface Nested<P> extends MqttExecutorConfigBuilderBase<Nested<P>> {
 
         /**
-         * Builds the {@link MqttClientExecutorConfig} and applies it to the parent.
+         * Builds the {@link MqttExecutorConfig} and applies it to the parent.
          *
-         * @return the result when the built {@link MqttClientExecutorConfig} is applied to the parent.
+         * @return the result when the built {@link MqttExecutorConfig} is applied to the parent.
          */
         @NotNull P applyExecutorConfig();
     }

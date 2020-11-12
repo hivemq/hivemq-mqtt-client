@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.codec.decoder;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttExecutorConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
@@ -110,7 +110,7 @@ public abstract class AbstractMqttDecoderTest {
                 new MqttClientAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
         final MqttClientConfig clientConfig =
                 new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"),
-                        MqttTransportConfigImpl.DEFAULT, MqttClientExecutorConfigImpl.DEFAULT, advancedConfig,
+                        MqttTransportConfigImpl.DEFAULT, MqttExecutorConfigImpl.DEFAULT, advancedConfig,
                         MqttClientConfig.ConnectDefaults.of(null, null, null), ImmutableList.of(), ImmutableList.of());
 
         channel = new EmbeddedChannel();

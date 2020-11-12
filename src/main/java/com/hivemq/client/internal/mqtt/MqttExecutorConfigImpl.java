@@ -16,7 +16,7 @@
 
 package com.hivemq.client.internal.mqtt;
 
-import com.hivemq.client.mqtt.MqttClientExecutorConfig;
+import com.hivemq.client.mqtt.MqttExecutorConfig;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,17 +29,17 @@ import java.util.concurrent.Executor;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
+public class MqttExecutorConfigImpl implements MqttExecutorConfig {
 
     public static final int DEFAULT_NETTY_THREADS = 0;
-    public static final @NotNull MqttClientExecutorConfigImpl DEFAULT =
-            new MqttClientExecutorConfigImpl(null, DEFAULT_NETTY_THREADS, DEFAULT_APPLICATION_SCHEDULER);
+    public static final @NotNull MqttExecutorConfigImpl DEFAULT =
+            new MqttExecutorConfigImpl(null, DEFAULT_NETTY_THREADS, DEFAULT_APPLICATION_SCHEDULER);
 
     private final @Nullable Executor nettyExecutor;
     private final int nettyThreads;
     private final @NotNull Scheduler applicationScheduler;
 
-    MqttClientExecutorConfigImpl(
+    MqttExecutorConfigImpl(
             final @Nullable Executor nettyExecutor,
             final int nettyThreads,
             final @NotNull Scheduler applicationScheduler) {
@@ -73,8 +73,8 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
     }
 
     @Override
-    public MqttClientExecutorConfigImplBuilder.@NotNull Default extend() {
-        return new MqttClientExecutorConfigImplBuilder.Default(this);
+    public MqttExecutorConfigImplBuilder.@NotNull Default extend() {
+        return new MqttExecutorConfigImplBuilder.Default(this);
     }
 
     @Override
@@ -82,10 +82,10 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MqttClientExecutorConfigImpl)) {
+        if (!(o instanceof MqttExecutorConfigImpl)) {
             return false;
         }
-        final MqttClientExecutorConfigImpl that = (MqttClientExecutorConfigImpl) o;
+        final MqttExecutorConfigImpl that = (MqttExecutorConfigImpl) o;
 
         return Objects.equals(nettyExecutor, that.nettyExecutor) && (nettyThreads == that.nettyThreads) &&
                 applicationScheduler.equals(that.applicationScheduler);

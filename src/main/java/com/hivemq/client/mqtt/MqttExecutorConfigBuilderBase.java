@@ -25,17 +25,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.Executor;
 
 /**
- * Builder base for a {@link MqttClientExecutorConfig}.
+ * Builder base for a {@link MqttExecutorConfig}.
  *
  * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecutorConfigBuilderBase<B>> {
+public interface MqttExecutorConfigBuilderBase<B extends MqttExecutorConfigBuilderBase<B>> {
 
     /**
-     * Sets the optional user defined {@link MqttClientExecutorConfig#getNettyExecutor() executor for Netty} (network
+     * Sets the optional user defined {@link MqttExecutorConfig#getNettyExecutor() executor for Netty} (network
      * communication framework).
      *
      * @param nettyExecutor the user defined executor for Netty or <code>null</code> to use the default executor.
@@ -45,8 +45,8 @@ public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecuto
     @NotNull B nettyExecutor(@Nullable Executor nettyExecutor);
 
     /**
-     * Sets the optional user defined {@link MqttClientExecutorConfig#getNettyThreads() amount of threads Netty}
-     * (network communication framework).
+     * Sets the optional user defined {@link MqttExecutorConfig#getNettyThreads() amount of threads Netty} (network
+     * communication framework).
      *
      * @param nettyThreads the user defined amount of threads Netty.
      * @return the builder.
@@ -55,8 +55,8 @@ public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecuto
     @NotNull B nettyThreads(int nettyThreads);
 
     /**
-     * Sets the {@link MqttClientExecutorConfig#getApplicationScheduler() scheduler used for executing application
-     * specific code}.
+     * Sets the {@link MqttExecutorConfig#getApplicationScheduler() scheduler used for executing application specific
+     * code}.
      *
      * @param applicationScheduler the scheduler used for executing application specific code.
      * @return the builder.
