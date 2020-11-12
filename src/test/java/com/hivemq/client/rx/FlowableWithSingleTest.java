@@ -65,12 +65,12 @@ class FlowableWithSingleTest {
 
     @MethodSource("singleNext3")
     @ParameterizedTest
-    void observeOnBoth(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
+    void observeBothOn(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
         final AtomicInteger count = new AtomicInteger();
-        flowableWithSingle.observeOnBoth(Schedulers.from(executorService)).doOnSingle(stringBuilder -> {
+        flowableWithSingle.observeBothOn(Schedulers.from(executorService)).doOnSingle(stringBuilder -> {
             assertEquals("single", stringBuilder.toString());
             assertEquals("test_thread", Thread.currentThread().getName());
         }).doOnNext(string -> {
@@ -83,7 +83,7 @@ class FlowableWithSingleTest {
     }
 
     @Test
-    void observeOnBoth_request() {
+    void observeBothOn_request() {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
@@ -93,7 +93,7 @@ class FlowableWithSingleTest {
 
         final AtomicInteger count = new AtomicInteger();
         // bufferSize 4 -> requests 3 -> checks if request for single item leads to request 2 upstream
-        flowableWithSingle.observeOnBoth(Schedulers.from(executorService), false, 4).doOnSingle(stringBuilder -> {
+        flowableWithSingle.observeBothOn(Schedulers.from(executorService), false, 4).doOnSingle(stringBuilder -> {
             assertEquals("single", stringBuilder.toString());
             assertEquals("test_thread", Thread.currentThread().getName());
         }).doOnNext(string -> {
@@ -125,7 +125,7 @@ class FlowableWithSingleTest {
     }
 
     @Test
-    void observeOnBoth_delayError() throws InterruptedException {
+    void observeBothOn_delayError() throws InterruptedException {
         final Flowable<? extends CharSequence> flowable =
                 Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2")
                         .concatWith(Flowable.error(new IllegalArgumentException("test")))
@@ -137,7 +137,7 @@ class FlowableWithSingleTest {
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
         final AtomicInteger count = new AtomicInteger();
-        flowableWithSingle.observeOnBoth(Schedulers.from(executorService), true)
+        flowableWithSingle.observeBothOn(Schedulers.from(executorService), true)
                 .doOnSingle(stringBuilder -> {
                     assertEquals("single", stringBuilder.toString());
                     assertEquals("test_thread", Thread.currentThread().getName());
@@ -163,7 +163,7 @@ class FlowableWithSingleTest {
     }
 
     @Test
-    void observeOnBoth_delayError_bufferSize() throws InterruptedException {
+    void observeBothOn_delayError_bufferSize() throws InterruptedException {
         final Flowable<? extends CharSequence> flowable =
                 Flowable.<CharSequence>just(new StringBuilder("single")).concatWith(
                         Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
@@ -176,7 +176,7 @@ class FlowableWithSingleTest {
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
         final AtomicInteger count = new AtomicInteger();
-        flowableWithSingle.observeOnBoth(Schedulers.from(executorService), true, 1024)
+        flowableWithSingle.observeBothOn(Schedulers.from(executorService), true, 1024)
                 .doOnSingle(stringBuilder -> {
                     assertEquals("single", stringBuilder.toString());
                     assertEquals("test_thread", Thread.currentThread().getName());
@@ -202,7 +202,7 @@ class FlowableWithSingleTest {
     }
 
     @Test
-    void observeOnBoth_delayError_bufferSize_2() {
+    void observeBothOn_delayError_bufferSize_2() {
         final Flowable<? extends CharSequence> flowable =
                 Flowable.<CharSequence>just(new StringBuilder("single")).concatWith(
                         Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
@@ -218,7 +218,7 @@ class FlowableWithSingleTest {
         final AtomicReference<StringBuilder> single = new AtomicReference<>();
         final AtomicReference<Throwable> error = new AtomicReference<>();
         // @formatter:off
-        flowableWithSingle.observeOnBoth(Schedulers.from(executorService), true, 1024)
+        flowableWithSingle.observeBothOn(Schedulers.from(executorService), true, 1024)
                 .doOnSingle(stringBuilder -> {
                     single.set(stringBuilder);
                     assertEquals("test_thread", Thread.currentThread().getName());
@@ -284,12 +284,10 @@ class FlowableWithSingleTest {
                 .doOnSingle(stringBuilder -> {
                     assertEquals(1, counter.incrementAndGet());
                     assertNotEquals("test_thread", Thread.currentThread().getName());
-                })
-                .doOnSingle(stringBuilder -> {
-                    assertEquals(2, counter.incrementAndGet());
-                    assertNotEquals("test_thread", Thread.currentThread().getName());
-                })
-                .observeOnBoth(Schedulers.from(executorService))
+                }).doOnSingle(stringBuilder -> {
+            assertEquals(2, counter.incrementAndGet());
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+        }).observeBothOn(Schedulers.from(executorService))
                 .doOnSingle(stringBuilder -> {
                     assertEquals(3, counter.incrementAndGet());
                     assertEquals("test_thread", Thread.currentThread().getName());
@@ -329,7 +327,7 @@ class FlowableWithSingleTest {
             assertEquals(2, singleCounter.incrementAndGet());
             assertNotEquals("test_thread", Thread.currentThread().getName());
             return stringBuilder.append("-2");
-        }).observeOnBoth(Schedulers.from(executorService)).mapBoth(s -> {
+        }).observeBothOn(Schedulers.from(executorService)).mapBoth(s -> {
             nextCounter.incrementAndGet();
             assertEquals("test_thread", Thread.currentThread().getName());
             return s + "-3";

@@ -130,7 +130,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
             final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
 
-        return subscribePublishesUnsafe(subscribe, manualAcknowledgement).observeOnBoth(
+        return subscribePublishesUnsafe(subscribe, manualAcknowledgement).observeBothOn(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
