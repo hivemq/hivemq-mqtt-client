@@ -106,23 +106,21 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * Globally consumes all incoming Publish messages matching the given filter.
      *
      * @param filter the filter with which all incoming Publish messages are filtered.
-     * @return a {@link Mqtt5Publishes} instance that can be used to receive the Publish messages on the calling
-     *         thread.
+     * @return a {@link Publishes} instance that can be used to receive the Publish messages on the calling thread.
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    @NotNull Mqtt5Publishes publishes(final @NotNull MqttGlobalPublishFilter filter);
+    @NotNull Publishes publishes(final @NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
      *
      * @param filter                the filter with which all incoming Publish messages are filtered.
      * @param manualAcknowledgement whether the Publish messages are acknowledged manually.
-     * @return a {@link Mqtt5Publishes} instance that can be used to receive the Publish messages on the calling
-     *         thread.
+     * @return a {@link Publishes} instance that can be used to receive the Publish messages on the calling thread.
      * @see #publishes(MqttGlobalPublishFilter)
      * @since 1.2
      */
-    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
+    @NotNull Publishes publishes(@NotNull MqttGlobalPublishFilter filter, boolean manualAcknowledgement);
 
     /**
      * Unsubscribes this client with the given Unsubscribe message.
@@ -216,12 +214,12 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * Resource which queues incoming Publish messages until they are received.
      */
     @DoNotImplement
-    interface Mqtt5Publishes extends AutoCloseable {
+    interface Publishes extends AutoCloseable {
 
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt5Publishes}
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Publishes}
          *     instance.
          *   <li>Otherwise blocks the calling thread until a Publish message is received.
          * </ul>
@@ -235,7 +233,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         /**
          * Receives the next incoming Publish message.
          * <ul>
-         *   <li>Might return immediately if there is already a Publish message queued in this {@link Mqtt5Publishes}
+         *   <li>Might return immediately if there is already a Publish message queued in this {@link Publishes}
          *     instance.
          *   <li>Otherwise blocks the calling thread until a Publish message is received or the given timeout applies.
          * </ul>
@@ -251,7 +249,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
                 throws InterruptedException;
 
         /**
-         * Receives the next incoming Publish message if it is already queued in this {@link Mqtt5Publishes} instance.
+         * Receives the next incoming Publish message if it is already queued in this {@link Publishes} instance.
          *
          * @return an {@link Optional} containing the already queued Publish message, or empty if no Publish message was
          *         already queued.

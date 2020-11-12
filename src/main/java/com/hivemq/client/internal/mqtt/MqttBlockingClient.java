@@ -126,17 +126,17 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt5Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
+    public @NotNull Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
         return publishes(filter, false);
     }
 
     @Override
-    public @NotNull Mqtt5Publishes publishes(
+    public @NotNull Publishes publishes(
             final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
 
         Checks.notNull(filter, "Global publish filter");
 
-        return new MqttPublishes(delegate.publishesUnsafe(filter, manualAcknowledgement));
+        return new Publishes(delegate.publishesUnsafe(filter, manualAcknowledgement));
     }
 
     @Override
@@ -216,14 +216,14 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         return delegate.toAsync();
     }
 
-    private static class MqttPublishes implements Mqtt5Publishes, FlowableSubscriber<Mqtt5Publish> {
+    private static class Publishes implements Mqtt5BlockingClient.Publishes, FlowableSubscriber<Mqtt5Publish> {
 
         private final @NotNull AtomicReference<@Nullable Subscription> subscription = new AtomicReference<>();
         private final @NotNull LinkedList<Entry> entries = new LinkedList<>();
         private @Nullable Mqtt5Publish queuedPublish;
         private @Nullable Throwable error;
 
-        MqttPublishes(final @NotNull Flowable<Mqtt5Publish> publishes) {
+        Publishes(final @NotNull Flowable<Mqtt5Publish> publishes) {
             publishes.subscribe(this);
         }
 
