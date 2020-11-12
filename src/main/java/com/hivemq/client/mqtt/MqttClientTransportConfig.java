@@ -33,6 +33,26 @@ import java.util.Optional;
 public interface MqttClientTransportConfig {
 
     /**
+     * The default server host.
+     */
+    @NotNull String DEFAULT_SERVER_HOST = "localhost";
+    /**
+     * The default server port.
+     */
+    int DEFAULT_SERVER_PORT = 1883;
+    /**
+     * The default server port when using SSL/TLS.
+     */
+    int DEFAULT_SERVER_PORT_SSL = 8883;
+    /**
+     * The default server port when using WebSocket.
+     */
+    int DEFAULT_SERVER_PORT_WEBSOCKET = 80;
+    /**
+     * The default server port when using SSL/TLS and WebSocket.
+     */
+    int DEFAULT_SERVER_PORT_WEBSOCKET_SSL = 443;
+    /**
      * The default timeout for connecting the socket to the server in milliseconds.
      *
      * @since 1.2
