@@ -21,35 +21,34 @@ import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Builder for a {@link MqttClientTransportConfig}.
+ * Builder for a {@link MqttTransportConfig}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientTransportConfigBuilder
-        extends MqttClientTransportConfigBuilderBase<MqttClientTransportConfigBuilder> {
+public interface MqttTransportConfigBuilder extends MqttTransportConfigBuilderBase<MqttTransportConfigBuilder> {
 
     /**
-     * Builds the {@link MqttClientTransportConfig}.
+     * Builds the {@link MqttTransportConfig}.
      *
-     * @return the built {@link MqttClientTransportConfig}.
+     * @return the built {@link MqttTransportConfig}.
      */
     @CheckReturnValue
-    @NotNull MqttClientTransportConfig build();
+    @NotNull MqttTransportConfig build();
 
     /**
-     * Builder for a {@link MqttClientTransportConfig} that is applied to a parent.
+     * Builder for a {@link MqttTransportConfig} that is applied to a parent.
      *
-     * @param <P> the type of the result when the built {@link MqttClientTransportConfig} is applied to the parent.
+     * @param <P> the type of the result when the built {@link MqttTransportConfig} is applied to the parent.
      */
     @DoNotImplement
-    interface Nested<P> extends MqttClientTransportConfigBuilderBase<Nested<P>> {
+    interface Nested<P> extends MqttTransportConfigBuilderBase<Nested<P>> {
 
         /**
-         * Builds the {@link MqttClientTransportConfig} and applies it to the parent.
+         * Builds the {@link MqttTransportConfig} and applies it to the parent.
          *
-         * @return the result when the built {@link MqttClientTransportConfig} is applied to the parent.
+         * @return the result when the built {@link MqttTransportConfig} is applied to the parent.
          */
         @NotNull P applyTransportConfig();
     }

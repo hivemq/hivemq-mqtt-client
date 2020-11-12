@@ -19,8 +19,8 @@ package com.hivemq.client.internal.mqtt;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.InetSocketAddressUtil;
 import com.hivemq.client.mqtt.MqttClientTlsConfig;
-import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
 import com.hivemq.client.mqtt.MqttProxyConfig;
+import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,25 +33,25 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientTransportConfigImplBuilder<B>> {
+public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConfigImplBuilder<B>> {
 
     private @Nullable InetSocketAddress serverAddress;
-    private @NotNull Object serverHost = MqttClientTransportConfigImpl.DEFAULT_SERVER_HOST; // String or InetAddress
+    private @NotNull Object serverHost = MqttTransportConfigImpl.DEFAULT_SERVER_HOST; // String or InetAddress
     private int serverPort = -1;
     private @Nullable InetSocketAddress localAddress;
     private @Nullable MqttClientTlsConfigImpl tlsConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private @Nullable MqttProxyConfigImpl proxyConfig;
-    private int socketConnectTimeoutMs = MqttClientTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
-    private int mqttConnectTimeoutMs = MqttClientTransportConfigImpl.DEFAULT_MQTT_CONNECT_TIMEOUT_MS;
+    private int socketConnectTimeoutMs = MqttTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
+    private int mqttConnectTimeoutMs = MqttTransportConfigImpl.DEFAULT_MQTT_CONNECT_TIMEOUT_MS;
 
-    MqttClientTransportConfigImplBuilder() {}
+    MqttTransportConfigImplBuilder() {}
 
-    MqttClientTransportConfigImplBuilder(final @NotNull MqttClientTransportConfigImpl transportConfig) {
+    MqttTransportConfigImplBuilder(final @NotNull MqttTransportConfigImpl transportConfig) {
         set(transportConfig);
     }
 
-    MqttClientTransportConfigImplBuilder(final @NotNull MqttClientTransportConfigImplBuilder<?> builder) {
+    MqttTransportConfigImplBuilder(final @NotNull MqttTransportConfigImplBuilder<?> builder) {
         serverAddress = builder.serverAddress;
         serverHost = builder.serverHost;
         serverPort = builder.serverPort;
@@ -63,7 +63,7 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         mqttConnectTimeoutMs = builder.mqttConnectTimeoutMs;
     }
 
-    void set(final @NotNull MqttClientTransportConfigImpl transportConfig) {
+    void set(final @NotNull MqttTransportConfigImpl transportConfig) {
         serverAddress = transportConfig.getServerAddress();
         localAddress = transportConfig.getRawLocalAddress();
         tlsConfig = transportConfig.getRawTlsConfig();
@@ -243,27 +243,26 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         }
         if (tlsConfig == null) {
             if (webSocketConfig == null) {
-                return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT;
+                return MqttTransportConfigImpl.DEFAULT_SERVER_PORT;
             }
-            return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET;
+            return MqttTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET;
         }
         if (webSocketConfig == null) {
-            return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_TLS;
+            return MqttTransportConfigImpl.DEFAULT_SERVER_PORT_TLS;
         }
-        return MqttClientTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET_TLS;
+        return MqttTransportConfigImpl.DEFAULT_SERVER_PORT_WEBSOCKET_TLS;
     }
 
-    @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
-        return new MqttClientTransportConfigImpl(getServerAddress(), localAddress, tlsConfig, webSocketConfig,
-                proxyConfig, socketConnectTimeoutMs, mqttConnectTimeoutMs);
+    @NotNull MqttTransportConfigImpl buildTransportConfig() {
+        return new MqttTransportConfigImpl(getServerAddress(), localAddress, tlsConfig, webSocketConfig, proxyConfig,
+                socketConnectTimeoutMs, mqttConnectTimeoutMs);
     }
 
-    public static class Default extends MqttClientTransportConfigImplBuilder<Default>
-            implements MqttClientTransportConfigBuilder {
+    public static class Default extends MqttTransportConfigImplBuilder<Default> implements MqttTransportConfigBuilder {
 
         public Default() {}
 
-        Default(final @NotNull MqttClientTransportConfigImpl transportConfig) {
+        Default(final @NotNull MqttTransportConfigImpl transportConfig) {
             super(transportConfig);
         }
 
@@ -273,27 +272,27 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
         }
 
         @Override
-        public @NotNull MqttClientTransportConfigImpl build() {
+        public @NotNull MqttTransportConfigImpl build() {
             return buildTransportConfig();
         }
     }
 
-    public static class Nested<P> extends MqttClientTransportConfigImplBuilder<Nested<P>>
-            implements MqttClientTransportConfigBuilder.Nested<P> {
+    public static class Nested<P> extends MqttTransportConfigImplBuilder<Nested<P>>
+            implements MqttTransportConfigBuilder.Nested<P> {
 
-        private final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer;
+        private final @NotNull Function<? super MqttTransportConfigImpl, P> parentConsumer;
 
         public Nested(
-                final @NotNull MqttClientTransportConfigImpl transportConfig,
-                final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer) {
+                final @NotNull MqttTransportConfigImpl transportConfig,
+                final @NotNull Function<? super MqttTransportConfigImpl, P> parentConsumer) {
 
             super(transportConfig);
             this.parentConsumer = parentConsumer;
         }
 
         Nested(
-                final @NotNull MqttClientTransportConfigImplBuilder<?> builder,
-                final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer) {
+                final @NotNull MqttTransportConfigImplBuilder<?> builder,
+                final @NotNull Function<? super MqttTransportConfigImpl, P> parentConsumer) {
 
             super(builder);
             this.parentConsumer = parentConsumer;

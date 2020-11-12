@@ -16,13 +16,13 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle;
 
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImplBuilder;
+import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttTransportConfigImplBuilder;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
-import com.hivemq.client.mqtt.MqttClientTransportConfig;
+import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5ClientReconnector;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import io.netty.channel.EventLoop;
@@ -45,7 +45,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     private boolean resubscribeIfSessionExpired = DEFAULT_RESUBSCRIBE_IF_SESSION_EXPIRED;
     private boolean republishIfSessionExpired = DEFAULT_REPUBLISH_IF_SESSION_EXPIRED;
     private long delayNanos = TimeUnit.MILLISECONDS.toNanos(DEFAULT_DELAY_MS);
-    private @NotNull MqttClientTransportConfigImpl transportConfig;
+    private @NotNull MqttTransportConfigImpl transportConfig;
     private @NotNull MqttConnect connect;
 
     private boolean afterOnDisconnected;
@@ -54,7 +54,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
             final @NotNull EventLoop eventLoop,
             final int attempts,
             final @NotNull MqttConnect connect,
-            final @NotNull MqttClientTransportConfigImpl transportConfig) {
+            final @NotNull MqttTransportConfigImpl transportConfig) {
 
         this.eventLoop = eventLoop;
         this.attempts = attempts;
@@ -142,21 +142,21 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector transportConfig(final @Nullable MqttClientTransportConfig transportConfig) {
+    public @NotNull MqttClientReconnector transportConfig(final @Nullable MqttTransportConfig transportConfig) {
         checkInEventLoop();
         this.transportConfig =
-                Checks.notImplemented(transportConfig, MqttClientTransportConfigImpl.class, "Transport config");
+                Checks.notImplemented(transportConfig, MqttTransportConfigImpl.class, "Transport config");
         return this;
     }
 
     @Override
-    public MqttClientTransportConfigImplBuilder.@NotNull Nested<MqttClientReconnector> transportConfig() {
+    public MqttTransportConfigImplBuilder.@NotNull Nested<MqttClientReconnector> transportConfig() {
         checkInEventLoop();
-        return new MqttClientTransportConfigImplBuilder.Nested<>(transportConfig, this::transportConfig);
+        return new MqttTransportConfigImplBuilder.Nested<>(transportConfig, this::transportConfig);
     }
 
     @Override
-    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+    public @NotNull MqttTransportConfigImpl getTransportConfig() {
         checkInEventLoop();
         return transportConfig;
     }

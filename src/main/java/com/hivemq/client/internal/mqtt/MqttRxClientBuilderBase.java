@@ -39,11 +39,11 @@ import java.net.InetSocketAddress;
  * @author Silvio Giebl
  */
 public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<B>>
-        extends MqttClientTransportConfigImplBuilder<B> {
+        extends MqttTransportConfigImplBuilder<B> {
 
     private @NotNull MqttClientIdentifierImpl identifier =
             MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
-    private @Nullable MqttClientTransportConfigImpl transportConfig = MqttClientTransportConfigImpl.DEFAULT;
+    private @Nullable MqttTransportConfigImpl transportConfig = MqttTransportConfigImpl.DEFAULT;
     private @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
     private @Nullable MqttClientAutoReconnectImpl autoReconnect;
     private ImmutableList.@Nullable Builder<MqttClientConnectedListener> connectedListenersBuilder;
@@ -120,15 +120,15 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return super.webSocketConfig(webSocketConfig);
     }
 
-    public @NotNull B transportConfig(final @Nullable MqttClientTransportConfig transportConfig) {
+    public @NotNull B transportConfig(final @Nullable MqttTransportConfig transportConfig) {
         this.transportConfig =
-                Checks.notImplemented(transportConfig, MqttClientTransportConfigImpl.class, "Transport config");
+                Checks.notImplemented(transportConfig, MqttTransportConfigImpl.class, "Transport config");
         set(this.transportConfig);
         return self();
     }
 
-    public MqttClientTransportConfigImplBuilder.@NotNull Nested<B> transportConfig() {
-        return new MqttClientTransportConfigImplBuilder.Nested<>(this, this::transportConfig);
+    public MqttTransportConfigImplBuilder.@NotNull Nested<B> transportConfig() {
+        return new MqttTransportConfigImplBuilder.Nested<>(this, this::transportConfig);
     }
 
     public @NotNull B executorConfig(final @Nullable MqttClientExecutorConfig executorConfig) {
@@ -175,7 +175,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     @Override
-    @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
+    @NotNull MqttTransportConfigImpl buildTransportConfig() {
         if (transportConfig == null) {
             return super.buildTransportConfig();
         }

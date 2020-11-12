@@ -24,7 +24,7 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.client.mqtt.MqttClientExecutorConfig;
 import com.hivemq.client.mqtt.MqttClientState;
-import com.hivemq.client.mqtt.MqttClientTransportConfig;
+import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
@@ -62,7 +62,7 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @NotNull MqttClientTransportConfig getTransportConfig() {
+    public @NotNull MqttTransportConfig getTransportConfig() {
         return delegate.getTransportConfig();
     }
 

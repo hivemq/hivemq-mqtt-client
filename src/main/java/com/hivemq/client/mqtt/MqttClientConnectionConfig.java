@@ -32,7 +32,7 @@ public interface MqttClientConnectionConfig {
      * @return the transport configuration the client is connected with.
      * @since 1.1
      */
-    @NotNull MqttClientTransportConfig getTransportConfig();
+    @NotNull MqttTransportConfig getTransportConfig();
 
     /**
      * @return the keep alive in seconds that is used while the client is connected.

@@ -26,17 +26,17 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Builder base for a {@link MqttClientTransportConfig}.
+ * Builder base for a {@link MqttTransportConfig}.
  *
  * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransportConfigBuilderBase<B>> {
+public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBuilderBase<B>> {
 
     /**
-     * Sets the {@link MqttClientTransportConfig#getServerAddress() server address} to connect to.
+     * Sets the {@link MqttTransportConfig#getServerAddress() server address} to connect to.
      *
      * @param address the server address.
      * @return the builder.
@@ -72,7 +72,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     @NotNull B serverPort(int port);
 
     /**
-     * Sets the optional {@link MqttClientTransportConfig#getLocalAddress() local bind address}.
+     * Sets the optional {@link MqttTransportConfig#getLocalAddress() local bind address}.
      * <p>
      * The address must be resolved.
      *
@@ -116,7 +116,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     @NotNull B localPort(int port);
 
     /**
-     * Sets the {@link MqttClientTransportConfig#getTlsConfig() transport layer security configuration} to the default
+     * Sets the {@link MqttTransportConfig#getTlsConfig() transport layer security configuration} to the default
      * configuration.
      * <p>
      * This means that the systems default trust store, ciphers and protocols are used.
@@ -127,7 +127,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     @NotNull B tlsWithDefaultConfig();
 
     /**
-     * Sets the optional {@link MqttClientTransportConfig#getTlsConfig() transport layer security configuration}.
+     * Sets the optional {@link MqttTransportConfig#getTlsConfig() transport layer security configuration}.
      *
      * @param tlsConfig the transport layer security configuration or <code>null</code> to remove any previously set
      *                  transport layer security configuration.
@@ -149,7 +149,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     MqttClientTlsConfigBuilder.@NotNull Nested<? extends B> tlsConfig();
 
     /**
-     * Sets the {@link MqttClientTransportConfig#getWebSocketConfig() WebSocket transport configuration} to the default
+     * Sets the {@link MqttTransportConfig#getWebSocketConfig() WebSocket transport configuration} to the default
      * configuration.
      *
      * @return the builder.
@@ -158,7 +158,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     @NotNull B webSocketWithDefaultConfig();
 
     /**
-     * Sets the optional {@link MqttClientTransportConfig#getWebSocketConfig() WebSocket transport configuration}.
+     * Sets the optional {@link MqttTransportConfig#getWebSocketConfig() WebSocket transport configuration}.
      *
      * @param webSocketConfig the WebSocket transport configuration or <code>null</code> to remove any previously set
      *                        WebSocket transport configuration.
@@ -180,7 +180,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> webSocketConfig();
 
     /**
-     * Sets the optional {@link MqttClientTransportConfig#getProxyConfig() proxy configuration}.
+     * Sets the optional {@link MqttTransportConfig#getProxyConfig() proxy configuration}.
      *
      * @param proxyConfig the proxy configuration or <code>null</code> to remove any previously set proxy
      *                    configuration.
@@ -204,7 +204,7 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     MqttProxyConfigBuilder.@NotNull Nested<? extends B> proxyConfig();
 
     /**
-     * Sets the {@link MqttClientTransportConfig#getSocketConnectTimeoutMs() timeout for connecting the socket to the
+     * Sets the {@link MqttTransportConfig#getSocketConnectTimeoutMs() timeout for connecting the socket to the
      * server}.
      * <p>
      * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
@@ -218,8 +218,8 @@ public interface MqttClientTransportConfigBuilderBase<B extends MqttClientTransp
     @NotNull B socketConnectTimeout(long timeout, @NotNull TimeUnit timeUnit);
 
     /**
-     * Sets the {@link MqttClientTransportConfig#getMqttConnectTimeoutMs() timeout between sending the Connect and
-     * receiving the ConnAck message}.
+     * Sets the {@link MqttTransportConfig#getMqttConnectTimeoutMs() timeout between sending the Connect and receiving
+     * the ConnAck message}.
      * <p>
      * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
      *

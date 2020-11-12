@@ -90,7 +90,7 @@ public interface MqttClientConfig {
      * @return the transport configuration of the client.
      * @since 1.1
      */
-    @NotNull MqttClientTransportConfig getTransportConfig();
+    @NotNull MqttTransportConfig getTransportConfig();
 
     /**
      * @return the executor configuration of the client.

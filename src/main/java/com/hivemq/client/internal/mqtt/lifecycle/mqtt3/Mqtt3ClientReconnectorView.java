@@ -16,13 +16,13 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
 
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
-import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImplBuilder;
+import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttTransportConfigImplBuilder;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
-import com.hivemq.client.mqtt.MqttClientTransportConfig;
+import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientReconnector;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.jetbrains.annotations.NotNull;
@@ -102,20 +102,18 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView transportConfig(
-            final @Nullable MqttClientTransportConfig transportConfig) {
-
+    public @NotNull Mqtt3ClientReconnectorView transportConfig(final @Nullable MqttTransportConfig transportConfig) {
         delegate.transportConfig(transportConfig);
         return this;
     }
 
     @Override
-    public MqttClientTransportConfigImplBuilder.@NotNull Nested<Mqtt3ClientReconnectorView> transportConfig() {
-        return new MqttClientTransportConfigImplBuilder.Nested<>(getTransportConfig(), this::transportConfig);
+    public MqttTransportConfigImplBuilder.@NotNull Nested<Mqtt3ClientReconnectorView> transportConfig() {
+        return new MqttTransportConfigImplBuilder.Nested<>(getTransportConfig(), this::transportConfig);
     }
 
     @Override
-    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+    public @NotNull MqttTransportConfigImpl getTransportConfig() {
         return delegate.getTransportConfig();
     }
 
