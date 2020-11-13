@@ -18,7 +18,7 @@ package com.hivemq.client.internal.mqtt.handler.auth;
 
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.message.auth.MqttAuth;
-import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;

@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  *   <li>Restrictions for the client set by the client itself.
  * <p>
  *     These restrictions are used in conjunction with the
- *     {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions Mqtt5ConnAckRestrictions}
+ *     {@link Mqtt5ConnAckRestrictions}
  *     to form the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient
  *     Mqtt5ClientConnectionConfig.RestrictionsForClient}.
  * </ul>
@@ -105,8 +105,7 @@ public interface Mqtt5ConnectRestrictions {
      * concurrently. The default is {@link #DEFAULT_SEND_MAXIMUM}.
      * <p>
      * The actual amount a connected client will use is determined by the minimum of this value and {@link
-     * com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getReceiveMaximum()
-     * MqttConnAckRestrictions#getReceiveMaximum()}.
+     * Mqtt5ConnAckRestrictions#getReceiveMaximum() MqttConnAckRestrictions#getReceiveMaximum()}.
      *
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
      *         concurrently.
@@ -126,8 +125,7 @@ public interface Mqtt5ConnectRestrictions {
      * #DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
      * <p>
      * The actual size a connected client will use is determined by the minimum of this value and {@link
-     * com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
-     * MqttConnAckRestrictions#getMaximumPacketSize()}.
+     * Mqtt5ConnAckRestrictions#getMaximumPacketSize() MqttConnAckRestrictions#getMaximumPacketSize()}.
      *
      * @return the maximum packet size the client sends to the server.
      */
@@ -146,8 +144,7 @@ public interface Mqtt5ConnectRestrictions {
      * #DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM}.
      * <p>
      * The actual amount a connected client will use is determined by the minimum of this value and {@link
-     * com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
-     * MqttConnAckRestrictions#getTopicAliasMaximum()}.
+     * Mqtt5ConnAckRestrictions#getTopicAliasMaximum() MqttConnAckRestrictions#getTopicAliasMaximum()}.
      *
      * @return the maximum amount of topic aliases the client sends to the server.
      */

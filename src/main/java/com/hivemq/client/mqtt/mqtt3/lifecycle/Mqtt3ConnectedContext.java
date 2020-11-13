@@ -19,8 +19,8 @@ package com.hivemq.client.mqtt.mqtt3.lifecycle;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.lifecycle.MqttConnectedContext;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.jetbrains.annotations.NotNull;
 
 /**

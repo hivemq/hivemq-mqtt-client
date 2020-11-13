@@ -30,7 +30,7 @@ import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
 import com.hivemq.client.rx.FlowableWithSingleSplit;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;

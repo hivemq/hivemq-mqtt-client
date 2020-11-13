@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.exceptions;
 
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubRec;
 import org.jetbrains.annotations.NotNull;
 
 /**

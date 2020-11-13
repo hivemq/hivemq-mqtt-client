@@ -23,8 +23,8 @@ import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttIncomingQosH
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttOutgoingQosHandler;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import io.netty.channel.ChannelPipeline;

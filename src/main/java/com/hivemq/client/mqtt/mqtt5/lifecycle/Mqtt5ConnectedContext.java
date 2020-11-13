@@ -19,8 +19,8 @@ package com.hivemq.client.mqtt.mqtt5.lifecycle;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.lifecycle.MqttConnectedContext;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.jetbrains.annotations.NotNull;
 
 /**

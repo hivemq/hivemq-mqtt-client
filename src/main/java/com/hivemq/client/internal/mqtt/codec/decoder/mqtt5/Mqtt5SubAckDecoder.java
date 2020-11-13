@@ -22,9 +22,9 @@ import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoder;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,8 +34,8 @@ import javax.inject.Singleton;
 import static com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static com.hivemq.client.internal.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAckProperty.REASON_STRING;
-import static com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAckProperty.USER_PROPERTY;
+import static com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAckProperty.REASON_STRING;
+import static com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAckProperty.USER_PROPERTY;
 
 /**
  * @author Silvio Giebl

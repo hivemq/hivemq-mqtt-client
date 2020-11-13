@@ -19,10 +19,10 @@ package com.hivemq.client.internal.mqtt.codec.decoder.mqtt3;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderContext;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoder;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
+import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
+import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAckReturnCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 

@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

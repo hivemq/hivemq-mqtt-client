@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.exceptions;
 
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import org.jetbrains.annotations.NotNull;
 
 /**

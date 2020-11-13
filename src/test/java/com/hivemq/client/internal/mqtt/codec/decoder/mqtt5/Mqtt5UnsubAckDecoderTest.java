@@ -18,14 +18,14 @@ package com.hivemq.client.internal.mqtt.codec.decoder.mqtt5;
 
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertyImpl;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubAck;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
+import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ import java.util.Optional;
 
 import static com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
 import static com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
-import static com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode.*;
+import static com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

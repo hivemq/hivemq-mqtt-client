@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.exceptions;
 
-import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import org.jetbrains.annotations.NotNull;
 
 /**

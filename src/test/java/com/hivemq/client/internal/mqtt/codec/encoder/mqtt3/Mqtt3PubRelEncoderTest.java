@@ -17,8 +17,8 @@
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt3;
 
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoders;
-import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
-import com.hivemq.client.internal.mqtt.message.publish.pubrel.mqtt3.Mqtt3PubRelView;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubRel;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubRelView;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

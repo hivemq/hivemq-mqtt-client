@@ -18,9 +18,9 @@ package com.hivemq.client.internal.mqtt.handler.subscribe;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import org.jetbrains.annotations.NotNull;

@@ -17,8 +17,8 @@
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1;
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubAckBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.hivemq.client.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**

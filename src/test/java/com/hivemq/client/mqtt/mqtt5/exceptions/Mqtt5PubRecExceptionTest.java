@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.internal.util.AsyncRuntimeException;
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubRec;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

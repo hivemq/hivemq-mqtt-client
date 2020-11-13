@@ -123,7 +123,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
          * concurrently.
          * <p>
          * The value is determined by the minimum of {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions#getSendMaximum
-         * Mqtt5ConnectRestrictions#getSendMaximum()} and {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getReceiveMaximum()
+         * Mqtt5ConnectRestrictions#getSendMaximum()} and {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#getReceiveMaximum()
          * MqttConnAckRestrictions#getReceiveMaximum()}.
          *
          * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
@@ -135,7 +135,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
          * Returns the maximum packet size the client sends to the server.
          * <p>
          * The value is determined by the minimum of {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions#getSendMaximumPacketSize
-         * Mqtt5ConnectRestrictions#getSendMaximumPacketSize()} and {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
+         * Mqtt5ConnectRestrictions#getSendMaximumPacketSize()} and {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
          * MqttConnAckRestrictions#getMaximumPacketSize()}.
          *
          * @return the maximum packet size the client sends to the server.
@@ -146,7 +146,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
          * Returns the maximum amount of topic aliases the client sends to the server.
          * <p>
          * The value is determined by the minimum of {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions#getSendTopicAliasMaximum
-         * Mqtt5ConnectRestrictions#getSendTopicAliasMaximum()} and {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
+         * Mqtt5ConnectRestrictions#getSendTopicAliasMaximum()} and {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
          * MqttConnAckRestrictions#getTopicAliasMaximum()}.
          *
          * @return the maximum amount of topic aliases the client sends to the server.
@@ -156,7 +156,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
         /**
          * Returns the maximum {@link MqttQos QoS} the server accepts from the client.
          * <p>
-         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumQos()
+         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#getMaximumQos()
          * MqttConnAckRestrictions#getMaximumQos()}.
          *
          * @return the maximum QoS the server accepts from the client.
@@ -166,7 +166,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
         /**
          * Returns whether the server accepts retained messages from the client.
          * <p>
-         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#isRetainAvailable()
+         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isRetainAvailable()
          * MqttConnAckRestrictions#isRetainAvailable()}.
          *
          * @return whether the server accepts retained messages from the client.
@@ -176,7 +176,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
         /**
          * Returns whether the server accepts wildcard subscriptions from the client.
          * <p>
-         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#isWildcardSubscriptionAvailable()
+         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isWildcardSubscriptionAvailable()
          * MqttConnAckRestrictions#isWildcardSubscriptionAvailable()}.
          *
          * @return whether the server accepts wildcard subscriptions.
@@ -186,7 +186,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
         /**
          * Returns whether the server accepts shared subscriptions from the client.
          * <p>
-         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#isSharedSubscriptionAvailable()
+         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isSharedSubscriptionAvailable()
          * MqttConnAckRestrictions#isSharedSubscriptionAvailable()}.
          *
          * @return whether the server accepts shared subscriptions from the client.
@@ -196,7 +196,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
         /**
          * Returns whether the server accepts subscription identifiers from the client.
          * <p>
-         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#areSubscriptionIdentifiersAvailable()
+         * The value is determined by {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions#areSubscriptionIdentifiersAvailable()
          * MqttConnAckRestrictions#areSubscriptionIdentifiersAvailable()}.
          *
          * @return whether the server accepts subscription identifiers from the client.
