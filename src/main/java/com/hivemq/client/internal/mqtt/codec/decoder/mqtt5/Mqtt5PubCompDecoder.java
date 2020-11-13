@@ -22,9 +22,9 @@ import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoder;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
-import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubComp;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubComp;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubCompReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,9 +34,9 @@ import javax.inject.Singleton;
 import static com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static com.hivemq.client.internal.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubComp.DEFAULT_REASON_CODE;
-import static com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubCompProperty.REASON_STRING;
-import static com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubCompProperty.USER_PROPERTY;
+import static com.hivemq.client.internal.mqtt.message.publish.MqttPubComp.DEFAULT_REASON_CODE;
+import static com.hivemq.client.internal.mqtt.message.publish.MqttPubCompProperty.REASON_STRING;
+import static com.hivemq.client.internal.mqtt.message.publish.MqttPubCompProperty.USER_PROPERTY;
 
 /**
  * @author Silvio Giebl

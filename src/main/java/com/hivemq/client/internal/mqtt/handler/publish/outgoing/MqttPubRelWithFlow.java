@@ -16,9 +16,9 @@
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubRec;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubRel;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
-import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
-import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BooleanSupplier;

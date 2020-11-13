@@ -32,7 +32,7 @@ import java.nio.ByteBuffer;
 
 import static com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedUTF8String;
 import static com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
-import static com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static com.hivemq.client.internal.mqtt.message.connect.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 
 /**
  * Util for decoders for MQTT 5 messages.

@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt3;
 
 import com.hivemq.client.internal.mqtt.codec.encoder.mqtt3.Mqtt3MessageEncoder.Mqtt3MessageWithIdEncoder;
-import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubRec;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 
 import javax.inject.Inject;

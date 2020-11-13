@@ -16,10 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.publish;
 
-import com.hivemq.client.internal.mqtt.message.publish.puback.MqttPubAck;
-import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubComp;
-import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
-import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

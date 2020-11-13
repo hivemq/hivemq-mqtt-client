@@ -16,8 +16,8 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
-import com.hivemq.client.internal.mqtt.message.publish.puback.mqtt3.Mqtt3PubAckView;
-import com.hivemq.client.mqtt.mqtt3.message.publish.puback.Mqtt3PubAck;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubAckView;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PubAck;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

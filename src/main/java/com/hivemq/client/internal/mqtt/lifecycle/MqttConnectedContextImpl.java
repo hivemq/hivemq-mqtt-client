@@ -18,8 +18,8 @@ package com.hivemq.client.internal.mqtt.lifecycle;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.lifecycle.mqtt3.Mqtt3ConnectedContextView;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.lifecycle.MqttConnectedContext;
 import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5ConnectedContext;

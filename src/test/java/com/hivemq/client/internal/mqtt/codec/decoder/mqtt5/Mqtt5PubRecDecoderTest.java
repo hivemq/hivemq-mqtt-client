@@ -18,12 +18,12 @@ package com.hivemq.client.internal.mqtt.codec.decoder.mqtt5;
 
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertyImpl;
-import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubRec;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubRecReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
-import static com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode.SUCCESS;
+import static com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubRecReasonCode.SUCCESS;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

@@ -16,8 +16,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubAck;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.jetbrains.annotations.NotNull;
 
 /**

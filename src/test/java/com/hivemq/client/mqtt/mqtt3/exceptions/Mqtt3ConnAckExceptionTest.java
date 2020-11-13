@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
 import com.hivemq.client.internal.util.AsyncRuntimeException;
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

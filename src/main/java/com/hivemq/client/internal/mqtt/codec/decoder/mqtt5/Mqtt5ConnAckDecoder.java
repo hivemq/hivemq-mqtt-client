@@ -21,12 +21,12 @@ import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoder;
 import com.hivemq.client.internal.mqtt.datatypes.*;
 import com.hivemq.client.internal.mqtt.message.auth.MqttEnhancedAuth;
-import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
-import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnAckRestrictions;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAckReturnCode;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckReasonCode;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -37,10 +37,10 @@ import java.nio.ByteBuffer;
 
 import static com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static com.hivemq.client.internal.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck.KEEP_ALIVE_FROM_CONNECT;
-import static com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-import static com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckProperty.*;
-import static com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions.*;
+import static com.hivemq.client.internal.mqtt.message.connect.MqttConnAck.KEEP_ALIVE_FROM_CONNECT;
+import static com.hivemq.client.internal.mqtt.message.connect.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static com.hivemq.client.internal.mqtt.message.connect.MqttConnAckProperty.*;
+import static com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions.*;
 
 /**
  * @author Silvio Giebl

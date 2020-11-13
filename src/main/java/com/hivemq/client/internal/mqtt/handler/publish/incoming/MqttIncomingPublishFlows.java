@@ -22,13 +22,13 @@ import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
-import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
-import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
-import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

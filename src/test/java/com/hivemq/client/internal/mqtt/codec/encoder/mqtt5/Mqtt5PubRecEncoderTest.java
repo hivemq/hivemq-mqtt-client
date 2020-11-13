@@ -19,9 +19,9 @@ package com.hivemq.client.internal.mqtt.codec.encoder.mqtt5;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
-import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubRec;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubRecReasonCode;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import static com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
-import static com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode.SUCCESS;
+import static com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubRecReasonCode.SUCCESS;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 
 /**

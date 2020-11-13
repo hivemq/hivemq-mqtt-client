@@ -16,15 +16,15 @@
 
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt5;
 
-import com.hivemq.client.internal.mqtt.message.publish.puback.MqttPubAck;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubAck;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
-import com.hivemq.client.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static com.hivemq.client.internal.mqtt.message.publish.puback.MqttPubAck.DEFAULT_REASON_CODE;
+import static com.hivemq.client.internal.mqtt.message.publish.MqttPubAck.DEFAULT_REASON_CODE;
 
 /**
  * @author Silvio Giebl

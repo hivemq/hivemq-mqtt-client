@@ -21,10 +21,10 @@ import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
-import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
 
 import java.util.concurrent.CountDownLatch;
 

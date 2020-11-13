@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.internal.util.AsyncRuntimeException;
-import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

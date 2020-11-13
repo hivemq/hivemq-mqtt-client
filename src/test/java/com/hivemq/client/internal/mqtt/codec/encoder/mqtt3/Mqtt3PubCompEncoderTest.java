@@ -17,8 +17,8 @@
 package com.hivemq.client.internal.mqtt.codec.encoder.mqtt3;
 
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoders;
-import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubComp;
-import com.hivemq.client.internal.mqtt.message.publish.pubcomp.mqtt3.Mqtt3PubCompView;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubComp;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubCompView;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;

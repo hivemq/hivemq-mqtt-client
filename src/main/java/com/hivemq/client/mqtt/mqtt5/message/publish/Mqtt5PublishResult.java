@@ -17,10 +17,6 @@
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
-import com.hivemq.client.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

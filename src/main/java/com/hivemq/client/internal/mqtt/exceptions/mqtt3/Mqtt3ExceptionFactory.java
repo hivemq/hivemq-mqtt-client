@@ -16,10 +16,10 @@
 
 package com.hivemq.client.internal.mqtt.exceptions.mqtt3;
 
-import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
-import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnAckView;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
+import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException;
 import com.hivemq.client.mqtt.mqtt3.exceptions.*;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException;

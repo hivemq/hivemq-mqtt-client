@@ -19,8 +19,8 @@ package com.hivemq.client.internal.mqtt.codec.decoder.mqtt3;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderContext;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoder;
-import com.hivemq.client.internal.mqtt.message.publish.puback.MqttPubAck;
-import com.hivemq.client.internal.mqtt.message.publish.puback.mqtt3.Mqtt3PubAckView;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPubAck;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubAckView;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 

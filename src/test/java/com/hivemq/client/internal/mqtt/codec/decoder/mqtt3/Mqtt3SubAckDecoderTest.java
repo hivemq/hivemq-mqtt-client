@@ -18,9 +18,9 @@ package com.hivemq.client.internal.mqtt.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoders;
-import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
-import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
+import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;

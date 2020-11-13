@@ -19,9 +19,9 @@ package com.hivemq.client.internal.mqtt.codec.decoder.mqtt3;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderContext;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoder;
-import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
-import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
+import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnAckView;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAckReturnCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
