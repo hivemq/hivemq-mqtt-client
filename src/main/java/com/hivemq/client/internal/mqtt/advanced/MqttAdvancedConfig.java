@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.advanced;
 
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
-import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
+import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5AdvancedConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,15 +26,15 @@ import java.util.Objects;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
+public class MqttAdvancedConfig implements Mqtt5AdvancedConfig {
 
-    public static final @NotNull MqttClientAdvancedConfig DEFAULT = new MqttClientAdvancedConfig(false, false, null);
+    public static final @NotNull MqttAdvancedConfig DEFAULT = new MqttAdvancedConfig(false, false, null);
 
     private final boolean allowServerReAuth;
     private final boolean validatePayloadFormat;
     private final @Nullable MqttClientInterceptors interceptors;
 
-    MqttClientAdvancedConfig(
+    MqttAdvancedConfig(
             final boolean allowServerReAuth,
             final boolean validatePayloadFormat,
             final @Nullable MqttClientInterceptors interceptors) {
@@ -60,8 +60,8 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
     }
 
     @Override
-    public MqttClientAdvancedConfigBuilder.@NotNull Default extend() {
-        return new MqttClientAdvancedConfigBuilder.Default(this);
+    public MqttAdvancedConfigBuilder.@NotNull Default extend() {
+        return new MqttAdvancedConfigBuilder.Default(this);
     }
 
     @Override
@@ -69,10 +69,10 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MqttClientAdvancedConfig)) {
+        if (!(o instanceof MqttAdvancedConfig)) {
             return false;
         }
-        final MqttClientAdvancedConfig that = (MqttClientAdvancedConfig) o;
+        final MqttAdvancedConfig that = (MqttAdvancedConfig) o;
 
         return (allowServerReAuth == that.allowServerReAuth) && (validatePayloadFormat == that.validatePayloadFormat) &&
                 Objects.equals(interceptors, that.interceptors);

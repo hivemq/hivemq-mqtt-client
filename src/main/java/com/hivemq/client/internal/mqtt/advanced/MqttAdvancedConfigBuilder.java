@@ -19,7 +19,7 @@ package com.hivemq.client.internal.mqtt.advanced;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptorsBuilder;
 import com.hivemq.client.internal.util.Checks;
-import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfigBuilder;
+import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5AdvancedConfigBuilder;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,15 +29,15 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvancedConfigBuilder<B>> {
+public abstract class MqttAdvancedConfigBuilder<B extends MqttAdvancedConfigBuilder<B>> {
 
     private boolean allowServerReAuth;
     private boolean validatePayloadFormat;
     private @Nullable MqttClientInterceptors interceptors;
 
-    MqttClientAdvancedConfigBuilder() {}
+    MqttAdvancedConfigBuilder() {}
 
-    MqttClientAdvancedConfigBuilder(final @NotNull MqttClientAdvancedConfig advancedConfig) {
+    MqttAdvancedConfigBuilder(final @NotNull MqttAdvancedConfig advancedConfig) {
         allowServerReAuth = advancedConfig.isAllowServerReAuth();
         validatePayloadFormat = advancedConfig.isValidatePayloadFormat();
         interceptors = advancedConfig.getInterceptors();
@@ -64,16 +64,15 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
         return new MqttClientInterceptorsBuilder.Nested<>(interceptors, this::interceptors);
     }
 
-    public @NotNull MqttClientAdvancedConfig build() {
-        return new MqttClientAdvancedConfig(allowServerReAuth, validatePayloadFormat, interceptors);
+    public @NotNull MqttAdvancedConfig build() {
+        return new MqttAdvancedConfig(allowServerReAuth, validatePayloadFormat, interceptors);
     }
 
-    public static class Default extends MqttClientAdvancedConfigBuilder<Default>
-            implements Mqtt5ClientAdvancedConfigBuilder {
+    public static class Default extends MqttAdvancedConfigBuilder<Default> implements Mqtt5AdvancedConfigBuilder {
 
         public Default() {}
 
-        Default(final @NotNull MqttClientAdvancedConfig advancedConfig) {
+        Default(final @NotNull MqttAdvancedConfig advancedConfig) {
             super(advancedConfig);
         }
 
@@ -83,14 +82,14 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
         }
     }
 
-    public static class Nested<P> extends MqttClientAdvancedConfigBuilder<Nested<P>>
-            implements Mqtt5ClientAdvancedConfigBuilder.Nested<P> {
+    public static class Nested<P> extends MqttAdvancedConfigBuilder<Nested<P>>
+            implements Mqtt5AdvancedConfigBuilder.Nested<P> {
 
-        private final @NotNull Function<? super MqttClientAdvancedConfig, P> parentConsumer;
+        private final @NotNull Function<? super MqttAdvancedConfig, P> parentConsumer;
 
         public Nested(
-                final @NotNull MqttClientAdvancedConfig advancedConfig,
-                final @NotNull Function<? super MqttClientAdvancedConfig, P> parentConsumer) {
+                final @NotNull MqttAdvancedConfig advancedConfig,
+                final @NotNull Function<? super MqttAdvancedConfig, P> parentConsumer) {
 
             super(advancedConfig);
             this.parentConsumer = parentConsumer;

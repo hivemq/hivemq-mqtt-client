@@ -16,8 +16,8 @@
 
 package com.hivemq.client.internal.mqtt;
 
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfig;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfigBuilder;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuthBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
@@ -26,7 +26,7 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientBuilder;
-import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
+import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBuilder> implements Mqtt5ClientBuilder {
 
-    private @NotNull MqttClientAdvancedConfig advancedConfig = MqttClientAdvancedConfig.DEFAULT;
+    private @NotNull MqttAdvancedConfig advancedConfig = MqttAdvancedConfig.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private @Nullable MqttWillPublish willPublish;
@@ -55,14 +55,14 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public @NotNull MqttRxClientBuilder advancedConfig(final @NotNull Mqtt5ClientAdvancedConfig advancedConfig) {
-        this.advancedConfig = Checks.notImplemented(advancedConfig, MqttClientAdvancedConfig.class, "Advanced config");
+    public @NotNull MqttRxClientBuilder advancedConfig(final @NotNull Mqtt5AdvancedConfig advancedConfig) {
+        this.advancedConfig = Checks.notImplemented(advancedConfig, MqttAdvancedConfig.class, "Advanced config");
         return this;
     }
 
     @Override
-    public MqttClientAdvancedConfigBuilder.@NotNull Nested<MqttRxClientBuilder> advancedConfig() {
-        return new MqttClientAdvancedConfigBuilder.Nested<>(advancedConfig, this::advancedConfig);
+    public MqttAdvancedConfigBuilder.@NotNull Nested<MqttRxClientBuilder> advancedConfig() {
+        return new MqttAdvancedConfigBuilder.Nested<>(advancedConfig, this::advancedConfig);
     }
 
     @Override

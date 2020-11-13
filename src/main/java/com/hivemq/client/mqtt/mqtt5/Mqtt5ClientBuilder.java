@@ -19,8 +19,8 @@ package com.hivemq.client.mqtt.mqtt5;
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientBuilderBase;
-import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
-import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfigBuilder;
+import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5AdvancedConfig;
+import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5AdvancedConfigBuilder;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
@@ -45,19 +45,19 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull Mqtt5ClientBuilder advancedConfig(@NotNull Mqtt5ClientAdvancedConfig advancedConfig);
+    @NotNull Mqtt5ClientBuilder advancedConfig(@NotNull Mqtt5AdvancedConfig advancedConfig);
 
     /**
-     * Fluent counterpart of {@link #advancedConfig(Mqtt5ClientAdvancedConfig)}.
+     * Fluent counterpart of {@link #advancedConfig(Mqtt5AdvancedConfig)}.
      * <p>
-     * Calling {@link Mqtt5ClientAdvancedConfigBuilder.Nested#applyAdvancedConfig()} on the returned builder has the
-     * effect of extending the current advanced configuration.
+     * Calling {@link Mqtt5AdvancedConfigBuilder.Nested#applyAdvancedConfig()} on the returned builder has the effect of
+     * extending the current advanced configuration.
      *
      * @return the fluent builder for the advanced configuration.
-     * @see #advancedConfig(Mqtt5ClientAdvancedConfig)
+     * @see #advancedConfig(Mqtt5AdvancedConfig)
      */
     @CheckReturnValue
-    Mqtt5ClientAdvancedConfigBuilder.@NotNull Nested<? extends Mqtt5ClientBuilder> advancedConfig();
+    Mqtt5AdvancedConfigBuilder.@NotNull Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
     /**
      * Sets the optional {@link Mqtt5ClientConfig#getSimpleAuth() simple authentication and/or authorization related

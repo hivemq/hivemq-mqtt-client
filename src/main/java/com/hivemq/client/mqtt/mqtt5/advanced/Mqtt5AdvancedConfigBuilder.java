@@ -21,35 +21,34 @@ import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Builder for a {@link Mqtt5ClientAdvancedConfig}.
+ * Builder for a {@link Mqtt5AdvancedConfig}.
  *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
-public interface Mqtt5ClientAdvancedConfigBuilder
-        extends Mqtt5ClientAdvancedConfigBuilderBase<Mqtt5ClientAdvancedConfigBuilder> {
+public interface Mqtt5AdvancedConfigBuilder extends Mqtt5AdvancedConfigBuilderBase<Mqtt5AdvancedConfigBuilder> {
 
     /**
-     * Builds the {@link Mqtt5ClientAdvancedConfig}.
+     * Builds the {@link Mqtt5AdvancedConfig}.
      *
-     * @return the built {@link Mqtt5ClientAdvancedConfig}.
+     * @return the built {@link Mqtt5AdvancedConfig}.
      */
     @CheckReturnValue
-    @NotNull Mqtt5ClientAdvancedConfig build();
+    @NotNull Mqtt5AdvancedConfig build();
 
     /**
-     * Builder for a {@link Mqtt5ClientAdvancedConfig} that is applied to a parent.
+     * Builder for a {@link Mqtt5AdvancedConfig} that is applied to a parent.
      *
-     * @param <P> the type of the result when the built {@link Mqtt5ClientAdvancedConfig} is applied to the parent.
+     * @param <P> the type of the result when the built {@link Mqtt5AdvancedConfig} is applied to the parent.
      */
     @DoNotImplement
-    interface Nested<P> extends Mqtt5ClientAdvancedConfigBuilderBase<Nested<P>> {
+    interface Nested<P> extends Mqtt5AdvancedConfigBuilderBase<Nested<P>> {
 
         /**
-         * Builds the {@link Mqtt5ClientAdvancedConfig} and applies it to the parent.
+         * Builds the {@link Mqtt5AdvancedConfig} and applies it to the parent.
          *
-         * @return the result when the built {@link Mqtt5ClientAdvancedConfig} is applied to the parent.
+         * @return the result when the built {@link Mqtt5AdvancedConfig} is applied to the parent.
          */
         @NotNull P applyAdvancedConfig();
     }

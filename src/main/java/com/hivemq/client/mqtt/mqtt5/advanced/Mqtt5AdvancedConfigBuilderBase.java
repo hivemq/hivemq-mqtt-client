@@ -24,17 +24,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Builder base for a {@link Mqtt5ClientAdvancedConfig}.
+ * Builder base for a {@link Mqtt5AdvancedConfig}.
  *
  * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
-public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvancedConfigBuilderBase<B>> {
+public interface Mqtt5AdvancedConfigBuilderBase<B extends Mqtt5AdvancedConfigBuilderBase<B>> {
 
     /**
-     * Sets whether {@link Mqtt5ClientAdvancedConfig#isAllowServerReAuth() server re-auth is allowed}.
+     * Sets whether {@link Mqtt5AdvancedConfig#isAllowServerReAuth() server re-auth is allowed}.
      *
      * @param allowServerReAuth whether server re-auth is allowed.
      * @return the builder.
@@ -43,7 +43,7 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
     @NotNull B allowServerReAuth(boolean allowServerReAuth);
 
     /**
-     * Sets whether {@link Mqtt5ClientAdvancedConfig#isValidatePayloadFormat() the payload format is validated}.
+     * Sets whether {@link Mqtt5AdvancedConfig#isValidatePayloadFormat() the payload format is validated}.
      *
      * @param validatePayloadFormat whether the payload format is validated.
      * @return the builder.
