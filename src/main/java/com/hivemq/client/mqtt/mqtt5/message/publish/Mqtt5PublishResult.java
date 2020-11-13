@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -30,7 +30,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5PublishResult {
 
     /**
@@ -49,7 +49,7 @@ public interface Mqtt5PublishResult {
      * <p>
      * This result additionally provides the {@link Mqtt5PubAck PubAck message} that acknowledged the Publish message.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Mqtt5Qos1Result extends Mqtt5PublishResult {
 
         /**
@@ -64,7 +64,7 @@ public interface Mqtt5PublishResult {
      * <p>
      * This result additionally provides the {@link Mqtt5PubRec PubRec message} that acknowledged the Publish message.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Mqtt5Qos2Result extends Mqtt5PublishResult {
 
         /**
@@ -82,7 +82,7 @@ public interface Mqtt5PublishResult {
      * <p>
      * By default just a {@link Mqtt5Qos2Result} is provided as a result for a Publish message with QoS level 2.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Mqtt5Qos2CompleteResult extends Mqtt5Qos2Result {
 
         /**

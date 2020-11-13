@@ -16,6 +16,7 @@
 
 package com.hivemq.client.mqtt.lifecycle;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.1
  */
+@ApiStatus.OverrideOnly
 @FunctionalInterface
 public interface MqttDisconnectedListener {
 

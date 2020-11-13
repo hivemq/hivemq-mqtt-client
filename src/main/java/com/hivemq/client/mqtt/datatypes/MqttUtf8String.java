@@ -16,8 +16,8 @@
 
 package com.hivemq.client.mqtt.datatypes;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
@@ -45,7 +45,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttUtf8String extends Comparable<MqttUtf8String> {
 
     /**

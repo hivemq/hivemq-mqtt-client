@@ -16,9 +16,9 @@
 
 package com.hivemq.client.mqtt.datatypes;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.datatypes.MqttSharedTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttSharedTopicFilter extends MqttTopicFilter {
 
     /**

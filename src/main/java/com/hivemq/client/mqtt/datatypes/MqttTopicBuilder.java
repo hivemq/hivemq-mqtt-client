@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.datatypes;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.Complete> {
 
     /**
@@ -49,7 +49,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
     /**
      * {@link MqttTopicBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete extends MqttTopicBuilder, MqttTopicBuilderBase<MqttTopicBuilder.Complete> {
 
         /**
@@ -66,7 +66,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
      *
      * @param <P> the type of the result when the built {@link MqttTopic} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends MqttTopicBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -74,7 +74,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
          *
          * @param <P> the type of the result when the built {@link MqttTopic} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, MqttTopicBuilderBase<Nested.Complete<P>> {
 
             /**

@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
 
     /**
      * {@link Mqtt3SubscribeBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete extends Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
 
         /**
@@ -47,7 +47,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
     /**
      * {@link Mqtt3SubscribeBuilder} that provides additional methods for the first subscription.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Start extends Mqtt3SubscribeBuilder,
             Mqtt3SubscribeBuilderBase.Start<Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.Start.Complete> {
 
@@ -55,7 +55,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          * {@link Mqtt3SubscribeBuilder.Start} that is complete which means all mandatory fields are set.
          */
         // @formatter:off
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete extends Mqtt3SubscribeBuilder.Start, Mqtt3SubscribeBuilder.Complete,
                 Mqtt3SubscribeBuilderBase.Start.Complete<
                         Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.Start.Complete> {}
@@ -67,7 +67,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
      *
      * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -75,7 +75,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
 
             /**
@@ -91,7 +91,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start<P>
                 extends Nested<P>, Mqtt3SubscribeBuilderBase.Start<Nested.Complete<P>, Nested.Start.Complete<P>> {
 
@@ -100,7 +100,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
              *
              * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
              */
-            @DoNotImplement
+            @ApiStatus.NonExtendable
             interface Complete<P> extends Nested.Start<P>, Nested.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<Nested.Complete<P>, Nested.Start.Complete<P>> {}
         }
@@ -112,7 +112,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
      *
      * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Send<P> extends Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
 
         /**
@@ -120,7 +120,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Send<P>, Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
 
             /**
@@ -136,7 +136,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start<P> extends Send<P>, Mqtt3SubscribeBuilderBase.Start<Send.Complete<P>, Send.Start.Complete<P>> {
 
             /**
@@ -144,7 +144,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
              *
              * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
              */
-            @DoNotImplement
+            @ApiStatus.NonExtendable
             interface Complete<P> extends Send.Start<P>, Send.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<Send.Complete<P>, Send.Start.Complete<P>> {}
         }
@@ -157,7 +157,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
      * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
      * @since 1.2
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Publishes<P> extends Mqtt3SubscribeBuilderBase<Publishes.Complete<P>> {
 
         /**
@@ -165,7 +165,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P>
                 extends Publishes<P>, Publishes.Args<P>, Mqtt3SubscribeBuilderBase<Publishes.Complete<P>> {}
 
@@ -174,7 +174,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start<P> extends Publishes<P>,
                 Mqtt3SubscribeBuilderBase.Start<Publishes.Complete<P>, Publishes.Start.Complete<P>> {
 
@@ -183,7 +183,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
              *
              * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
              */
-            @DoNotImplement
+            @ApiStatus.NonExtendable
             interface Complete<P> extends Publishes.Start<P>, Publishes.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<Publishes.Complete<P>, Publishes.Start.Complete<P>> {}
         }
@@ -194,7 +194,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Args<P> {
 
             /**

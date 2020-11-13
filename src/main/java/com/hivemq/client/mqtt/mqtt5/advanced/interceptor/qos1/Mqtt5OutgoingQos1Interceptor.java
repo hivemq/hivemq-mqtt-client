@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubAck;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
+@ApiStatus.OverrideOnly
 public interface Mqtt5OutgoingQos1Interceptor {
 
     /**

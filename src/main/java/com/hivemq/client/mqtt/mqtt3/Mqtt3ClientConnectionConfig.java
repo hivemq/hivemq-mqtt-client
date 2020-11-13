@@ -16,8 +16,8 @@
 
 package com.hivemq.client.mqtt.mqtt3;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientConnectionConfig;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3ClientConnectionConfig extends MqttClientConnectionConfig {
 
     /**
@@ -37,7 +37,7 @@ public interface Mqtt3ClientConnectionConfig extends MqttClientConnectionConfig 
     /**
      * Restrictions for messages a {@link Mqtt3Client} sends.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface RestrictionsForClient {
 
         /**

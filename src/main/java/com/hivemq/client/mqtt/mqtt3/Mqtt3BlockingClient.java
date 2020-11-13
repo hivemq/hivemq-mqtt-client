@@ -17,7 +17,6 @@
 package com.hivemq.client.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -29,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3BlockingClient extends Mqtt3Client {
 
     /**
@@ -170,7 +170,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Resource which queues incoming Publish messages until they are received.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Publishes extends AutoCloseable {
 
         /**

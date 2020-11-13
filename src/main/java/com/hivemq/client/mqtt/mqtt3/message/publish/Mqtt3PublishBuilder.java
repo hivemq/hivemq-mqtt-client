@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.publish;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3PublishBuilder.Complete> {
 
     /**
      * {@link Mqtt3PublishBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete extends Mqtt3PublishBuilder, Mqtt3PublishBuilderBase.Complete<Mqtt3PublishBuilder.Complete> {
 
         /**
@@ -49,7 +49,7 @@ public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Publis
      *
      * @param <P> the type of the result when the built {@link Mqtt3Publish} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt3PublishBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -57,7 +57,7 @@ public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Publis
          *
          * @param <P> the type of the result when the built {@link Mqtt3Publish} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt3PublishBuilderBase.Complete<Nested.Complete<P>> {
 
             /**
@@ -75,7 +75,7 @@ public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Publis
      *
      * @param <P> the type of the result when the built {@link Mqtt3Publish} is sent by the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Send<P> extends Mqtt3PublishBuilderBase<Send.Complete<P>> {
 
         /**
@@ -83,7 +83,7 @@ public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Publis
          *
          * @param <P> the type of the result when the built {@link Mqtt3Publish} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Send<P>, Mqtt3PublishBuilderBase.Complete<Send.Complete<P>> {
 
             /**
@@ -99,13 +99,13 @@ public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Publis
      * Builder for a {@link Mqtt3Publish} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client}
      * which then sends the Publish message without returning a result.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface SendVoid extends Mqtt3PublishBuilderBase<SendVoid.Complete> {
 
         /**
          * {@link SendVoid} that is complete which means all mandatory fields are set.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete extends SendVoid, Mqtt3PublishBuilderBase.Complete<SendVoid.Complete> {
 
             /**

@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttExecutorConfigBuilder extends MqttExecutorConfigBuilderBase<MqttExecutorConfigBuilder> {
 
     /**
@@ -42,7 +42,7 @@ public interface MqttExecutorConfigBuilder extends MqttExecutorConfigBuilderBase
      *
      * @param <P> the type of the result when the built {@link MqttExecutorConfig} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends MqttExecutorConfigBuilderBase<Nested<P>> {
 
         /**

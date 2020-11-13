@@ -17,12 +17,12 @@
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilterBuilder;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> {
 
     /**
@@ -118,7 +118,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> extends Mqtt5UnsubscribeBuilderBase<C> {
 
         /**
@@ -148,7 +148,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Start<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> extends Mqtt5UnsubscribeBuilderBase<C> {
 
         /**

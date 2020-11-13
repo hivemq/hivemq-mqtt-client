@@ -16,12 +16,12 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientConfig;
 import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -32,7 +32,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ClientConfig extends MqttClientConfig {
 
     @Override

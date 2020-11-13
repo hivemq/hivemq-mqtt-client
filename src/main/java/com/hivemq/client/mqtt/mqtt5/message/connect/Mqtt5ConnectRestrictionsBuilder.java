@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ConnectRestrictionsBuilder
         extends Mqtt5ConnectRestrictionsBuilderBase<Mqtt5ConnectRestrictionsBuilder> {
 
@@ -43,7 +43,7 @@ public interface Mqtt5ConnectRestrictionsBuilder
      *
      * @param <P> the type of the result when the built {@link Mqtt5ConnectRestrictions} are applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt5ConnectRestrictionsBuilderBase<Nested<P>> {
 
         /**

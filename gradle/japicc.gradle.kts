@@ -93,7 +93,7 @@ allprojects {
                             val className = interfaceDef.split(Regex("[ <{]"), limit = 2)[0]
                             classNames.add(className)
 
-                            val annotationIndex = content.indexOf("@DoNotImplement", index)
+                            val annotationIndex = content.indexOf("@ApiStatus.NonExtendable", index)
                             if (annotationIndex == -1) break
 
                             if (annotationIndex < start) {

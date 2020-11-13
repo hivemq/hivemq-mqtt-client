@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3ConnectBuilder extends Mqtt3ConnectBuilderBase<Mqtt3ConnectBuilder> {
 
     /**
@@ -42,7 +42,7 @@ public interface Mqtt3ConnectBuilder extends Mqtt3ConnectBuilderBase<Mqtt3Connec
      *
      * @param <P> the type of the result when the built {@link Mqtt3Connect} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt3ConnectBuilderBase<Nested<P>> {
 
         /**
@@ -59,7 +59,7 @@ public interface Mqtt3ConnectBuilder extends Mqtt3ConnectBuilderBase<Mqtt3Connec
      *
      * @param <P> the type of the result when the built {@link Mqtt3Connect} is sent by the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Send<P> extends Mqtt3ConnectBuilderBase<Send<P>> {
 
         /**

@@ -17,7 +17,6 @@
 package com.hivemq.client.mqtt.mqtt5.reactor;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.reactor.MqttReactorClient;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
@@ -35,6 +34,7 @@ import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -46,7 +46,7 @@ import reactor.core.publisher.Mono;
  * @author Silvio Giebl
  * @since 1.2
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ReactorClient extends Mqtt5Client {
 
     /**

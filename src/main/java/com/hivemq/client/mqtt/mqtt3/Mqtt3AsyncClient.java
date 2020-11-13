@@ -17,7 +17,6 @@
 package com.hivemq.client.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -29,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilderBase;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -41,7 +41,7 @@ import java.util.function.Consumer;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3AsyncClient extends Mqtt3Client {
 
     /**
@@ -332,14 +332,14 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link
      * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Mqtt3SubscribeAndCallbackBuilder
             extends Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {
 
         /**
          * {@link Mqtt3SubscribeAndCallbackBuilder} that is complete which means all mandatory fields are set.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete extends Mqtt3SubscribeAndCallbackBuilder, Mqtt3SubscribeAndCallbackBuilder.Call,
                 Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {}
 
@@ -347,7 +347,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
          * {@link Mqtt3SubscribeAndCallbackBuilder} that provides additional methods for the first subscription.
          */
         // @formatter:off
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start extends Mqtt3SubscribeAndCallbackBuilder,
                 Mqtt3SubscribeBuilderBase.Start<
                         Mqtt3SubscribeAndCallbackBuilder.Complete, Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {
@@ -358,7 +358,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
              * set.
              */
             // @formatter:off
-            @DoNotImplement
+            @ApiStatus.NonExtendable
             interface Complete extends
                     Mqtt3SubscribeAndCallbackBuilder.Start, Mqtt3SubscribeAndCallbackBuilder.Complete,
                     Mqtt3SubscribeBuilderBase.Start.Complete<
@@ -372,7 +372,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
          * #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link #subscribe(Mqtt3Subscribe, Consumer, Executor,
          * boolean)} call.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Call {
 
             /**
@@ -398,7 +398,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
              * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a {@link
              * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
              */
-            @DoNotImplement
+            @ApiStatus.NonExtendable
             interface Ex extends Call {
 
                 /**

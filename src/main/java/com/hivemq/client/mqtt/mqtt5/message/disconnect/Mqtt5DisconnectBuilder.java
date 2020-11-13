@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.disconnect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5DisconnectBuilder> {
 
     /**
@@ -42,7 +42,7 @@ public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5
      *
      * @param <P> the type of the result when the built {@link Mqtt5Disconnect} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt5DisconnectBuilderBase<Nested<P>> {
 
         /**
@@ -59,7 +59,7 @@ public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5
      *
      * @param <P> the type of the result when the built {@link Mqtt5Disconnect} is sent by the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Send<P> extends Mqtt5DisconnectBuilderBase<Send<P>> {
 
         /**
@@ -74,7 +74,7 @@ public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5
      * Builder for a {@link Mqtt5Disconnect} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client}
      * which then sends the Disconnect message without returning a result.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface SendVoid extends Mqtt5DisconnectBuilderBase<SendVoid> {
 
         /**

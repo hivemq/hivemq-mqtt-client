@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5SubscriptionBuilder extends Mqtt5SubscriptionBuilderBase<Mqtt5SubscriptionBuilder.Complete> {
 
     /**
      * {@link Mqtt5Subscription} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete
             extends Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
 
@@ -50,7 +50,7 @@ public interface Mqtt5SubscriptionBuilder extends Mqtt5SubscriptionBuilderBase<M
      *
      * @param <P> the type of the result when the built {@link Mqtt5Subscription} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt5SubscriptionBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -58,7 +58,7 @@ public interface Mqtt5SubscriptionBuilder extends Mqtt5SubscriptionBuilderBase<M
          *
          * @param <P> the type of the result when the built {@link Mqtt5Subscription} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt5SubscriptionBuilderBase.Complete<Nested.Complete<P>> {
 
             /**

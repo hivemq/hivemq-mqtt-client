@@ -16,12 +16,12 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5Subscribe extends Mqtt5Message {
 
     /**

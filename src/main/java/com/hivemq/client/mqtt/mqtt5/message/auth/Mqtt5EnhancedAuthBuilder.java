@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.auth;
 
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5EnhancedAuthBuilder {
 
     /**

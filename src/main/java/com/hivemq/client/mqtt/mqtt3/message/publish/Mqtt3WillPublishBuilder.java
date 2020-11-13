@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.publish;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3WillPublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3WillPublishBuilder.Complete> {
 
     /**
      * {@link Mqtt3WillPublishBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete
             extends Mqtt3WillPublishBuilder, Mqtt3PublishBuilderBase.Complete<Mqtt3WillPublishBuilder.Complete> {
 
@@ -50,7 +50,7 @@ public interface Mqtt3WillPublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Wi
      *
      * @param <P> the type of the result when the built {@link Mqtt3Publish} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt3PublishBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -58,7 +58,7 @@ public interface Mqtt3WillPublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Wi
          *
          * @param <P> the type of the result when the built {@link Mqtt3Publish} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt3PublishBuilderBase.Complete<Nested.Complete<P>> {
 
             /**

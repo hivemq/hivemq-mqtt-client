@@ -17,13 +17,13 @@
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.datatypes.MqttTopicBuilder;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ import java.nio.ByteBuffer;
  * @author Bilvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Complete<C>> {
 
     /**
@@ -74,7 +74,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete<C extends Mqtt5PublishBuilderBase.Complete<C>> extends Mqtt5PublishBuilderBase<C> {
 
         /**
@@ -237,7 +237,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface WillBase<C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase<C> {
 
         /**
@@ -245,7 +245,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          *
          * @param <C> the type of the complete builder.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C>, WillBase<C> {
 
             /**

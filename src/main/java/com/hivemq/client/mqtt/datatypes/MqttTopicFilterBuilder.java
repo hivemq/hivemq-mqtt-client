@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.datatypes;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0
  */
 // @formatter:off
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttTopicFilterBuilder extends
         MqttTopicFilterBuilderBase<
                 MqttTopicFilterBuilder.Complete, MqttTopicFilterBuilder.End, MqttSharedTopicFilterBuilder,
@@ -38,7 +38,7 @@ public interface MqttTopicFilterBuilder extends
      * {@link MqttTopicFilterBuilder} that is complete which means all mandatory fields are set.
      */
     // @formatter:off
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete extends MqttTopicFilterBuilder, MqttTopicFilterBuilder.End,
             MqttTopicFilterBuilderBase.Complete<
                     MqttTopicFilterBuilder.Complete, MqttTopicFilterBuilder.End, MqttSharedTopicFilterBuilder,
@@ -48,7 +48,7 @@ public interface MqttTopicFilterBuilder extends
     /**
      * End of a {@link MqttTopicFilterBuilder} that does not allow to add any more levels or wildcards.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface End extends MqttTopicFilterBuilderBase.End {
 
         /**
@@ -66,7 +66,7 @@ public interface MqttTopicFilterBuilder extends
      * @param <P> the type of the result when the built {@link MqttTopicFilter} is applied to the parent.
      */
     // @formatter:off
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends
             MqttTopicFilterBuilderBase<
                     Nested.Complete<P>, Nested.End<P>, MqttSharedTopicFilterBuilder.Nested<P>,
@@ -79,7 +79,7 @@ public interface MqttTopicFilterBuilder extends
          * @param <P> the type of the result when the built {@link MqttTopicFilter} is applied to the parent.
          */
         // @formatter:off
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Nested.End<P>,
                 MqttTopicFilterBuilderBase.Complete<
                         Nested.Complete<P>, Nested.End<P>, MqttSharedTopicFilterBuilder.Nested<P>,
@@ -89,7 +89,7 @@ public interface MqttTopicFilterBuilder extends
         /**
          * End of a {@link Nested} that does not allow to add any more levels or wildcards.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface End<P> extends MqttTopicFilterBuilderBase.End {
 
             /**

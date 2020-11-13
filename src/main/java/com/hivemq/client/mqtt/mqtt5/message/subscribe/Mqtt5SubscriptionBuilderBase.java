@@ -17,10 +17,10 @@
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilterBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {
 
     /**
@@ -69,7 +69,7 @@ public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilder
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> extends Mqtt5SubscriptionBuilderBase<C> {
 
         /**

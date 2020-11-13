@@ -17,7 +17,6 @@
 package com.hivemq.client.mqtt.mqtt5;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -33,6 +32,7 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -45,7 +45,7 @@ import java.util.function.Consumer;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5AsyncClient extends Mqtt5Client {
 
     /**
@@ -379,14 +379,14 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link
      * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Mqtt5SubscribeAndCallbackBuilder
             extends Mqtt5SubscribeBuilderBase<Mqtt5SubscribeAndCallbackBuilder.Complete> {
 
         /**
          * {@link Mqtt5SubscribeAndCallbackBuilder} that is complete which means all mandatory fields are set.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete extends Mqtt5SubscribeAndCallbackBuilder, Mqtt5SubscribeAndCallbackBuilder.Call,
                 Mqtt5SubscribeBuilderBase.Complete<Mqtt5SubscribeAndCallbackBuilder.Complete> {}
 
@@ -394,7 +394,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
          * {@link Mqtt5SubscribeAndCallbackBuilder} that provides additional methods for the first subscription.
          */
         // @formatter:off
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start extends Mqtt5SubscribeAndCallbackBuilder,
                 Mqtt5SubscribeBuilderBase.Start<
                         Mqtt5SubscribeAndCallbackBuilder.Complete, Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
@@ -405,7 +405,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
              * set.
              */
             // @formatter:off
-            @DoNotImplement
+            @ApiStatus.NonExtendable
             interface Complete extends
                     Mqtt5SubscribeAndCallbackBuilder.Start, Mqtt5SubscribeAndCallbackBuilder.Complete,
                     Mqtt5SubscribeBuilderBase.Start.Complete<
@@ -419,7 +419,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
          * #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link #subscribe(Mqtt5Subscribe, Consumer, Executor,
          * boolean)} call.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Call {
 
             /**
@@ -445,7 +445,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
              * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a {@link
              * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
              */
-            @DoNotImplement
+            @ApiStatus.NonExtendable
             interface Ex extends Call {
 
                 /**
