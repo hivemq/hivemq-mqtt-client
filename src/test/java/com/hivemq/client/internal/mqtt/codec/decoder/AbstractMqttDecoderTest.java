@@ -19,8 +19,8 @@ package com.hivemq.client.internal.mqtt.codec.decoder;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttExecutorConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfig;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfigBuilder;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -106,8 +106,8 @@ public abstract class AbstractMqttDecoderTest {
     }
 
     private void createChannel(final boolean validatePayloadFormat) {
-        final MqttClientAdvancedConfig advancedConfig =
-                new MqttClientAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
+        final MqttAdvancedConfig advancedConfig =
+                new MqttAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
         final MqttClientConfig clientConfig =
                 new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"),
                         MqttTransportConfigImpl.DEFAULT, MqttExecutorConfigImpl.DEFAULT, advancedConfig,

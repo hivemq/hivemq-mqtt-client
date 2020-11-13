@@ -18,7 +18,7 @@ package com.hivemq.client.mqtt.mqtt5;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientConfig;
-import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
+import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
@@ -41,7 +41,7 @@ public interface Mqtt5ClientConfig extends MqttClientConfig {
     /**
      * @return the advanced configuration of the client.
      */
-    @NotNull Mqtt5ClientAdvancedConfig getAdvancedConfig();
+    @NotNull Mqtt5AdvancedConfig getAdvancedConfig();
 
     /**
      * Returns the optional simple authentication and/or authorization related data of the client.

@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.internal.mqtt.*;
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfig;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
@@ -109,7 +109,7 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     }
 
     private @NotNull MqttClientConfig buildClientConfig() {
-        return buildClientConfig(MqttVersion.MQTT_3_1_1, MqttClientAdvancedConfig.DEFAULT,
+        return buildClientConfig(MqttVersion.MQTT_3_1_1, MqttAdvancedConfig.DEFAULT,
                 MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish));
     }
 }

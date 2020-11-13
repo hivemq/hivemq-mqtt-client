@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Silvio Giebl
  */
-class MqttClientAdvancedConfigTest {
+class MqttAdvancedConfigTest {
 
     @Test
     void equals() {
-        EqualsVerifier.forClass(MqttClientAdvancedConfig.class).suppress(Warning.STRICT_INHERITANCE).verify();
+        EqualsVerifier.forClass(MqttAdvancedConfig.class).suppress(Warning.STRICT_INHERITANCE).verify();
     }
 }

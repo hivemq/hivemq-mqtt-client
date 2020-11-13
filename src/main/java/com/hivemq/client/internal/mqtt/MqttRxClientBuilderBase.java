@@ -16,7 +16,7 @@
 
 package com.hivemq.client.internal.mqtt;
 
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientAutoReconnectImpl;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientAutoReconnectImplBuilder;
@@ -205,7 +205,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
 
     protected @NotNull MqttClientConfig buildClientConfig(
             final @NotNull MqttVersion mqttVersion,
-            final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull MqttAdvancedConfig advancedConfig,
             final @NotNull MqttClientConfig.ConnectDefaults connectDefaults) {
 
         return new MqttClientConfig(mqttVersion, identifier, buildTransportConfig(), executorConfig, advancedConfig,

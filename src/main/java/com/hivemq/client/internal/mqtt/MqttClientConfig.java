@@ -16,7 +16,7 @@
 
 package com.hivemq.client.internal.mqtt;
 
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.ioc.SingletonComponent;
@@ -53,7 +53,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
     private final @NotNull MqttTransportConfigImpl transportConfig;
     private final @NotNull MqttExecutorConfigImpl executorConfig;
-    private final @NotNull MqttClientAdvancedConfig advancedConfig;
+    private final @NotNull MqttAdvancedConfig advancedConfig;
     private final @NotNull ConnectDefaults connectDefaults;
     private final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners;
     private final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners;
@@ -76,7 +76,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull MqttClientIdentifierImpl clientIdentifier,
             final @NotNull MqttTransportConfigImpl transportConfig,
             final @NotNull MqttExecutorConfigImpl executorConfig,
-            final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull MqttAdvancedConfig advancedConfig,
             final @NotNull ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
             final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
@@ -126,7 +126,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull MqttClientAdvancedConfig getAdvancedConfig() {
+    public @NotNull MqttAdvancedConfig getAdvancedConfig() {
         return advancedConfig;
     }
 

@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.advanced;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
+import com.hivemq.client.internal.mqtt.advanced.MqttAdvancedConfigBuilder;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
  * @since 1.0
  */
 @DoNotImplement
-public interface Mqtt5ClientAdvancedConfig {
+public interface Mqtt5AdvancedConfig {
 
     /**
      * Creates a builder for an advanced configuration.
      *
      * @return the created builder for an advanced configuration.
      */
-    static @NotNull Mqtt5ClientAdvancedConfigBuilder builder() {
-        return new MqttClientAdvancedConfigBuilder.Default();
+    static @NotNull Mqtt5AdvancedConfigBuilder builder() {
+        return new MqttAdvancedConfigBuilder.Default();
     }
 
     /**
@@ -64,5 +64,5 @@ public interface Mqtt5ClientAdvancedConfig {
      * @return the created builder.
      * @since 1.1
      */
-    @NotNull Mqtt5ClientAdvancedConfigBuilder extend();
+    @NotNull Mqtt5AdvancedConfigBuilder extend();
 }
