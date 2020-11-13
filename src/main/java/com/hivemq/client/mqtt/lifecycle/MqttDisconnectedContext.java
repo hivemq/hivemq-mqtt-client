@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientDisconnectedContext {
+public interface MqttDisconnectedContext {
 
     /**
      * @return the config of the client that is now disconnected.
@@ -75,5 +75,5 @@ public interface MqttClientDisconnectedContext {
     /**
      * @return the reconnector which can be used for reconnecting.
      */
-    @NotNull MqttClientReconnector getReconnector();
+    @NotNull MqttReconnector getReconnector();
 }

@@ -14,23 +14,35 @@
  * limitations under the License.
  */
 
-package com.hivemq.client.mqtt.lifecycle;
+package com.hivemq.client.mqtt.mqtt5.lifecycle;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.MqttClientConfig;
+import com.hivemq.client.mqtt.lifecycle.MqttConnectedContext;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Provides context about the client that is now connected.
+ * A {@link MqttConnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+ * Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientConnectedContext {
+public interface Mqtt5ConnectedContext extends MqttConnectedContext {
+
+    @Override
+    @NotNull Mqtt5ClientConfig getClientConfig();
 
     /**
-     * @return the config of the client that is now connected.
+     * @return the Connect message that started the connection.
      */
-    @NotNull MqttClientConfig getClientConfig();
+    @NotNull Mqtt5Connect getConnect();
+
+    /**
+     * @return the ConnAck message that acknowledged the connection.
+     */
+    @NotNull Mqtt5ConnAck getConnAck();
 }

@@ -28,19 +28,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
- * A reconnector is supplied by a {@link MqttClientDisconnectedContext} and can be used for reconnecting.
+ * A reconnector is supplied by a {@link MqttDisconnectedContext} and can be used for reconnecting.
  * <p>
  * The client will reconnect only if at least one of the methods {@link #reconnect(boolean)} or {@link
  * #reconnectWhen(CompletableFuture, BiConsumer)} is called.
  * <p>
- * All methods must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}.
- * Some methods can also be called in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
+ * All methods must only be called in {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)}. Some
+ * methods can also be called in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientReconnector {
+public interface MqttReconnector {
 
     /**
      * If reconnect is enabled by default.
@@ -78,7 +78,7 @@ public interface MqttClientReconnector {
      * @param reconnect whether to reconnect.
      * @return this reconnector.
      */
-    @NotNull MqttClientReconnector reconnect(boolean reconnect);
+    @NotNull MqttReconnector reconnect(boolean reconnect);
 
     /**
      * Instructs the client to reconnect after a future completes.
@@ -86,17 +86,17 @@ public interface MqttClientReconnector {
      * If additionally a {@link #delay(long, TimeUnit) delay} is supplied, the client will reconnect after both are
      * complete.
      * <p>
-     * This method must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}
-     * and not in the supplied callback.
+     * This method must only be called in {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)} and
+     * not in the supplied callback.
      *
      * @param future   the client will reconnect only after the future completes.
      * @param callback the callback that will be called after the future completes and before the client will reconnect.
      *                 It can be used to set new connect properties (e.g. credentials).
      * @param <T>      the result type of the future.
      * @return this reconnector.
-     * @throws UnsupportedOperationException if called outside of {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}.
+     * @throws UnsupportedOperationException if called outside of {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)}.
      */
-    <T> @NotNull MqttClientReconnector reconnectWhen(
+    <T> @NotNull MqttReconnector reconnectWhen(
             @NotNull CompletableFuture<T> future, @Nullable BiConsumer<? super T, ? super Throwable> callback);
 
     /**
@@ -114,15 +114,15 @@ public interface MqttClientReconnector {
      * This setting only has effect if the client will reconnect (at least one of the methods {@link
      * #reconnect(boolean)} or {@link #reconnectWhen(CompletableFuture, BiConsumer)} is called).
      * <p>
-     * This method must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}
-     * and not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
+     * This method must only be called in {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)} and
+     * not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
      *
      * @param resubscribe whether to resubscribe when the session expired before the client reconnected successfully.
      * @return this reconnector.
-     * @throws UnsupportedOperationException if called outside of {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}.
+     * @throws UnsupportedOperationException if called outside of {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)}.
      * @since 1.2
      */
-    @NotNull MqttClientReconnector resubscribeIfSessionExpired(boolean resubscribe);
+    @NotNull MqttReconnector resubscribeIfSessionExpired(boolean resubscribe);
 
     /**
      * @return whether the client will resubscribe when the session expired before it reconnected successfully.
@@ -140,15 +140,15 @@ public interface MqttClientReconnector {
      * This setting only has effect if the client will reconnect (at least one of the methods {@link
      * #reconnect(boolean)} or {@link #reconnectWhen(CompletableFuture, BiConsumer)} is called).
      * <p>
-     * This method must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}
-     * and not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
+     * This method must only be called in {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)} and
+     * not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
      *
      * @param republish whether to republish when the session expired before the client reconnected successfully.
      * @return this reconnector.
-     * @throws UnsupportedOperationException if called outside of {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}.
+     * @throws UnsupportedOperationException if called outside of {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)}.
      * @since 1.2
      */
-    @NotNull MqttClientReconnector republishIfSessionExpired(boolean republish);
+    @NotNull MqttReconnector republishIfSessionExpired(boolean republish);
 
     /**
      * @return whether the client will republish when the session expired before it reconnected successfully.
@@ -165,21 +165,21 @@ public interface MqttClientReconnector {
      * If additionally a {@link #reconnectWhen(CompletableFuture, BiConsumer) future} is supplied, the client will
      * reconnect after both are complete.
      * <p>
-     * This method must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}
-     * and not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
+     * This method must only be called in {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)} and
+     * not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
      *
      * @param delay    delay which the client will wait before trying to reconnect.
      * @param timeUnit the time unit of the delay.
      * @return this reconnector.
-     * @throws UnsupportedOperationException if called outside of {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}.
+     * @throws UnsupportedOperationException if called outside of {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)}.
      */
-    @NotNull MqttClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
+    @NotNull MqttReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     /**
      * Returns the currently set delay the client will wait for before trying to reconnect.
      * <p>
      * If the {@link #delay(long, TimeUnit)} method has not been called before (including previous {@link
-     * MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be {@link #DEFAULT_DELAY_MS}.
+     * MqttDisconnectedListener}s) it will be {@link #DEFAULT_DELAY_MS}.
      *
      * @param timeUnit the time unit of the returned delay.
      * @return the delay in the given time unit.
@@ -192,7 +192,7 @@ public interface MqttClientReconnector {
      * @param transportConfig the transport configuration the client will try to reconnect with.
      * @return this reconnector.
      */
-    @NotNull MqttClientReconnector transportConfig(@NotNull MqttTransportConfig transportConfig);
+    @NotNull MqttReconnector transportConfig(@NotNull MqttTransportConfig transportConfig);
 
     /**
      * Fluent counterpart of {@link #transportConfig(MqttTransportConfig)}.
@@ -204,15 +204,15 @@ public interface MqttClientReconnector {
      * @see #transportConfig(MqttTransportConfig)
      */
     @CheckReturnValue
-    MqttTransportConfigBuilder.@NotNull Nested<? extends MqttClientReconnector> transportConfig();
+    MqttTransportConfigBuilder.@NotNull Nested<? extends MqttReconnector> transportConfig();
 
     /**
      * Returns the currently set transport configuration the client will try to reconnect with.
      * <p>
      * If the {@link #transportConfig(MqttTransportConfig)} method has not been called before (including previous {@link
-     * MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the transport configuration the
-     * client was connected with or the {@link com.hivemq.client.mqtt.MqttClientConfig#getTransportConfig() default
-     * transport configuration} if it has not been connected yet.
+     * MqttDisconnectedListener}s) it will be the transport configuration the client was connected with or the {@link
+     * com.hivemq.client.mqtt.MqttClientConfig#getTransportConfig() default transport configuration} if it has not been
+     * connected yet.
      *
      * @return the transport configuration.
      */

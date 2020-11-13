@@ -14,35 +14,35 @@
  * limitations under the License.
  */
 
-package com.hivemq.client.mqtt.mqtt5.lifecycle;
+package com.hivemq.client.mqtt.mqtt3.lifecycle;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedContext;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import com.hivemq.client.mqtt.lifecycle.MqttConnectedContext;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
+import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link MqttClientConnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
- * Mqtt5Client}.
+ * A {@link MqttConnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
+ * Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface Mqtt5ClientConnectedContext extends MqttClientConnectedContext {
+public interface Mqtt3ConnectedContext extends MqttConnectedContext {
 
     @Override
-    @NotNull Mqtt5ClientConfig getClientConfig();
+    @NotNull Mqtt3ClientConfig getClientConfig();
 
     /**
      * @return the Connect message that started the connection.
      */
-    @NotNull Mqtt5Connect getConnect();
+    @NotNull Mqtt3Connect getConnect();
 
     /**
      * @return the ConnAck message that acknowledged the connection.
      */
-    @NotNull Mqtt5ConnAck getConnAck();
+    @NotNull Mqtt3ConnAck getConnAck();
 }

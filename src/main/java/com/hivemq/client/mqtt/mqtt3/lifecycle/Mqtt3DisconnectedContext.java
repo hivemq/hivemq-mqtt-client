@@ -17,32 +17,23 @@
 package com.hivemq.client.mqtt.mqtt3.lifecycle;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedContext;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedContext;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
-import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link MqttClientConnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
+ * A {@link MqttDisconnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
  * Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface Mqtt3ClientConnectedContext extends MqttClientConnectedContext {
+public interface Mqtt3DisconnectedContext extends MqttDisconnectedContext {
 
     @Override
     @NotNull Mqtt3ClientConfig getClientConfig();
 
-    /**
-     * @return the Connect message that started the connection.
-     */
-    @NotNull Mqtt3Connect getConnect();
-
-    /**
-     * @return the ConnAck message that acknowledged the connection.
-     */
-    @NotNull Mqtt3ConnAck getConnAck();
+    @Override
+    @NotNull Mqtt3Reconnector getReconnector();
 }

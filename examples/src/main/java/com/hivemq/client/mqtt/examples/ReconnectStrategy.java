@@ -18,7 +18,7 @@ package com.hivemq.client.mqtt.examples;
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
-import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5ClientDisconnectedContext;
+import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5DisconnectedContext;
 
 import java.time.LocalTime;
 import java.util.concurrent.CompletableFuture;
@@ -76,7 +76,7 @@ public class ReconnectStrategy {
                 })
                 // multiple DisconnectedListener can form a reconnect strategy
                 .addDisconnectedListener(context -> {
-                    final Mqtt5ClientDisconnectedContext context5 = (Mqtt5ClientDisconnectedContext) context;
+                    final Mqtt5DisconnectedContext context5 = (Mqtt5DisconnectedContext) context;
                     context5.getReconnector()
                             .reconnectWhen(getOAuthToken(), (token, throwable) -> { // first reconnect would be delayed 2s but OAuth server needs more time
                                 if (token != null) {

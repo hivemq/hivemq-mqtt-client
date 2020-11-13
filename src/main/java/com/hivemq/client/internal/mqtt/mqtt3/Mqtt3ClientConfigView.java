@@ -28,8 +28,8 @@ import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
@@ -97,12 +97,12 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @Immutable @NotNull List<@NotNull MqttClientConnectedListener> getConnectedListeners() {
+    public @Immutable @NotNull List<@NotNull MqttConnectedListener> getConnectedListeners() {
         return delegate.getConnectedListeners();
     }
 
     @Override
-    public @Immutable @NotNull List<@NotNull MqttClientDisconnectedListener> getDisconnectedListeners() {
+    public @Immutable @NotNull List<@NotNull MqttDisconnectedListener> getDisconnectedListeners() {
         return delegate.getDisconnectedListeners();
     }
 

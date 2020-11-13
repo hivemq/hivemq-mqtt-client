@@ -18,12 +18,12 @@ package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
 
 import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.MqttTransportConfigImplBuilder;
-import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttReconnector;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.mqtt.MqttTransportConfig;
-import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientReconnector;
+import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3Reconnector;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,22 +35,22 @@ import java.util.function.BiConsumer;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
+public class Mqtt3ReconnectorView implements Mqtt3Reconnector {
 
-    private final @NotNull MqttClientReconnector delegate;
+    private final @NotNull MqttReconnector delegate;
 
-    Mqtt3ClientReconnectorView(final @NotNull MqttClientReconnector delegate) {
+    Mqtt3ReconnectorView(final @NotNull MqttReconnector delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView reconnect(final boolean reconnect) {
+    public @NotNull Mqtt3ReconnectorView reconnect(final boolean reconnect) {
         delegate.reconnect(reconnect);
         return this;
     }
 
     @Override
-    public @NotNull <T> Mqtt3ClientReconnectorView reconnectWhen(
+    public @NotNull <T> Mqtt3ReconnectorView reconnectWhen(
             final @Nullable CompletableFuture<T> future,
             final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
@@ -64,7 +64,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView resubscribeIfSessionExpired(final boolean resubscribe) {
+    public @NotNull Mqtt3ReconnectorView resubscribeIfSessionExpired(final boolean resubscribe) {
         delegate.resubscribeIfSessionExpired(resubscribe);
         return this;
     }
@@ -75,7 +75,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView republishIfSessionExpired(final boolean republish) {
+    public @NotNull Mqtt3ReconnectorView republishIfSessionExpired(final boolean republish) {
         delegate.republishIfSessionExpired(republish);
         return this;
     }
@@ -91,7 +91,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView delay(final long delay, final @Nullable TimeUnit timeUnit) {
+    public @NotNull Mqtt3ReconnectorView delay(final long delay, final @Nullable TimeUnit timeUnit) {
         delegate.delay(delay, timeUnit);
         return this;
     }
@@ -102,13 +102,13 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView transportConfig(final @Nullable MqttTransportConfig transportConfig) {
+    public @NotNull Mqtt3ReconnectorView transportConfig(final @Nullable MqttTransportConfig transportConfig) {
         delegate.transportConfig(transportConfig);
         return this;
     }
 
     @Override
-    public MqttTransportConfigImplBuilder.@NotNull Nested<Mqtt3ClientReconnectorView> transportConfig() {
+    public MqttTransportConfigImplBuilder.@NotNull Nested<Mqtt3ReconnectorView> transportConfig() {
         return new MqttTransportConfigImplBuilder.Nested<>(getTransportConfig(), this::transportConfig);
     }
 
@@ -118,13 +118,13 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView connect(final @Nullable Mqtt3Connect connect) {
+    public @NotNull Mqtt3ReconnectorView connect(final @Nullable Mqtt3Connect connect) {
         delegate.connect(MqttChecks.connect(connect));
         return this;
     }
 
     @Override
-    public Mqtt3ConnectViewBuilder.@NotNull Nested<Mqtt3ClientReconnectorView> connectWith() {
+    public Mqtt3ConnectViewBuilder.@NotNull Nested<Mqtt3ReconnectorView> connectWith() {
         return new Mqtt3ConnectViewBuilder.Nested<>(getConnect(), this::connect);
     }
 

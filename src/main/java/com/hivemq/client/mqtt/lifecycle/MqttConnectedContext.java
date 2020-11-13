@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package com.hivemq.client.mqtt.mqtt5.lifecycle;
+package com.hivemq.client.mqtt.lifecycle;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
+import com.hivemq.client.mqtt.MqttClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link MqttClientDisconnectedContext} with methods specific to an {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
- * Mqtt5Client}.
+ * Provides context about the client that is now connected.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface Mqtt5ClientDisconnectedContext extends MqttClientDisconnectedContext {
+public interface MqttConnectedContext {
 
-    @Override
-    @NotNull Mqtt5ClientConfig getClientConfig();
-
-    @Override
-    @NotNull Mqtt5ClientReconnector getReconnector();
+    /**
+     * @return the config of the client that is now connected.
+     */
+    @NotNull MqttClientConfig getClientConfig();
 }

@@ -20,8 +20,8 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -108,14 +108,14 @@ public interface MqttClientConfig {
      *         ConnAck message is received).
      * @since 1.1
      */
-    @Immutable @NotNull List<@NotNull MqttClientConnectedListener> getConnectedListeners();
+    @Immutable @NotNull List<@NotNull MqttConnectedListener> getConnectedListeners();
 
     /**
      * @return the listeners which are notified (in the order of the list) when this client is disconnected (with or
      *         without a Disconnect message) or the connection fails.
      * @since 1.1
      */
-    @Immutable @NotNull List<@NotNull MqttClientDisconnectedListener> getDisconnectedListeners();
+    @Immutable @NotNull List<@NotNull MqttDisconnectedListener> getDisconnectedListeners();
 
     /**
      * @return the state of the client.

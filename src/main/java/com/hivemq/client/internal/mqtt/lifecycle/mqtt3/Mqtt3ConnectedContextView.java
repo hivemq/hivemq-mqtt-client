@@ -22,21 +22,21 @@ import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedContext;
-import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientConnectedContext;
+import com.hivemq.client.mqtt.lifecycle.MqttConnectedContext;
+import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ConnectedContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ClientConnectedContextView implements Mqtt3ClientConnectedContext {
+public class Mqtt3ConnectedContextView implements Mqtt3ConnectedContext {
 
-    public static @NotNull MqttClientConnectedContext of(
+    public static @NotNull MqttConnectedContext of(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
 
-        return new Mqtt3ClientConnectedContextView(
+        return new Mqtt3ConnectedContextView(
                 new Mqtt3ClientConfigView(clientConfig), Mqtt3ConnectView.of(connect), Mqtt3ConnAckView.of(connAck));
     }
 
@@ -44,7 +44,7 @@ public class Mqtt3ClientConnectedContextView implements Mqtt3ClientConnectedCont
     private final @NotNull Mqtt3ConnectView connect;
     private final @NotNull Mqtt3ConnAckView connAck;
 
-    private Mqtt3ClientConnectedContextView(
+    private Mqtt3ConnectedContextView(
             final @NotNull Mqtt3ClientConfigView clientConfig,
             final @NotNull Mqtt3ConnectView connect,
             final @NotNull Mqtt3ConnAckView connAck) {

@@ -14,42 +14,43 @@
  * limitations under the License.
  */
 
-package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
+package com.hivemq.client.internal.mqtt.lifecycle;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.exceptions.mqtt3.Mqtt3ExceptionFactory;
-import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
-import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
+import com.hivemq.client.internal.mqtt.lifecycle.mqtt3.Mqtt3DisconnectedContextView;
+import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
-import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientDisconnectedContext;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedContext;
+import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5DisconnectedContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ClientDisconnectedContextView implements Mqtt3ClientDisconnectedContext {
+public class MqttDisconnectedContextImpl implements Mqtt5DisconnectedContext {
 
-    public static @NotNull MqttClientDisconnectedContext of(
+    public static @NotNull MqttDisconnectedContext of(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause,
-            final @NotNull MqttClientReconnector reconnector) {
+            final @NotNull MqttReconnector reconnector) {
 
-        return new Mqtt3ClientDisconnectedContextView(new Mqtt3ClientConfigView(clientConfig), source,
-                Mqtt3ExceptionFactory.map(cause), new Mqtt3ClientReconnectorView(reconnector));
+        if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
+            return Mqtt3DisconnectedContextView.of(clientConfig, source, cause, reconnector);
+        }
+        return new MqttDisconnectedContextImpl(clientConfig, source, cause, reconnector);
     }
 
-    private final @NotNull Mqtt3ClientConfigView clientConfig;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttDisconnectSource source;
     private final @NotNull Throwable cause;
-    private final @NotNull Mqtt3ClientReconnectorView reconnector;
+    private final @NotNull MqttReconnector reconnector;
 
-    private Mqtt3ClientDisconnectedContextView(
-            final @NotNull Mqtt3ClientConfigView clientConfig,
+    private MqttDisconnectedContextImpl(
+            final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause,
-            final @NotNull Mqtt3ClientReconnectorView reconnector) {
+            final @NotNull MqttReconnector reconnector) {
 
         this.clientConfig = clientConfig;
         this.source = source;
@@ -58,7 +59,7 @@ public class Mqtt3ClientDisconnectedContextView implements Mqtt3ClientDisconnect
     }
 
     @Override
-    public @NotNull Mqtt3ClientConfigView getClientConfig() {
+    public @NotNull MqttClientConfig getClientConfig() {
         return clientConfig;
     }
 
@@ -73,7 +74,7 @@ public class Mqtt3ClientDisconnectedContextView implements Mqtt3ClientDisconnect
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView getReconnector() {
+    public @NotNull MqttReconnector getReconnector() {
         return reconnector;
     }
 }

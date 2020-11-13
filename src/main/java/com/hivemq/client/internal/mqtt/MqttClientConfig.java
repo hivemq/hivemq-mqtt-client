@@ -29,8 +29,8 @@ import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
@@ -55,8 +55,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @NotNull MqttExecutorConfigImpl executorConfig;
     private final @NotNull MqttAdvancedConfig advancedConfig;
     private final @NotNull ConnectDefaults connectDefaults;
-    private final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners;
-    private final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners;
+    private final @NotNull ImmutableList<MqttConnectedListener> connectedListeners;
+    private final @NotNull ImmutableList<MqttDisconnectedListener> disconnectedListeners;
 
     private final @NotNull ClientComponent clientComponent;
 
@@ -78,8 +78,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull MqttExecutorConfigImpl executorConfig,
             final @NotNull MqttAdvancedConfig advancedConfig,
             final @NotNull ConnectDefaults connectDefaults,
-            final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
-            final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
+            final @NotNull ImmutableList<MqttConnectedListener> connectedListeners,
+            final @NotNull ImmutableList<MqttDisconnectedListener> disconnectedListeners) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -151,7 +151,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     @Override
     public @NotNull Optional<MqttAutoReconnect> getAutomaticReconnect() {
-        for (final MqttClientDisconnectedListener disconnectedListener : disconnectedListeners) {
+        for (final MqttDisconnectedListener disconnectedListener : disconnectedListeners) {
             if (disconnectedListener instanceof MqttAutoReconnect) {
                 return Optional.of((MqttAutoReconnect) disconnectedListener);
             }
@@ -160,12 +160,12 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull ImmutableList<MqttClientConnectedListener> getConnectedListeners() {
+    public @NotNull ImmutableList<MqttConnectedListener> getConnectedListeners() {
         return connectedListeners;
     }
 
     @Override
-    public @NotNull ImmutableList<MqttClientDisconnectedListener> getDisconnectedListeners() {
+    public @NotNull ImmutableList<MqttDisconnectedListener> getDisconnectedListeners() {
         return disconnectedListeners;
     }
 
