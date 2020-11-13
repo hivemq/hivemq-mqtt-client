@@ -21,35 +21,34 @@ import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Builder for a {@link MqttClientAutoReconnect}.
+ * Builder for a {@link MqttAutoReconnect}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientAutoReconnectBuilder
-        extends MqttClientAutoReconnectBuilderBase<MqttClientAutoReconnectBuilder> {
+public interface MqttAutoReconnectBuilder extends MqttAutoReconnectBuilderBase<MqttAutoReconnectBuilder> {
 
     /**
-     * Builds the {@link MqttClientAutoReconnect}.
+     * Builds the {@link MqttAutoReconnect}.
      *
-     * @return the built {@link MqttClientAutoReconnect}.
+     * @return the built {@link MqttAutoReconnect}.
      */
     @CheckReturnValue
-    @NotNull MqttClientAutoReconnect build();
+    @NotNull MqttAutoReconnect build();
 
     /**
-     * Builder for a {@link MqttClientAutoReconnect} that is applied to a parent.
+     * Builder for a {@link MqttAutoReconnect} that is applied to a parent.
      *
-     * @param <P> the type of the result when the built {@link MqttClientAutoReconnect} is applied to the parent.
+     * @param <P> the type of the result when the built {@link MqttAutoReconnect} is applied to the parent.
      */
     @DoNotImplement
-    interface Nested<P> extends MqttClientAutoReconnectBuilderBase<Nested<P>> {
+    interface Nested<P> extends MqttAutoReconnectBuilderBase<Nested<P>> {
 
         /**
-         * Builds the {@link MqttClientAutoReconnect} and applies it to the parent.
+         * Builds the {@link MqttAutoReconnect} and applies it to the parent.
          *
-         * @return the result when the built {@link MqttClientAutoReconnect} is applied to the parent.
+         * @return the result when the built {@link MqttAutoReconnect} is applied to the parent.
          */
         @NotNull P applyAutomaticReconnect();
     }

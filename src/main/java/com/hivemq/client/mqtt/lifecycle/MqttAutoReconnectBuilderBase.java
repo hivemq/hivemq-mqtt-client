@@ -23,14 +23,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Builder base for a {@link MqttClientAutoReconnect}.
+ * Builder base for a {@link MqttAutoReconnect}.
  *
  * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientAutoReconnectBuilderBase<B extends MqttClientAutoReconnectBuilderBase<B>> {
+public interface MqttAutoReconnectBuilderBase<B extends MqttAutoReconnectBuilderBase<B>> {
 
     /**
      * Sets the initial delay the client will wait before it tries to reconnect.

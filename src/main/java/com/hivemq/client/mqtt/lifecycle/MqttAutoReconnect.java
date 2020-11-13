@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.lifecycle;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.lifecycle.MqttClientAutoReconnectImplBuilder;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttAutoReconnectImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttClientAutoReconnect extends MqttClientDisconnectedListener {
+public interface MqttAutoReconnect extends MqttClientDisconnectedListener {
 
     /**
      * The default initial delay in seconds the client will wait before it tries to reconnect.
@@ -49,8 +49,8 @@ public interface MqttClientAutoReconnect extends MqttClientDisconnectedListener 
      *
      * @return the created builder for an automatic reconnect strategy.
      */
-    static @NotNull MqttClientAutoReconnectBuilder builder() {
-        return new MqttClientAutoReconnectImplBuilder.Default();
+    static @NotNull MqttAutoReconnectBuilder builder() {
+        return new MqttAutoReconnectImplBuilder.Default();
     }
 
     /**
@@ -76,5 +76,5 @@ public interface MqttClientAutoReconnect extends MqttClientDisconnectedListener 
      *
      * @return the created builder.
      */
-    @NotNull MqttClientAutoReconnectBuilder extend();
+    @NotNull MqttAutoReconnectBuilder extend();
 }

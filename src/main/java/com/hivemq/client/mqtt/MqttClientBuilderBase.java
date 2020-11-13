@@ -19,8 +19,8 @@ package com.hivemq.client.mqtt;
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnectBuilder;
+import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnectBuilder;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
@@ -227,20 +227,20 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull B automaticReconnect(@Nullable MqttClientAutoReconnect autoReconnect);
+    @NotNull B automaticReconnect(@Nullable MqttAutoReconnect autoReconnect);
 
     /**
-     * Fluent counterpart of {@link #automaticReconnect(MqttClientAutoReconnect)}.
+     * Fluent counterpart of {@link #automaticReconnect(MqttAutoReconnect)}.
      * <p>
-     * Calling {@link MqttClientAutoReconnectBuilder.Nested#applyAutomaticReconnect()} on the returned builder has the
-     * effect of extending the current automatic reconnect strategy.
+     * Calling {@link MqttAutoReconnectBuilder.Nested#applyAutomaticReconnect()} on the returned builder has the effect
+     * of extending the current automatic reconnect strategy.
      *
      * @return the fluent builder for the automatic reconnect strategy.
-     * @see #automaticReconnect(MqttClientAutoReconnect)
+     * @see #automaticReconnect(MqttAutoReconnect)
      * @since 1.1
      */
     @CheckReturnValue
-    MqttClientAutoReconnectBuilder.@NotNull Nested<? extends B> automaticReconnect();
+    MqttAutoReconnectBuilder.@NotNull Nested<? extends B> automaticReconnect();
 
     /**
      * Adds a listener which is notified when the client is connected (a successful ConnAck message is received).
