@@ -16,12 +16,12 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.publish;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3Message;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
@@ -34,7 +34,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3Publish extends Mqtt3Message {
 
     /**

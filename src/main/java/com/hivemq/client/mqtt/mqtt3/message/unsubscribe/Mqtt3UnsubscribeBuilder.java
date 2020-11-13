@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.unsubscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqtt3UnsubscribeBuilder.Complete> {
 
     /**
      * {@link Mqtt3UnsubscribeBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase<Mqtt3UnsubscribeBuilder.Complete> {
 
         /**
@@ -47,7 +47,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
     /**
      * {@link Mqtt3UnsubscribeBuilder} that provides additional methods for the first Topic Filter.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Start
             extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase.Start<Mqtt3UnsubscribeBuilder.Complete> {}
 
@@ -56,7 +56,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
      *
      * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt3UnsubscribeBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -64,7 +64,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt3UnsubscribeBuilderBase<Nested.Complete<P>> {
 
             /**
@@ -80,7 +80,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start<P> extends Nested<P>, Mqtt3UnsubscribeBuilderBase.Start<Nested.Complete<P>> {}
     }
 
@@ -90,7 +90,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
      *
      * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is sent by the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Send<P> extends Mqtt3UnsubscribeBuilderBase<Send.Complete<P>> {
 
         /**
@@ -98,7 +98,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase<Send.Complete<P>> {
 
             /**
@@ -115,7 +115,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase.Start<Send.Complete<P>> {}
     }
 
@@ -123,13 +123,13 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
      * Builder for a {@link Mqtt3Unsubscribe} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client}
      * which then sends the Unsubscribe message without returning a result.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface SendVoid extends Mqtt3UnsubscribeBuilderBase<SendVoid.Complete> {
 
         /**
          * {@link SendVoid} that is complete which means all mandatory fields are set.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete extends SendVoid, Mqtt3UnsubscribeBuilderBase<SendVoid.Complete> {
 
             /**
@@ -142,7 +142,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
         /**
          * {@link SendVoid} that provides additional methods for the first Topic Filter.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start extends SendVoid, Mqtt3UnsubscribeBuilderBase.Start<SendVoid.Complete> {}
     }
 }

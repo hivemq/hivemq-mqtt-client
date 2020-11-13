@@ -16,10 +16,10 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3Message;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.List;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3SubAck extends Mqtt3Message {
 
     /**

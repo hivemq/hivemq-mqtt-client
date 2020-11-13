@@ -17,10 +17,10 @@
 package com.hivemq.client.mqtt.mqtt3.message.publish;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.datatypes.MqttTopicBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Complete<C>> {
 
     /**
@@ -71,7 +71,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete<C extends Mqtt3PublishBuilderBase.Complete<C>> extends Mqtt3PublishBuilderBase<C> {
 
         /**

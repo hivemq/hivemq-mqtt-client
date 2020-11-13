@@ -16,10 +16,10 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -30,7 +30,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig {
 
     /**
@@ -56,7 +56,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
     /**
      * Restrictions for messages a {@link Mqtt5Client} receives.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface RestrictionsForServer {
 
         /**
@@ -115,7 +115,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
     /**
      * Restrictions for messages a {@link Mqtt5Client} sends.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface RestrictionsForClient {
 
         /**

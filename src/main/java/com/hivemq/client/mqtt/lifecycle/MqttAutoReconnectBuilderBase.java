@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.lifecycle;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @author Silvio Giebl
  * @since 1.1
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttAutoReconnectBuilderBase<B extends MqttAutoReconnectBuilderBase<B>> {
 
     /**

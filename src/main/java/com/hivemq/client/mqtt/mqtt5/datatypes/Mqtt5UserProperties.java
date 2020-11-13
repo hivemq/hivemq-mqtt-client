@@ -16,11 +16,11 @@
 
 package com.hivemq.client.mqtt.mqtt5.datatypes;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5UserProperties {
 
     /**

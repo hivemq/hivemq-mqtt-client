@@ -17,9 +17,9 @@
 package com.hivemq.client.mqtt.mqtt5.advanced;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptorsBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5AdvancedConfigBuilderBase<B extends Mqtt5AdvancedConfigBuilderBase<B>> {
 
     /**

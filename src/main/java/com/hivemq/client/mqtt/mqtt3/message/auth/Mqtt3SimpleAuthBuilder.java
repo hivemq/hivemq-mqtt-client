@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.auth;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3SimpleAuthBuilder extends Mqtt3SimpleAuthBuilderBase<Mqtt3SimpleAuthBuilder.Complete> {
 
     /**
      * {@link Mqtt3SimpleAuthBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete
             extends Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilderBase.Complete<Mqtt3SimpleAuthBuilder.Complete> {
 
@@ -50,7 +50,7 @@ public interface Mqtt3SimpleAuthBuilder extends Mqtt3SimpleAuthBuilderBase<Mqtt3
      *
      * @param <P> the type of the result when the built {@link Mqtt3SimpleAuth} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt3SimpleAuthBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -58,7 +58,7 @@ public interface Mqtt3SimpleAuthBuilder extends Mqtt3SimpleAuthBuilderBase<Mqtt3
          *
          * @param <P> the type of the result when the built {@link Mqtt3SimpleAuth} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt3SimpleAuthBuilderBase.Complete<Nested.Complete<P>> {
 
             /**

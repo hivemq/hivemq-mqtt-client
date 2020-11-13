@@ -16,12 +16,12 @@
 
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptorsBuilder;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ClientInterceptors {
 
     /**

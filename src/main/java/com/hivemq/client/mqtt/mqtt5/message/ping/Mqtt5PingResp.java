@@ -16,9 +16,9 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.ping;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5PingResp extends Mqtt5Message {
 
     @Override

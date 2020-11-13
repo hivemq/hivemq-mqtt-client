@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ClientInterceptorsBuilder
         extends Mqtt5ClientInterceptorsBuilderBase<Mqtt5ClientInterceptorsBuilder> {
 
@@ -43,7 +43,7 @@ public interface Mqtt5ClientInterceptorsBuilder
      *
      * @param <P> the type of the result when the built {@link Mqtt5ClientInterceptors} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt5ClientInterceptorsBuilderBase<Nested<P>> {
 
         /**

@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message;
 
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Reason Code according to the MQTT 5 specification.
@@ -24,7 +24,7 @@ import com.hivemq.client.annotations.DoNotImplement;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ReasonCode {
 
     /**

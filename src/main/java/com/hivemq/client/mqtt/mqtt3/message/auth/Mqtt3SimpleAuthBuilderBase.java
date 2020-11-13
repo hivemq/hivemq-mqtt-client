@@ -17,8 +17,8 @@
 package com.hivemq.client.mqtt.mqtt3.message.auth;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3SimpleAuthBuilderBase<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> {
 
     /**
@@ -56,7 +56,7 @@ public interface Mqtt3SimpleAuthBuilderBase<C extends Mqtt3SimpleAuthBuilderBase
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> extends Mqtt3SimpleAuthBuilderBase<C> {
 
         /**

@@ -16,7 +16,6 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
@@ -24,6 +23,7 @@ import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
@@ -36,7 +36,7 @@ import java.util.OptionalLong;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5Publish extends Mqtt5Message {
 
     /**

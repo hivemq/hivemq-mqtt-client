@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqtt5UnsubscribeBuilder.Complete> {
 
     /**
      * {@link Mqtt5UnsubscribeBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete
             extends Mqtt5UnsubscribeBuilder, Mqtt5UnsubscribeBuilderBase.Complete<Mqtt5UnsubscribeBuilder.Complete> {
 
@@ -48,7 +48,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
     /**
      * {@link Mqtt5UnsubscribeBuilder} that provides additional methods for the first Topic Filter.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Start
             extends Mqtt5UnsubscribeBuilder, Mqtt5UnsubscribeBuilderBase.Start<Mqtt5UnsubscribeBuilder.Complete> {}
 
@@ -57,7 +57,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
      *
      * @param <P> the type of the result when the built {@link Mqtt5Unsubscribe} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt5UnsubscribeBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -65,7 +65,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt5Unsubscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt5UnsubscribeBuilderBase.Complete<Nested.Complete<P>> {
 
             /**
@@ -81,7 +81,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt5Unsubscribe} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start<P> extends Nested<P>, Mqtt5UnsubscribeBuilderBase.Start<Nested.Complete<P>> {}
     }
 
@@ -91,7 +91,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
      *
      * @param <P> the type of the result when the built {@link Mqtt5Unsubscribe} is sent by the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Send<P> extends Mqtt5UnsubscribeBuilderBase<Send.Complete<P>> {
 
         /**
@@ -99,7 +99,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt5Unsubscribe} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Send<P>, Mqtt5UnsubscribeBuilderBase.Complete<Send.Complete<P>> {
 
             /**
@@ -116,7 +116,7 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
          *
          * @param <P> the type of the result when the built {@link Mqtt5Unsubscribe} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Start<P> extends Send<P>, Mqtt5UnsubscribeBuilderBase.Start<Send.Complete<P>> {}
     }
 }

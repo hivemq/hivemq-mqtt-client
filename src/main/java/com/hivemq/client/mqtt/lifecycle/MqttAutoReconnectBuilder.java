@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.lifecycle;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.1
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttAutoReconnectBuilder extends MqttAutoReconnectBuilderBase<MqttAutoReconnectBuilder> {
 
     /**
@@ -42,7 +42,7 @@ public interface MqttAutoReconnectBuilder extends MqttAutoReconnectBuilderBase<M
      *
      * @param <P> the type of the result when the built {@link MqttAutoReconnect} is applied to the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends MqttAutoReconnectBuilderBase<Nested<P>> {
 
         /**

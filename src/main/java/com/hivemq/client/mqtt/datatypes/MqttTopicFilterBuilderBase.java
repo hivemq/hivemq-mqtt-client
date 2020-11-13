@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.datatypes;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0
  */
 // @formatter:off
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttTopicFilterBuilderBase<
         C extends MqttTopicFilterBuilderBase<C, E, S, SC, SE>,
         E extends MqttTopicFilterBuilderBase.End,
@@ -85,7 +85,7 @@ public interface MqttTopicFilterBuilderBase<
      * @param <SE> the type of the end builder for a {@link MqttSharedTopicFilter}.
      */
     // @formatter:off
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete<
             C extends MqttTopicFilterBuilderBase<C, E, S, SC, SE>,
             E extends MqttTopicFilterBuilderBase.End,
@@ -109,7 +109,7 @@ public interface MqttTopicFilterBuilderBase<
     /**
      * End of a {@link MqttTopicFilterBuilderBase} that does not allow to add any more levels or wildcards.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface End {}
 
     /**
@@ -120,7 +120,7 @@ public interface MqttTopicFilterBuilderBase<
      * @param <SE> the type of the end builder.
      */
     // @formatter:off
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface SharedBase<
             S extends SharedBase<S, SC, SE>,
             SC extends S,
@@ -136,7 +136,7 @@ public interface MqttTopicFilterBuilderBase<
          * @param <SE> the type of the end builder.
          */
         // @formatter:off
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<
                 S extends SharedBase<S, SC, SE>,
                 SC extends S,

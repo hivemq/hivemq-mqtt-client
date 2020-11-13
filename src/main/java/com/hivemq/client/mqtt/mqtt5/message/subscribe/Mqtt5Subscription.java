@@ -16,10 +16,10 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5Subscription {
 
     /**

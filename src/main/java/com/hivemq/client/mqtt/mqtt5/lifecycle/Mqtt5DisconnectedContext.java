@@ -16,9 +16,9 @@
 
 package com.hivemq.client.mqtt.mqtt5.lifecycle;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedContext;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.1
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5DisconnectedContext extends MqttDisconnectedContext {
 
     @Override

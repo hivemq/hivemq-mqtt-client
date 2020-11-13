@@ -16,9 +16,9 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.auth;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
@@ -31,7 +31,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3SimpleAuth {
 
     /**

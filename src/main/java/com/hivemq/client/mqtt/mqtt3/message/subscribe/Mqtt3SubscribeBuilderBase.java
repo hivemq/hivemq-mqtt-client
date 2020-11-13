@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C>> {
 
     /**
@@ -96,7 +96,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @param <SC> the type of the complete start builder.
      */
     // @formatter:off
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Start<
             C extends Mqtt3SubscribeBuilderBase<C>,
             SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
@@ -110,7 +110,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
          * @param <SC> the type of the complete start builder.
          */
         // @formatter:off
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<
                 C extends Mqtt3SubscribeBuilderBase<C>,
                 SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>

@@ -17,9 +17,9 @@
 package com.hivemq.client.mqtt.lifecycle;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +39,7 @@ import java.util.function.BiConsumer;
  * @author Silvio Giebl
  * @since 1.1
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface MqttReconnector {
 
     /**

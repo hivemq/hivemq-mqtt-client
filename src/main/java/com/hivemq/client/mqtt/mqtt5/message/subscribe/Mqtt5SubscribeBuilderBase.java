@@ -17,9 +17,9 @@
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.Complete<C>> {
 
     /**
@@ -96,7 +96,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete<C extends Mqtt5SubscribeBuilderBase.Complete<C>> extends Mqtt5SubscribeBuilderBase<C> {
 
         /**
@@ -128,7 +128,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @param <SC> the type of the complete start builder.
      */
     // @formatter:off
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Start<
             C extends Mqtt5SubscribeBuilderBase.Complete<C>,
             SC extends Mqtt5SubscribeBuilderBase.Start.Complete<C, SC>>
@@ -142,7 +142,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
          * @param <SC> the type of the complete start builder.
          */
         // @formatter:off
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<
                 C extends Mqtt5SubscribeBuilderBase.Complete<C>,
                 SC extends Mqtt5SubscribeBuilderBase.Start.Complete<C, SC>>

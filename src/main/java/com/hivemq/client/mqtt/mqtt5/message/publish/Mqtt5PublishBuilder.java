@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5PublishBuilder.Complete> {
 
     /**
@@ -40,7 +40,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
     /**
      * {@link Mqtt5PublishBuilder} that is complete which means all mandatory fields are set.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Complete extends Mqtt5PublishBuilder, Mqtt5PublishBuilderBase.Complete<Mqtt5PublishBuilder.Complete> {
 
         /**
@@ -67,7 +67,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
      *
      * @param <P> the type of the result when the built {@link Mqtt5Publish} is sent by the parent.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Nested<P> extends Mqtt5PublishBuilderBase<Nested.Complete<P>> {
 
         /**
@@ -75,7 +75,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
          *
          * @param <P> the type of the result when the built {@link Mqtt5Publish} is applied to the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Nested<P>, Mqtt5PublishBuilderBase.Complete<Nested.Complete<P>> {
 
             /**
@@ -91,7 +91,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
      * Builder for a {@link Mqtt5Publish} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client}
      * which then sends the Publish message without returning a result.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Send<P> extends Mqtt5PublishBuilderBase<Send.Complete<P>> {
 
         /**
@@ -99,7 +99,7 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
          *
          * @param <P> the type of the result when the built {@link Mqtt5Publish} is sent by the parent.
          */
-        @DoNotImplement
+        @ApiStatus.NonExtendable
         interface Complete<P> extends Send<P>, Mqtt5PublishBuilderBase.Complete<Send.Complete<P>> {
 
             /**

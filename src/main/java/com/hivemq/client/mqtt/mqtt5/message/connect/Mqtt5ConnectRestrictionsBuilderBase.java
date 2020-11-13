@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestrictionsBuilderBase<B>> {
 
     /**

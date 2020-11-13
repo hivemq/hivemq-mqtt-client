@@ -17,7 +17,6 @@
 package com.hivemq.client.mqtt.mqtt5;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -33,6 +32,7 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5BlockingClient extends Mqtt5Client {
 
     /**
@@ -213,7 +213,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Resource which queues incoming Publish messages until they are received.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Publishes extends AutoCloseable {
 
         /**

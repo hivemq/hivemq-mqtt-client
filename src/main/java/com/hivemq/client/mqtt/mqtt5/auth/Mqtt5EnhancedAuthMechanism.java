@@ -24,6 +24,7 @@ import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -53,6 +54,7 @@ import java.util.concurrent.CompletableFuture;
  * @author Silvio Giebl
  * @since 1.0
  */
+@ApiStatus.OverrideOnly
 public interface Mqtt5EnhancedAuthMechanism {
 
     /**

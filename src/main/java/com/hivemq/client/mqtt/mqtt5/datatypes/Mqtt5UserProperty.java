@@ -16,10 +16,10 @@
 
 package com.hivemq.client.mqtt.mqtt5.datatypes;
 
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt5UserProperty extends Comparable<Mqtt5UserProperty> {
 
     /**

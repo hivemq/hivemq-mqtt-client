@@ -17,10 +17,10 @@
 package com.hivemq.client.mqtt.mqtt3.message.unsubscribe;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilterBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * @author Silvio Giebl
  * @since 1.0
  */
-@DoNotImplement
+@ApiStatus.NonExtendable
 public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBase<C>> {
 
     /**
@@ -116,7 +116,7 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
      *
      * @param <C> the type of the complete builder.
      */
-    @DoNotImplement
+    @ApiStatus.NonExtendable
     interface Start<C extends Mqtt3UnsubscribeBuilderBase<C>> extends Mqtt3UnsubscribeBuilderBase<C> {
 
         /**
