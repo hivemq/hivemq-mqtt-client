@@ -19,7 +19,7 @@ package com.hivemq.client.mqtt;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +101,7 @@ public interface MqttClientConfig {
      * @return the optional automatic reconnect strategy of the client.
      * @since 1.1
      */
-    @NotNull Optional<MqttClientAutoReconnect> getAutomaticReconnect();
+    @NotNull Optional<MqttAutoReconnect> getAutomaticReconnect();
 
     /**
      * @return the listeners which are notified (in the order of the list) when this client is connected (a successful

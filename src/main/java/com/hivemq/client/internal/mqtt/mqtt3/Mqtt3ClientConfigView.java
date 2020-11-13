@@ -27,7 +27,7 @@ import com.hivemq.client.mqtt.MqttExecutorConfig;
 import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
@@ -72,7 +72,7 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @NotNull Optional<MqttClientAutoReconnect> getAutomaticReconnect() {
+    public @NotNull Optional<MqttAutoReconnect> getAutomaticReconnect() {
         return delegate.getAutomaticReconnect();
     }
 

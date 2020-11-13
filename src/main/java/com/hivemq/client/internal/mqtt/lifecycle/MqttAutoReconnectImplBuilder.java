@@ -17,7 +17,7 @@
 package com.hivemq.client.internal.mqtt.lifecycle;
 
 import com.hivemq.client.internal.util.Checks;
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnectBuilder;
+import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnectBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,14 +27,14 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAutoReconnectImplBuilder<B>> {
+public abstract class MqttAutoReconnectImplBuilder<B extends MqttAutoReconnectImplBuilder<B>> {
 
-    private long initialDelayNanos = MqttClientAutoReconnectImpl.DEFAULT_START_DELAY_NANOS;
-    private long maxDelayNanos = MqttClientAutoReconnectImpl.DEFAULT_MAX_DELAY_NANOS;
+    private long initialDelayNanos = MqttAutoReconnectImpl.DEFAULT_START_DELAY_NANOS;
+    private long maxDelayNanos = MqttAutoReconnectImpl.DEFAULT_MAX_DELAY_NANOS;
 
-    MqttClientAutoReconnectImplBuilder() {}
+    MqttAutoReconnectImplBuilder() {}
 
-    MqttClientAutoReconnectImplBuilder(final @Nullable MqttClientAutoReconnectImpl autoReconnect) {
+    MqttAutoReconnectImplBuilder(final @Nullable MqttAutoReconnectImpl autoReconnect) {
         if (autoReconnect != null) {
             initialDelayNanos = autoReconnect.getInitialDelay(TimeUnit.NANOSECONDS);
             maxDelayNanos = autoReconnect.getMaxDelay(TimeUnit.NANOSECONDS);
@@ -61,16 +61,15 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
         return self();
     }
 
-    public @NotNull MqttClientAutoReconnectImpl build() {
-        return new MqttClientAutoReconnectImpl(initialDelayNanos, maxDelayNanos);
+    public @NotNull MqttAutoReconnectImpl build() {
+        return new MqttAutoReconnectImpl(initialDelayNanos, maxDelayNanos);
     }
 
-    public static class Default extends MqttClientAutoReconnectImplBuilder<Default>
-            implements MqttClientAutoReconnectBuilder {
+    public static class Default extends MqttAutoReconnectImplBuilder<Default> implements MqttAutoReconnectBuilder {
 
         public Default() {}
 
-        Default(final @Nullable MqttClientAutoReconnectImpl autoReconnect) {
+        Default(final @Nullable MqttAutoReconnectImpl autoReconnect) {
             super(autoReconnect);
         }
 
@@ -80,14 +79,14 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
         }
     }
 
-    public static class Nested<P> extends MqttClientAutoReconnectImplBuilder<Nested<P>>
-            implements MqttClientAutoReconnectBuilder.Nested<P> {
+    public static class Nested<P> extends MqttAutoReconnectImplBuilder<Nested<P>>
+            implements MqttAutoReconnectBuilder.Nested<P> {
 
-        private final @NotNull Function<? super MqttClientAutoReconnectImpl, P> parentConsumer;
+        private final @NotNull Function<? super MqttAutoReconnectImpl, P> parentConsumer;
 
         public Nested(
-                final @Nullable MqttClientAutoReconnectImpl autoReconnect,
-                final @NotNull Function<? super MqttClientAutoReconnectImpl, P> parentConsumer) {
+                final @Nullable MqttAutoReconnectImpl autoReconnect,
+                final @NotNull Function<? super MqttAutoReconnectImpl, P> parentConsumer) {
 
             super(autoReconnect);
             this.parentConsumer = parentConsumer;

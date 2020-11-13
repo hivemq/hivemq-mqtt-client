@@ -16,7 +16,7 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle;
 
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
@@ -28,18 +28,17 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
+public class MqttAutoReconnectImpl implements MqttAutoReconnect {
 
-    static final long DEFAULT_START_DELAY_NANOS =
-            TimeUnit.SECONDS.toNanos(MqttClientAutoReconnect.DEFAULT_START_DELAY_S);
-    static final long DEFAULT_MAX_DELAY_NANOS = TimeUnit.SECONDS.toNanos(MqttClientAutoReconnect.DEFAULT_MAX_DELAY_S);
-    public static final @NotNull MqttClientAutoReconnectImpl DEFAULT =
-            new MqttClientAutoReconnectImpl(DEFAULT_START_DELAY_NANOS, DEFAULT_MAX_DELAY_NANOS);
+    static final long DEFAULT_START_DELAY_NANOS = TimeUnit.SECONDS.toNanos(MqttAutoReconnect.DEFAULT_START_DELAY_S);
+    static final long DEFAULT_MAX_DELAY_NANOS = TimeUnit.SECONDS.toNanos(MqttAutoReconnect.DEFAULT_MAX_DELAY_S);
+    public static final @NotNull MqttAutoReconnectImpl DEFAULT =
+            new MqttAutoReconnectImpl(DEFAULT_START_DELAY_NANOS, DEFAULT_MAX_DELAY_NANOS);
 
     private final long initialDelayNanos;
     private final long maxDelayNanos;
 
-    MqttClientAutoReconnectImpl(final long initialDelayNanos, final long maxDelayNanos) {
+    MqttAutoReconnectImpl(final long initialDelayNanos, final long maxDelayNanos) {
         this.initialDelayNanos = initialDelayNanos;
         this.maxDelayNanos = maxDelayNanos;
     }
@@ -66,7 +65,7 @@ public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
     }
 
     @Override
-    public MqttClientAutoReconnectImplBuilder.@NotNull Default extend() {
-        return new MqttClientAutoReconnectImplBuilder.Default(this);
+    public MqttAutoReconnectImplBuilder.@NotNull Default extend() {
+        return new MqttAutoReconnectImplBuilder.Default(this);
     }
 }

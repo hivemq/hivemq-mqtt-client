@@ -28,7 +28,7 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
@@ -150,10 +150,10 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull Optional<MqttClientAutoReconnect> getAutomaticReconnect() {
+    public @NotNull Optional<MqttAutoReconnect> getAutomaticReconnect() {
         for (final MqttClientDisconnectedListener disconnectedListener : disconnectedListeners) {
-            if (disconnectedListener instanceof MqttClientAutoReconnect) {
-                return Optional.of((MqttClientAutoReconnect) disconnectedListener);
+            if (disconnectedListener instanceof MqttAutoReconnect) {
+                return Optional.of((MqttAutoReconnect) disconnectedListener);
             }
         }
         return Optional.empty();
