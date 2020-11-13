@@ -20,7 +20,7 @@ import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
-import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
+import com.hivemq.client.mqtt.lifecycle.MqttReconnector;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -31,37 +31,36 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
- * A {@link MqttClientReconnector} with methods specific to an {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
- * Mqtt3Client}.
+ * A {@link MqttReconnector} with methods specific to an {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
-public interface Mqtt3ClientReconnector extends MqttClientReconnector {
+public interface Mqtt3Reconnector extends MqttReconnector {
 
     @Override
-    @NotNull Mqtt3ClientReconnector reconnect(boolean reconnect);
+    @NotNull Mqtt3Reconnector reconnect(boolean reconnect);
 
     @Override
-    <T> @NotNull Mqtt3ClientReconnector reconnectWhen(
+    <T> @NotNull Mqtt3Reconnector reconnectWhen(
             @NotNull CompletableFuture<T> future, @Nullable BiConsumer<? super T, ? super Throwable> callback);
 
     @Override
-    @NotNull Mqtt3ClientReconnector resubscribeIfSessionExpired(boolean resubscribe);
+    @NotNull Mqtt3Reconnector resubscribeIfSessionExpired(boolean resubscribe);
 
     @Override
-    @NotNull Mqtt3ClientReconnector republishIfSessionExpired(boolean republish);
+    @NotNull Mqtt3Reconnector republishIfSessionExpired(boolean republish);
 
     @Override
-    @NotNull Mqtt3ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
+    @NotNull Mqtt3Reconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     @Override
-    @NotNull Mqtt3ClientReconnector transportConfig(@NotNull MqttTransportConfig transportConfig);
+    @NotNull Mqtt3Reconnector transportConfig(@NotNull MqttTransportConfig transportConfig);
 
     @Override
     @CheckReturnValue
-    MqttTransportConfigBuilder.@NotNull Nested<? extends Mqtt3ClientReconnector> transportConfig();
+    MqttTransportConfigBuilder.@NotNull Nested<? extends Mqtt3Reconnector> transportConfig();
 
     /**
      * Sets a different Connect message the client will try to reconnect with.
@@ -69,7 +68,7 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
      * @param connect the Connect message.
      * @return this reconnector.
      */
-    @NotNull Mqtt3ClientReconnector connect(@NotNull Mqtt3Connect connect);
+    @NotNull Mqtt3Reconnector connect(@NotNull Mqtt3Connect connect);
 
     /**
      * Fluent counterpart of {@link #connect(Mqtt3Connect)}.
@@ -81,14 +80,14 @@ public interface Mqtt3ClientReconnector extends MqttClientReconnector {
      * @see #connect(Mqtt3Connect)
      */
     @CheckReturnValue
-    Mqtt3ConnectBuilder.@NotNull Nested<? extends Mqtt3ClientReconnector> connectWith();
+    Mqtt3ConnectBuilder.@NotNull Nested<? extends Mqtt3Reconnector> connectWith();
 
     /**
-     * Returns the currently set Connect message the client will try to reconnect with.
+     * Returns the currently set Connect message the client will try to reconnect with.@
      * <p>
      * If the {@link #connect(Mqtt3Connect)} method has not been called before (including previous {@link
-     * com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the
-     * Connect message that is reconstructed from the {@link com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig
+     * com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener MqttDisconnectedListener}s) it will be the Connect
+     * message that is reconstructed from the {@link com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig
      * Mqtt3ClientConnectionConfig} or the Connect message of the previous connect try if it has not been successfully
      * connected.
      *

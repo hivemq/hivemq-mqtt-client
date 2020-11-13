@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @since 1.1
  */
 @DoNotImplement
-public interface MqttAutoReconnect extends MqttClientDisconnectedListener {
+public interface MqttAutoReconnect extends MqttDisconnectedListener {
 
     /**
      * The default initial delay in seconds the client will wait before it tries to reconnect.

@@ -21,13 +21,13 @@ import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
-import com.hivemq.client.internal.mqtt.lifecycle.MqttClientDisconnectedContextImpl;
-import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttDisconnectedContextImpl;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttReconnector;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedContext;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoop;
@@ -137,12 +137,12 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @Nullable MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
 
-        final MqttClientReconnector reconnector =
-                new MqttClientReconnector(eventLoop, attempts, connect, clientConfig.getCurrentTransportConfig());
-        final MqttClientDisconnectedContext context =
-                MqttClientDisconnectedContextImpl.of(clientConfig, source, cause, reconnector);
+        final MqttReconnector reconnector =
+                new MqttReconnector(eventLoop, attempts, connect, clientConfig.getCurrentTransportConfig());
+        final MqttDisconnectedContext context =
+                MqttDisconnectedContextImpl.of(clientConfig, source, cause, reconnector);
 
-        for (final MqttClientDisconnectedListener disconnectedListener : clientConfig.getDisconnectedListeners()) {
+        for (final MqttDisconnectedListener disconnectedListener : clientConfig.getDisconnectedListeners()) {
             try {
                 disconnectedListener.onDisconnected(context);
             } catch (final Throwable t) {

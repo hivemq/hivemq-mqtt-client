@@ -21,8 +21,8 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnectBuilder;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -252,7 +252,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull B addConnectedListener(@NotNull MqttClientConnectedListener connectedListener);
+    @NotNull B addConnectedListener(@NotNull MqttConnectedListener connectedListener);
 
     /**
      * Adds a listener which is notified when the client is disconnected (with or without a Disconnect message) or the
@@ -265,5 +265,5 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @since 1.1
      */
     @CheckReturnValue
-    @NotNull B addDisconnectedListener(@NotNull MqttClientDisconnectedListener disconnectedListener);
+    @NotNull B addDisconnectedListener(@NotNull MqttDisconnectedListener disconnectedListener);
 }

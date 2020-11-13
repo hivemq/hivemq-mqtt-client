@@ -17,9 +17,9 @@
 package com.hivemq.client.internal.mqtt.lifecycle;
 
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
-import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedContext;
+import com.hivemq.client.mqtt.lifecycle.MqttReconnector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -44,9 +44,9 @@ public class MqttAutoReconnectImpl implements MqttAutoReconnect {
     }
 
     @Override
-    public void onDisconnected(final @NotNull MqttClientDisconnectedContext context) {
+    public void onDisconnected(final @NotNull MqttDisconnectedContext context) {
         if (context.getSource() != MqttDisconnectSource.USER) {
-            final MqttClientReconnector reconnector = context.getReconnector();
+            final MqttReconnector reconnector = context.getReconnector();
             final long delay =
                     (long) Math.min(initialDelayNanos * Math.pow(2, reconnector.getAttempts()), maxDelayNanos);
             final long randomDelay = (long) (delay / 4d / Integer.MAX_VALUE * ThreadLocalRandom.current().nextInt());

@@ -23,7 +23,7 @@ import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttTransportConfig;
-import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5ClientReconnector;
+import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5Reconnector;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +36,7 @@ import java.util.function.BiConsumer;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientReconnector implements Mqtt5ClientReconnector {
+public class MqttReconnector implements Mqtt5Reconnector {
 
     private final @NotNull EventLoop eventLoop;
     private final int attempts;
@@ -50,7 +50,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
 
     private boolean afterOnDisconnected;
 
-    public MqttClientReconnector(
+    public MqttReconnector(
             final @NotNull EventLoop eventLoop,
             final int attempts,
             final @NotNull MqttConnect connect,
@@ -69,14 +69,14 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector reconnect(final boolean reconnect) {
+    public @NotNull MqttReconnector reconnect(final boolean reconnect) {
         checkInEventLoop();
         this.reconnect = reconnect;
         return this;
     }
 
     @Override
-    public <T> @NotNull MqttClientReconnector reconnectWhen(
+    public <T> @NotNull MqttReconnector reconnectWhen(
             @Nullable CompletableFuture<T> future, final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
         checkInOnDisconnected("reconnectWhen");
@@ -101,7 +101,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector resubscribeIfSessionExpired(final boolean resubscribe) {
+    public @NotNull MqttReconnector resubscribeIfSessionExpired(final boolean resubscribe) {
         checkInOnDisconnected("resubscribeIfSessionExpired");
         resubscribeIfSessionExpired = resubscribe;
         return this;
@@ -114,7 +114,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector republishIfSessionExpired(final boolean republish) {
+    public @NotNull MqttReconnector republishIfSessionExpired(final boolean republish) {
         checkInOnDisconnected("republishIfSessionExpired");
         republishIfSessionExpired = republish;
         return this;
@@ -127,7 +127,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector delay(final long delay, final @Nullable TimeUnit timeUnit) {
+    public @NotNull MqttReconnector delay(final long delay, final @Nullable TimeUnit timeUnit) {
         checkInOnDisconnected("delay");
         Checks.notNull(timeUnit, "Time unit");
         this.delayNanos = timeUnit.toNanos(delay);
@@ -142,7 +142,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector transportConfig(final @Nullable MqttTransportConfig transportConfig) {
+    public @NotNull MqttReconnector transportConfig(final @Nullable MqttTransportConfig transportConfig) {
         checkInEventLoop();
         this.transportConfig =
                 Checks.notImplemented(transportConfig, MqttTransportConfigImpl.class, "Transport config");
@@ -150,7 +150,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public MqttTransportConfigImplBuilder.@NotNull Nested<MqttClientReconnector> transportConfig() {
+    public MqttTransportConfigImplBuilder.@NotNull Nested<MqttReconnector> transportConfig() {
         checkInEventLoop();
         return new MqttTransportConfigImplBuilder.Nested<>(transportConfig, this::transportConfig);
     }
@@ -162,14 +162,14 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector connect(final @Nullable Mqtt5Connect connect) {
+    public @NotNull MqttReconnector connect(final @Nullable Mqtt5Connect connect) {
         checkInEventLoop();
         this.connect = MqttChecks.connect(connect);
         return this;
     }
 
     @Override
-    public MqttConnectBuilder.@NotNull Nested<MqttClientReconnector> connectWith() {
+    public MqttConnectBuilder.@NotNull Nested<MqttReconnector> connectWith() {
         checkInEventLoop();
         return new MqttConnectBuilder.Nested<>(connect, this::connect);
     }
@@ -185,7 +185,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     private void checkInEventLoop() {
-        Checks.state(eventLoop.inEventLoop(), "MqttClientReconnector must be called from the eventLoop.");
+        Checks.state(eventLoop.inEventLoop(), "MqttReconnector must be called from the eventLoop.");
     }
 
     private void checkInOnDisconnected(final @NotNull String method) {

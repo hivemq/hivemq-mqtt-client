@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.1
  */
 @FunctionalInterface
-public interface MqttClientDisconnectedListener {
+public interface MqttDisconnectedListener {
 
     /**
      * Listener method which is notified in the following cases:
@@ -40,7 +40,7 @@ public interface MqttClientDisconnectedListener {
      *   <li>A reconnect attempt by the client failed. The client state will still be
      *     {@link com.hivemq.client.mqtt.MqttClientState#CONNECTING_RECONNECT CONNECTING_RECONNECT}.
      * </ul>
-     * The client state will be updated after all {@link MqttClientDisconnectedListener MqttClientDisconnectedListeners}
+     * The client state will be updated after all {@link MqttDisconnectedListener}s
      * are called to
      * <ul>
      *   <li>{@link com.hivemq.client.mqtt.MqttClientState#DISCONNECTED DISCONNECTED} or
@@ -49,10 +49,10 @@ public interface MqttClientDisconnectedListener {
      * </ul>
      * <p>
      * This method must not block. If you want to reconnect you have to use the supplied {@link
-     * MqttClientDisconnectedContext#getReconnector()}.
+     * MqttDisconnectedContext#getReconnector()}.
      *
      * @param context provides context about the client that is now disconnected, the cause for disconnection and allows
      *                reconnecting.
      */
-    void onDisconnected(@NotNull MqttClientDisconnectedContext context);
+    void onDisconnected(@NotNull MqttDisconnectedContext context);
 }
