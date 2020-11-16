@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Silvio Giebl
  */
-@Subcomponent(modules = {ClientModule.class})
+@Subcomponent
 @ClientScope
 public interface ClientComponent {
 
