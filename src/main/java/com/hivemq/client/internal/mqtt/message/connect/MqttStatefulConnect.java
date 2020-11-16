@@ -16,17 +16,17 @@
 
 package com.hivemq.client.internal.mqtt.message.connect;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.message.MqttStatefulMessage;
 import com.hivemq.client.internal.mqtt.message.auth.MqttEnhancedAuth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
 
     private final @NotNull MqttClientIdentifierImpl clientIdentifier;

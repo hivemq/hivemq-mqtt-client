@@ -16,12 +16,12 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3Message;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
      * @return the {@link Mqtt3Subscription Subscriptions} of this Subscribe message. The list contains at least one
      *         Subscription.
      */
-    @Immutable @NotNull List<@NotNull ? extends Mqtt3Subscription> getSubscriptions();
+    @Unmodifiable @NotNull List<@NotNull ? extends Mqtt3Subscription> getSubscriptions();
 
     @Override
     default @NotNull Mqtt3MessageType getType() {

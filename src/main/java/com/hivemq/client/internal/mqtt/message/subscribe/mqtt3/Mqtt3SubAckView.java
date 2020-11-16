@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.subscribe.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
 import com.hivemq.client.internal.util.collections.ImmutableList;
@@ -27,11 +26,12 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class Mqtt3SubAckView implements Mqtt3SubAck {
 
     public static final @NotNull Function<Mqtt5SubAck, Mqtt3SubAck> MAPPER = Mqtt3SubAckView::of;
@@ -110,7 +110,7 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     }
 
     @Override
-    public @NotNull ImmutableList<@NotNull Mqtt3SubAckReturnCode> getReturnCodes() {
+    public @NotNull ImmutableList<Mqtt3SubAckReturnCode> getReturnCodes() {
         return viewReasonCodes(delegate.getReasonCodes());
     }
 

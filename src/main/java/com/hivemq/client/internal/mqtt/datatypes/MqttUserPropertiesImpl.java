@@ -16,18 +16,18 @@
 
 package com.hivemq.client.internal.mqtt.datatypes;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  * @see Mqtt5UserProperties
  */
-@Immutable
+@Unmodifiable
 public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
 
     /**

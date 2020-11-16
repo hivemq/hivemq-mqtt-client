@@ -16,11 +16,11 @@
 
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3Message;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public interface Mqtt3SubAck extends Mqtt3Message {
      *         Subscription} in the corresponding {@link com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe
      *         Subscribe message} in the same order.
      */
-    @Immutable @NotNull List<@NotNull Mqtt3SubAckReturnCode> getReturnCodes();
+    @Unmodifiable @NotNull List<@NotNull Mqtt3SubAckReturnCode> getReturnCodes();
 
     @Override
     default @NotNull Mqtt3MessageType getType() {

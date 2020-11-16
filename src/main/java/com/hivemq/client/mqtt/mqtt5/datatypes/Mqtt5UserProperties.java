@@ -16,12 +16,12 @@
 
 package com.hivemq.client.mqtt.mqtt5.datatypes;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collection;
 import java.util.List;
@@ -74,7 +74,7 @@ public interface Mqtt5UserProperties {
     /**
      * @return the User Properties as an immutable list.
      */
-    @Immutable @NotNull List<@NotNull ? extends Mqtt5UserProperty> asList();
+    @Unmodifiable @NotNull List<@NotNull ? extends Mqtt5UserProperty> asList();
 
     /**
      * @return a builder for extending this collection of User Properties.

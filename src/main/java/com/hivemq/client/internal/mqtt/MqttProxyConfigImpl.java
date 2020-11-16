@@ -20,6 +20,7 @@ import com.hivemq.client.mqtt.MqttProxyConfig;
 import com.hivemq.client.mqtt.MqttProxyProtocol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.net.InetSocketAddress;
 import java.util.Objects;
@@ -28,6 +29,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Unmodifiable
 public class MqttProxyConfigImpl implements MqttProxyConfig {
 
     private final @NotNull MqttProxyProtocol protocol;

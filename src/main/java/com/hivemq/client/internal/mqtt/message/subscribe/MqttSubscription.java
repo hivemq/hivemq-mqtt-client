@@ -16,18 +16,18 @@
 
 package com.hivemq.client.internal.mqtt.message.subscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttSubscription implements Mqtt5Subscription {
 
     private final @NotNull MqttTopicFilterImpl topicFilter;

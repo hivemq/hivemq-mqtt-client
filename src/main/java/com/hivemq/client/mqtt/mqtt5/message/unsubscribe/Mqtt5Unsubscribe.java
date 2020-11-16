@@ -16,7 +16,6 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -24,6 +23,7 @@ import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
     /**
      * @return the Topic Filters of this Unsubscribe message. The list contains at least one Topic Filter.
      */
-    @Immutable @NotNull List<@NotNull ? extends MqttTopicFilter> getTopicFilters();
+    @Unmodifiable @NotNull List<@NotNull ? extends MqttTopicFilter> getTopicFilters();
 
     /**
      * @return the optional user properties of this Unsubscribe message.

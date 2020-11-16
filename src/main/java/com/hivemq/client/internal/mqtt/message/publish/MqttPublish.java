@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.publish;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.checkpoint.Confirmable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -33,6 +32,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -45,7 +45,7 @@ import static com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublis
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5Publish {
 
     public static final long NO_MESSAGE_EXPIRY = Long.MAX_VALUE;

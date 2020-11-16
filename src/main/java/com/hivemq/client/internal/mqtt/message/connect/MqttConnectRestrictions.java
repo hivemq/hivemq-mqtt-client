@@ -16,15 +16,15 @@
 
 package com.hivemq.client.internal.mqtt.message.connect;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
 
     public static final @NotNull MqttConnectRestrictions DEFAULT =

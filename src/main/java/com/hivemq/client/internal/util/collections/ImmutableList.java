@@ -16,11 +16,11 @@
 
 package com.hivemq.client.internal.util.collections;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.util.Checks;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -29,7 +29,7 @@ import java.util.function.UnaryOperator;
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
 
     static <E> @NotNull ImmutableList<E> of() {

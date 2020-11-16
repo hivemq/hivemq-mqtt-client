@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.publish.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPubAck;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
@@ -24,11 +23,12 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PubAck;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class Mqtt3PubAckView implements Mqtt3PubAck {
 
     public static final @NotNull Mqtt3PubAckView INSTANCE = new Mqtt3PubAckView();

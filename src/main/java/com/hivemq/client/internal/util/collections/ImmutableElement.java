@@ -16,11 +16,11 @@
 
 package com.hivemq.client.internal.util.collections;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.util.Checks;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.lang.reflect.Array;
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Immutable class ImmutableElement<E> implements ImmutableList<E> {
+@Unmodifiable class ImmutableElement<E> implements ImmutableList<E> {
 
     @Contract("null -> fail")
     static <E> @NotNull ImmutableList<E> of(final @Nullable E e) {

@@ -16,13 +16,13 @@
 
 package com.hivemq.client.internal.mqtt.message.auth;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -31,7 +31,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttSimpleAuth implements Mqtt5SimpleAuth {
 
     private final @Nullable MqttUtf8StringImpl username;

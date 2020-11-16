@@ -20,6 +20,7 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttTlsConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import javax.net.ssl.*;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Optional;
  * @author David Katz
  * @author Silvio Giebl
  */
+@Unmodifiable
 public class MqttTlsConfigImpl implements MqttTlsConfig {
 
     static final @Nullable HostnameVerifier DEFAULT_HOSTNAME_VERIFIER;

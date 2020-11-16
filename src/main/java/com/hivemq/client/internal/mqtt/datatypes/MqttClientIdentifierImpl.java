@@ -16,20 +16,20 @@
 
 package com.hivemq.client.internal.mqtt.datatypes;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  * @see MqttClientIdentifier
  * @see MqttUtf8StringImpl
  */
-@Immutable
+@Unmodifiable
 public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements MqttClientIdentifier {
 
     /**
