@@ -16,15 +16,15 @@
 
 package com.hivemq.client.internal.util.collections;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.util.Checks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable class ImmutableIntElement implements ImmutableIntList {
+@Unmodifiable class ImmutableIntElement implements ImmutableIntList {
 
     private final int element;
 

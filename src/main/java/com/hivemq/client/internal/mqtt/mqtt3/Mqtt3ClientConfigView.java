@@ -16,12 +16,12 @@
 
 package com.hivemq.client.internal.mqtt.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttExecutorConfig;
 import com.hivemq.client.mqtt.MqttTransportConfig;
@@ -37,7 +37,6 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -97,12 +96,12 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @Immutable @NotNull List<@NotNull MqttConnectedListener> getConnectedListeners() {
+    public @NotNull ImmutableList<MqttConnectedListener> getConnectedListeners() {
         return delegate.getConnectedListeners();
     }
 
     @Override
-    public @Immutable @NotNull List<@NotNull MqttDisconnectedListener> getDisconnectedListeners() {
+    public @NotNull ImmutableList<MqttDisconnectedListener> getDisconnectedListeners() {
         return delegate.getDisconnectedListeners();
     }
 

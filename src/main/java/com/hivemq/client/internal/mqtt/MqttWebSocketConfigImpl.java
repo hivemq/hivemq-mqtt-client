@@ -19,11 +19,13 @@ package com.hivemq.client.internal.mqtt;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author David Katz
  * @author Christian Hoff
  */
+@Unmodifiable
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     static final @NotNull MqttWebSocketConfigImpl DEFAULT =

@@ -165,11 +165,11 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 implements MqttMessage.WithId {
 
             private final int packetIdentifier;
-            private final @NotNull ImmutableList<@NotNull R> reasonCodes;
+            private final @NotNull ImmutableList<R> reasonCodes;
 
             protected WithCodesAndId(
                     final int packetIdentifier,
-                    final @NotNull ImmutableList<@NotNull R> reasonCodes,
+                    final @NotNull ImmutableList<R> reasonCodes,
                     final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
 
@@ -183,7 +183,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 return packetIdentifier;
             }
 
-            public @NotNull ImmutableList<@NotNull R> getReasonCodes() {
+            public @NotNull ImmutableList<R> getReasonCodes() {
                 return reasonCodes;
             }
 

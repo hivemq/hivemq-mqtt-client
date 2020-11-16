@@ -16,10 +16,10 @@
 
 package com.hivemq.client.internal.util.collections;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.util.Checks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Immutable class ImmutableEmptyList implements ImmutableList<Object> {
+@Unmodifiable class ImmutableEmptyList implements ImmutableList<Object> {
 
     private static final @NotNull ImmutableEmptyList INSTANCE = new ImmutableEmptyList();
     private static final @NotNull Object @NotNull [] EMPTY = {};

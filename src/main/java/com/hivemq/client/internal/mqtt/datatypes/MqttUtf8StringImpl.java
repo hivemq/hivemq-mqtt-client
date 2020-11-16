@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.datatypes;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.Utf8Util;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
@@ -24,6 +23,7 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +35,7 @@ import java.util.Arrays;
  * @author Silvio Giebl
  * @see MqttUtf8String
  */
-@Immutable
+@Unmodifiable
 public class MqttUtf8StringImpl implements MqttUtf8String {
 
     /**

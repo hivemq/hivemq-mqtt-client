@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.connect;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
@@ -29,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +38,7 @@ import java.util.OptionalLong;
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCode<Mqtt5ConnAckReasonCode>
         implements Mqtt5ConnAck {
 

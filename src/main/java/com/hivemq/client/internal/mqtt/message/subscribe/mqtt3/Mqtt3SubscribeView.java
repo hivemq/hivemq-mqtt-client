@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.subscribe.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
@@ -24,11 +23,12 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class Mqtt3SubscribeView implements Mqtt3Subscribe {
 
     private static @NotNull MqttSubscribe delegate(final @NotNull ImmutableList<MqttSubscription> subscriptions) {

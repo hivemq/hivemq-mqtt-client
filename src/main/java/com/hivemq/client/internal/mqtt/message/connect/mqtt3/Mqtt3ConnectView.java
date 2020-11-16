@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.connect.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
@@ -29,13 +28,14 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class Mqtt3ConnectView implements Mqtt3Connect {
 
     public static final @NotNull Mqtt3ConnectView DEFAULT = of(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_SESSION, null, null);

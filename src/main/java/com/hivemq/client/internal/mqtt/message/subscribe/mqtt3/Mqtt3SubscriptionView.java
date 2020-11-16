@@ -24,10 +24,12 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
+@Unmodifiable
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
     private static @NotNull MqttSubscription delegate(

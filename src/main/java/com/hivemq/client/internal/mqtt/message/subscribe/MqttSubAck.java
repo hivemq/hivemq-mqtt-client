@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.subscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
@@ -26,11 +25,12 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttSubAck extends MqttMessageWithUserProperties.WithReason.WithCodesAndId<Mqtt5SubAckReasonCode>
         implements Mqtt5SubAck {
 

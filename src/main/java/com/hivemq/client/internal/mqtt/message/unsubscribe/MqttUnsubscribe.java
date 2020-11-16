@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.unsubscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
@@ -25,11 +24,12 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mqtt5Unsubscribe {
 
     private final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters;

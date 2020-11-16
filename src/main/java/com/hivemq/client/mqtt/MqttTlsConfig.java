@@ -16,10 +16,10 @@
 
 package com.hivemq.client.mqtt;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttTlsConfigImplBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
@@ -67,7 +67,7 @@ public interface MqttTlsConfig {
      *
      * @return the optional user defined cipher suites.
      */
-    @NotNull Optional<@Immutable List<@NotNull String>> getCipherSuites();
+    @NotNull Optional<@Unmodifiable List<@NotNull String>> getCipherSuites();
 
     /**
      * The optional user defined protocols. If absent, the default protocols of Netty (network communication framework)
@@ -75,7 +75,7 @@ public interface MqttTlsConfig {
      *
      * @return the optional user defined protocols.
      */
-    @NotNull Optional<@Immutable List<@NotNull String>> getProtocols();
+    @NotNull Optional<@Unmodifiable List<@NotNull String>> getProtocols();
 
     /**
      * @return the TLS handshake timeout in milliseconds.

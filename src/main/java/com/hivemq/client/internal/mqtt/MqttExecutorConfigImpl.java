@@ -20,6 +20,7 @@ import com.hivemq.client.mqtt.MqttExecutorConfig;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import java.util.concurrent.Executor;
 /**
  * @author Silvio Giebl
  */
+@Unmodifiable
 public class MqttExecutorConfigImpl implements MqttExecutorConfig {
 
     public static final int DEFAULT_NETTY_THREADS = 0;

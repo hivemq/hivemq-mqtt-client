@@ -23,12 +23,14 @@ import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2I
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
 
 /**
  * @author Silvio Giebl
  */
+@Unmodifiable
 public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
 
     private final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor;

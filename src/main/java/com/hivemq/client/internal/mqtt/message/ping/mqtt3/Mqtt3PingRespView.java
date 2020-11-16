@@ -16,16 +16,16 @@
 
 package com.hivemq.client.internal.mqtt.message.ping.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.ping.Mqtt3PingResp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class Mqtt3PingRespView implements Mqtt3PingResp {
 
     public static final @NotNull Mqtt3PingRespView INSTANCE = new Mqtt3PingRespView();

@@ -16,17 +16,17 @@
 
 package com.hivemq.client.internal.mqtt.message.ping;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.MqttMessage;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.client.mqtt.mqtt5.message.ping.Mqtt5PingReq;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttPingReq implements MqttMessage, Mqtt5PingReq {
 
     public static final @NotNull MqttPingReq INSTANCE = new MqttPingReq();

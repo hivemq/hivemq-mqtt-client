@@ -16,13 +16,13 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +41,7 @@ public interface Mqtt5UnsubAck extends Mqtt5Message {
      *         com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe Unsubscribe message} in the same
      *         order.
      */
-    @Immutable @NotNull List<@NotNull Mqtt5UnsubAckReasonCode> getReasonCodes();
+    @Unmodifiable @NotNull List<@NotNull Mqtt5UnsubAckReasonCode> getReasonCodes();
 
     /**
      * @return the optional reason string of this UnsubAck message.

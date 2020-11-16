@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.connect;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -31,6 +30,7 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +38,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5Connect {
 
     public static final @NotNull MqttConnect DEFAULT =

@@ -16,13 +16,13 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
      * @return the {@link Mqtt5Subscription Subscriptions} of this Subscribe message. The list contains at least one
      *         Subscription.
      */
-    @Immutable @NotNull List<@NotNull ? extends Mqtt5Subscription> getSubscriptions();
+    @Unmodifiable @NotNull List<@NotNull ? extends Mqtt5Subscription> getSubscriptions();
 
     /**
      * @return the optional user properties of this Subscribe message.

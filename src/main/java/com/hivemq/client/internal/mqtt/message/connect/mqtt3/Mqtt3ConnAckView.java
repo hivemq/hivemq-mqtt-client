@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.connect.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnAckRestrictions;
@@ -27,13 +26,14 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckReasonCode;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import static com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAckReturnCode.*;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
     public static final @NotNull Function<Mqtt5ConnAck, Mqtt3ConnAck> MAPPER = Mqtt3ConnAckView::of;

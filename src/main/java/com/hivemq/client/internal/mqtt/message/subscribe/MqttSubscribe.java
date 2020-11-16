@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.subscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
 import com.hivemq.client.internal.util.StringUtil;
@@ -24,11 +23,12 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt5Subscribe {
 
     private final @NotNull ImmutableList<MqttSubscription> subscriptions;

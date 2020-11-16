@@ -16,16 +16,16 @@
 
 package com.hivemq.client.internal.mqtt.message.publish;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.MqttStatefulMessage;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;

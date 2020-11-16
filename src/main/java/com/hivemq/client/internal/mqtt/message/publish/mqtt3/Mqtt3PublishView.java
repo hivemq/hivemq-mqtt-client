@@ -16,7 +16,6 @@
 
 package com.hivemq.client.internal.mqtt.message.publish.mqtt3;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
@@ -30,6 +29,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -37,7 +37,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class Mqtt3PublishView implements Mqtt3Publish {
 
     public static final @NotNull Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;

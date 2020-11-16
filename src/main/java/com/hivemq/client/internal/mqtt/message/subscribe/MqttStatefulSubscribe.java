@@ -16,14 +16,14 @@
 
 package com.hivemq.client.internal.mqtt.message.subscribe;
 
-import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.MqttStatefulMessage;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Immutable
+@Unmodifiable
 public class MqttStatefulSubscribe extends MqttStatefulMessage.WithId<MqttSubscribe> {
 
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
