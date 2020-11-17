@@ -24,6 +24,7 @@ import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -42,8 +43,10 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
     private @Nullable MqttTlsConfigImpl tlsConfig;
     private @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private @Nullable MqttProxyConfigImpl proxyConfig;
-    private int socketConnectTimeoutMs = MqttTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
-    private int mqttConnectTimeoutMs = MqttTransportConfigImpl.DEFAULT_MQTT_CONNECT_TIMEOUT_MS;
+    private @Range(from = 0, to = Integer.MAX_VALUE) int socketConnectTimeoutMs =
+            MqttTransportConfigImpl.DEFAULT_SOCKET_CONNECT_TIMEOUT_MS;
+    private @Range(from = 0, to = Integer.MAX_VALUE) int mqttConnectTimeoutMs =
+            MqttTransportConfigImpl.DEFAULT_MQTT_CONNECT_TIMEOUT_MS;
 
     MqttTransportConfigImplBuilder() {}
 

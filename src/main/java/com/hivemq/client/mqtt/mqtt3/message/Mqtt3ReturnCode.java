@@ -16,7 +16,9 @@
 
 package com.hivemq.client.mqtt.mqtt3.message;
 
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Range;
 
 /**
  * Return Code according to the MQTT 3 specification.
@@ -30,7 +32,7 @@ public interface Mqtt3ReturnCode {
     /**
      * @return the byte code of this Return Code.
      */
-    int getCode();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_BYTE_MAX_VALUE) int getCode();
 
     /**
      * @return whether this Return Code is an Error Code.

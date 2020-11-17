@@ -17,9 +17,11 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.CheckReturnValue;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -69,7 +71,7 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B serverPort(int port);
+    @NotNull B serverPort(@Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int port);
 
     /**
      * Sets the optional {@link MqttTransportConfig#getLocalAddress() local bind address}.
@@ -113,7 +115,7 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @since 1.2
      */
     @CheckReturnValue
-    @NotNull B localPort(int port);
+    @NotNull B localPort(@Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int port);
 
     /**
      * Sets the {@link MqttTransportConfig#getTlsConfig() transport layer security configuration} to the default

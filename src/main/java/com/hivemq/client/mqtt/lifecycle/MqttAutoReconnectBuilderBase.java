@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.lifecycle;
 import com.hivemq.client.annotations.CheckReturnValue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +43,7 @@ public interface MqttAutoReconnectBuilderBase<B extends MqttAutoReconnectBuilder
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B initialDelay(final long initialDelay, @NotNull TimeUnit timeUnit);
+    @NotNull B initialDelay(final @Range(from = 1, to = Long.MAX_VALUE) long initialDelay, @NotNull TimeUnit timeUnit);
 
     /**
      * Sets the maximum delay the client will wait before it tries to reconnect.
@@ -54,5 +55,5 @@ public interface MqttAutoReconnectBuilderBase<B extends MqttAutoReconnectBuilder
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B maxDelay(final long maxDelay, @NotNull TimeUnit timeUnit);
+    @NotNull B maxDelay(final @Range(from = 0, to = Long.MAX_VALUE) long maxDelay, @NotNull TimeUnit timeUnit);
 }

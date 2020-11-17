@@ -21,6 +21,7 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttTlsConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
@@ -38,7 +39,8 @@ public abstract class MqttTlsConfigImplBuilder<B extends MqttTlsConfigImplBuilde
     private @Nullable TrustManagerFactory trustManagerFactory;
     private @Nullable ImmutableList<String> cipherSuites;
     private @Nullable ImmutableList<String> protocols;
-    private int handshakeTimeoutMs = (int) MqttTlsConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs =
+            MqttTlsConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
     private @Nullable HostnameVerifier hostnameVerifier = MqttTlsConfigImpl.DEFAULT_HOSTNAME_VERIFIER;
 
     MqttTlsConfigImplBuilder() {}
@@ -49,7 +51,7 @@ public abstract class MqttTlsConfigImplBuilder<B extends MqttTlsConfigImplBuilde
             trustManagerFactory = tlsConfig.getRawTrustManagerFactory();
             cipherSuites = tlsConfig.getRawCipherSuites();
             protocols = tlsConfig.getRawProtocols();
-            handshakeTimeoutMs = (int) tlsConfig.getHandshakeTimeoutMs();
+            handshakeTimeoutMs = tlsConfig.getHandshakeTimeoutMs();
             hostnameVerifier = tlsConfig.getRawHostnameVerifier();
         }
     }

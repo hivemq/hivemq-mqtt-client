@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.MqttTransportConfigBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -70,7 +71,7 @@ public interface MqttReconnector {
     /**
      * @return the number of failed connection attempts.
      */
-    int getAttempts();
+    @Range(from = 0, to = Integer.MAX_VALUE) int getAttempts();
 
     /**
      * Instructs the client to reconnect or not.

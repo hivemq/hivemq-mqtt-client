@@ -20,6 +20,7 @@ import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttWebSocketConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -32,7 +33,8 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     private @NotNull String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
     private @NotNull String queryString = MqttWebSocketConfigImpl.DEFAULT_QUERY_STRING;
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
-    private int handshakeTimeoutMs = MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs =
+            MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     MqttWebSocketConfigImplBuilder() {}
 

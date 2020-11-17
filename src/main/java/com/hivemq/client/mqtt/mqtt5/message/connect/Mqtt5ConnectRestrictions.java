@@ -21,6 +21,7 @@ import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictionsBu
 import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Restrictions set by the client in an {@link Mqtt5Connect MQTT 5 Connect message}.
@@ -98,7 +99,7 @@ public interface Mqtt5ConnectRestrictions {
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts from the server
      *         concurrently.
      */
-    int getReceiveMaximum();
+    @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getReceiveMaximum();
 
     /**
      * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
@@ -110,7 +111,7 @@ public interface Mqtt5ConnectRestrictions {
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
      *         concurrently.
      */
-    int getSendMaximum();
+    @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendMaximum();
 
     /**
      * Returns the maximum packet size the client accepts from the server. The default is {@link
@@ -118,7 +119,7 @@ public interface Mqtt5ConnectRestrictions {
      *
      * @return the maximum packet size the client accepts from the server.
      */
-    int getMaximumPacketSize();
+    @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getMaximumPacketSize();
 
     /**
      * Returns the maximum packet size the client sends to the server. The default is {@link
@@ -129,7 +130,7 @@ public interface Mqtt5ConnectRestrictions {
      *
      * @return the maximum packet size the client sends to the server.
      */
-    int getSendMaximumPacketSize();
+    @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getSendMaximumPacketSize();
 
     /**
      * Returns the maximum amount of topic aliases the client accepts from the server. The default is {@link
@@ -137,7 +138,7 @@ public interface Mqtt5ConnectRestrictions {
      *
      * @return the maximum amount of topic aliases the client accepts from the server.
      */
-    int getTopicAliasMaximum();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getTopicAliasMaximum();
 
     /**
      * Returns the maximum amount of topic aliases the client sends to the server. The default is {@link
@@ -148,7 +149,7 @@ public interface Mqtt5ConnectRestrictions {
      *
      * @return the maximum amount of topic aliases the client sends to the server.
      */
-    int getSendTopicAliasMaximum();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendTopicAliasMaximum();
 
     /**
      * Returns whether the client requests problem information from the server. The default is {@link

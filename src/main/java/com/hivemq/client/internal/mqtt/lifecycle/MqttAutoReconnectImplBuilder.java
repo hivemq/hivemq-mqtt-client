@@ -20,6 +20,7 @@ import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnectBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -29,8 +30,9 @@ import java.util.function.Function;
  */
 public abstract class MqttAutoReconnectImplBuilder<B extends MqttAutoReconnectImplBuilder<B>> {
 
-    private long initialDelayNanos = MqttAutoReconnectImpl.DEFAULT_START_DELAY_NANOS;
-    private long maxDelayNanos = MqttAutoReconnectImpl.DEFAULT_MAX_DELAY_NANOS;
+    private @Range(from = 1, to = Long.MAX_VALUE) long initialDelayNanos =
+            MqttAutoReconnectImpl.DEFAULT_START_DELAY_NANOS;
+    private @Range(from = 0, to = Long.MAX_VALUE) long maxDelayNanos = MqttAutoReconnectImpl.DEFAULT_MAX_DELAY_NANOS;
 
     MqttAutoReconnectImplBuilder() {}
 

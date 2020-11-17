@@ -21,6 +21,7 @@ package com.hivemq.client.internal.util;
  */
 public final class UnsignedDataTypes {
 
+    public static final short UNSIGNED_BYTE_MAX_VALUE = 0xFF;
     public static final int UNSIGNED_SHORT_MAX_VALUE = 0xFFFF;
     public static final long UNSIGNED_INT_MAX_VALUE = 0xFFFF_FFFFL;
 

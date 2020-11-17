@@ -22,12 +22,14 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -38,7 +40,8 @@ import java.util.function.Function;
 public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> {
 
     private @NotNull Mqtt5DisconnectReasonCode reasonCode = MqttDisconnect.DEFAULT_REASON_CODE;
-    private long sessionExpiryInterval = MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+    private @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval =
+            MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
     private @Nullable MqttUtf8StringImpl serverReference;
     private @Nullable MqttUtf8StringImpl reasonString;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;

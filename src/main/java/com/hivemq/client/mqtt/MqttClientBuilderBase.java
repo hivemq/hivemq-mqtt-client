@@ -17,6 +17,7 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.CheckReturnValue;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnectBuilder;
@@ -25,6 +26,7 @@ import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -93,7 +95,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B serverPort(int port);
+    @NotNull B serverPort(@Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int port);
 
     /**
      * Sets the {@link MqttClientConfig#getTlsConfig() transport layer security configuration} to the default

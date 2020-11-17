@@ -17,8 +17,11 @@
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
+import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Builder base for {@link Mqtt5ConnectRestrictions}.
@@ -39,7 +42,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B receiveMaximum(int receiveMaximum);
+    @NotNull B receiveMaximum(@Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum);
 
     /**
      * Sets the {@link Mqtt5ConnectRestrictions#getSendMaximum() send maximum}.
@@ -52,7 +55,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B sendMaximum(int receiveMaximum);
+    @NotNull B sendMaximum(@Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum);
 
     /**
      * Sets the {@link Mqtt5ConnectRestrictions#getMaximumPacketSize() maximum packet size}.
@@ -63,7 +66,8 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B maximumPacketSize(int maximumPacketSize);
+    @NotNull B maximumPacketSize(
+            @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize);
 
     /**
      * Sets the {@link Mqtt5ConnectRestrictions#getSendMaximumPacketSize() maximum packet size for sending}.
@@ -76,7 +80,8 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B sendMaximumPacketSize(int maximumPacketSize);
+    @NotNull B sendMaximumPacketSize(
+            @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize);
 
     /**
      * Sets the {@link Mqtt5ConnectRestrictions#getTopicAliasMaximum() topic alias maximum}.
@@ -87,7 +92,8 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B topicAliasMaximum(int topicAliasMaximum);
+    @NotNull B topicAliasMaximum(
+            @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum);
 
     /**
      * Sets the {@link Mqtt5ConnectRestrictions#getSendTopicAliasMaximum() topic alias maximum for sending}.
@@ -100,7 +106,8 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B sendTopicAliasMaximum(int topicAliasMaximum);
+    @NotNull B sendTopicAliasMaximum(
+            @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum);
 
     /**
      * Sets whether {@link Mqtt5ConnectRestrictions#isRequestProblemInformation() problem information is requested}.

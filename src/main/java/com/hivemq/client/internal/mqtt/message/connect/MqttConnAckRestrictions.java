@@ -16,10 +16,13 @@
 
 package com.hivemq.client.internal.mqtt.message.connect;
 
+import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 /**
@@ -34,9 +37,9 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
                     DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE,
                     DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE);
 
-    private final int receiveMaximum;
-    private final int maximumPacketSize;
-    private final int topicAliasMaximum;
+    private final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum;
+    private final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize;
+    private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum;
     private final @NotNull MqttQos maximumQos;
     private final boolean retainAvailable;
     private final boolean wildcardSubscriptionAvailable;
@@ -44,9 +47,9 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     private final boolean subscriptionIdentifiersAvailable;
 
     public MqttConnAckRestrictions(
-            final int receiveMaximum,
-            final int maximumPacketSize,
-            final int topicAliasMaximum,
+            final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum,
+            final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum,
             final @NotNull MqttQos maximumQos,
             final boolean retainAvailable,
             final boolean wildcardSubscriptionAvailable,
@@ -64,17 +67,17 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     }
 
     @Override
-    public int getReceiveMaximum() {
+    public @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getReceiveMaximum() {
         return receiveMaximum;
     }
 
     @Override
-    public int getMaximumPacketSize() {
+    public @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getMaximumPacketSize() {
         return maximumPacketSize;
     }
 
     @Override
-    public int getTopicAliasMaximum() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getTopicAliasMaximum() {
         return topicAliasMaximum;
     }
 

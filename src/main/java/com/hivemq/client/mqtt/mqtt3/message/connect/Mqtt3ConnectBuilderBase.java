@@ -17,6 +17,7 @@
 package com.hivemq.client.mqtt.mqtt3.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
@@ -24,6 +25,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Builder base for a {@link Mqtt3Connect}.
@@ -44,7 +46,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B keepAlive(int keepAlive);
+    @NotNull B keepAlive(@Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive);
 
     /**
      * Disables the {@link Mqtt3Connect#getKeepAlive() keep alive} by setting it to {@link Mqtt3Connect#NO_KEEP_ALIVE}.

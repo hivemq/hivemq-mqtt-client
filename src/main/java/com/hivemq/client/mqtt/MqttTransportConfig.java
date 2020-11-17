@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt;
 import com.hivemq.client.internal.mqtt.MqttTransportConfigImplBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.net.InetSocketAddress;
 import java.util.Optional;
@@ -105,13 +106,13 @@ public interface MqttTransportConfig {
      * @return the timeout for connecting the socket to the server in milliseconds.
      * @since 1.2
      */
-    int getSocketConnectTimeoutMs();
+    @Range(from = 0, to = Integer.MAX_VALUE) int getSocketConnectTimeoutMs();
 
     /**
      * @return the timeout between sending the Connect and receiving the ConnAck message in milliseconds.
      * @since 1.2
      */
-    int getMqttConnectTimeoutMs();
+    @Range(from = 0, to = Integer.MAX_VALUE) int getMqttConnectTimeoutMs();
 
     /**
      * Creates a builder for extending this transport configuration.

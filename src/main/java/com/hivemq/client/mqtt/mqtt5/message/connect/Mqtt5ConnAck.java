@@ -16,6 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -24,6 +25,7 @@ import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -52,12 +54,12 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
      * @return the optional session expiry interval set from the server. If absent, the session expiry interval from the
      *         Connect message is used.
      */
-    @NotNull OptionalLong getSessionExpiryInterval();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) @NotNull OptionalLong getSessionExpiryInterval();
 
     /**
      * @return the optional keep alive set from the server. If absent, the keep alive from the Connect message is used.
      */
-    @NotNull OptionalInt getServerKeepAlive();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) @NotNull OptionalInt getServerKeepAlive();
 
     /**
      * @return the optional client identifier assigned by the server. If absent, the client identifier from the Connect

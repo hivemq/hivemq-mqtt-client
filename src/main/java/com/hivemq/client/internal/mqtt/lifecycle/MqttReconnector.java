@@ -28,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +40,7 @@ import java.util.function.BiConsumer;
 public class MqttReconnector implements Mqtt5Reconnector {
 
     private final @NotNull EventLoop eventLoop;
-    private final int attempts;
+    private final @Range(from = 0, to = Integer.MAX_VALUE) int attempts;
     private boolean reconnect = DEFAULT_RECONNECT;
     private @Nullable CompletableFuture<?> future;
     private boolean resubscribeIfSessionExpired = DEFAULT_RESUBSCRIBE_IF_SESSION_EXPIRED;
@@ -52,7 +53,7 @@ public class MqttReconnector implements Mqtt5Reconnector {
 
     public MqttReconnector(
             final @NotNull EventLoop eventLoop,
-            final int attempts,
+            final @Range(from = 0, to = Integer.MAX_VALUE) int attempts,
             final @NotNull MqttConnect connect,
             final @NotNull MqttTransportConfigImpl transportConfig) {
 
@@ -63,7 +64,7 @@ public class MqttReconnector implements Mqtt5Reconnector {
     }
 
     @Override
-    public int getAttempts() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getAttempts() {
         checkInEventLoop();
         return attempts;
     }

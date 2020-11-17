@@ -17,6 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
 import com.hivemq.client.annotations.CheckReturnValue;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.datatypes.MqttTopicBuilder;
@@ -26,6 +27,7 @@ import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.nio.ByteBuffer;
 
@@ -122,7 +124,8 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C messageExpiryInterval(long messageExpiryInterval);
+        @NotNull C messageExpiryInterval(
+                @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval);
 
         /**
          * Disables the {@link Mqtt5Publish#getMessageExpiryInterval() message expiry}.
@@ -257,7 +260,8 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
              * @return the builder.
              */
             @CheckReturnValue
-            @NotNull C delayInterval(long delayInterval);
+            @NotNull C delayInterval(
+                    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long delayInterval);
         }
     }
 }

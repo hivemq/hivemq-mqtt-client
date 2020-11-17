@@ -16,9 +16,11 @@
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.MqttClientConnectionConfig;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Connection configuration of an {@link Mqtt3Client}.
@@ -47,6 +49,6 @@ public interface Mqtt3ClientConnectionConfig extends MqttClientConnectionConfig 
          * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
          *         concurrently.
          */
-        int getSendMaximum();
+        @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendMaximum();
     }
 }

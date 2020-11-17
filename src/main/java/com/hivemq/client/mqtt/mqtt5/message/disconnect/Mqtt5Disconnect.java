@@ -17,12 +17,14 @@
 package com.hivemq.client.mqtt.mqtt5.message.disconnect;
 
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -59,7 +61,7 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
      * @return the optional session expiry interval in seconds, the client disconnects from with this Disconnect
      *         message.
      */
-    @NotNull OptionalLong getSessionExpiryInterval();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) @NotNull OptionalLong getSessionExpiryInterval();
 
     /**
      * @return the optional server reference, which can be used if the server sent this Disconnect message.

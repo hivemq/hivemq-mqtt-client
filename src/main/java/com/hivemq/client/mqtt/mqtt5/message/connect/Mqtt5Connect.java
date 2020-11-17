@@ -26,6 +26,7 @@ import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
 
@@ -71,7 +72,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
     /**
      * @return the keep alive in seconds the client wants to use.
      */
-    int getKeepAlive();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getKeepAlive();
 
     /**
      * @return whether the client has no session present or wants to clear a present session.
@@ -82,7 +83,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
      * @return the session expiry interval in seconds the client wants to use. The default is {@link
      *         #DEFAULT_SESSION_EXPIRY_INTERVAL}. If it is {@link #NO_SESSION_EXPIRY} the session does not expire.
      */
-    long getSessionExpiryInterval();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getSessionExpiryInterval();
 
     /**
      * @return the restrictions set from the client.

@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt;
 import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImplBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Configuration for a WebSocket transport to use by {@link MqttClient MQTT clients}.
@@ -80,7 +81,7 @@ public interface MqttWebSocketConfig {
      * @return the websocket handshake timeout in milliseconds.
      * @since 1.2
      */
-    int getHandshakeTimeoutMs();
+    @Range(from = 0, to = Integer.MAX_VALUE) int getHandshakeTimeoutMs();
 
     /**
      * Creates a builder for extending this WebSocket configuration.

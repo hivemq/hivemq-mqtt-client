@@ -20,6 +20,7 @@ import com.hivemq.client.mqtt.MqttProxyConfig;
 import com.hivemq.client.mqtt.MqttProxyProtocol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.net.InetSocketAddress;
@@ -36,14 +37,14 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
     private final @NotNull InetSocketAddress address;
     private final @Nullable String username;
     private final @Nullable String password;
-    private final int handshakeTimeoutMs;
+    private final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs;
 
     MqttProxyConfigImpl(
             final @NotNull MqttProxyProtocol protocol,
             final @NotNull InetSocketAddress address,
             final @Nullable String username,
             final @Nullable String password,
-            final int handshakeTimeoutMs) {
+            final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs) {
 
         this.protocol = protocol;
         this.address = address;
@@ -81,7 +82,7 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
     }
 
     @Override
-    public int getHandshakeTimeoutMs() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getHandshakeTimeoutMs() {
         return handshakeTimeoutMs;
     }
 

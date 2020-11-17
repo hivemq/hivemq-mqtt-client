@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt;
 import com.hivemq.client.internal.mqtt.MqttTlsConfigImplBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import javax.net.ssl.HostnameVerifier;
@@ -40,7 +41,7 @@ public interface MqttTlsConfig {
     /**
      * The default TLS handshake timeout in milliseconds.
      */
-    long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
+    int DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     /**
      * Creates a builder for a transport layer security configuration.
@@ -80,7 +81,7 @@ public interface MqttTlsConfig {
     /**
      * @return the TLS handshake timeout in milliseconds.
      */
-    long getHandshakeTimeoutMs();
+    @Range(from = 0, to = Integer.MAX_VALUE) int getHandshakeTimeoutMs();
 
     /**
      * @return the optional user defined hostname verifier. If absent, https hostname verification is performed.

@@ -16,12 +16,14 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.net.InetSocketAddress;
@@ -68,7 +70,7 @@ public interface MqttClientConfig {
     /**
      * @return the server port the client connects to.
      */
-    default int getServerPort() {
+    default @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getServerPort() {
         return getServerAddress().getPort();
     }
 

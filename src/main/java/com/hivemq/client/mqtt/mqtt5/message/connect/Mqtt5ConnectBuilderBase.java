@@ -17,6 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
@@ -27,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Builder base for a {@link Mqtt5Connect}.
@@ -47,7 +49,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B keepAlive(int keepAlive);
+    @NotNull B keepAlive(@Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive);
 
     /**
      * Disables the {@link Mqtt5Connect#getKeepAlive() keep alive} by setting it to {@link Mqtt5Connect#NO_KEEP_ALIVE}.
@@ -75,7 +77,8 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @return teh builder.
      */
     @CheckReturnValue
-    @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
+    @NotNull B sessionExpiryInterval(
+            @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval);
 
     /**
      * Disables the {@link Mqtt5Connect#getSessionExpiryInterval() session expiry} by setting it to {@link

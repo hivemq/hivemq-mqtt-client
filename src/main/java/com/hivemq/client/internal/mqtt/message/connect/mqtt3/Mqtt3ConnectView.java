@@ -23,11 +23,13 @@ import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictions;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
@@ -41,7 +43,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     public static final @NotNull Mqtt3ConnectView DEFAULT = of(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_SESSION, null, null);
 
     private static @NotNull MqttConnect delegate(
-            final int keepAlive,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive,
             final boolean cleanSession,
             final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
@@ -52,7 +54,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     }
 
     static @NotNull Mqtt3ConnectView of(
-            final int keepAlive,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive,
             final boolean cleanSession,
             final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
@@ -71,7 +73,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     }
 
     @Override
-    public int getKeepAlive() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getKeepAlive() {
         return delegate.getKeepAlive();
     }
 
