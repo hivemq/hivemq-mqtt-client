@@ -21,6 +21,7 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
 import com.hivemq.client.internal.util.StringUtil;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
@@ -28,6 +29,7 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
@@ -46,8 +48,8 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
 
     private final boolean sessionPresent;
-    private final long sessionExpiryInterval;
-    private final int serverKeepAlive;
+    private final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval;
+    private final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int serverKeepAlive;
     private final @Nullable MqttClientIdentifierImpl assignedClientIdentifier;
     private final @Nullable Mqtt5EnhancedAuth enhancedAuth;
     private final @NotNull MqttConnAckRestrictions restrictions;
@@ -57,8 +59,8 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
     public MqttConnAck(
             final @NotNull Mqtt5ConnAckReasonCode reasonCode,
             final boolean sessionPresent,
-            final long sessionExpiryInterval,
-            final int serverKeepAlive,
+            final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval,
+            final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int serverKeepAlive,
             final @Nullable MqttClientIdentifierImpl assignedClientIdentifier,
             final @Nullable Mqtt5EnhancedAuth enhancedAuth,
             final @NotNull MqttConnAckRestrictions restrictions,
@@ -89,7 +91,7 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
                 OptionalLong.of(sessionExpiryInterval);
     }
 
-    public long getRawSessionExpiryInterval() {
+    public @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getRawSessionExpiryInterval() {
         return sessionExpiryInterval;
     }
 
@@ -98,7 +100,7 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
         return (serverKeepAlive == KEEP_ALIVE_FROM_CONNECT) ? OptionalInt.empty() : OptionalInt.of(serverKeepAlive);
     }
 
-    public int getRawServerKeepAlive() {
+    public @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getRawServerKeepAlive() {
         return serverKeepAlive;
     }
 

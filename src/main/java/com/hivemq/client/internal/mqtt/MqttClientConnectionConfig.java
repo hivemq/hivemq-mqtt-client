@@ -16,6 +16,7 @@
 
 package com.hivemq.client.internal.mqtt;
 
+import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttTopicAliasAutoMapping;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttTopicAliasMapping;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
@@ -26,6 +27,7 @@ import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
 
@@ -49,14 +51,14 @@ public class MqttClientConnectionConfig
     private static final int FLAG_CLEAN_STOP = 1 << 9;
 
     private final @NotNull MqttTransportConfigImpl transportConfig;
-    private final short keepAlive;
-    private volatile int sessionExpiryInterval;
+    private final /*unsigned*/ short keepAlive;
+    private volatile /*unsigned*/ int sessionExpiryInterval;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
-    private final short receiveMaximum;
-    private final int maximumPacketSize;
-    private final short topicAliasMaximum;
-    private final short sendMaximum;
-    private final int sendMaximumPacketSize;
+    private final /*unsigned*/ short receiveMaximum;
+    private final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize;
+    private final /*unsigned*/ short topicAliasMaximum;
+    private final /*unsigned*/ short sendMaximum;
+    private final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int sendMaximumPacketSize;
     private final @Nullable MqttTopicAliasMapping sendTopicAliasMapping;
     private final @NotNull MqttQos maximumQos;
     private final @NotNull Channel channel;
@@ -64,21 +66,21 @@ public class MqttClientConnectionConfig
 
     public MqttClientConnectionConfig(
             final @NotNull MqttTransportConfigImpl transportConfig,
-            final int keepAlive,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive,
             final boolean cleanStart,
             final boolean cleanStop,
-            final long sessionExpiryInterval,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval,
             final boolean hasSimpleAuth,
             final boolean hasWillPublish,
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
-            final int receiveMaximum,
-            final int maximumPacketSize,
-            final int topicAliasMaximum,
+            final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum,
+            final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum,
             final boolean problemInformationRequested,
             final boolean responseInformationRequested,
-            final int sendMaximum,
-            final int sendMaximumPacketSize,
-            final int sendTopicAliasMaximum,
+            final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendMaximum,
+            final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int sendMaximumPacketSize,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendTopicAliasMaximum,
             final @NotNull MqttQos maximumQos,
             final boolean retainAvailable,
             final boolean wildcardSubscriptionAvailable,
@@ -140,7 +142,7 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public int getKeepAlive() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getKeepAlive() {
         return keepAlive & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
@@ -153,11 +155,13 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public long getSessionExpiryInterval() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getSessionExpiryInterval() {
         return sessionExpiryInterval & UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
     }
 
-    public void setSessionExpiryInterval(final long sessionExpiryInterval) {
+    public void setSessionExpiryInterval(
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval) {
+
         this.sessionExpiryInterval = (int) sessionExpiryInterval;
     }
 
@@ -191,17 +195,17 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public int getReceiveMaximum() {
+    public @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getReceiveMaximum() {
         return receiveMaximum & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
     @Override
-    public int getMaximumPacketSize() {
+    public @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getMaximumPacketSize() {
         return maximumPacketSize;
     }
 
     @Override
-    public int getTopicAliasMaximum() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getTopicAliasMaximum() {
         return topicAliasMaximum & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
@@ -216,17 +220,17 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public int getSendMaximum() {
+    public @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendMaximum() {
         return sendMaximum & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
     @Override
-    public int getSendMaximumPacketSize() {
+    public @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getSendMaximumPacketSize() {
         return sendMaximumPacketSize;
     }
 
     @Override
-    public int getSendTopicAliasMaximum() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendTopicAliasMaximum() {
         return (sendTopicAliasMapping == null) ? 0 : sendTopicAliasMapping.getTopicAliasMaximum();
     }
 

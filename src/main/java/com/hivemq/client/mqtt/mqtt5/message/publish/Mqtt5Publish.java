@@ -17,6 +17,7 @@
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
@@ -25,6 +26,7 @@ import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -82,7 +84,7 @@ public interface Mqtt5Publish extends Mqtt5Message {
     /**
      * @return the optional message expiry interval in seconds of this Publish message.
      */
-    @NotNull OptionalLong getMessageExpiryInterval();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) @NotNull OptionalLong getMessageExpiryInterval();
 
     /**
      * @return the optional payload format indicator of this Publish message.

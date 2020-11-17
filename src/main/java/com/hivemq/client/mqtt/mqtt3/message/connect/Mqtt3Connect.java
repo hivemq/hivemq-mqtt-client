@@ -17,12 +17,14 @@
 package com.hivemq.client.mqtt.mqtt3.message.connect;
 
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3Message;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
 
@@ -60,7 +62,7 @@ public interface Mqtt3Connect extends Mqtt3Message {
     /**
      * @return the keep alive in seconds the client wants to use.
      */
-    int getKeepAlive();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getKeepAlive();
 
     /**
      * @return whether the client wants a clean session. If <code>true</code> an existing session is cleared.

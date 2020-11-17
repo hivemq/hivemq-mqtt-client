@@ -17,8 +17,10 @@
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * MQTT 5 Will Publish which can be a part of an {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect MQTT 5
@@ -47,7 +49,7 @@ public interface Mqtt5WillPublish extends Mqtt5Publish {
     /**
      * @return the delay of this Will Publish. The default is {@link #DEFAULT_DELAY_INTERVAL}.
      */
-    long getDelayInterval();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getDelayInterval();
 
     /**
      * Creates a builder for extending this Will Publish.

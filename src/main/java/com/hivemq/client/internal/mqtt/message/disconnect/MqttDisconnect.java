@@ -20,11 +20,13 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
 import com.hivemq.client.internal.util.StringUtil;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
@@ -43,12 +45,12 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
             new MqttDisconnect(DEFAULT_REASON_CODE, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
                     MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
-    private final long sessionExpiryInterval;
+    private final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval;
     private final @Nullable MqttUtf8StringImpl serverReference;
 
     public MqttDisconnect(
             final @NotNull Mqtt5DisconnectReasonCode reasonCode,
-            final long sessionExpiryInterval,
+            final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval,
             final @Nullable MqttUtf8StringImpl serverReference,
             final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
@@ -64,7 +66,7 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
                 OptionalLong.of(sessionExpiryInterval);
     }
 
-    public long getRawSessionExpiryInterval() {
+    public @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getRawSessionExpiryInterval() {
         return sessionExpiryInterval;
     }
 

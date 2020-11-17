@@ -16,9 +16,12 @@
 
 package com.hivemq.client.internal.mqtt.message.connect;
 
+import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 /**
@@ -32,22 +35,22 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
                     DEFAULT_SEND_MAXIMUM_PACKET_SIZE, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM,
                     DEFAULT_REQUEST_PROBLEM_INFORMATION, DEFAULT_REQUEST_RESPONSE_INFORMATION);
 
-    private final int receiveMaximum;
-    private final int sendMaximum;
-    private final int maximumPacketSize;
-    private final int sendMaximumPacketSize;
-    private final int topicAliasMaximum;
-    private final int sendTopicAliasMaximum;
+    private final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum;
+    private final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendMaximum;
+    private final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize;
+    private final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int sendMaximumPacketSize;
+    private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum;
+    private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendTopicAliasMaximum;
     private final boolean requestProblemInformation;
     private final boolean requestResponseInformation;
 
     public MqttConnectRestrictions(
-            final int receiveMaximum,
-            final int sendMaximum,
-            final int maximumPacketSize,
-            final int sendMaximumPacketSize,
-            final int topicAliasMaximum,
-            final int sendTopicAliasMaximum,
+            final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum,
+            final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendMaximum,
+            final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize,
+            final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int sendMaximumPacketSize,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendTopicAliasMaximum,
             final boolean requestProblemInformation,
             final boolean requestResponseInformation) {
 
@@ -62,32 +65,32 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     }
 
     @Override
-    public int getReceiveMaximum() {
+    public @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getReceiveMaximum() {
         return receiveMaximum;
     }
 
     @Override
-    public int getSendMaximum() {
+    public @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendMaximum() {
         return sendMaximum;
     }
 
     @Override
-    public int getMaximumPacketSize() {
+    public @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getMaximumPacketSize() {
         return maximumPacketSize;
     }
 
     @Override
-    public int getSendMaximumPacketSize() {
+    public @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getSendMaximumPacketSize() {
         return sendMaximumPacketSize;
     }
 
     @Override
-    public int getTopicAliasMaximum() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getTopicAliasMaximum() {
         return topicAliasMaximum;
     }
 
     @Override
-    public int getSendTopicAliasMaximum() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendTopicAliasMaximum() {
         return sendTopicAliasMaximum;
     }
 

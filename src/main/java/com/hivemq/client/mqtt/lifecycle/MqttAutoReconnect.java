@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.lifecycle;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttAutoReconnectImplBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.TimeUnit;
 
@@ -61,7 +62,7 @@ public interface MqttAutoReconnect extends MqttDisconnectedListener {
      * @param timeUnit the time unit of the returned initial delay.
      * @return the start delay in the given time unit.
      */
-    long getInitialDelay(@NotNull TimeUnit timeUnit);
+    @Range(from = 1, to = Long.MAX_VALUE) long getInitialDelay(@NotNull TimeUnit timeUnit);
 
     /**
      * Returns the maximum delay the client will wait before it tries to reconnect.
@@ -69,7 +70,7 @@ public interface MqttAutoReconnect extends MqttDisconnectedListener {
      * @param timeUnit the time unit of the returned maximum delay.
      * @return the maximum delay in the given time unit.
      */
-    long getMaxDelay(@NotNull TimeUnit timeUnit);
+    @Range(from = 0, to = Long.MAX_VALUE) long getMaxDelay(@NotNull TimeUnit timeUnit);
 
     /**
      * Creates a builder for extending this automatic reconnect strategy.

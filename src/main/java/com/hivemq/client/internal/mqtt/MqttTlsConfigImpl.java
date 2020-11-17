@@ -20,6 +20,7 @@ import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttTlsConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import javax.net.ssl.*;
@@ -47,14 +48,13 @@ public class MqttTlsConfigImpl implements MqttTlsConfig {
     }
 
     static final @NotNull MqttTlsConfigImpl DEFAULT =
-            new MqttTlsConfigImpl(null, null, null, null, (int) DEFAULT_HANDSHAKE_TIMEOUT_MS,
-                    DEFAULT_HOSTNAME_VERIFIER);
+            new MqttTlsConfigImpl(null, null, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS, DEFAULT_HOSTNAME_VERIFIER);
 
     private final @Nullable KeyManagerFactory keyManagerFactory;
     private final @Nullable TrustManagerFactory trustManagerFactory;
     private final @Nullable ImmutableList<String> cipherSuites;
     private final @Nullable ImmutableList<String> protocols;
-    private final int handshakeTimeoutMs;
+    private final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs;
     private final @Nullable HostnameVerifier hostnameVerifier;
 
     MqttTlsConfigImpl(
@@ -62,7 +62,7 @@ public class MqttTlsConfigImpl implements MqttTlsConfig {
             final @Nullable TrustManagerFactory trustManagerFactory,
             final @Nullable ImmutableList<String> cipherSuites,
             final @Nullable ImmutableList<String> protocols,
-            final int handshakeTimeoutMs,
+            final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs,
             final @Nullable HostnameVerifier hostnameVerifier) {
 
         this.keyManagerFactory = keyManagerFactory;
@@ -110,7 +110,7 @@ public class MqttTlsConfigImpl implements MqttTlsConfig {
     }
 
     @Override
-    public long getHandshakeTimeoutMs() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getHandshakeTimeoutMs() {
         return handshakeTimeoutMs;
     }
 

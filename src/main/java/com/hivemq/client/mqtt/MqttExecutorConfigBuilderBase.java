@@ -21,6 +21,7 @@ import io.reactivex.Scheduler;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.Executor;
 
@@ -52,7 +53,7 @@ public interface MqttExecutorConfigBuilderBase<B extends MqttExecutorConfigBuild
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B nettyThreads(int nettyThreads);
+    @NotNull B nettyThreads(@Range(from = 1, to = Integer.MAX_VALUE) int nettyThreads);
 
     /**
      * Sets the {@link MqttExecutorConfig#getApplicationScheduler() scheduler used for executing application specific

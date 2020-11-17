@@ -21,6 +21,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -54,7 +55,7 @@ public interface MqttExecutorConfig {
     /**
      * @return the optional user defined amount of threads Netty (network communication framework) will use.
      */
-    @NotNull OptionalInt getNettyThreads();
+    @Range(from = 1, to = Integer.MAX_VALUE) @NotNull OptionalInt getNettyThreads();
 
     /**
      * @return the {@link Scheduler} used for executing application specific code, such as callbacks.

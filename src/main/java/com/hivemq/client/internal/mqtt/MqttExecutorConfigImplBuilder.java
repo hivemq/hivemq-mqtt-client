@@ -21,6 +21,7 @@ import com.hivemq.client.mqtt.MqttExecutorConfigBuilder;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.Executor;
 import java.util.function.Function;
@@ -31,7 +32,7 @@ import java.util.function.Function;
 public abstract class MqttExecutorConfigImplBuilder<B extends MqttExecutorConfigImplBuilder<B>> {
 
     private @Nullable Executor nettyExecutor;
-    private int nettyThreads = MqttExecutorConfigImpl.DEFAULT_NETTY_THREADS;
+    private @Range(from = 0, to = Integer.MAX_VALUE) int nettyThreads = MqttExecutorConfigImpl.DEFAULT_NETTY_THREADS;
     private @NotNull Scheduler applicationScheduler = MqttExecutorConfigImpl.DEFAULT_APPLICATION_SCHEDULER;
 
     MqttExecutorConfigImplBuilder() {}

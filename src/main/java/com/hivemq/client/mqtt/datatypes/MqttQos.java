@@ -18,6 +18,7 @@ package com.hivemq.client.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * MQTT Quality of Service (QoS) according to the MQTT specification.
@@ -45,7 +46,7 @@ public enum MqttQos {
     /**
      * @return the byte code of this QoS.
      */
-    public int getCode() {
+    public @Range(from = 0, to = 2) int getCode() {
         return ordinal();
     }
 

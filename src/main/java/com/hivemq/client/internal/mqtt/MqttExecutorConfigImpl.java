@@ -20,6 +20,7 @@ import com.hivemq.client.mqtt.MqttExecutorConfig;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
@@ -38,12 +39,12 @@ public class MqttExecutorConfigImpl implements MqttExecutorConfig {
             new MqttExecutorConfigImpl(null, DEFAULT_NETTY_THREADS, DEFAULT_APPLICATION_SCHEDULER);
 
     private final @Nullable Executor nettyExecutor;
-    private final int nettyThreads;
+    private final @Range(from = 0, to = Integer.MAX_VALUE) int nettyThreads;
     private final @NotNull Scheduler applicationScheduler;
 
     MqttExecutorConfigImpl(
             final @Nullable Executor nettyExecutor,
-            final int nettyThreads,
+            final @Range(from = 0, to = Integer.MAX_VALUE) int nettyThreads,
             final @NotNull Scheduler applicationScheduler) {
 
         this.nettyExecutor = nettyExecutor;
@@ -65,7 +66,7 @@ public class MqttExecutorConfigImpl implements MqttExecutorConfig {
         return (nettyThreads == DEFAULT_NETTY_THREADS) ? OptionalInt.empty() : OptionalInt.of(nettyThreads);
     }
 
-    public int getRawNettyThreads() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getRawNettyThreads() {
         return nettyThreads;
     }
 

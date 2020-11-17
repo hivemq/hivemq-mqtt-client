@@ -16,8 +16,10 @@
 
 package com.hivemq.client.mqtt;
 
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Connection configuration of an {@link MqttClient}.
@@ -37,7 +39,7 @@ public interface MqttClientConnectionConfig {
     /**
      * @return the keep alive in seconds that is used while the client is connected.
      */
-    int getKeepAlive();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getKeepAlive();
 
     /**
      * @return whether the client connected with simple authentication and/or authorization related data.

@@ -23,6 +23,7 @@ import com.hivemq.client.mqtt.MqttTransportConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.net.InetSocketAddress;
@@ -44,8 +45,8 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
     private final @Nullable MqttTlsConfigImpl tlsConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @Nullable MqttProxyConfigImpl proxyConfig;
-    private final int socketConnectTimeoutMs;
-    private final int mqttConnectTimeoutMs;
+    private final @Range(from = 0, to = Integer.MAX_VALUE) int socketConnectTimeoutMs;
+    private final @Range(from = 0, to = Integer.MAX_VALUE) int mqttConnectTimeoutMs;
 
     MqttTransportConfigImpl(
             final @NotNull InetSocketAddress serverAddress,
@@ -53,8 +54,8 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
             final @Nullable MqttTlsConfigImpl tlsConfig,
             final @Nullable MqttWebSocketConfigImpl webSocketConfig,
             final @Nullable MqttProxyConfigImpl proxyConfig,
-            final int socketConnectTimeoutMs,
-            final int mqttConnectTimeoutMs) {
+            final @Range(from = 0, to = Integer.MAX_VALUE) int socketConnectTimeoutMs,
+            final @Range(from = 0, to = Integer.MAX_VALUE) int mqttConnectTimeoutMs) {
 
         this.serverAddress = serverAddress;
         this.localAddress = localAddress;
@@ -111,12 +112,12 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
     }
 
     @Override
-    public int getSocketConnectTimeoutMs() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getSocketConnectTimeoutMs() {
         return socketConnectTimeoutMs;
     }
 
     @Override
-    public int getMqttConnectTimeoutMs() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getMqttConnectTimeoutMs() {
         return mqttConnectTimeoutMs;
     }
 

@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.MqttProxyConfigBuilder;
 import com.hivemq.client.mqtt.MqttProxyProtocol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -39,7 +40,8 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
     private int port = -1;
     private @Nullable String username;
     private @Nullable String password;
-    private int handshakeTimeoutMs = MqttProxyConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs =
+            MqttProxyConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     MqttProxyConfigImplBuilder() {}
 

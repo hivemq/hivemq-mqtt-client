@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 /**
@@ -35,13 +36,13 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     private final @NotNull String serverPath;
     private final @NotNull String queryString;
     private final @NotNull String subprotocol;
-    private final int handshakeTimeoutMs;
+    private final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs;
 
     MqttWebSocketConfigImpl(
             final @NotNull String serverPath,
             final @NotNull String queryString,
             final @NotNull String subprotocol,
-            final int handshakeTimeoutMs) {
+            final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs) {
 
         this.serverPath = serverPath;
         this.queryString = queryString;
@@ -65,7 +66,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     }
 
     @Override
-    public int getHandshakeTimeoutMs() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getHandshakeTimeoutMs() {
         return handshakeTimeoutMs;
     }
 

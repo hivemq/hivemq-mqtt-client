@@ -20,6 +20,7 @@ import com.hivemq.client.internal.mqtt.datatypes.*;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
@@ -29,6 +30,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;
@@ -244,7 +246,8 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     private static abstract class WillBase<B extends WillBase<B>> extends MqttPublishBuilder<B> {
 
-        private long delayInterval = MqttWillPublish.DEFAULT_DELAY_INTERVAL;
+        private @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long delayInterval =
+                MqttWillPublish.DEFAULT_DELAY_INTERVAL;
 
         WillBase() {}
 

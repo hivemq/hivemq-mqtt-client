@@ -19,11 +19,13 @@ package com.hivemq.client.internal.mqtt.message.publish;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
@@ -34,20 +36,20 @@ import java.nio.ByteBuffer;
 @Unmodifiable
 public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
 
-    private final long delayInterval;
+    private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long delayInterval;
 
     public MqttWillPublish(
             final @NotNull MqttTopicImpl topic,
             final @Nullable ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean isRetain,
-            final long messageExpiryInterval,
+            final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             final @Nullable MqttUtf8StringImpl contentType,
             final @Nullable MqttTopicImpl responseTopic,
             final @Nullable ByteBuffer correlationData,
             final @NotNull MqttUserPropertiesImpl userProperties,
-            final long delayInterval) {
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long delayInterval) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
                 correlationData, userProperties, null);
@@ -55,7 +57,7 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
     }
 
     @Override
-    public long getDelayInterval() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getDelayInterval() {
         return delayInterval;
     }
 

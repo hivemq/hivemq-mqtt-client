@@ -25,6 +25,7 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
@@ -33,6 +34,7 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.function.Function;
 
@@ -41,9 +43,11 @@ import java.util.function.Function;
  */
 public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
-    private int keepAlive = MqttConnect.DEFAULT_KEEP_ALIVE;
+    private @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive =
+            MqttConnect.DEFAULT_KEEP_ALIVE;
     private boolean cleanStart = MqttConnect.DEFAULT_CLEAN_START;
-    private long sessionExpiryInterval = MqttConnect.DEFAULT_SESSION_EXPIRY_INTERVAL;
+    private @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval =
+            MqttConnect.DEFAULT_SESSION_EXPIRY_INTERVAL;
     private @NotNull MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;

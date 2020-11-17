@@ -16,7 +16,9 @@
 
 package com.hivemq.client.mqtt.mqtt5.message;
 
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Range;
 
 /**
  * Reason Code according to the MQTT 5 specification.
@@ -30,7 +32,7 @@ public interface Mqtt5ReasonCode {
     /**
      * @return the byte code of this Reason Code.
      */
-    int getCode();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_BYTE_MAX_VALUE) int getCode();
 
     /**
      * @return whether this Reason Code is an Error Code.

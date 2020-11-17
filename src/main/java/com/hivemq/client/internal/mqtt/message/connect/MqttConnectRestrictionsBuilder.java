@@ -16,10 +16,13 @@
 
 package com.hivemq.client.internal.mqtt.message.connect;
 
+import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.function.Function;
 
@@ -28,12 +31,18 @@ import java.util.function.Function;
  */
 public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestrictionsBuilder<B>> {
 
-    private int receiveMaximum = MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
-    private int sendMaximum = MqttConnectRestrictions.DEFAULT_SEND_MAXIMUM;
-    private int maximumPacketSize = MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE;
-    private int sendMaximumPacketSize = MqttConnectRestrictions.DEFAULT_SEND_MAXIMUM_PACKET_SIZE;
-    private int topicAliasMaximum = MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
-    private int sendTopicAliasMaximum = MqttConnectRestrictions.DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM;
+    private @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum =
+            MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
+    private @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendMaximum =
+            MqttConnectRestrictions.DEFAULT_SEND_MAXIMUM;
+    private @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize =
+            MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE;
+    private @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int sendMaximumPacketSize =
+            MqttConnectRestrictions.DEFAULT_SEND_MAXIMUM_PACKET_SIZE;
+    private @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum =
+            MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
+    private @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendTopicAliasMaximum =
+            MqttConnectRestrictions.DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM;
     private boolean requestProblemInformation = MqttConnectRestrictions.DEFAULT_REQUEST_PROBLEM_INFORMATION;
     private boolean requestResponseInformation = MqttConnectRestrictions.DEFAULT_REQUEST_RESPONSE_INFORMATION;
 

@@ -24,12 +24,14 @@ import com.hivemq.client.internal.mqtt.message.auth.MqttEnhancedAuth;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.util.StringUtil;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
@@ -45,18 +47,18 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
             new MqttConnect(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_START, DEFAULT_SESSION_EXPIRY_INTERVAL,
                     MqttConnectRestrictions.DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
-    private final int keepAlive;
+    private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive;
     private final boolean cleanStart;
-    private final long sessionExpiryInterval;
+    private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval;
     private final @NotNull MqttConnectRestrictions restrictions;
     private final @Nullable MqttSimpleAuth simpleAuth;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private final @Nullable MqttWillPublish willPublish;
 
     public MqttConnect(
-            final int keepAlive,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive,
             final boolean cleanStart,
-            final long sessionExpiryInterval,
+            final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval,
             final @NotNull MqttConnectRestrictions restrictions,
             final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
@@ -74,7 +76,7 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     }
 
     @Override
-    public int getKeepAlive() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getKeepAlive() {
         return keepAlive;
     }
 
@@ -84,7 +86,7 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     }
 
     @Override
-    public long getSessionExpiryInterval() {
+    public @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getSessionExpiryInterval() {
         return sessionExpiryInterval;
     }
 

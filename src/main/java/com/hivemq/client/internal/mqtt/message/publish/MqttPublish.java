@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttTopicAliasMa
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
 import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.internal.util.StringUtil;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.datatypes.MqttTopic;
@@ -32,6 +33,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
@@ -48,13 +50,13 @@ import static com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublis
 @Unmodifiable
 public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5Publish {
 
-    public static final long NO_MESSAGE_EXPIRY = Long.MAX_VALUE;
+    public static final long NO_MESSAGE_EXPIRY = -1;
 
     private final @NotNull MqttTopicImpl topic;
     private final @Nullable ByteBuffer payload;
     private final @NotNull MqttQos qos;
     private final boolean retain;
-    private final long messageExpiryInterval;
+    private final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval;
     private final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     private final @Nullable MqttUtf8StringImpl contentType;
     private final @Nullable MqttTopicImpl responseTopic;
@@ -67,7 +69,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
             final @Nullable ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean retain,
-            final long messageExpiryInterval,
+            final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             final @Nullable MqttUtf8StringImpl contentType,
             final @Nullable MqttTopicImpl responseTopic,
@@ -123,7 +125,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
                 OptionalLong.of(messageExpiryInterval);
     }
 
-    public long getRawMessageExpiryInterval() {
+    public @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) long getRawMessageExpiryInterval() {
         return messageExpiryInterval;
     }
 

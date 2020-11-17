@@ -21,6 +21,7 @@ import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Restrictions for the client set by the server in an {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
@@ -73,19 +74,19 @@ public interface Mqtt5ConnAckRestrictions {
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the server accepts concurrently. The
      *         default is {@link #DEFAULT_RECEIVE_MAXIMUM}.
      */
-    int getReceiveMaximum();
+    @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getReceiveMaximum();
 
     /**
      * @return the maximum packet size the server accepts from the client. The default is {@link
      *         #DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT}.
      */
-    int getMaximumPacketSize();
+    @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getMaximumPacketSize();
 
     /**
      * @return the maximum amount of topic aliases the server accepts from the client. The default is {@link
      *         #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
      */
-    int getTopicAliasMaximum();
+    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getTopicAliasMaximum();
 
     /**
      * @return the maximum QoS the server accepts from the client. The default is {@link #DEFAULT_MAXIMUM_QOS}.

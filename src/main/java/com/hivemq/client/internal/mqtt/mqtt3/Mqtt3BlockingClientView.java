@@ -189,9 +189,6 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         public @NotNull Optional<Mqtt3Publish> receive(
                 final long timeout, final @Nullable TimeUnit timeUnit) throws InterruptedException {
 
-            if (timeout < 0) {
-                throw new IllegalArgumentException("Timeout must be greater than 0.");
-            }
             Checks.notNull(timeUnit, "Time unit");
 
             try {

@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt;
 import com.hivemq.client.internal.mqtt.MqttProxyConfigImplBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.net.InetSocketAddress;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public interface MqttProxyConfig {
     /**
      * @return the proxy handshake timeout in milliseconds.
      */
-    int getHandshakeTimeoutMs();
+    @Range(from = 0, to = Integer.MAX_VALUE) int getHandshakeTimeoutMs();
 
     /**
      * Creates a builder for extending this proxy configuration.

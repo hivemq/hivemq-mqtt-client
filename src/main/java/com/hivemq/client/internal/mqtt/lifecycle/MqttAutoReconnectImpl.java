@@ -21,6 +21,7 @@ import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttReconnector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -35,10 +36,13 @@ public class MqttAutoReconnectImpl implements MqttAutoReconnect {
     public static final @NotNull MqttAutoReconnectImpl DEFAULT =
             new MqttAutoReconnectImpl(DEFAULT_START_DELAY_NANOS, DEFAULT_MAX_DELAY_NANOS);
 
-    private final long initialDelayNanos;
-    private final long maxDelayNanos;
+    private final @Range(from = 1, to = Long.MAX_VALUE) long initialDelayNanos;
+    private final @Range(from = 0, to = Long.MAX_VALUE) long maxDelayNanos;
 
-    MqttAutoReconnectImpl(final long initialDelayNanos, final long maxDelayNanos) {
+    MqttAutoReconnectImpl(
+            final @Range(from = 1, to = Long.MAX_VALUE) long initialDelayNanos,
+            final @Range(from = 0, to = Long.MAX_VALUE) long maxDelayNanos) {
+
         this.initialDelayNanos = initialDelayNanos;
         this.maxDelayNanos = maxDelayNanos;
     }
@@ -55,12 +59,12 @@ public class MqttAutoReconnectImpl implements MqttAutoReconnect {
     }
 
     @Override
-    public long getInitialDelay(final @NotNull TimeUnit timeUnit) {
+    public @Range(from = 1, to = Long.MAX_VALUE) long getInitialDelay(final @NotNull TimeUnit timeUnit) {
         return timeUnit.convert(initialDelayNanos, TimeUnit.NANOSECONDS);
     }
 
     @Override
-    public long getMaxDelay(final @NotNull TimeUnit timeUnit) {
+    public @Range(from = 0, to = Long.MAX_VALUE) long getMaxDelay(final @NotNull TimeUnit timeUnit) {
         return timeUnit.convert(maxDelayNanos, TimeUnit.NANOSECONDS);
     }
 
