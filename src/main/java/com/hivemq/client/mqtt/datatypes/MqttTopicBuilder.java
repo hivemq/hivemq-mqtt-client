@@ -50,7 +50,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
      * {@link MqttTopicBuilder} that is complete which means all mandatory fields are set.
      */
     @ApiStatus.NonExtendable
-    interface Complete extends MqttTopicBuilder, MqttTopicBuilderBase<MqttTopicBuilder.Complete> {
+    interface Complete extends MqttTopicBuilder, MqttTopicBuilderBase.Complete<MqttTopicBuilder.Complete> {
 
         /**
          * Builds the {@link MqttTopic}.
@@ -75,7 +75,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.
          * @param <P> the type of the result when the built {@link MqttTopic} is applied to the parent.
          */
         @ApiStatus.NonExtendable
-        interface Complete<P> extends Nested<P>, MqttTopicBuilderBase<Nested.Complete<P>> {
+        interface Complete<P> extends Nested<P>, MqttTopicBuilderBase.Complete<Nested.Complete<P>> {
 
             /**
              * Builds the {@link MqttTopic} and applies it to the parent.
