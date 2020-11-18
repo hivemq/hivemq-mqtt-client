@@ -174,8 +174,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull MqttSubscribeAndCallbackBuilder subscribeWith() {
-        return new MqttSubscribeAndCallbackBuilder();
+    public @NotNull SubscribeBuilder subscribeWith() {
+        return new SubscribeBuilder();
     }
 
     @Override
@@ -310,32 +310,33 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         public void onError(final @NotNull Throwable t) {}
     }
 
-    private class MqttSubscribeAndCallbackBuilder extends MqttSubscribeBuilder<MqttSubscribeAndCallbackBuilder>
-            implements Mqtt5SubscribeAndCallbackBuilder.Start.Complete, Mqtt5SubscribeAndCallbackBuilder.Call.Ex {
+    private class SubscribeBuilder extends MqttSubscribeBuilder<SubscribeBuilder>
+            implements Mqtt5AsyncClient.SubscribeBuilder.Start.Complete,
+            Mqtt5AsyncClient.SubscribeBuilder.AfterCallback {
 
         private @Nullable Consumer<Mqtt5Publish> callback;
         private @Nullable Executor executor;
         private boolean manualAcknowledgement;
 
         @Override
-        protected @NotNull MqttSubscribeAndCallbackBuilder self() {
+        protected @NotNull SubscribeBuilder self() {
             return this;
         }
 
         @Override
-        public @NotNull MqttSubscribeAndCallbackBuilder callback(final @Nullable Consumer<Mqtt5Publish> callback) {
+        public @NotNull SubscribeBuilder callback(final @Nullable Consumer<Mqtt5Publish> callback) {
             this.callback = Checks.notNull(callback, "Callback");
             return this;
         }
 
         @Override
-        public @NotNull MqttSubscribeAndCallbackBuilder executor(final @Nullable Executor executor) {
+        public @NotNull SubscribeBuilder executor(final @Nullable Executor executor) {
             this.executor = Checks.notNull(executor, "Executor");
             return this;
         }
 
         @Override
-        public @NotNull MqttSubscribeAndCallbackBuilder manualAcknowledgement(final boolean manualAcknowledgement) {
+        public @NotNull SubscribeBuilder manualAcknowledgement(final boolean manualAcknowledgement) {
             this.manualAcknowledgement = manualAcknowledgement;
             return this;
         }
