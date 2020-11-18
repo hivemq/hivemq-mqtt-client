@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0
  */
 @ApiStatus.NonExtendable
-public interface MqttTopicBuilderBase<C extends MqttTopicBuilderBase<C>> {
+public interface MqttTopicBuilderBase<C extends MqttTopicBuilderBase.Complete<C>> {
 
     /**
      * Adds a {@link MqttTopic#getLevels() Topic level}.
@@ -38,4 +38,10 @@ public interface MqttTopicBuilderBase<C extends MqttTopicBuilderBase<C>> {
      */
     @CheckReturnValue
     @NotNull C addLevel(@NotNull String topicLevel);
+
+    /**
+     * {@link MqttTopicBuilderBase} that is complete which means all mandatory fields are set.
+     */
+    @ApiStatus.NonExtendable
+    interface Complete<C extends MqttTopicBuilderBase.Complete<C>> extends MqttTopicBuilderBase<C> {}
 }
