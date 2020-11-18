@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * @since 1.0
  */
 @ApiStatus.NonExtendable
-public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C>> {
+public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.Complete<C>> {
 
     /**
      * Adds a {@link Mqtt3Subscription} to the {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least
@@ -90,6 +90,14 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
     @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt3Subscription> subscriptions);
 
     /**
+     * {@link Mqtt3SubscribeBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C> the type of the complete builder.
+     */
+    @ApiStatus.NonExtendable
+    interface Complete<C extends Mqtt3SubscribeBuilderBase.Complete<C>> extends Mqtt3SubscribeBuilderBase<C> {}
+
+    /**
      * {@link Mqtt3SubscribeBuilderBase} that provides additional methods for the first subscription.
      *
      * @param <C>  the type of the complete builder.
@@ -98,7 +106,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
     // @formatter:off
     @ApiStatus.NonExtendable
     interface Start<
-            C extends Mqtt3SubscribeBuilderBase<C>,
+            C extends Mqtt3SubscribeBuilderBase.Complete<C>,
             SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
             extends Mqtt3SubscribeBuilderBase<C>, Mqtt3SubscriptionBuilderBase<SC> {
     // @formatter:on
@@ -112,9 +120,10 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
         // @formatter:off
         @ApiStatus.NonExtendable
         interface Complete<
-                C extends Mqtt3SubscribeBuilderBase<C>,
+                C extends Mqtt3SubscribeBuilderBase.Complete<C>,
                 SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
-                extends Mqtt3SubscribeBuilderBase.Start<C, SC>, Mqtt3SubscriptionBuilderBase.Complete<SC> {}
+                extends Mqtt3SubscribeBuilderBase.Start<C, SC>, Mqtt3SubscribeBuilderBase.Complete<C>,
+                        Mqtt3SubscriptionBuilderBase.Complete<SC> {}
         // @formatter:on
     }
 }
