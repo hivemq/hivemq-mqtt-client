@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * @since 1.0
  */
 @ApiStatus.NonExtendable
-public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBase<C>> {
+public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBase.Complete<C>> {
 
     /**
      * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt3Unsubscribe#getTopicFilters() list of Topic
@@ -112,12 +112,20 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
     @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
 
     /**
+     * {@link Mqtt3UnsubscribeBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C> the type of the complete builder.
+     */
+    @ApiStatus.NonExtendable
+    interface Complete<C extends Mqtt3UnsubscribeBuilderBase.Complete<C>> extends Mqtt3UnsubscribeBuilderBase<C> {}
+
+    /**
      * {@link Mqtt3UnsubscribeBuilderBase} that provides additional methods for the first Topic Filter.
      *
      * @param <C> the type of the complete builder.
      */
     @ApiStatus.NonExtendable
-    interface Start<C extends Mqtt3UnsubscribeBuilderBase<C>> extends Mqtt3UnsubscribeBuilderBase<C> {
+    interface Start<C extends Mqtt3UnsubscribeBuilderBase.Complete<C>> extends Mqtt3UnsubscribeBuilderBase<C> {
 
         /**
          * Sets the mandatory {@link Mqtt3Unsubscribe#getTopicFilters() first Topic Filter}.

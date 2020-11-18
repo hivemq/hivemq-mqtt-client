@@ -33,7 +33,8 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
      * {@link Mqtt3UnsubscribeBuilder} that is complete which means all mandatory fields are set.
      */
     @ApiStatus.NonExtendable
-    interface Complete extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase<Mqtt3UnsubscribeBuilder.Complete> {
+    interface Complete
+            extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase.Complete<Mqtt3UnsubscribeBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt3Unsubscribe}.
@@ -65,7 +66,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
          * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is applied to the parent.
          */
         @ApiStatus.NonExtendable
-        interface Complete<P> extends Nested<P>, Mqtt3UnsubscribeBuilderBase<Nested.Complete<P>> {
+        interface Complete<P> extends Nested<P>, Mqtt3UnsubscribeBuilderBase.Complete<Nested.Complete<P>> {
 
             /**
              * Builds the {@link Mqtt3Unsubscribe} and applies it to the parent.
@@ -99,7 +100,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
          * @param <P> the type of the result when the built {@link Mqtt3Unsubscribe} is sent by the parent.
          */
         @ApiStatus.NonExtendable
-        interface Complete<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase<Send.Complete<P>> {
+        interface Complete<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase.Complete<Send.Complete<P>> {
 
             /**
              * Builds the {@link Mqtt3Unsubscribe} and applies it to the parent which then sends the Unsubscribe
@@ -130,7 +131,7 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
          * {@link SendVoid} that is complete which means all mandatory fields are set.
          */
         @ApiStatus.NonExtendable
-        interface Complete extends SendVoid, Mqtt3UnsubscribeBuilderBase<SendVoid.Complete> {
+        interface Complete extends SendVoid, Mqtt3UnsubscribeBuilderBase.Complete<SendVoid.Complete> {
 
             /**
              * Builds the {@link Mqtt3Unsubscribe} and applies it to the parent which then sends the Unsubscribe message
