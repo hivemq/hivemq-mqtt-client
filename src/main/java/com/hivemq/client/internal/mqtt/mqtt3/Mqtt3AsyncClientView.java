@@ -159,8 +159,8 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull Mqtt3SubscribeViewAndCallbackBuilder subscribeWith() {
-        return new Mqtt3SubscribeViewAndCallbackBuilder();
+    public @NotNull SubscribeViewBuilder subscribeWith() {
+        return new SubscribeViewBuilder();
     }
 
     @Override
@@ -273,35 +273,32 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         return new Mqtt3BlockingClientView(delegate.toBlocking());
     }
 
-    private class Mqtt3SubscribeViewAndCallbackBuilder
-            extends Mqtt3SubscribeViewBuilder<Mqtt3SubscribeViewAndCallbackBuilder>
-            implements Mqtt3SubscribeAndCallbackBuilder.Start.Complete, Mqtt3SubscribeAndCallbackBuilder.Call.Ex {
+    private class SubscribeViewBuilder extends Mqtt3SubscribeViewBuilder<SubscribeViewBuilder>
+            implements SubscribeBuilder.Start.Complete, SubscribeBuilder.AfterCallback {
 
         private @Nullable Consumer<Mqtt3Publish> callback;
         private @Nullable Executor executor;
         private boolean manualAcknowledgement;
 
         @Override
-        protected @NotNull Mqtt3SubscribeViewAndCallbackBuilder self() {
+        protected @NotNull SubscribeViewBuilder self() {
             return this;
         }
 
         @Override
-        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder callback(final @Nullable Consumer<Mqtt3Publish> callback) {
+        public @NotNull SubscribeViewBuilder callback(final @Nullable Consumer<Mqtt3Publish> callback) {
             this.callback = Checks.notNull(callback, "Callback");
             return this;
         }
 
         @Override
-        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder executor(final @Nullable Executor executor) {
+        public @NotNull SubscribeViewBuilder executor(final @Nullable Executor executor) {
             this.executor = Checks.notNull(executor, "Executor");
             return this;
         }
 
         @Override
-        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder manualAcknowledgement(
-                final boolean manualAcknowledgement) {
-
+        public @NotNull SubscribeViewBuilder manualAcknowledgement(final boolean manualAcknowledgement) {
             this.manualAcknowledgement = manualAcknowledgement;
             return this;
         }

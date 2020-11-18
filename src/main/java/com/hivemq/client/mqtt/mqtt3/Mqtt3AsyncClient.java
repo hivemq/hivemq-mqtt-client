@@ -182,8 +182,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)}
      * and {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)}.
      * <p>
-     * Calling {@link Mqtt3SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
-     * calling one of the following methods:
+     * Calling {@link SubscribeBuilder.Complete#send()} on the returned builder has the same effect as calling one of
+     * the following methods:
      * <ul>
      *   <li>{@link #subscribe(Mqtt3Subscribe)} if no callback has been supplied to the builder
      *   <li>{@link #subscribe(Mqtt3Subscribe, Consumer)} if only a callback has been supplied to the builder
@@ -197,7 +197,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)
      */
     @CheckReturnValue
-    Mqtt3SubscribeAndCallbackBuilder.@NotNull Start subscribeWith();
+    SubscribeBuilder.@NotNull Start subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -333,37 +333,30 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
      */
     @ApiStatus.NonExtendable
-    interface Mqtt3SubscribeAndCallbackBuilder
-            extends Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {
+    interface SubscribeBuilder extends Mqtt3SubscribeBuilderBase<SubscribeBuilder.Complete> {
 
         /**
-         * {@link Mqtt3SubscribeAndCallbackBuilder} that is complete which means all mandatory fields are set.
+         * {@link SubscribeBuilder} that is complete which means all mandatory fields are set.
          */
         @ApiStatus.NonExtendable
-        interface Complete extends Mqtt3SubscribeAndCallbackBuilder, Mqtt3SubscribeAndCallbackBuilder.Call,
-                Mqtt3SubscribeBuilderBase<Mqtt3SubscribeAndCallbackBuilder.Complete> {}
+        interface Complete
+                extends SubscribeBuilder, AfterComplete, Mqtt3SubscribeBuilderBase<SubscribeBuilder.Complete> {}
 
         /**
-         * {@link Mqtt3SubscribeAndCallbackBuilder} that provides additional methods for the first subscription.
+         * {@link SubscribeBuilder} that provides additional methods for the first subscription.
          */
-        // @formatter:off
         @ApiStatus.NonExtendable
-        interface Start extends Mqtt3SubscribeAndCallbackBuilder,
-                Mqtt3SubscribeBuilderBase.Start<
-                        Mqtt3SubscribeAndCallbackBuilder.Complete, Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {
-        // @formatter:on
+        interface Start extends SubscribeBuilder,
+                Mqtt3SubscribeBuilderBase.Start<SubscribeBuilder.Complete, SubscribeBuilder.Start.Complete> {
 
             /**
-             * {@link Mqtt3SubscribeAndCallbackBuilder.Start} that is complete which means all mandatory fields are
-             * set.
+             * {@link SubscribeBuilder.Start} that is complete which means all mandatory fields are set.
              */
             // @formatter:off
             @ApiStatus.NonExtendable
-            interface Complete extends
-                    Mqtt3SubscribeAndCallbackBuilder.Start, Mqtt3SubscribeAndCallbackBuilder.Complete,
+            interface Complete extends SubscribeBuilder.Start, SubscribeBuilder.Complete,
                     Mqtt3SubscribeBuilderBase.Start.Complete<
-                            Mqtt3SubscribeAndCallbackBuilder.Complete,
-                            Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {}
+                            SubscribeBuilder.Complete, SubscribeBuilder.Start.Complete> {}
             // @formatter:on
         }
 
@@ -373,7 +366,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
          * boolean)} call.
          */
         @ApiStatus.NonExtendable
-        interface Call {
+        interface AfterComplete {
 
             /**
              * Sets a callback for the matching Publish messages consumed via the subscriptions.
@@ -382,7 +375,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
              * @return the builder.
              */
             @CheckReturnValue
-            @NotNull Ex callback(@NotNull Consumer<Mqtt3Publish> callback);
+            @NotNull AfterCallback callback(@NotNull Consumer<Mqtt3Publish> callback);
 
             /**
              * Builds the {@link Mqtt3Subscribe} and applies it and additional arguments to a {@link
@@ -393,34 +386,34 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
              *         {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)}.
              */
             @NotNull CompletableFuture<Mqtt3SubAck> send();
+        }
+
+        /**
+         * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a {@link
+         * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
+         */
+        @ApiStatus.NonExtendable
+        interface AfterCallback extends AfterComplete {
 
             /**
-             * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a {@link
-             * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
+             * Sets an executor to execute the callback for the matching Publish messages consumed via the
+             * subscriptions.
+             *
+             * @param executor the executor to execute the callback for the matching Publish messages.
+             * @return the builder.
              */
-            @ApiStatus.NonExtendable
-            interface Ex extends Call {
+            @CheckReturnValue
+            @NotNull AfterCallback executor(@NotNull Executor executor);
 
-                /**
-                 * Sets an executor to execute the callback for the matching Publish messages consumed via the
-                 * subscriptions.
-                 *
-                 * @param executor the executor to execute the callback for the matching Publish messages.
-                 * @return the builder.
-                 */
-                @CheckReturnValue
-                @NotNull Ex executor(@NotNull Executor executor);
-
-                /**
-                 * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
-                 *
-                 * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
-                 * @return the builder.
-                 * @since 1.2
-                 */
-                @CheckReturnValue
-                @NotNull Ex manualAcknowledgement(boolean manualAcknowledgement);
-            }
+            /**
+             * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
+             *
+             * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
+             * @return the builder.
+             * @since 1.2
+             */
+            @CheckReturnValue
+            @NotNull AfterCallback manualAcknowledgement(boolean manualAcknowledgement);
         }
     }
 }

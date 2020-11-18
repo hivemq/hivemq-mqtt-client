@@ -186,8 +186,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)}
      * and {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)}.
      * <p>
-     * Calling {@link Mqtt5SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
-     * calling one of the following methods:
+     * Calling {@link SubscribeBuilder.Complete#send()} on the returned builder has the same effect as calling one of
+     * the following methods:
      * <ul>
      *   <li>{@link #subscribe(Mqtt5Subscribe)} if no callback has been supplied to the builder
      *   <li>{@link #subscribe(Mqtt5Subscribe, Consumer)} if only a callback has been supplied to the builder
@@ -201,7 +201,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
      */
     @CheckReturnValue
-    Mqtt5SubscribeAndCallbackBuilder.@NotNull Start subscribeWith();
+    SubscribeBuilder.@NotNull Start subscribeWith();
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -380,37 +380,30 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
      */
     @ApiStatus.NonExtendable
-    interface Mqtt5SubscribeAndCallbackBuilder
-            extends Mqtt5SubscribeBuilderBase<Mqtt5SubscribeAndCallbackBuilder.Complete> {
+    interface SubscribeBuilder extends Mqtt5SubscribeBuilderBase<SubscribeBuilder.Complete> {
 
         /**
-         * {@link Mqtt5SubscribeAndCallbackBuilder} that is complete which means all mandatory fields are set.
+         * {@link SubscribeBuilder} that is complete which means all mandatory fields are set.
          */
         @ApiStatus.NonExtendable
-        interface Complete extends Mqtt5SubscribeAndCallbackBuilder, Mqtt5SubscribeAndCallbackBuilder.Call,
-                Mqtt5SubscribeBuilderBase.Complete<Mqtt5SubscribeAndCallbackBuilder.Complete> {}
+        interface Complete extends SubscribeBuilder, AfterComplete,
+                Mqtt5SubscribeBuilderBase.Complete<SubscribeBuilder.Complete> {}
 
         /**
-         * {@link Mqtt5SubscribeAndCallbackBuilder} that provides additional methods for the first subscription.
+         * {@link SubscribeBuilder} that provides additional methods for the first subscription.
          */
-        // @formatter:off
         @ApiStatus.NonExtendable
-        interface Start extends Mqtt5SubscribeAndCallbackBuilder,
-                Mqtt5SubscribeBuilderBase.Start<
-                        Mqtt5SubscribeAndCallbackBuilder.Complete, Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
-        // @formatter:on
+        interface Start extends SubscribeBuilder,
+                Mqtt5SubscribeBuilderBase.Start<SubscribeBuilder.Complete, SubscribeBuilder.Start.Complete> {
 
             /**
-             * {@link Mqtt5SubscribeAndCallbackBuilder.Start} that is complete which means all mandatory fields are
-             * set.
+             * {@link SubscribeBuilder.Start} that is complete which means all mandatory fields are set.
              */
             // @formatter:off
             @ApiStatus.NonExtendable
-            interface Complete extends
-                    Mqtt5SubscribeAndCallbackBuilder.Start, Mqtt5SubscribeAndCallbackBuilder.Complete,
+            interface Complete extends SubscribeBuilder.Start, SubscribeBuilder.Complete,
                     Mqtt5SubscribeBuilderBase.Start.Complete<
-                            Mqtt5SubscribeAndCallbackBuilder.Complete,
-                            Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {}
+                            SubscribeBuilder.Complete, SubscribeBuilder.Start.Complete> {}
             // @formatter:on
         }
 
@@ -420,7 +413,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
          * boolean)} call.
          */
         @ApiStatus.NonExtendable
-        interface Call {
+        interface AfterComplete {
 
             /**
              * Sets a callback for the matching Publish messages consumed via the subscriptions.
@@ -429,7 +422,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
              * @return the builder.
              */
             @CheckReturnValue
-            @NotNull Ex callback(@NotNull Consumer<Mqtt5Publish> callback);
+            @NotNull AfterCallback callback(@NotNull Consumer<Mqtt5Publish> callback);
 
             /**
              * Builds the {@link Mqtt5Subscribe} and applies it and additional arguments to a {@link
@@ -440,34 +433,34 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
              *         {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)}.
              */
             @NotNull CompletableFuture<Mqtt5SubAck> send();
+        }
+
+        /**
+         * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a {@link
+         * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
+         */
+        @ApiStatus.NonExtendable
+        interface AfterCallback extends AfterComplete {
 
             /**
-             * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a {@link
-             * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
+             * Sets an executor to execute the callback for the matching Publish messages consumed via the
+             * subscriptions.
+             *
+             * @param executor the executor to execute the callback for the matching Publish messages.
+             * @return the builder.
              */
-            @ApiStatus.NonExtendable
-            interface Ex extends Call {
+            @CheckReturnValue
+            @NotNull AfterCallback executor(@NotNull Executor executor);
 
-                /**
-                 * Sets an executor to execute the callback for the matching Publish messages consumed via the
-                 * subscriptions.
-                 *
-                 * @param executor the executor to execute the callback for the matching Publish messages.
-                 * @return the builder.
-                 */
-                @CheckReturnValue
-                @NotNull Ex executor(@NotNull Executor executor);
-
-                /**
-                 * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
-                 *
-                 * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
-                 * @return the builder.
-                 * @since 1.2
-                 */
-                @CheckReturnValue
-                @NotNull Ex manualAcknowledgement(boolean manualAcknowledgement);
-            }
+            /**
+             * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
+             *
+             * @param manualAcknowledgement whether the matching Publish messages are acknowledged manually.
+             * @return the builder.
+             * @since 1.2
+             */
+            @CheckReturnValue
+            @NotNull AfterCallback manualAcknowledgement(boolean manualAcknowledgement);
         }
     }
 }
