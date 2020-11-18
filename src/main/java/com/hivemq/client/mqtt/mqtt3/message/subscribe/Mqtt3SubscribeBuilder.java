@@ -167,7 +167,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          */
         @ApiStatus.NonExtendable
         interface Complete<P>
-                extends Publishes<P>, Publishes.Args<P>, Mqtt3SubscribeBuilderBase<Publishes.Complete<P>> {}
+                extends Publishes<P>, AfterComplete<P>, Mqtt3SubscribeBuilderBase<Publishes.Complete<P>> {}
 
         /**
          * {@link Publishes} that provides additional methods for the first subscription.
@@ -195,7 +195,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
         @ApiStatus.NonExtendable
-        interface Args<P> {
+        interface AfterComplete<P> {
 
             /**
              * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
@@ -204,7 +204,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
              * @return the builder.
              */
             @CheckReturnValue
-            @NotNull Args<P> manualAcknowledgement(boolean manualAcknowledgement);
+            @NotNull AfterComplete<P> manualAcknowledgement(boolean manualAcknowledgement);
 
             /**
              * Builds the {@link Mqtt3Subscribe} and applies it and additional arguments to the parent.
