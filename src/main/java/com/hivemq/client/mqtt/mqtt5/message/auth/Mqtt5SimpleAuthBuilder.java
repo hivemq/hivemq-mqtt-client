@@ -33,7 +33,8 @@ public interface Mqtt5SimpleAuthBuilder extends Mqtt5SimpleAuthBuilderBase<Mqtt5
      * {@link Mqtt5SimpleAuthBuilder} that is complete which means all mandatory fields are set.
      */
     @ApiStatus.NonExtendable
-    interface Complete extends Mqtt5SimpleAuthBuilder, Mqtt5SimpleAuthBuilderBase<Mqtt5SimpleAuthBuilder.Complete> {
+    interface Complete
+            extends Mqtt5SimpleAuthBuilder, Mqtt5SimpleAuthBuilderBase.Complete<Mqtt5SimpleAuthBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt5SimpleAuth}.
@@ -58,7 +59,7 @@ public interface Mqtt5SimpleAuthBuilder extends Mqtt5SimpleAuthBuilderBase<Mqtt5
          * @param <P> the type of the result when the built {@link Mqtt5SimpleAuth} is applied to the parent.
          */
         @ApiStatus.NonExtendable
-        interface Complete<P> extends Nested<P>, Mqtt5SimpleAuthBuilderBase<Nested.Complete<P>> {
+        interface Complete<P> extends Nested<P>, Mqtt5SimpleAuthBuilderBase.Complete<Nested.Complete<P>> {
 
             /**
              * Builds the {@link Mqtt5SimpleAuth} and applies it to the parent.
