@@ -168,7 +168,7 @@ public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5Su
          */
         @ApiStatus.NonExtendable
         interface Complete<P>
-                extends Publishes<P>, Publishes.Args<P>, Mqtt5SubscribeBuilderBase.Complete<Publishes.Complete<P>> {}
+                extends Publishes<P>, AfterComplete<P>, Mqtt5SubscribeBuilderBase.Complete<Publishes.Complete<P>> {}
 
         /**
          * {@link Publishes} that provides additional methods for the first subscription.
@@ -196,7 +196,7 @@ public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5Su
          * @param <P> the type of the result when the built {@link Mqtt5Subscribe} is applied to the parent.
          */
         @ApiStatus.NonExtendable
-        interface Args<P> {
+        interface AfterComplete<P> {
 
             /**
              * Sets whether the matching Publish messages consumed via the subscriptions are acknowledged manually.
@@ -205,7 +205,7 @@ public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5Su
              * @return the builder.
              */
             @CheckReturnValue
-            @NotNull Args<P> manualAcknowledgement(boolean manualAcknowledgement);
+            @NotNull AfterComplete<P> manualAcknowledgement(boolean manualAcknowledgement);
 
             /**
              * Builds the {@link Mqtt5Subscribe} and applies it and additional arguments to the parent.

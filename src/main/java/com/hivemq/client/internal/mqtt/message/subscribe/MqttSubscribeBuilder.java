@@ -218,7 +218,8 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
     }
 
     public static abstract class Publishes<P> extends MqttSubscribeBuilder<Publishes<P>>
-            implements Mqtt5SubscribeBuilder.Publishes.Start.Complete<P>, Mqtt5SubscribeBuilder.Publishes.Args<P> {
+            implements Mqtt5SubscribeBuilder.Publishes.Start.Complete<P>,
+            Mqtt5SubscribeBuilder.Publishes.AfterComplete<P> {
 
         protected boolean manualAcknowledgement;
 

@@ -191,7 +191,8 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
     }
 
     public static abstract class Publishes<P> extends Mqtt3SubscribeViewBuilder<Publishes<P>>
-            implements Mqtt3SubscribeBuilder.Publishes.Start.Complete<P>, Mqtt3SubscribeBuilder.Publishes.Args<P> {
+            implements Mqtt3SubscribeBuilder.Publishes.Start.Complete<P>,
+            Mqtt3SubscribeBuilder.Publishes.AfterComplete<P> {
 
         protected boolean manualAcknowledgement;
 
