@@ -339,8 +339,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
          * {@link SubscribeBuilder} that is complete which means all mandatory fields are set.
          */
         @ApiStatus.NonExtendable
-        interface Complete
-                extends SubscribeBuilder, AfterComplete, Mqtt3SubscribeBuilderBase<SubscribeBuilder.Complete> {}
+        interface Complete extends SubscribeBuilder, AfterComplete,
+                Mqtt3SubscribeBuilderBase.Complete<SubscribeBuilder.Complete> {}
 
         /**
          * {@link SubscribeBuilder} that provides additional methods for the first subscription.

@@ -33,7 +33,8 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
      * {@link Mqtt3SubscribeBuilder} that is complete which means all mandatory fields are set.
      */
     @ApiStatus.NonExtendable
-    interface Complete extends Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
+    interface Complete
+            extends Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilderBase.Complete<Mqtt3SubscribeBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt3Subscribe}.
@@ -76,7 +77,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
         @ApiStatus.NonExtendable
-        interface Complete<P> extends Nested<P>, Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
+        interface Complete<P> extends Nested<P>, Mqtt3SubscribeBuilderBase.Complete<Nested.Complete<P>> {
 
             /**
              * Builds the {@link Mqtt3Subscribe} and applies it to the parent.
@@ -121,7 +122,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
          */
         @ApiStatus.NonExtendable
-        interface Complete<P> extends Send<P>, Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
+        interface Complete<P> extends Send<P>, Mqtt3SubscribeBuilderBase.Complete<Send.Complete<P>> {
 
             /**
              * Builds the {@link Mqtt3Subscribe} and applies it to the parent which then sends the Subscribe message.
@@ -167,7 +168,7 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          */
         @ApiStatus.NonExtendable
         interface Complete<P>
-                extends Publishes<P>, AfterComplete<P>, Mqtt3SubscribeBuilderBase<Publishes.Complete<P>> {}
+                extends Publishes<P>, AfterComplete<P>, Mqtt3SubscribeBuilderBase.Complete<Publishes.Complete<P>> {}
 
         /**
          * {@link Publishes} that provides additional methods for the first subscription.
