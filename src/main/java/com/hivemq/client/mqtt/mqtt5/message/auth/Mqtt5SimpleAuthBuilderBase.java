@@ -31,7 +31,7 @@ import java.nio.ByteBuffer;
  * @since 1.0
  */
 @ApiStatus.NonExtendable
-public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase<C>> {
+public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase.Complete<C>> {
 
     /**
      * Sets the {@link Mqtt5SimpleAuth#getUsername() username}. At least the username or the password is mandatory.
@@ -68,4 +68,12 @@ public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase
      */
     @CheckReturnValue
     @NotNull C password(@NotNull ByteBuffer password);
+
+    /**
+     * {@link Mqtt5SimpleAuthBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C> the type of the complete builder.
+     */
+    @ApiStatus.NonExtendable
+    interface Complete<C extends Mqtt5SimpleAuthBuilderBase.Complete<C>> extends Mqtt5SimpleAuthBuilderBase<C> {}
 }
