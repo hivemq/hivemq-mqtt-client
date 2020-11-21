@@ -71,5 +71,5 @@ public interface Mqtt5AdvancedConfigBuilderBase<B extends Mqtt5AdvancedConfigBui
      * @see #interceptors(Mqtt5ClientInterceptors)
      */
     @CheckReturnValue
-    Mqtt5ClientInterceptorsBuilder.@NotNull Nested<? extends B> interceptors();
+    Mqtt5ClientInterceptorsBuilder.@NotNull Nested<? extends B> interceptorsWith();
 }

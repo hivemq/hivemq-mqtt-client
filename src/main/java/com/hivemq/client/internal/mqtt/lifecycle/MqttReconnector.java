@@ -151,7 +151,7 @@ public class MqttReconnector implements Mqtt5Reconnector {
     }
 
     @Override
-    public MqttTransportConfigImplBuilder.@NotNull Nested<MqttReconnector> transportConfig() {
+    public MqttTransportConfigImplBuilder.@NotNull Nested<MqttReconnector> transportConfigWith() {
         checkInEventLoop();
         return new MqttTransportConfigImplBuilder.Nested<>(transportConfig, this::transportConfig);
     }

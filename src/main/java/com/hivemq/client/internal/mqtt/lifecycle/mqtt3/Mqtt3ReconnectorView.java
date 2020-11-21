@@ -108,7 +108,7 @@ public class Mqtt3ReconnectorView implements Mqtt3Reconnector {
     }
 
     @Override
-    public MqttTransportConfigImplBuilder.@NotNull Nested<Mqtt3ReconnectorView> transportConfig() {
+    public MqttTransportConfigImplBuilder.@NotNull Nested<Mqtt3ReconnectorView> transportConfigWith() {
         return new MqttTransportConfigImplBuilder.Nested<>(getTransportConfig(), this::transportConfig);
     }
 

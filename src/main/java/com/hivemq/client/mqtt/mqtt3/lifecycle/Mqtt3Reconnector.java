@@ -60,7 +60,7 @@ public interface Mqtt3Reconnector extends MqttReconnector {
 
     @Override
     @CheckReturnValue
-    MqttTransportConfigBuilder.@NotNull Nested<? extends Mqtt3Reconnector> transportConfig();
+    MqttTransportConfigBuilder.@NotNull Nested<? extends Mqtt3Reconnector> transportConfigWith();
 
     /**
      * Sets a different Connect message the client will try to reconnect with.
