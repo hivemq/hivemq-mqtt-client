@@ -65,7 +65,7 @@ public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
     }
 
     @Override
-    public MqttUserPropertiesImplBuilder.@NotNull Nested<MqttPubCompBuilder> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<MqttPubCompBuilder> userPropertiesWith() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 

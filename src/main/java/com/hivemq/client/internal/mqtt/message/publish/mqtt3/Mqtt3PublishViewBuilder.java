@@ -66,7 +66,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         return self();
     }
 
-    public MqttTopicImplBuilder.@NotNull Nested<B> topic() {
+    public MqttTopicImplBuilder.@NotNull Nested<B> topicWith() {
         return new MqttTopicImplBuilder.Nested<>(this::topic);
     }
 

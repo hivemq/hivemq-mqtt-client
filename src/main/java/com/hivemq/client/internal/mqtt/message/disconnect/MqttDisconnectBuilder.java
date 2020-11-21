@@ -98,7 +98,7 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
         return self();
     }
 
-    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userPropertiesWith() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 

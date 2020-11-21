@@ -46,7 +46,7 @@ public class Mqtt5Features {
         final Mqtt5ConnAck connAck = client.toBlocking().connectWith()
                 .cleanStart(false)          // resume a previous session
                 .sessionExpiryInterval(30)  // keep session state for 30s
-                .restrictions()
+                .restrictionsWith()
                     .receiveMaximum(10)             // receive max. 10 concurrent messages
                     .sendMaximum(10)                // send max. 10 concurrent messages
                     .maximumPacketSize(10_240)      // receive messages with max size of 10KB
@@ -54,14 +54,14 @@ public class Mqtt5Features {
                     .topicAliasMaximum(0)           // the server should not use topic aliases
                     .sendTopicAliasMaximum(8)       // use up to 8 aliases for the most used topics (automatically traced)
                     .applyRestrictions()
-                .willPublish()
+                .willPublishWith()
                     .topic("demo/topic/will")
                     .qos(MqttQos.EXACTLY_ONCE)
                     .payload("rip".getBytes())
                     .contentType("text/plain")  // our payload is text
                     .messageExpiryInterval(120) // not so important, expire message after 2min if can not be delivered
                     .delayInterval(30)          // delay sending out the will message so we can try to reconnect immediately
-                    .userProperties()           // add some user properties to the will message
+                    .userPropertiesWith()           // add some user properties to the will message
                         .add("sender", "demo-sender-1")
                         .add("receiver", "you")
                         .applyUserProperties()
@@ -89,7 +89,7 @@ public class Mqtt5Features {
                 .retain(true)
                 .contentType("text/plain")  // our payload is text
                 .messageExpiryInterval(120) // not so important, expire message after 2min if can not be delivered
-                .userProperties()           // add some user properties to the message
+                .userPropertiesWith()           // add some user properties to the message
                     .add("sender", "demo-sender-1")
                     .add("receiver", "you")
                     .applyUserProperties()
@@ -108,7 +108,7 @@ public class Mqtt5Features {
         client2.publishWith()
                 .topic("demo/topic/a")
                 .retain(true)
-                .userProperties()
+                .userPropertiesWith()
                     .add("sender", "demo-sender-2")
                     .add("receiver", "you")
                     .applyUserProperties()

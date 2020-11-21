@@ -65,7 +65,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return self();
     }
 
-    public MqttTopicFilterImplBuilder.@NotNull Nested<B> addTopicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> addTopicFilterWith() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
@@ -107,7 +107,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return self();
     }
 
-    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userPropertiesWith() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
@@ -119,7 +119,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return addTopicFilter(topicFilter);
     }
 
-    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilterWith() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 

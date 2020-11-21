@@ -67,7 +67,7 @@ public interface Mqtt5PubCompBuilder {
      * @see #userProperties(Mqtt5UserProperties)
      */
     @CheckReturnValue
-    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends Mqtt5PubCompBuilder> userProperties();
+    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends Mqtt5PubCompBuilder> userPropertiesWith();
 
     /**
      * @return the Reason Code of the PubComp message.

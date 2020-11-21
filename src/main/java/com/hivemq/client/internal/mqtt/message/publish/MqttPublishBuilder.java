@@ -91,7 +91,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public MqttTopicImplBuilder.@NotNull Nested<B> topic() {
+    public MqttTopicImplBuilder.@NotNull Nested<B> topicWith() {
         return new MqttTopicImplBuilder.Nested<>(this::topic);
     }
 
@@ -140,7 +140,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public MqttTopicImplBuilder.@NotNull Nested<B> responseTopic() {
+    public MqttTopicImplBuilder.@NotNull Nested<B> responseTopicWith() {
         return new MqttTopicImplBuilder.Nested<>(this::responseTopic);
     }
 
@@ -159,7 +159,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userProperties() {
+    public MqttUserPropertiesImplBuilder.@NotNull Nested<B> userPropertiesWith() {
         return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 

@@ -125,7 +125,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
         final Mqtt3SubscribeBuilder.Complete subscribeBuilder = Mqtt3Subscribe.builder().topicFilter("fluent");
         final Mqtt3Subscribe Mqtt3Subscribe =
-                subscribeBuilder.addSubscription().topicFilter("test").applySubscription().build();
+                subscribeBuilder.addSubscriptionWith().topicFilter("test").applySubscription().build();
 
         final List<? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
         assertEquals(2, subscriptions.size());

@@ -137,7 +137,7 @@ class MqttSubscribeBuilderTest {
 
         final Mqtt5SubscribeBuilder.Complete subscribeBuilder = Mqtt5Subscribe.builder().topicFilter("fluent");
         final Mqtt5Subscribe mqtt5Subscribe =
-                subscribeBuilder.addSubscription().topicFilter("test").applySubscription().build();
+                subscribeBuilder.addSubscriptionWith().topicFilter("test").applySubscription().build();
 
         final List<? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
         assertEquals(2, subscriptions.size());

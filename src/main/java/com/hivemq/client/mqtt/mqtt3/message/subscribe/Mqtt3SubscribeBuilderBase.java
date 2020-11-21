@@ -54,7 +54,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.C
      * @see #addSubscription(Mqtt3Subscription)
      */
     @CheckReturnValue
-    Mqtt3SubscriptionBuilder.@NotNull Nested<? extends C> addSubscription();
+    Mqtt3SubscriptionBuilder.@NotNull Nested<? extends C> addSubscriptionWith();
 
     /**
      * Adds {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least

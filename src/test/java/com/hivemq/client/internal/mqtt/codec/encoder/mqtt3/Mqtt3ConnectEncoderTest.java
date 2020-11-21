@@ -68,13 +68,13 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
         Mqtt3ConnectViewBuilder.Default connectBuilder =
                 new Mqtt3ConnectViewBuilder.Default().cleanSession(cleanSession).keepAlive(keepAliveInterval);
         if (hasAuth) {
-            connectBuilder = connectBuilder.simpleAuth()
+            connectBuilder = connectBuilder.simpleAuthWith()
                     .username(userName)
                     .password(password.getBytes(StandardCharsets.UTF_8))
                     .applySimpleAuth();
         }
         if (hasWill) {
-            connectBuilder = connectBuilder.willPublish()
+            connectBuilder = connectBuilder.willPublishWith()
                     .topic(willTopic)
                     .qos(Objects.requireNonNull(MqttQos.fromCode(willQos)))
                     .payload(willMessage.getBytes(StandardCharsets.UTF_8))

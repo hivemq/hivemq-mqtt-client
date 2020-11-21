@@ -56,7 +56,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @see #addSubscription(Mqtt5Subscription)
      */
     @CheckReturnValue
-    Mqtt5SubscriptionBuilder.@NotNull Nested<? extends C> addSubscription();
+    Mqtt5SubscriptionBuilder.@NotNull Nested<? extends C> addSubscriptionWith();
 
     /**
      * Adds {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of subscriptions}. At least
@@ -118,7 +118,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
          * @see #userProperties(Mqtt5UserProperties)
          */
         @CheckReturnValue
-        Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends C> userProperties();
+        Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends C> userPropertiesWith();
     }
 
     /**
