@@ -97,10 +97,9 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return super.serverPort(port);
     }
 
-    @Override
-    public @NotNull B tlsWithDefaultConfig() {
+    public @NotNull B tls() {
         transportConfig = null;
-        return super.tlsWithDefaultConfig();
+        return super.tls();
     }
 
     @Override
@@ -108,10 +107,9 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return super.tlsConfig(tlsConfig);
     }
 
-    @Override
-    public @NotNull B webSocketWithDefaultConfig() {
+    public @NotNull B webSocket() {
         transportConfig = null;
-        return super.webSocketWithDefaultConfig();
+        return super.webSocket();
     }
 
     @Override
@@ -127,7 +125,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    public MqttTransportConfigImplBuilder.@NotNull Nested<B> transportConfig() {
+    public MqttTransportConfigImplBuilder.@NotNull Nested<B> transportConfigWith() {
         return new MqttTransportConfigImplBuilder.Nested<>(this, this::transportConfig);
     }
 
@@ -136,11 +134,11 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    public MqttExecutorConfigImplBuilder.@NotNull Nested<B> executorConfig() {
+    public MqttExecutorConfigImplBuilder.@NotNull Nested<B> executorConfigWith() {
         return new MqttExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
     }
 
-    public @NotNull B automaticReconnectWithDefaultConfig() {
+    public @NotNull B automaticReconnect() {
         this.autoReconnect = MqttAutoReconnectImpl.DEFAULT;
         return self();
     }
@@ -151,7 +149,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    public MqttAutoReconnectImplBuilder.@NotNull Nested<B> automaticReconnect() {
+    public MqttAutoReconnectImplBuilder.@NotNull Nested<B> automaticReconnectWith() {
         return new MqttAutoReconnectImplBuilder.Nested<>(autoReconnect, this::automaticReconnect);
     }
 
@@ -198,9 +196,8 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         if (autoReconnect == null) {
             return disconnectedListenersBuilder.build();
         }
-        return ImmutableList.<MqttDisconnectedListener>builder().add(autoReconnect)
-                .addAll(disconnectedListenersBuilder.build())
-                .build();
+        return ImmutableList.<MqttDisconnectedListener>builder(disconnectedListenersBuilder.getSize() + 1).add(
+                autoReconnect).addAll(disconnectedListenersBuilder.build()).build();
     }
 
     protected @NotNull MqttClientConfig buildClientConfig(

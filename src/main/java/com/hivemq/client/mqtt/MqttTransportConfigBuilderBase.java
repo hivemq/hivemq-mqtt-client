@@ -126,7 +126,7 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B tlsWithDefaultConfig();
+    @NotNull B tls();
 
     /**
      * Sets the optional {@link MqttTransportConfig#getTlsConfig() transport layer security configuration}.
@@ -148,7 +148,7 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @see #tlsConfig(MqttTlsConfig)
      */
     @CheckReturnValue
-    MqttTlsConfigBuilder.@NotNull Nested<? extends B> tlsConfig();
+    MqttTlsConfigBuilder.@NotNull Nested<? extends B> tlsConfigWith();
 
     /**
      * Sets the {@link MqttTransportConfig#getWebSocketConfig() WebSocket transport configuration} to the default
@@ -157,7 +157,7 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B webSocketWithDefaultConfig();
+    @NotNull B webSocket();
 
     /**
      * Sets the optional {@link MqttTransportConfig#getWebSocketConfig() WebSocket transport configuration}.
@@ -179,7 +179,7 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @see #webSocketConfig(MqttWebSocketConfig)
      */
     @CheckReturnValue
-    MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> webSocketConfig();
+    MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> webSocketConfigWith();
 
     /**
      * Sets the optional {@link MqttTransportConfig#getProxyConfig() proxy configuration}.
@@ -203,7 +203,7 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
      * @since 1.2
      */
     @CheckReturnValue
-    MqttProxyConfigBuilder.@NotNull Nested<? extends B> proxyConfig();
+    MqttProxyConfigBuilder.@NotNull Nested<? extends B> proxyConfigWith();
 
     /**
      * Sets the {@link MqttTransportConfig#getSocketConnectTimeoutMs() timeout for connecting the socket to the

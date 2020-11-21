@@ -178,7 +178,7 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
         return self();
     }
 
-    public @NotNull B tlsWithDefaultConfig() {
+    public @NotNull B tls() {
         this.tlsConfig = MqttTlsConfigImpl.DEFAULT;
         return self();
     }
@@ -188,11 +188,11 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
         return self();
     }
 
-    public MqttTlsConfigImplBuilder.@NotNull Nested<B> tlsConfig() {
+    public MqttTlsConfigImplBuilder.@NotNull Nested<B> tlsConfigWith() {
         return new MqttTlsConfigImplBuilder.Nested<>(tlsConfig, this::tlsConfig);
     }
 
-    public @NotNull B webSocketWithDefaultConfig() {
+    public @NotNull B webSocket() {
         this.webSocketConfig = MqttWebSocketConfigImpl.DEFAULT;
         return self();
     }
@@ -203,7 +203,7 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
         return self();
     }
 
-    public MqttWebSocketConfigImplBuilder.@NotNull Nested<B> webSocketConfig() {
+    public MqttWebSocketConfigImplBuilder.@NotNull Nested<B> webSocketConfigWith() {
         return new MqttWebSocketConfigImplBuilder.Nested<>(webSocketConfig, this::webSocketConfig);
     }
 
@@ -212,7 +212,7 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
         return self();
     }
 
-    public MqttProxyConfigImplBuilder.@NotNull Nested<B> proxyConfig() {
+    public MqttProxyConfigImplBuilder.@NotNull Nested<B> proxyConfigWith() {
         return new MqttProxyConfigImplBuilder.Nested<>(proxyConfig, this::proxyConfig);
     }
 

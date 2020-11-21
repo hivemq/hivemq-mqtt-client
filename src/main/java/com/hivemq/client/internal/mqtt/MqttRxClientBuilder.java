@@ -61,7 +61,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public MqttAdvancedConfigBuilder.@NotNull Nested<MqttRxClientBuilder> advancedConfig() {
+    public MqttAdvancedConfigBuilder.@NotNull Nested<MqttRxClientBuilder> advancedConfigWith() {
         return new MqttAdvancedConfigBuilder.Nested<>(advancedConfig, this::advancedConfig);
     }
 
@@ -72,7 +72,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public MqttSimpleAuthBuilder.@NotNull Nested<MqttRxClientBuilder> simpleAuth() {
+    public MqttSimpleAuthBuilder.@NotNull Nested<MqttRxClientBuilder> simpleAuthWith() {
         return new MqttSimpleAuthBuilder.Nested<>(this::simpleAuth);
     }
 
@@ -90,7 +90,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public MqttPublishBuilder.@NotNull WillNested<MqttRxClientBuilder> willPublish() {
+    public MqttPublishBuilder.@NotNull WillNested<MqttRxClientBuilder> willPublishWith() {
         return new MqttPublishBuilder.WillNested<>(this::willPublish);
     }
 

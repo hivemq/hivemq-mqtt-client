@@ -42,7 +42,7 @@ public class ReconnectStrategy {
 
         final Mqtt5BlockingClient client1 = Mqtt5Client.builder()
                 .serverHost("broker.hivemq.com")
-                .automaticReconnectWithDefaultConfig() // exponential backoff, 1s initial, doubled up to 2min, random delays +-25%
+                .automaticReconnect() // exponential backoff, 1s initial, doubled up to 2min, random delays +-25%
                 .buildBlocking();
     }
 
@@ -50,7 +50,7 @@ public class ReconnectStrategy {
 
         final Mqtt5BlockingClient client2 = Mqtt5Client.builder()
                 .serverHost("broker.hivemq.com")
-                .automaticReconnect()
+                .automaticReconnectWith()
                     .initialDelay(3, TimeUnit.SECONDS)
                     .maxDelay(10, TimeUnit.SECONDS)
                     .applyAutomaticReconnect()
