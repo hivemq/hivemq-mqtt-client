@@ -59,7 +59,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      * @since 1.1
      */
     @CheckReturnValue
-    Mqtt3SimpleAuthBuilder.@NotNull Nested<? extends Mqtt3ClientBuilder> simpleAuth();
+    Mqtt3SimpleAuthBuilder.@NotNull Nested<? extends Mqtt3ClientBuilder> simpleAuthWith();
 
     /**
      * Sets the optional {@link Mqtt3ClientConfig#getWillPublish() Will Publish}.
@@ -83,7 +83,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      * @since 1.1
      */
     @CheckReturnValue
-    Mqtt3WillPublishBuilder.@NotNull Nested<? extends Mqtt3ClientBuilder> willPublish();
+    Mqtt3WillPublishBuilder.@NotNull Nested<? extends Mqtt3ClientBuilder> willPublishWith();
 
     /**
      * Builds the {@link Mqtt3Client}.

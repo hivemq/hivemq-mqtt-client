@@ -40,7 +40,7 @@ public class Mqtt5Features {
 
         final Mqtt5AsyncClient client = Mqtt5Client.builder()
                 .serverHost("broker.hivemq.com")
-                .automaticReconnectWithDefaultConfig()
+                .automaticReconnect()
                 .buildAsync();
 
         final Mqtt5ConnAck connAck = client.toBlocking().connectWith()
