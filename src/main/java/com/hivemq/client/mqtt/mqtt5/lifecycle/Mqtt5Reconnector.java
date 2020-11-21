@@ -60,7 +60,7 @@ public interface Mqtt5Reconnector extends MqttReconnector {
 
     @Override
     @CheckReturnValue
-    MqttTransportConfigBuilder.@NotNull Nested<? extends Mqtt5Reconnector> transportConfig();
+    MqttTransportConfigBuilder.@NotNull Nested<? extends Mqtt5Reconnector> transportConfigWith();
 
     /**
      * Sets a different Connect message the client will try to reconnect with.
