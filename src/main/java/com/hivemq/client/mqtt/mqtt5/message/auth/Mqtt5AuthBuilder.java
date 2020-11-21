@@ -75,5 +75,5 @@ public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
      * @see #userProperties(Mqtt5UserProperties)
      */
     @CheckReturnValue
-    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends Mqtt5AuthBuilder> userProperties();
+    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends Mqtt5AuthBuilder> userPropertiesWith();
 }

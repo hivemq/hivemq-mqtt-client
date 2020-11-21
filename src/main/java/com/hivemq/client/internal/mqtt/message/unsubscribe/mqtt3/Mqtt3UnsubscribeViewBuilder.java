@@ -62,7 +62,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return self();
     }
 
-    public MqttTopicFilterImplBuilder.@NotNull Nested<B> addTopicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> addTopicFilterWith() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
@@ -107,7 +107,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return addTopicFilter(topicFilter);
     }
 
-    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilter() {
+    public MqttTopicFilterImplBuilder.@NotNull Nested<B> topicFilterWith() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 

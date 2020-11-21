@@ -95,7 +95,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
     void addTopicFilter_nested_topic_builder_is_used_with_and_then_addTopicFilter_mqtttopic() {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
-                .topicFilter()
+                .topicFilterWith()
                 .addLevel("first")
                 .addLevel("second")
                 .multiLevelWildcard()
@@ -114,7 +114,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
     void addTopicFilter_nested_topic_builder_is_used_and_then_addTopicFilter_string() {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
-                .topicFilter()
+                .topicFilterWith()
                 .addLevel("first")
                 .addLevel("second")
                 .multiLevelWildcard()
@@ -135,7 +135,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter("test")
                 .addTopicFilter(MqttTopicFilter.of("firstAdd"))
-                .addTopicFilter()
+                .addTopicFilterWith()
                 .addLevel("nested")
                 .applyTopicFilter()
                 .addTopicFilter(MqttTopicFilter.of("secondAdd"))
@@ -156,7 +156,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter("test")
                 .addTopicFilter("firstAdd")
-                .addTopicFilter()
+                .addTopicFilterWith()
                 .addLevel("nested")
                 .applyTopicFilter()
                 .addTopicFilter("secondAdd")
@@ -176,7 +176,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter("test")
-                .addTopicFilter()
+                .addTopicFilterWith()
                 .addLevel("first")
                 .addLevel("second")
                 .multiLevelWildcard()
@@ -323,7 +323,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
-                .topicFilter()
+                .topicFilterWith()
                 .addLevel("first")
                 .addLevel("second")
                 .multiLevelWildcard()
@@ -350,7 +350,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter("fluent")
                 .addTopicFilters(topics)
-                .addTopicFilter()
+                .addTopicFilterWith()
                 .addLevel("nested")
                 .applyTopicFilter()
                 .addTopicFilters(topics2)

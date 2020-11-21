@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
     private static @NotNull MqttConnect createConnect(final int maximumPacketSize) {
-        return new MqttConnectBuilder.Default().restrictions()
+        return new MqttConnectBuilder.Default().restrictionsWith()
                 .maximumPacketSize(maximumPacketSize)
                 .topicAliasMaximum(3)
                 .requestResponseInformation(true)

@@ -81,7 +81,7 @@ public class ReconnectStrategy {
                             .reconnectWhen(getOAuthToken(), (token, throwable) -> { // first reconnect would be delayed 2s but OAuth server needs more time
                                 if (token != null) {
                                     context5.getReconnector().connectWith()
-                                            .simpleAuth().password(token).applySimpleAuth() // set OAuth token as password
+                                            .simpleAuthWith().password(token).applySimpleAuth() // set OAuth token as password
                                             .applyConnect();
                                 } else {
                                     context5.getReconnector().reconnect(false); // cancel reconnect if OAuth query failed

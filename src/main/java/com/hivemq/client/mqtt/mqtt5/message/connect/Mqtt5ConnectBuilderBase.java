@@ -108,7 +108,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @see #restrictions(Mqtt5ConnectRestrictions)
      */
     @CheckReturnValue
-    Mqtt5ConnectRestrictionsBuilder.@NotNull Nested<? extends B> restrictions();
+    Mqtt5ConnectRestrictionsBuilder.@NotNull Nested<? extends B> restrictionsWith();
 
     /**
      * Sets the optional {@link Mqtt5Connect#getSimpleAuth() simple authentication and/or authorization related data}.
@@ -131,7 +131,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @see #simpleAuth(Mqtt5SimpleAuth)
      */
     @CheckReturnValue
-    Mqtt5SimpleAuthBuilder.@NotNull Nested<? extends B> simpleAuth();
+    Mqtt5SimpleAuthBuilder.@NotNull Nested<? extends B> simpleAuthWith();
 
     /**
      * Sets the {@link Mqtt5Connect#getEnhancedAuthMechanism() enhanced authentication and/or authorization mechanism}.
@@ -163,7 +163,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @see #willPublish(Mqtt5Publish)
      */
     @CheckReturnValue
-    Mqtt5WillPublishBuilder.@NotNull Nested<? extends B> willPublish();
+    Mqtt5WillPublishBuilder.@NotNull Nested<? extends B> willPublishWith();
 
     /**
      * Sets the {@link Mqtt5Connect#getUserProperties() User Properties}.
@@ -184,5 +184,5 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * @see #userProperties(Mqtt5UserProperties)
      */
     @CheckReturnValue
-    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends B> userProperties();
+    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends B> userPropertiesWith();
 }

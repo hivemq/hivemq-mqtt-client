@@ -75,5 +75,5 @@ public interface Mqtt5PubRecBuilder {
      * @see #userProperties(Mqtt5UserProperties)
      */
     @CheckReturnValue
-    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends Mqtt5PubRecBuilder> userProperties();
+    Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends Mqtt5PubRecBuilder> userPropertiesWith();
 }

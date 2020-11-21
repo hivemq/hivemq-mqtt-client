@@ -69,7 +69,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
      * @see #topic(MqttTopic)
      */
     @CheckReturnValue
-    MqttTopicBuilder.@NotNull Nested<? extends C> topic();
+    MqttTopicBuilder.@NotNull Nested<? extends C> topicWith();
 
     /**
      * {@link Mqtt5PublishBuilderBase} that is complete which means all mandatory fields are set.
@@ -191,7 +191,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @see #responseTopic(MqttTopic)
          */
         @CheckReturnValue
-        MqttTopicBuilder.@NotNull Nested<? extends C> responseTopic();
+        MqttTopicBuilder.@NotNull Nested<? extends C> responseTopicWith();
 
         /**
          * Sets the optional {@link Mqtt5Publish#getCorrelationData() correlation data}.
@@ -232,7 +232,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
          * @see #userProperties(Mqtt5UserProperties)
          */
         @CheckReturnValue
-        Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends C> userProperties();
+        Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends C> userPropertiesWith();
     }
 
     /**

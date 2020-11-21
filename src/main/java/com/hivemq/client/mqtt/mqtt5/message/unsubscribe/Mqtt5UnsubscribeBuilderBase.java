@@ -69,7 +69,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @see #addTopicFilter(MqttTopicFilter)
      */
     @CheckReturnValue
-    MqttTopicFilterBuilder.@NotNull Nested<? extends C> addTopicFilter();
+    MqttTopicFilterBuilder.@NotNull Nested<? extends C> addTopicFilterWith();
 
     /**
      * Adds {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
@@ -140,7 +140,7 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * @see #userProperties(Mqtt5UserProperties)
          */
         @CheckReturnValue
-        Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends C> userProperties();
+        Mqtt5UserPropertiesBuilder.@NotNull Nested<? extends C> userPropertiesWith();
     }
 
     /**
@@ -180,6 +180,6 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * @see #addTopicFilter(MqttTopicFilter)
          */
         @CheckReturnValue
-        MqttTopicFilterBuilder.@NotNull Nested<? extends C> topicFilter();
+        MqttTopicFilterBuilder.@NotNull Nested<? extends C> topicFilterWith();
     }
 }

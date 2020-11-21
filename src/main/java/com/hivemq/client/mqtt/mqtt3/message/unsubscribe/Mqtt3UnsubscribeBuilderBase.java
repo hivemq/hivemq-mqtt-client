@@ -67,7 +67,7 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
      * @see #addTopicFilter(MqttTopicFilter)
      */
     @CheckReturnValue
-    MqttTopicFilterBuilder.@NotNull Nested<? extends C> addTopicFilter();
+    MqttTopicFilterBuilder.@NotNull Nested<? extends C> addTopicFilterWith();
 
     /**
      * Adds {@link MqttTopicFilter Topic Filters} to the {@link Mqtt3Unsubscribe#getTopicFilters() list of Topic
@@ -156,6 +156,6 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
          * @see #addTopicFilter(MqttTopicFilter)
          */
         @CheckReturnValue
-        MqttTopicFilterBuilder.@NotNull Nested<? extends C> topicFilter();
+        MqttTopicFilterBuilder.@NotNull Nested<? extends C> topicFilterWith();
     }
 }

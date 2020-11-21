@@ -62,7 +62,7 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
      * @see #topicFilter(MqttTopicFilter)
      */
     @CheckReturnValue
-    MqttTopicFilterBuilder.@NotNull Nested<? extends C> topicFilter();
+    MqttTopicFilterBuilder.@NotNull Nested<? extends C> topicFilterWith();
 
     /**
      * {@link Mqtt3SubscriptionBuilderBase} that is complete which means all mandatory fields are set.
