@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
-import com.hivemq.client.internal.mqtt.message.MqttCommonReasonCode;
+import com.hivemq.client.internal.mqtt.message.MqttReasonCodes;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,31 +32,31 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
     /**
      * The subscription is deleted.
      */
-    SUCCESS(MqttCommonReasonCode.SUCCESS),
+    SUCCESS(MqttReasonCodes.SUCCESS),
     /**
      * No matching topic filter is being used by the client.
      */
-    NO_SUBSCRIPTIONS_EXISTED(0x11),
+    NO_SUBSCRIPTIONS_EXISTED(MqttReasonCodes.NO_SUBSCRIPTIONS_EXISTED),
     /**
      * The server either does not want to reveal the reason for the failure or none of the other reason codes apply.
      */
-    UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    UNSPECIFIED_ERROR(MqttReasonCodes.UNSPECIFIED_ERROR),
     /**
      * The UNSUBSCRIBE packet is valid but is not accepted by the server.
      */
-    IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(MqttReasonCodes.IMPLEMENTATION_SPECIFIC_ERROR),
     /**
      * The client is not authorized to unsubscribe.
      */
-    NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    NOT_AUTHORIZED(MqttReasonCodes.NOT_AUTHORIZED),
     /**
      * The topic filter is formed correctly but is not accepted by the server (for this client).
      */
-    TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
+    TOPIC_FILTER_INVALID(MqttReasonCodes.TOPIC_FILTER_INVALID),
     /**
      * The specified packet identifier is already in use.
      */
-    PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE);
+    PACKET_IDENTIFIER_IN_USE(MqttReasonCodes.PACKET_IDENTIFIER_IN_USE);
 
     private static final @NotNull Mqtt5UnsubAckReasonCode @NotNull [] VALUES = values();
 
@@ -64,10 +64,6 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
 
     Mqtt5UnsubAckReasonCode(final int code) {
         this.code = code;
-    }
-
-    Mqtt5UnsubAckReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
-        this(reasonCode.getCode());
     }
 
     @Override

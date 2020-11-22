@@ -16,9 +16,8 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.auth;
 
-import com.hivemq.client.internal.mqtt.message.MqttCommonReasonCode;
+import com.hivemq.client.internal.mqtt.message.MqttReasonCodes;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5ReasonCode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -32,24 +31,20 @@ public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
     /**
      * Authentication is successful.
      */
-    SUCCESS(MqttCommonReasonCode.SUCCESS),
+    SUCCESS(MqttReasonCodes.SUCCESS),
     /**
      * Continue the authentication with another step.
      */
-    CONTINUE_AUTHENTICATION(0x18),
+    CONTINUE_AUTHENTICATION(MqttReasonCodes.CONTINUE_AUTHENTICATION),
     /**
      * Initiate a re-authentication.
      */
-    REAUTHENTICATE(0x19);
+    REAUTHENTICATE(MqttReasonCodes.REAUTHENTICATE);
 
     private final int code;
 
     Mqtt5AuthReasonCode(final int code) {
         this.code = code;
-    }
-
-    Mqtt5AuthReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
-        this(reasonCode.getCode());
     }
 
     @Override

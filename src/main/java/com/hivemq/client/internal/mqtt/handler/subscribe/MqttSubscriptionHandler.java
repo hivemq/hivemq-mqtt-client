@@ -28,7 +28,7 @@ import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttGlobalIncomi
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttIncomingPublishFlows;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlow;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
-import com.hivemq.client.internal.mqtt.message.MqttCommonReasonCode;
+import com.hivemq.client.internal.mqtt.message.MqttReasonCodes;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
@@ -243,7 +243,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         final boolean countNotMatching = subscribeWithFlow.subscribe.getSubscriptions().size() != reasonCodes.size();
-        final boolean allErrors = MqttCommonReasonCode.allErrors(subAck.getReasonCodes());
+        final boolean allErrors = MqttReasonCodes.allErrors(subAck.getReasonCodes());
 
         incomingPublishFlows.subAck(subscribeWithFlow.subscribe, subscribeWithFlow.subscriptionIdentifier, reasonCodes);
 
@@ -290,7 +290,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
         final boolean countNotMatching = unsubscribeWithFlow.unsubscribe.getTopicFilters().size() != reasonCodes.size();
-        final boolean allErrors = MqttCommonReasonCode.allErrors(unsubAck.getReasonCodes());
+        final boolean allErrors = MqttReasonCodes.allErrors(unsubAck.getReasonCodes());
 
         if ((reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS) || !(countNotMatching || allErrors)) {
 
