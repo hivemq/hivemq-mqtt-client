@@ -16,6 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
+import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,8 @@ class Mqtt3DisconnectExceptionTest {
 
     @Test
     void constructor() {
-        final Mqtt3DisconnectException exception = new Mqtt3DisconnectException(null, null);
+        final Mqtt3DisconnectException exception =
+                new Mqtt3DisconnectException(Mqtt3DisconnectView.INSTANCE, null, null);
         assertNull(exception.getMessage());
         assertNull(exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -37,7 +39,8 @@ class Mqtt3DisconnectExceptionTest {
 
     @Test
     void constructor_message() {
-        final Mqtt3DisconnectException exception = new Mqtt3DisconnectException("message", null);
+        final Mqtt3DisconnectException exception =
+                new Mqtt3DisconnectException(Mqtt3DisconnectView.INSTANCE, "message", null);
         assertEquals("message", exception.getMessage());
         assertNull(exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -47,7 +50,8 @@ class Mqtt3DisconnectExceptionTest {
     @Test
     void constructor_cause() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3DisconnectException exception = new Mqtt3DisconnectException(null, cause);
+        final Mqtt3DisconnectException exception =
+                new Mqtt3DisconnectException(Mqtt3DisconnectView.INSTANCE, null, cause);
         assertNull(exception.getMessage());
         assertEquals(cause, exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -57,7 +61,8 @@ class Mqtt3DisconnectExceptionTest {
     @Test
     void constructor_message_cause() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3DisconnectException exception = new Mqtt3DisconnectException("message", cause);
+        final Mqtt3DisconnectException exception =
+                new Mqtt3DisconnectException(Mqtt3DisconnectView.INSTANCE, "message", cause);
         assertEquals("message", exception.getMessage());
         assertEquals(cause, exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -67,7 +72,8 @@ class Mqtt3DisconnectExceptionTest {
     @Test
     void noStackTrace() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3DisconnectException exception = new Mqtt3DisconnectException("message", cause);
+        final Mqtt3DisconnectException exception =
+                new Mqtt3DisconnectException(Mqtt3DisconnectView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt3DisconnectException thrownException =
                 assertThrows(Mqtt3DisconnectException.class, () -> { throw exception; });
@@ -77,7 +83,8 @@ class Mqtt3DisconnectExceptionTest {
     @Test
     void fillInStackTrace_newStackTrace() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3DisconnectException exception = new Mqtt3DisconnectException("message", cause);
+        final Mqtt3DisconnectException exception =
+                new Mqtt3DisconnectException(Mqtt3DisconnectView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
         assertTrue(filledException instanceof Mqtt3DisconnectException);

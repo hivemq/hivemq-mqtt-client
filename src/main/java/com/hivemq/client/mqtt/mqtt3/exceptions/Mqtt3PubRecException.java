@@ -16,7 +16,6 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
-import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubRecView;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PubRec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,12 +26,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Mqtt3PubRecException extends Mqtt3MessageException {
 
-    public Mqtt3PubRecException(final @Nullable String message, final @Nullable Throwable cause) {
+    private final @NotNull Mqtt3PubRec pubRec;
+
+    public Mqtt3PubRecException(
+            final @NotNull Mqtt3PubRec pubRec, final @Nullable String message, final @Nullable Throwable cause) {
+
         super(message, cause);
+        this.pubRec = pubRec;
     }
 
     private Mqtt3PubRecException(final @NotNull Mqtt3PubRecException e) {
         super(e);
+        pubRec = e.pubRec;
     }
 
     @Override
@@ -42,6 +47,6 @@ public class Mqtt3PubRecException extends Mqtt3MessageException {
 
     @Override
     public @NotNull Mqtt3PubRec getMqttMessage() {
-        return Mqtt3PubRecView.INSTANCE;
+        return pubRec;
     }
 }
