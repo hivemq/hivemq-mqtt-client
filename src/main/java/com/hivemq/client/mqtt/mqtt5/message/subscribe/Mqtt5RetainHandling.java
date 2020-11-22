@@ -16,6 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -39,6 +40,8 @@ public enum Mqtt5RetainHandling {
      */
     DO_NOT_SEND;
 
+    private static final @NotNull Mqtt5RetainHandling @NotNull [] VALUES = values();
+
     /**
      * @return the byte code of this Retain Handling.
      */
@@ -53,13 +56,9 @@ public enum Mqtt5RetainHandling {
      * @return the Retain Handling belonging to the byte code or null if the byte code is not a valid Retain Handling.
      */
     public static @Nullable Mqtt5RetainHandling fromCode(final int code) {
-        if (code == SEND.getCode()) {
-            return SEND;
-        } else if (code == SEND_IF_NEW_SUBSCRIPTION.getCode()) {
-            return SEND_IF_NEW_SUBSCRIPTION;
-        } else if (code == DO_NOT_SEND.getCode()) {
-            return DO_NOT_SEND;
+        if (code < 0 || code >= VALUES.length) {
+            return null;
         }
-        return null;
+        return VALUES[code];
     }
 }
