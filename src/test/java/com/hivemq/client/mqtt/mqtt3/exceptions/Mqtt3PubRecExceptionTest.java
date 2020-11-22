@@ -16,6 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubRecView;
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ class Mqtt3PubRecExceptionTest {
 
     @Test
     void constructor() {
-        final Mqtt3PubRecException exception = new Mqtt3PubRecException(null, null);
+        final Mqtt3PubRecException exception = new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, null, null);
         assertNull(exception.getMessage());
         assertNull(exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -37,7 +38,7 @@ class Mqtt3PubRecExceptionTest {
 
     @Test
     void constructor_message() {
-        final Mqtt3PubRecException exception = new Mqtt3PubRecException("message", null);
+        final Mqtt3PubRecException exception = new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, "message", null);
         assertEquals("message", exception.getMessage());
         assertNull(exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -47,7 +48,7 @@ class Mqtt3PubRecExceptionTest {
     @Test
     void constructor_cause() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3PubRecException exception = new Mqtt3PubRecException(null, cause);
+        final Mqtt3PubRecException exception = new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, null, cause);
         assertNull(exception.getMessage());
         assertEquals(cause, exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -57,7 +58,7 @@ class Mqtt3PubRecExceptionTest {
     @Test
     void constructor_message_cause() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3PubRecException exception = new Mqtt3PubRecException("message", cause);
+        final Mqtt3PubRecException exception = new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, "message", cause);
         assertEquals("message", exception.getMessage());
         assertEquals(cause, exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -67,7 +68,7 @@ class Mqtt3PubRecExceptionTest {
     @Test
     void noStackTrace() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3PubRecException exception = new Mqtt3PubRecException("message", cause);
+        final Mqtt3PubRecException exception = new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt3PubRecException thrownException =
                 assertThrows(Mqtt3PubRecException.class, () -> { throw exception; });
@@ -77,7 +78,7 @@ class Mqtt3PubRecExceptionTest {
     @Test
     void fillInStackTrace_newStackTrace() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3PubRecException exception = new Mqtt3PubRecException("message", cause);
+        final Mqtt3PubRecException exception = new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
         assertTrue(filledException instanceof Mqtt3PubRecException);

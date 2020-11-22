@@ -16,6 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ class Mqtt3UnsubAckExceptionTest {
 
     @Test
     void constructor() {
-        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException(null, null);
+        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, null, null);
         assertNull(exception.getMessage());
         assertNull(exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -37,7 +38,8 @@ class Mqtt3UnsubAckExceptionTest {
 
     @Test
     void constructor_message() {
-        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException("message", null);
+        final Mqtt3UnsubAckException exception =
+                new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, "message", null);
         assertEquals("message", exception.getMessage());
         assertNull(exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -47,7 +49,7 @@ class Mqtt3UnsubAckExceptionTest {
     @Test
     void constructor_cause() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException(null, cause);
+        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, null, cause);
         assertNull(exception.getMessage());
         assertEquals(cause, exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -57,7 +59,8 @@ class Mqtt3UnsubAckExceptionTest {
     @Test
     void constructor_message_cause() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException("message", cause);
+        final Mqtt3UnsubAckException exception =
+                new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, "message", cause);
         assertEquals("message", exception.getMessage());
         assertEquals(cause, exception.getCause());
         assertNotNull(exception.getMqttMessage());
@@ -67,7 +70,8 @@ class Mqtt3UnsubAckExceptionTest {
     @Test
     void noStackTrace() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException("message", cause);
+        final Mqtt3UnsubAckException exception =
+                new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt3UnsubAckException thrownException =
                 assertThrows(Mqtt3UnsubAckException.class, () -> { throw exception; });
@@ -77,7 +81,8 @@ class Mqtt3UnsubAckExceptionTest {
     @Test
     void fillInStackTrace_newStackTrace() {
         final RuntimeException cause = new RuntimeException("cause");
-        final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException("message", cause);
+        final Mqtt3UnsubAckException exception =
+                new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
         assertTrue(filledException instanceof Mqtt3UnsubAckException);

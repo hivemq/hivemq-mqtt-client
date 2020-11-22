@@ -16,7 +16,6 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
-import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,12 +26,20 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Mqtt3DisconnectException extends Mqtt3MessageException {
 
-    public Mqtt3DisconnectException(final @Nullable String message, final @Nullable Throwable cause) {
+    private final @NotNull Mqtt3Disconnect disconnect;
+
+    public Mqtt3DisconnectException(
+            final @NotNull Mqtt3Disconnect disconnect,
+            final @Nullable String message,
+            final @Nullable Throwable cause) {
+
         super(message, cause);
+        this.disconnect = disconnect;
     }
 
     private Mqtt3DisconnectException(final @NotNull Mqtt3DisconnectException e) {
         super(e);
+        disconnect = e.disconnect;
     }
 
     @Override
@@ -42,6 +49,6 @@ public class Mqtt3DisconnectException extends Mqtt3MessageException {
 
     @Override
     public @NotNull Mqtt3Disconnect getMqttMessage() {
-        return Mqtt3DisconnectView.INSTANCE;
+        return disconnect;
     }
 }

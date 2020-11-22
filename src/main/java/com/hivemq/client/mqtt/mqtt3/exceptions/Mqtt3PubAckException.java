@@ -16,7 +16,6 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
-import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubAckView;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PubAck;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,12 +26,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Mqtt3PubAckException extends Mqtt3MessageException {
 
-    public Mqtt3PubAckException(final @Nullable String message, final @Nullable Throwable cause) {
+    private final @NotNull Mqtt3PubAck pubAck;
+
+    public Mqtt3PubAckException(
+            final @NotNull Mqtt3PubAck pubAck, final @Nullable String message, final @Nullable Throwable cause) {
+
         super(message, cause);
+        this.pubAck = pubAck;
     }
 
     private Mqtt3PubAckException(final @NotNull Mqtt3PubAckException e) {
         super(e);
+        pubAck = e.pubAck;
     }
 
     @Override
@@ -42,6 +47,6 @@ public class Mqtt3PubAckException extends Mqtt3MessageException {
 
     @Override
     public @NotNull Mqtt3PubAck getMqttMessage() {
-        return Mqtt3PubAckView.INSTANCE;
+        return pubAck;
     }
 }

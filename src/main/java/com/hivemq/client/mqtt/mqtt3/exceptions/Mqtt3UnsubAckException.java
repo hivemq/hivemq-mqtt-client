@@ -16,7 +16,6 @@
 
 package com.hivemq.client.mqtt.mqtt3.exceptions;
 
-import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,12 +26,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Mqtt3UnsubAckException extends Mqtt3MessageException {
 
-    public Mqtt3UnsubAckException(final @Nullable String message, final @Nullable Throwable cause) {
+    private final @NotNull Mqtt3UnsubAck unsubAck;
+
+    public Mqtt3UnsubAckException(
+            final @NotNull Mqtt3UnsubAck unsubAck, final @Nullable String message, final @Nullable Throwable cause) {
+
         super(message, cause);
+        this.unsubAck = unsubAck;
     }
 
     private Mqtt3UnsubAckException(final @NotNull Mqtt3UnsubAckException e) {
         super(e);
+        unsubAck = e.unsubAck;
     }
 
     @Override
@@ -42,6 +47,6 @@ public class Mqtt3UnsubAckException extends Mqtt3MessageException {
 
     @Override
     public @NotNull Mqtt3UnsubAck getMqttMessage() {
-        return Mqtt3UnsubAckView.INSTANCE;
+        return unsubAck;
     }
 }

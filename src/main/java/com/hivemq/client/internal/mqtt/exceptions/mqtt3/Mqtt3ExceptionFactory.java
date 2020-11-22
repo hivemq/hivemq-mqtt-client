@@ -18,8 +18,12 @@ package com.hivemq.client.internal.mqtt.exceptions.mqtt3;
 
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnAckView;
+import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubAckView;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PubRecView;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubAck;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubAckView;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException;
 import com.hivemq.client.mqtt.mqtt3.exceptions.*;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -73,15 +77,15 @@ public final class Mqtt3ExceptionFactory {
             case CONNACK:
                 return new Mqtt3ConnAckException(Mqtt3ConnAckView.of((MqttConnAck) mqttMessage), message, cause);
             case DISCONNECT:
-                return new Mqtt3DisconnectException(message, cause);
+                return new Mqtt3DisconnectException(Mqtt3DisconnectView.INSTANCE, message, cause);
             case PUBACK:
-                return new Mqtt3PubAckException(message, cause);
+                return new Mqtt3PubAckException(Mqtt3PubAckView.INSTANCE, message, cause);
             case PUBREC:
-                return new Mqtt3PubRecException(message, cause);
+                return new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, message, cause);
             case SUBACK:
                 return new Mqtt3SubAckException(Mqtt3SubAckView.of((MqttSubAck) mqttMessage), message, cause);
             case UNSUBACK:
-                return new Mqtt3UnsubAckException(message, cause);
+                return new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, message, cause);
             default:
                 throw new IllegalStateException();
         }
