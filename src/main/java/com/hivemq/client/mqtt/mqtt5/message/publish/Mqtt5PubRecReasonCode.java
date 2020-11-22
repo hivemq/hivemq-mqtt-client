@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
-import com.hivemq.client.internal.mqtt.message.MqttCommonReasonCode;
+import com.hivemq.client.internal.mqtt.message.MqttReasonCodes;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,40 +34,40 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
     /**
      * The message is accepted. Publication of the QoS 2 message proceeds.
      */
-    SUCCESS(MqttCommonReasonCode.SUCCESS),
+    SUCCESS(MqttReasonCodes.SUCCESS),
     /**
      * The message is accepted but there are no subscribers.
      */
-    NO_MATCHING_SUBSCRIBERS(MqttCommonReasonCode.NO_MATCHING_SUBSCRIBERS),
+    NO_MATCHING_SUBSCRIBERS(MqttReasonCodes.NO_MATCHING_SUBSCRIBERS),
     /**
      * The receiver either does not want to reveal the reason for the failure or none of the other reason codes apply.
      */
-    UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    UNSPECIFIED_ERROR(MqttReasonCodes.UNSPECIFIED_ERROR),
     /**
      * The PUBLISH packet is valid but is not accepted by the receiver.
      */
-    IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(MqttReasonCodes.IMPLEMENTATION_SPECIFIC_ERROR),
     /**
      * The sender is not authorized to make the publication.
      */
-    NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    NOT_AUTHORIZED(MqttReasonCodes.NOT_AUTHORIZED),
     /**
      * The topic name is formed correctly but is not accepted by the receiver.
      */
-    TOPIC_NAME_INVALID(MqttCommonReasonCode.TOPIC_NAME_INVALID),
+    TOPIC_NAME_INVALID(MqttReasonCodes.TOPIC_NAME_INVALID),
     /**
      * The packet identifier is already in use. This might indicate a mismatch between the session state on the client
      * and server.
      */
-    PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE),
+    PACKET_IDENTIFIER_IN_USE(MqttReasonCodes.PACKET_IDENTIFIER_IN_USE),
     /**
      * An implementation or administrative imposed limit has been exceeded.
      */
-    QUOTA_EXCEEDED(MqttCommonReasonCode.QUOTA_EXCEEDED),
+    QUOTA_EXCEEDED(MqttReasonCodes.QUOTA_EXCEEDED),
     /**
      * The payload does not match the specified payload format indicator.
      */
-    PAYLOAD_FORMAT_INVALID(MqttCommonReasonCode.PAYLOAD_FORMAT_INVALID);
+    PAYLOAD_FORMAT_INVALID(MqttReasonCodes.PAYLOAD_FORMAT_INVALID);
 
     private static final @NotNull Mqtt5PubRecReasonCode @NotNull [] VALUES = values();
 
@@ -75,10 +75,6 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
 
     Mqtt5PubRecReasonCode(final int code) {
         this.code = code;
-    }
-
-    Mqtt5PubRecReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
-        this(reasonCode.getCode());
     }
 
     @Override

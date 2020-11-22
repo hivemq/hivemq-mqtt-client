@@ -16,9 +16,8 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.publish;
 
-import com.hivemq.client.internal.mqtt.message.MqttCommonReasonCode;
+import com.hivemq.client.internal.mqtt.message.MqttReasonCodes;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5ReasonCode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -32,21 +31,17 @@ public enum Mqtt5PubRelReasonCode implements Mqtt5ReasonCode {
     /**
      * Message released.
      */
-    SUCCESS(MqttCommonReasonCode.SUCCESS),
+    SUCCESS(MqttReasonCodes.SUCCESS),
     /**
      * The packet identifier is not known. This is not an error during recovery, but at other times indicates a mismatch
      * between the session state on the client and server.
      */
-    PACKET_IDENTIFIER_NOT_FOUND(MqttCommonReasonCode.PACKET_IDENTIFIER_NOT_FOUND);
+    PACKET_IDENTIFIER_NOT_FOUND(MqttReasonCodes.PACKET_IDENTIFIER_NOT_FOUND);
 
     private final int code;
 
     Mqtt5PubRelReasonCode(final int code) {
         this.code = code;
-    }
-
-    Mqtt5PubRelReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
-        this(reasonCode.getCode());
     }
 
     @Override

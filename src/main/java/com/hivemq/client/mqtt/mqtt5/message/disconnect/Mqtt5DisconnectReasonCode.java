@@ -16,7 +16,7 @@
 
 package com.hivemq.client.mqtt.mqtt5.message.disconnect;
 
-import com.hivemq.client.internal.mqtt.message.MqttCommonReasonCode;
+import com.hivemq.client.internal.mqtt.message.MqttReasonCodes;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,136 +34,132 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
     /**
      * Disconnect normally. The server must not publish the Will message.
      */
-    NORMAL_DISCONNECTION(0x00),
+    NORMAL_DISCONNECTION(MqttReasonCodes.SUCCESS),
     /**
      * Disconnect normally. The server must also publish the Will message.
      */
-    DISCONNECT_WITH_WILL_MESSAGE(0x04),
+    DISCONNECT_WITH_WILL_MESSAGE(MqttReasonCodes.DISCONNECT_WITH_WILL_MESSAGE),
     /**
      * The sender either does not want to reveal the reason for the disconnect or none of the other reason codes apply.
      */
-    UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    UNSPECIFIED_ERROR(MqttReasonCodes.UNSPECIFIED_ERROR),
     /**
      * A packet could not be parsed correctly according to the MQTT specification.
      */
-    MALFORMED_PACKET(MqttCommonReasonCode.MALFORMED_PACKET),
+    MALFORMED_PACKET(MqttReasonCodes.MALFORMED_PACKET),
     /**
      * A packet contained data that is not allowed by the MQTT protocol or is inconsistent with the state of the
      * receiver.
      */
-    PROTOCOL_ERROR(MqttCommonReasonCode.PROTOCOL_ERROR),
+    PROTOCOL_ERROR(MqttReasonCodes.PROTOCOL_ERROR),
     /**
      * A packet is valid but can not be processed by the implementation of the receiver.
      */
-    IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(MqttReasonCodes.IMPLEMENTATION_SPECIFIC_ERROR),
     /**
      * The client is not authorized to perform a request.
      */
-    NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    NOT_AUTHORIZED(MqttReasonCodes.NOT_AUTHORIZED),
     /**
      * The server is busy and can not continue processing requests from the client.
      */
-    SERVER_BUSY(MqttCommonReasonCode.SERVER_BUSY),
+    SERVER_BUSY(MqttReasonCodes.SERVER_BUSY),
     /**
      * The server is shutting down.
      */
-    SERVER_SHUTTING_DOWN(0x8B),
+    SERVER_SHUTTING_DOWN(MqttReasonCodes.SERVER_SHUTTING_DOWN),
     /**
      * The authentication method is not supported or does not match the authentication method currently in use.
      */
-    BAD_AUTHENTICATION_METHOD(MqttCommonReasonCode.BAD_AUTHENTICATION_METHOD),
+    BAD_AUTHENTICATION_METHOD(MqttReasonCodes.BAD_AUTHENTICATION_METHOD),
     /**
      * The connection is closed because no packet has been received for 1.5 times the keep alive time.
      */
-    KEEP_ALIVE_TIMEOUT(0x8D),
+    KEEP_ALIVE_TIMEOUT(MqttReasonCodes.KEEP_ALIVE_TIMEOUT),
     /**
      * Another client using the same client identifier has connected.
      */
-    SESSION_TAKEN_OVER(0x8E),
+    SESSION_TAKEN_OVER(MqttReasonCodes.SESSION_TAKEN_OVER),
     /**
      * A packet contained a topic filter that is formed correctly but is not accepted by the server.
      */
-    TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
+    TOPIC_FILTER_INVALID(MqttReasonCodes.TOPIC_FILTER_INVALID),
     /**
      * A packet contained a topic name that is formed correctly but is not accepted by the receiver.
      */
-    TOPIC_NAME_INVALID(MqttCommonReasonCode.TOPIC_NAME_INVALID),
+    TOPIC_NAME_INVALID(MqttReasonCodes.TOPIC_NAME_INVALID),
     /**
      * The receiver has received more publications for which it has not sent PUBACK or PUBCOMP than allowed by the
      * receive maximum it sent in the CONNECT or CONNACK packet.
      */
-    RECEIVE_MAXIMUM_EXCEEDED(0x93),
+    RECEIVE_MAXIMUM_EXCEEDED(MqttReasonCodes.RECEIVE_MAXIMUM_EXCEEDED),
     /**
      * The receiver has received a PUBLISH packet containing a topic alias which is greater than the maximum topic alias
      * it sent in the CONNECT or CONNACK packet.
      */
-    TOPIC_ALIAS_INVALID(0x94),
+    TOPIC_ALIAS_INVALID(MqttReasonCodes.TOPIC_ALIAS_INVALID),
     /**
      * The receiver has received a packet with a greater size than allowed by the maximum packet size it sent in the
      * CONNECT or CONNACK packet.
      */
-    PACKET_TOO_LARGE(MqttCommonReasonCode.PACKET_TOO_LARGE),
+    PACKET_TOO_LARGE(MqttReasonCodes.PACKET_TOO_LARGE),
     /**
      * The received data rate is too high.
      */
-    MESSAGE_RATE_TOO_HIGH(0x96),
+    MESSAGE_RATE_TOO_HIGH(MqttReasonCodes.MESSAGE_RATE_TOO_HIGH),
     /**
      * An implementation or administrative imposed limit has been exceeded.
      */
-    QUOTA_EXCEEDED(MqttCommonReasonCode.QUOTA_EXCEEDED),
+    QUOTA_EXCEEDED(MqttReasonCodes.QUOTA_EXCEEDED),
     /**
      * The connection is closed due to an administrative action.
      */
-    ADMINISTRATIVE_ACTION(0x98),
+    ADMINISTRATIVE_ACTION(MqttReasonCodes.ADMINISTRATIVE_ACTION),
     /**
      * A payload does not match the specified payload format indicator.
      */
-    PAYLOAD_FORMAT_INVALID(MqttCommonReasonCode.PAYLOAD_FORMAT_INVALID),
+    PAYLOAD_FORMAT_INVALID(MqttReasonCodes.PAYLOAD_FORMAT_INVALID),
     /**
      * The server does not support retained messages.
      */
-    RETAIN_NOT_SUPPORTED(MqttCommonReasonCode.RETAIN_NOT_SUPPORTED),
+    RETAIN_NOT_SUPPORTED(MqttReasonCodes.RETAIN_NOT_SUPPORTED),
     /**
      * The client specified a QoS greater than the maximum QoS the server sent in the CONNACK packet.
      */
-    QOS_NOT_SUPPORTED(MqttCommonReasonCode.QOS_NOT_SUPPORTED),
+    QOS_NOT_SUPPORTED(MqttReasonCodes.QOS_NOT_SUPPORTED),
     /**
      * The client should temporarily use another server.
      */
-    USE_ANOTHER_SERVER(MqttCommonReasonCode.USE_ANOTHER_SERVER),
+    USE_ANOTHER_SERVER(MqttReasonCodes.USE_ANOTHER_SERVER),
     /**
      * The client should permanently use another server.
      */
-    SERVER_MOVED(MqttCommonReasonCode.SERVER_MOVED),
+    SERVER_MOVED(MqttReasonCodes.SERVER_MOVED),
     /**
      * The server does not support shared subscriptions.
      */
-    SHARED_SUBSCRIPTIONS_NOT_SUPPORTED(MqttCommonReasonCode.SHARED_SUBSCRIPTIONS_NOT_SUPPORTED),
+    SHARED_SUBSCRIPTIONS_NOT_SUPPORTED(MqttReasonCodes.SHARED_SUBSCRIPTIONS_NOT_SUPPORTED),
     /**
      * The connection is closed because the connection rate is too high.
      */
-    CONNECTION_RATE_EXCEEDED(MqttCommonReasonCode.CONNECTION_RATE_EXCEEDED),
+    CONNECTION_RATE_EXCEEDED(MqttReasonCodes.CONNECTION_RATE_EXCEEDED),
     /**
      * The maximum connection time authorized for this connection has been exceeded.
      */
-    MAXIMUM_CONNECT_TIME(0xA0),
+    MAXIMUM_CONNECT_TIME(MqttReasonCodes.MAXIMUM_CONNECT_TIME),
     /**
      * The server does not support subscription identifiers.
      */
-    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(MqttCommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
+    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(MqttReasonCodes.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
     /**
      * The server does not support wildcard subscriptions.
      */
-    WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED(MqttCommonReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED);
+    WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED(MqttReasonCodes.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED);
 
     private final int code;
 
     Mqtt5DisconnectReasonCode(final int code) {
         this.code = code;
-    }
-
-    Mqtt5DisconnectReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
-        this(reasonCode.getCode());
     }
 
     @Override
