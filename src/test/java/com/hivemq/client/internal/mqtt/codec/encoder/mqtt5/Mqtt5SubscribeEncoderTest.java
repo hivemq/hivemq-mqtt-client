@@ -88,7 +88,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.of("topic/#");
         final MqttQos qos = MqttQos.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
-        final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
+        final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_NEW_SUBSCRIPTION;
         final boolean isRetainAsPublished = true;
         final ImmutableList<MqttSubscription> subscriptions =
                 ImmutableList.of(new MqttSubscription(topicFiler, qos, isNoLocal, retainHandling, isRetainAsPublished));
