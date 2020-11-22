@@ -37,7 +37,7 @@ class Mqtt5RetainHandlingTest {
 
     @Test
     void getCode_sendIfSubscriptionDoesNotExist() {
-        assertEquals(0x01, Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST.getCode());
+        assertEquals(0x01, Mqtt5RetainHandling.SEND_IF_NEW_SUBSCRIPTION.getCode());
     }
 
     @Test

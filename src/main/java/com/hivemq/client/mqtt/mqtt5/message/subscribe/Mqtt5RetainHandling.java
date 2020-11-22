@@ -33,7 +33,7 @@ public enum Mqtt5RetainHandling {
     /**
      * Send retained messages for the current subscription only if the subscription does not currently exist.
      */
-    SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST,
+    SEND_IF_NEW_SUBSCRIPTION,
     /**
      * Do not send retained messages for the current subscription.
      */
@@ -55,8 +55,8 @@ public enum Mqtt5RetainHandling {
     public static @Nullable Mqtt5RetainHandling fromCode(final int code) {
         if (code == SEND.getCode()) {
             return SEND;
-        } else if (code == SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST.getCode()) {
-            return SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
+        } else if (code == SEND_IF_NEW_SUBSCRIPTION.getCode()) {
+            return SEND_IF_NEW_SUBSCRIPTION;
         } else if (code == DO_NOT_SEND.getCode()) {
             return DO_NOT_SEND;
         }
