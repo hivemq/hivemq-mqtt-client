@@ -16,17 +16,14 @@
 
 package com.hivemq.client.mqtt;
 
-import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,42 +48,6 @@ public interface MqttClientConfig {
      * @return the (currently not present) identifier of the client.
      */
     @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
-
-    /**
-     * @return the server address the client connects to.
-     * @since 1.1
-     */
-    default @NotNull InetSocketAddress getServerAddress() {
-        return getTransportConfig().getServerAddress();
-    }
-
-    /**
-     * @return the server host the clients connects to.
-     */
-    default @NotNull String getServerHost() {
-        return getServerAddress().getHostString();
-    }
-
-    /**
-     * @return the server port the client connects to.
-     */
-    default @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getServerPort() {
-        return getServerAddress().getPort();
-    }
-
-    /**
-     * @return the optional transport layer security configuration of the client.
-     */
-    default @NotNull Optional<MqttTlsConfig> getTlsConfig() {
-        return getTransportConfig().getTlsConfig();
-    }
-
-    /**
-     * @return the optional WebSocket configuration of the client.
-     */
-    default @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
-        return getTransportConfig().getWebSocketConfig();
-    }
 
     /**
      * @return the transport configuration of the client.
