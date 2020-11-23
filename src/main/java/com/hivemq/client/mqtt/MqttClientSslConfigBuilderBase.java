@@ -48,7 +48,7 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B keyManagerFactory(@Nullable KeyManagerFactory keyManagerFactory);
 
     /**
-     * Sets the optional user defined {@link MqttClientSslConfig#getTrustManagerFactory() trunst manager factory}.
+     * Sets the optional user defined {@link MqttClientSslConfig#getTrustManagerFactory() trust manager factory}.
      *
      * @param trustManagerFactory the trust manager factory or <code>null</code> to remove any previously set trust
      *                            manager factory
