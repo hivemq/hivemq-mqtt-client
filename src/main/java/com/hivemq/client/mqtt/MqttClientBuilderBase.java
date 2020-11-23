@@ -17,7 +17,6 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttAutoReconnectBuilder;
@@ -26,10 +25,6 @@ import com.hivemq.client.mqtt.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
-
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 
 /**
  * Builder base for an {@link MqttClient}.
@@ -39,7 +34,7 @@ import java.net.InetSocketAddress;
  * @since 1.0
  */
 @ApiStatus.NonExtendable
-public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
+public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> extends MqttTransportConfigBuilderBase<B> {
 
     /**
      * Sets the {@link MqttClientConfig#getClientIdentifier() Client Identifier}.
@@ -58,114 +53,6 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      */
     @CheckReturnValue
     @NotNull B identifier(@NotNull MqttClientIdentifier identifier);
-
-    /**
-     * Sets the {@link MqttClientConfig#getServerAddress() server address} to connect to.
-     *
-     * @param address the server address.
-     * @return the builder
-     * @since 1.1
-     */
-    @CheckReturnValue
-    @NotNull B serverAddress(@NotNull InetSocketAddress address);
-
-    /**
-     * Sets the {@link MqttClientConfig#getServerHost() server host} to connect to.
-     *
-     * @param host the server host.
-     * @return the builder.
-     */
-    @CheckReturnValue
-    @NotNull B serverHost(@NotNull String host);
-
-    /**
-     * Sets the {@link MqttClientConfig#getServerHost() server host} to connect to.
-     *
-     * @param host the server host.
-     * @return the builder.
-     * @since 1.1
-     */
-    @CheckReturnValue
-    @NotNull B serverHost(@NotNull InetAddress host);
-
-    /**
-     * Sets the {@link MqttClientConfig#getServerPort() server port} to connect to.
-     *
-     * @param port the server port.
-     * @return the builder.
-     */
-    @CheckReturnValue
-    @NotNull B serverPort(@Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int port);
-
-    /**
-     * Sets the {@link MqttClientConfig#getTlsConfig() transport layer security configuration} to the default
-     * configuration.
-     * <p>
-     * This means that the systems default trust store, ciphers and protocols are used.
-     *
-     * @return the builder.
-     * @since 1.1
-     */
-    @CheckReturnValue
-    @NotNull B tls();
-
-    /**
-     * Sets the optional {@link MqttClientConfig#getTlsConfig() transport layer security configuration}.
-     *
-     * @param tlsConfig the transport layer security configuration or <code>null</code> to remove any previously set
-     *                  transport layer security configuration.
-     * @return the builder.
-     * @since 1.1
-     */
-    @CheckReturnValue
-    @NotNull B tlsConfig(@Nullable MqttTlsConfig tlsConfig);
-
-    /**
-     * Fluent counterpart of {@link #tlsConfig(MqttTlsConfig)}.
-     * <p>
-     * Calling {@link MqttTlsConfigBuilder.Nested#applyTlsConfig()} on the returned builder has the effect of extending
-     * the current transport layer security configuration.
-     *
-     * @return the fluent builder for the transport layer security configuration.
-     * @see #tlsConfig(MqttTlsConfig)
-     * @since 1.1
-     */
-    @CheckReturnValue
-    MqttTlsConfigBuilder.@NotNull Nested<? extends B> tlsConfigWith();
-
-    /**
-     * Sets the {@link MqttClientConfig#getWebSocketConfig() WebSocket transport configuration} to the default
-     * configuration.
-     *
-     * @return the builder.
-     * @since 1.1
-     */
-    @CheckReturnValue
-    @NotNull B webSocket();
-
-    /**
-     * Sets the optional {@link MqttClientConfig#getWebSocketConfig() WebSocket transport configuration}.
-     *
-     * @param webSocketConfig the WebSocket transport configuration or <code>null</code> to remove any previously set
-     *                        WebSocket transport configuration.
-     * @return the builder.
-     * @since 1.1
-     */
-    @CheckReturnValue
-    @NotNull B webSocketConfig(@Nullable MqttWebSocketConfig webSocketConfig);
-
-    /**
-     * Fluent counterpart of {@link #webSocketConfig(MqttWebSocketConfig)}.
-     * <p>
-     * Calling {@link MqttWebSocketConfigBuilder.Nested#applyWebSocketConfig()} on the returned builder has the effect
-     * of extending the current WebSocket transport configuration.
-     *
-     * @return the fluent builder for the WebSocket configuration.
-     * @see #webSocketConfig(MqttWebSocketConfig)
-     * @since 1.1
-     */
-    @CheckReturnValue
-    MqttWebSocketConfigBuilder.@NotNull Nested<? extends B> webSocketConfigWith();
 
     /**
      * Sets the {@link MqttClientConfig#getTransportConfig() transport configuration}.
