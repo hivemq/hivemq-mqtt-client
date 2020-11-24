@@ -30,6 +30,7 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
@@ -43,6 +44,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
@@ -206,22 +208,22 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<Void> unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
+    public @NotNull CompletableFuture<Mqtt3UnsubAck> unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
 
-        final CompletableFuture<Void> future = new CompletableFuture<>();
+        final CompletableFuture<Mqtt3UnsubAck> future = new CompletableFuture<>();
         delegate.unsubscribe(mqttUnsubscribe).whenComplete((unsubAck, throwable) -> {
             if (throwable != null) {
                 future.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
             } else {
-                future.complete(null);
+                future.complete(Mqtt3UnsubAckView.INSTANCE);
             }
         });
         return future;
     }
 
     @Override
-    public Mqtt3UnsubscribeViewBuilder.@NotNull Send<CompletableFuture<Void>> unsubscribeWith() {
+    public Mqtt3UnsubscribeViewBuilder.@NotNull Send<CompletableFuture<Mqtt3UnsubAck>> unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.Send<>(this::unsubscribe);
     }
 
