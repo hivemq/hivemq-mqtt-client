@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -153,25 +152,6 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         @Override
         public @NotNull P send() {
             return parentConsumer.apply(build());
-        }
-    }
-
-    public static class SendVoid extends Base<SendVoid> implements Mqtt3PublishBuilder.SendVoid.Complete {
-
-        private final @NotNull Consumer<? super Mqtt3PublishView> parentConsumer;
-
-        public SendVoid(final @NotNull Consumer<? super Mqtt3PublishView> parentConsumer) {
-            this.parentConsumer = parentConsumer;
-        }
-
-        @Override
-        protected @NotNull SendVoid self() {
-            return this;
-        }
-
-        @Override
-        public void send() {
-            parentConsumer.accept(build());
         }
     }
 

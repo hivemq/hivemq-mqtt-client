@@ -23,6 +23,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
@@ -143,20 +144,22 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * Publishes the given Publish message.
      *
      * @param publish the Publish message sent to the broker.
+     * @return the {@link Mqtt3PublishResult} if the Publish message was successfully published ({@link
+     *         Mqtt3PublishResult#getError()} will always be absent).
      */
-    void publish(@NotNull Mqtt3Publish publish);
+    @NotNull Mqtt3PublishResult publish(@NotNull Mqtt3Publish publish);
 
     /**
      * Fluent counterpart of {@link #publish(Mqtt3Publish)}.
      * <p>
-     * Calling {@link Mqtt3PublishBuilder.SendVoid.Complete#send()} on the returned builder has the same effect as
-     * calling {@link #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder.Complete#build()}.
+     * Calling {@link Mqtt3PublishBuilder.Send.Complete#send()} on the returned builder has the same effect as calling
+     * {@link #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt3Publish)
      */
     @CheckReturnValue
-    Mqtt3PublishBuilder.@NotNull SendVoid publishWith();
+    Mqtt3PublishBuilder.@NotNull Send<Mqtt3PublishResult> publishWith();
 
     /**
      * Disconnects this client with the given Disconnect message.
