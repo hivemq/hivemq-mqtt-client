@@ -26,6 +26,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilderBase;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.jetbrains.annotations.ApiStatus;
@@ -265,12 +266,12 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param unsubscribe the Unsubscribe message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *           <li>completes normally when the corresponding UnsubAck message was received or
+     *           <li>completes normally with the UnsubAck message or
      *           <li>completes exceptionally if an error occurred before the Unsubscribe message was sent or before a
      *             UnsubAck message was received.
      *         </ul>
      */
-    @NotNull CompletableFuture<Void> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    @NotNull CompletableFuture<Mqtt3UnsubAck> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
@@ -282,7 +283,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    Mqtt3UnsubscribeBuilder.Send.@NotNull Start<CompletableFuture<Void>> unsubscribeWith();
+    Mqtt3UnsubscribeBuilder.Send.@NotNull Start<CompletableFuture<Mqtt3UnsubAck>> unsubscribeWith();
 
     /**
      * Publishes the given Publish message.
