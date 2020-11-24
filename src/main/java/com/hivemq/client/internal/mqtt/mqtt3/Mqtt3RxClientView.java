@@ -30,6 +30,7 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
@@ -41,11 +42,13 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
+import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client.rx.FlowableWithSingle;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -70,6 +73,9 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
             e -> Single.error(Mqtt3ExceptionFactory.map(e));
 
     private static final @NotNull Function<Throwable, Single<Mqtt5SubAck>> EXCEPTION_MAPPER_SINGLE_SUBACK =
+            e -> Single.error(Mqtt3ExceptionFactory.map(e));
+
+    private static final @NotNull Function<Throwable, Single<Mqtt5UnsubAck>> EXCEPTION_MAPPER_SINGLE_UNSUBACK =
             e -> Single.error(Mqtt3ExceptionFactory.map(e));
 
     private static final @NotNull Function<Throwable, Flowable<Mqtt5Publish>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH =
@@ -159,14 +165,16 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Completable unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
+    public @NotNull Single<Mqtt3UnsubAck> unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
 
-        return delegate.unsubscribe(mqttUnsubscribe).ignoreElement().onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
+        return delegate.unsubscribe(mqttUnsubscribe)
+                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_UNSUBACK)
+                .map(Mqtt3UnsubAckView.MAPPER);
     }
 
     @Override
-    public Mqtt3UnsubscribeViewBuilder.@NotNull Nested<Completable> unsubscribeWith() {
+    public Mqtt3UnsubscribeViewBuilder.@NotNull Nested<Single<Mqtt3UnsubAck>> unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
     }
 
