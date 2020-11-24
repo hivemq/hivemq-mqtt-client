@@ -26,6 +26,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.jetbrains.annotations.ApiStatus;
@@ -122,20 +123,21 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * Unsubscribes this client with the given Unsubscribe message.
      *
      * @param unsubscribe the Unsubscribe message sent to the broker.
+     * @return the UnsubAck message.
      */
-    void unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    @NotNull Mqtt3UnsubAck unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
-     * Calling {@link Mqtt3UnsubscribeBuilder.SendVoid.Complete#send()} on the returned builder has the same effect as
+     * Calling {@link Mqtt3UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
      * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    Mqtt3UnsubscribeBuilder.SendVoid.@NotNull Start unsubscribeWith();
+    Mqtt3UnsubscribeBuilder.Send.@NotNull Start<Mqtt3UnsubAck> unsubscribeWith();
 
     /**
      * Publishes the given Publish message.

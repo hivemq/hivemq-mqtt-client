@@ -30,6 +30,7 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubAckView;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
@@ -43,6 +44,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -115,18 +117,19 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public void unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
+    public @NotNull Mqtt3UnsubAck unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
         try {
             delegate.unsubscribe(mqttUnsubscribe);
+            return Mqtt3UnsubAckView.INSTANCE;
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
     }
 
     @Override
-    public Mqtt3UnsubscribeViewBuilder.@NotNull SendVoid unsubscribeWith() {
-        return new Mqtt3UnsubscribeViewBuilder.SendVoid(this::unsubscribe);
+    public Mqtt3UnsubscribeViewBuilder.@NotNull Send<Mqtt3UnsubAck> unsubscribeWith() {
+        return new Mqtt3UnsubscribeViewBuilder.Send<>(this::unsubscribe);
     }
 
     @Override

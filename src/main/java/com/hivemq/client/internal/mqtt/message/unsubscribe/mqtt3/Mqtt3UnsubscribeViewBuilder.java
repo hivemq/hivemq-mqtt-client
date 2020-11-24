@@ -29,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -172,26 +171,6 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         @Override
         public @NotNull P send() {
             return parentConsumer.apply(build());
-        }
-    }
-
-    public static class SendVoid extends Mqtt3UnsubscribeViewBuilder<SendVoid>
-            implements Mqtt3UnsubscribeBuilder.SendVoid.Complete, Mqtt3UnsubscribeBuilder.SendVoid.Start {
-
-        private final @NotNull Consumer<? super Mqtt3UnsubscribeView> parentConsumer;
-
-        public SendVoid(final @NotNull Consumer<? super Mqtt3UnsubscribeView> parentConsumer) {
-            this.parentConsumer = parentConsumer;
-        }
-
-        @Override
-        @NotNull SendVoid self() {
-            return this;
-        }
-
-        @Override
-        public void send() {
-            parentConsumer.accept(build());
         }
     }
 }
