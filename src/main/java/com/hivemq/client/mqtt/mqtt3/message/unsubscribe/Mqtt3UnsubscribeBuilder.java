@@ -119,31 +119,4 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
         @ApiStatus.NonExtendable
         interface Start<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase.Start<Send.Complete<P>> {}
     }
-
-    /**
-     * Builder for a {@link Mqtt3Unsubscribe} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client}
-     * which then sends the Unsubscribe message without returning a result.
-     */
-    @ApiStatus.NonExtendable
-    interface SendVoid extends Mqtt3UnsubscribeBuilderBase<SendVoid.Complete> {
-
-        /**
-         * {@link SendVoid} that is complete which means all mandatory fields are set.
-         */
-        @ApiStatus.NonExtendable
-        interface Complete extends SendVoid, Mqtt3UnsubscribeBuilderBase.Complete<SendVoid.Complete> {
-
-            /**
-             * Builds the {@link Mqtt3Unsubscribe} and applies it to the parent which then sends the Unsubscribe message
-             * without returning a result.
-             */
-            void send();
-        }
-
-        /**
-         * {@link SendVoid} that provides additional methods for the first Topic Filter.
-         */
-        @ApiStatus.NonExtendable
-        interface Start extends SendVoid, Mqtt3UnsubscribeBuilderBase.Start<SendVoid.Complete> {}
-    }
 }
