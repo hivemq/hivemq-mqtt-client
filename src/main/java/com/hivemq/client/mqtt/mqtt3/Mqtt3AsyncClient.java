@@ -23,6 +23,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilderBase;
@@ -291,13 +292,13 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @param publish the Publish message sent to the broker.
      * @return a {@link CompletableFuture} which
      *         <ul>
-     *           <li>completes normally with the same Publish message (for context) if the Publish message was
-     *             successfully published or
+     *           <li>completes normally with the {@link Mqtt3PublishResult} if the Publish message was successfully
+     *             published ({@link Mqtt3PublishResult#getError()} will always be absent) or
      *           <li>completes exceptionally if an error occurred before the Publish message was sent or before an
      *             acknowledgement message was received.
      *         </ul>
      */
-    @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(@NotNull Mqtt3Publish publish);
+    @NotNull CompletableFuture<@NotNull Mqtt3PublishResult> publish(@NotNull Mqtt3Publish publish);
 
     /**
      * Fluent counterpart of {@link #publish(Mqtt3Publish)}.
@@ -309,7 +310,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #publish(Mqtt3Publish)
      */
     @CheckReturnValue
-    Mqtt3PublishBuilder.@NotNull Send<CompletableFuture<Mqtt3Publish>> publishWith();
+    Mqtt3PublishBuilder.@NotNull Send<CompletableFuture<Mqtt3PublishResult>> publishWith();
 
     /**
      * Disconnects this client.

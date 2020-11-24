@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
@@ -42,6 +43,7 @@ import com.hivemq.client.mqtt.mqtt3.Mqtt3RxClient;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
@@ -228,22 +230,22 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(final @Nullable Mqtt3Publish publish) {
+    public @NotNull CompletableFuture<@NotNull Mqtt3PublishResult> publish(final @Nullable Mqtt3Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
 
-        final CompletableFuture<Mqtt3Publish> future = new CompletableFuture<>();
+        final CompletableFuture<Mqtt3PublishResult> future = new CompletableFuture<>();
         delegate.publish(mqttPublish).whenComplete((publishResult, throwable) -> {
             if (throwable != null) {
                 future.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
             } else {
-                future.complete(Mqtt3PublishView.of(publishResult.getPublish()));
+                future.complete(Mqtt3PublishResultView.of(publishResult));
             }
         });
         return future;
     }
 
     @Override
-    public Mqtt3PublishViewBuilder.@NotNull Send<CompletableFuture<Mqtt3Publish>> publishWith() {
+    public Mqtt3PublishViewBuilder.@NotNull Send<CompletableFuture<Mqtt3PublishResult>> publishWith() {
         return new Mqtt3PublishViewBuilder.Send<>(this::publish);
     }
 

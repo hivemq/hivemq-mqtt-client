@@ -94,25 +94,4 @@ public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Publis
             @NotNull P send();
         }
     }
-
-    /**
-     * Builder for a {@link Mqtt3Publish} that is applied to a parent {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client}
-     * which then sends the Publish message without returning a result.
-     */
-    @ApiStatus.NonExtendable
-    interface SendVoid extends Mqtt3PublishBuilderBase<SendVoid.Complete> {
-
-        /**
-         * {@link SendVoid} that is complete which means all mandatory fields are set.
-         */
-        @ApiStatus.NonExtendable
-        interface Complete extends SendVoid, Mqtt3PublishBuilderBase.Complete<SendVoid.Complete> {
-
-            /**
-             * Builds the {@link Mqtt3Publish} and applies it to the parent which then sends the Publish message without
-             * returning a result.
-             */
-            void send();
-        }
-    }
 }

@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
@@ -42,6 +43,7 @@ import com.hivemq.client.mqtt.mqtt3.Mqtt3RxClient;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
@@ -133,18 +135,18 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public void publish(final @Nullable Mqtt3Publish publish) {
+    public @NotNull Mqtt3PublishResult publish(final @Nullable Mqtt3Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
         try {
-            delegate.publish(mqttPublish);
+            return Mqtt3PublishResultView.of(delegate.publish(mqttPublish));
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
     }
 
     @Override
-    public Mqtt3PublishViewBuilder.@NotNull SendVoid publishWith() {
-        return new Mqtt3PublishViewBuilder.SendVoid(this::publish);
+    public Mqtt3PublishViewBuilder.@NotNull Send<Mqtt3PublishResult> publishWith() {
+        return new Mqtt3PublishViewBuilder.Send<>(this::publish);
     }
 
     @Override
