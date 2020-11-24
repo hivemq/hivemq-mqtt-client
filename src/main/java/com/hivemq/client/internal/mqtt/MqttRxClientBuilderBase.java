@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Silvio Giebl
@@ -97,6 +98,30 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return super.serverPort(port);
     }
 
+    @Override
+    public @NotNull B localAddress(final @Nullable InetSocketAddress address) {
+        transportConfig = null;
+        return super.localAddress(address);
+    }
+
+    @Override
+    public @NotNull B localAddress(final @Nullable String address) {
+        transportConfig = null;
+        return super.localAddress(address);
+    }
+
+    @Override
+    public @NotNull B localAddress(final @Nullable InetAddress address) {
+        transportConfig = null;
+        return super.localAddress(address);
+    }
+
+    @Override
+    public @NotNull B localPort(final int port) {
+        transportConfig = null;
+        return super.localPort(port);
+    }
+
     public @NotNull B tls() {
         transportConfig = null;
         return super.tls();
@@ -104,6 +129,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
 
     @Override
     public @NotNull B tlsConfig(final @Nullable MqttTlsConfig tlsConfig) {
+        transportConfig = null;
         return super.tlsConfig(tlsConfig);
     }
 
@@ -116,6 +142,24 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     public @NotNull B webSocketConfig(final @Nullable MqttWebSocketConfig webSocketConfig) {
         transportConfig = null;
         return super.webSocketConfig(webSocketConfig);
+    }
+
+    @Override
+    public @NotNull B proxyConfig(final @Nullable MqttProxyConfig proxyConfig) {
+        transportConfig = null;
+        return super.proxyConfig(proxyConfig);
+    }
+
+    @Override
+    public @NotNull B socketConnectTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        transportConfig = null;
+        return super.socketConnectTimeout(timeout, timeUnit);
+    }
+
+    @Override
+    public @NotNull B mqttConnectTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
+        transportConfig = null;
+        return super.mqttConnectTimeout(timeout, timeUnit);
     }
 
     public @NotNull B transportConfig(final @Nullable MqttTransportConfig transportConfig) {
