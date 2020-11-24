@@ -31,6 +31,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.reactor.Mqtt3ReactorClient;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
@@ -109,12 +110,12 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     }
 
     @Override
-    public @NotNull Mono<Void> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return RxJava2Adapter.completableToMono(delegate.unsubscribe(unsubscribe));
+    public @NotNull Mono<Mqtt3UnsubAck> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+        return RxJava2Adapter.singleToMono(delegate.unsubscribe(unsubscribe));
     }
 
     @Override
-    public @NotNull Mqtt3UnsubscribeViewBuilder.Nested<Mono<Void>> unsubscribeWith() {
+    public @NotNull Mqtt3UnsubscribeViewBuilder.Nested<Mono<Mqtt3UnsubAck>> unsubscribeWith() {
         return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
     }
 

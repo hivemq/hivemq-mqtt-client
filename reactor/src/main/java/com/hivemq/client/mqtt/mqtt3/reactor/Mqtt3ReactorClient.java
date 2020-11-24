@@ -28,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
@@ -263,13 +264,13 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @param unsubscribe the Unsubscribe message sent to the broker during unsubscribe.
      * @return the {@link Mono} which
      *         <ul>
-     *           <li>succeeds when the corresponding UnsubAck message was received or
+     *           <li>succeeds with the UnsubAck message or
      *           <li>errors if an error occurred before the Unsubscribe message was sent or before a UnsubAck message
      *             was received.
      *         </ul>
      */
     @CheckReturnValue
-    @NotNull Mono<Void> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    @NotNull Mono<Mqtt3UnsubAck> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
@@ -282,7 +283,7 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Mono<Void>> unsubscribeWith();
+    @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Mono<Mqtt3UnsubAck>> unsubscribeWith();
 
     /**
      * Creates a {@link Flux} for publishing the Publish messages emitted by the given {@link Publisher}.

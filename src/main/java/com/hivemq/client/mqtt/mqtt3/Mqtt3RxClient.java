@@ -26,6 +26,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
+import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import com.hivemq.client.rx.FlowableWithSingle;
@@ -248,15 +249,15 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * asynchronous when subscribing (in terms of Reactive Streams) to the returned {@link Completable}.
      *
      * @param unsubscribe the Unsubscribe message sent to the broker during unsubscribe.
-     * @return the {@link Completable} which
+     * @return the {@link Single} which
      *         <ul>
-     *           <li>succeeds when the corresponding UnsubAck message was received or
+     *           <li>succeeds with the UnsubAck message or
      *           <li>errors if an error occurred before the Unsubscribe message was sent or before a UnsubAck message
      *             was received.
      *         </ul>
      */
     @CheckReturnValue
-    @NotNull Completable unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    @NotNull Single<Mqtt3UnsubAck> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
@@ -269,7 +270,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     @CheckReturnValue
-    Mqtt3UnsubscribeBuilder.Nested.@NotNull Start<Completable> unsubscribeWith();
+    Mqtt3UnsubscribeBuilder.Nested.@NotNull Start<Single<Mqtt3UnsubAck>> unsubscribeWith();
 
     /**
      * Creates a {@link Flowable} for publishing the Publish messages emitted by the given {@link Flowable}.

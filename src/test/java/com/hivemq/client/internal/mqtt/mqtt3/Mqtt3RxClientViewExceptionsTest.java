@@ -116,7 +116,8 @@ class Mqtt3RxClientViewExceptionsTest {
         given(mqtt5Client.unsubscribe(any())).willReturn(Single.error(mqtt5MessageException));
 
         final Mqtt3Unsubscribe unsubscribe = Mqtt3Unsubscribe.builder().addTopicFilter("topic").build();
-        assertMqtt3Exception(() -> mqtt3Client.unsubscribe(unsubscribe).blockingAwait(), mqtt5MessageException);
+        assertMqtt3Exception(
+                () -> mqtt3Client.unsubscribe(unsubscribe).ignoreElement().blockingAwait(), mqtt5MessageException);
     }
 
     @Test
