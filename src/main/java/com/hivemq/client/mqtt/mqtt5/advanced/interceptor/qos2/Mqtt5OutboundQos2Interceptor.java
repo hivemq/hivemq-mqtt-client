@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0
  */
 @ApiStatus.OverrideOnly
-public interface Mqtt5OutgoingQos2Interceptor {
+public interface Mqtt5OutboundQos2Interceptor {
 
     /**
      * Called when a server sent a PubRec message for a Publish message with QoS 2.

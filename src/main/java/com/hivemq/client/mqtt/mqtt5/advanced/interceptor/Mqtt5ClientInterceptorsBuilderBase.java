@@ -17,10 +17,10 @@
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5InboundQos1Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutboundQos1Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5InboundQos2Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutboundQos2Interceptor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,14 +36,14 @@ import org.jetbrains.annotations.Nullable;
 public interface Mqtt5ClientInterceptorsBuilderBase<B extends Mqtt5ClientInterceptorsBuilderBase<B>> {
 
     @CheckReturnValue
-    @NotNull B incomingQos1Interceptor(@Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor);
+    @NotNull B inboundQos1Interceptor(@Nullable Mqtt5InboundQos1Interceptor incomingQos1Interceptor);
 
     @CheckReturnValue
-    @NotNull B outgoingQos1Interceptor(@Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor);
+    @NotNull B outboundQos1Interceptor(@Nullable Mqtt5OutboundQos1Interceptor outgoingQos1Interceptor);
 
     @CheckReturnValue
-    @NotNull B incomingQos2Interceptor(@Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor);
+    @NotNull B inboundQos2Interceptor(@Nullable Mqtt5InboundQos2Interceptor incomingQos2Interceptor);
 
     @CheckReturnValue
-    @NotNull B outgoingQos2Interceptor(@Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor);
+    @NotNull B outboundQos2Interceptor(@Nullable Mqtt5OutboundQos2Interceptor outgoingQos2Interceptor);
 }

@@ -29,8 +29,8 @@ import com.hivemq.client.internal.mqtt.message.publish.*;
 import com.hivemq.client.internal.util.collections.IntIndex;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5InboundQos1Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5InboundQos2Interceptor;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PubCompReasonCode;
 import io.netty.channel.ChannelHandlerContext;
@@ -310,7 +310,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {
         final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
         if (interceptors != null) {
-            final Mqtt5IncomingQos1Interceptor interceptor = interceptors.getIncomingQos1Interceptor();
+            final Mqtt5InboundQos1Interceptor interceptor = interceptors.getInboundQos1Interceptor();
             if (interceptor != null) {
                 interceptor.onPublish(clientConfig, pubAckBuilder.getPublish().stateless(), pubAckBuilder);
             }
@@ -321,7 +321,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     private @NotNull MqttPubRec buildPubRec(final @NotNull MqttPubRecBuilder pubRecBuilder) {
         final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
         if (interceptors != null) {
-            final Mqtt5IncomingQos2Interceptor interceptor = interceptors.getIncomingQos2Interceptor();
+            final Mqtt5InboundQos2Interceptor interceptor = interceptors.getInboundQos2Interceptor();
             if (interceptor != null) {
                 interceptor.onPublish(clientConfig, pubRecBuilder.getPublish().stateless(), pubRecBuilder);
             }
@@ -332,7 +332,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     private @NotNull MqttPubComp buildPubComp(final @NotNull MqttPubCompBuilder pubCompBuilder) {
         final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
         if (interceptors != null) {
-            final Mqtt5IncomingQos2Interceptor interceptor = interceptors.getIncomingQos2Interceptor();
+            final Mqtt5InboundQos2Interceptor interceptor = interceptors.getInboundQos2Interceptor();
             if (interceptor != null) {
                 interceptor.onPubRel(clientConfig, pubCompBuilder.getPubRel(), pubCompBuilder);
             }

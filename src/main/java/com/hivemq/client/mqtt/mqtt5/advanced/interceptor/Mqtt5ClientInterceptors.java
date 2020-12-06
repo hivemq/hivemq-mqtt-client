@@ -17,10 +17,10 @@
 package com.hivemq.client.mqtt.mqtt5.advanced.interceptor;
 
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptorsBuilder;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5InboundQos1Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutboundQos1Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5InboundQos2Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutboundQos2Interceptor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,13 +44,13 @@ public interface Mqtt5ClientInterceptors {
         return new MqttClientInterceptorsBuilder.Default();
     }
 
-    @Nullable Mqtt5IncomingQos1Interceptor getIncomingQos1Interceptor();
+    @Nullable Mqtt5InboundQos1Interceptor getInboundQos1Interceptor();
 
-    @Nullable Mqtt5OutgoingQos1Interceptor getOutgoingQos1Interceptor();
+    @Nullable Mqtt5OutboundQos1Interceptor getOutboundQos1Interceptor();
 
-    @Nullable Mqtt5IncomingQos2Interceptor getIncomingQos2Interceptor();
+    @Nullable Mqtt5InboundQos2Interceptor getInboundQos2Interceptor();
 
-    @Nullable Mqtt5OutgoingQos2Interceptor getOutgoingQos2Interceptor();
+    @Nullable Mqtt5OutboundQos2Interceptor getOutboundQos2Interceptor();
 
     /**
      * Creates a builder for extending this collection of interceptors.
