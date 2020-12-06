@@ -17,10 +17,10 @@
 package com.hivemq.client.internal.mqtt.advanced.interceptor;
 
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
-import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5InboundQos1Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutboundQos1Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5InboundQos2Interceptor;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutboundQos2Interceptor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -33,41 +33,41 @@ import java.util.Objects;
 @Unmodifiable
 public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
 
-    private final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor;
-    private final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor;
-    private final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor;
-    private final @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor;
+    private final @Nullable Mqtt5InboundQos1Interceptor inboundQos1Interceptor;
+    private final @Nullable Mqtt5OutboundQos1Interceptor outboundQos1Interceptor;
+    private final @Nullable Mqtt5InboundQos2Interceptor inboundQos2Interceptor;
+    private final @Nullable Mqtt5OutboundQos2Interceptor outboundQos2Interceptor;
 
     MqttClientInterceptors(
-            final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor,
-            final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor,
-            final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor,
-            final @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor) {
+            final @Nullable Mqtt5InboundQos1Interceptor inboundQos1Interceptor,
+            final @Nullable Mqtt5OutboundQos1Interceptor outboundQos1Interceptor,
+            final @Nullable Mqtt5InboundQos2Interceptor inboundQos2Interceptor,
+            final @Nullable Mqtt5OutboundQos2Interceptor outboundQos2Interceptor) {
 
-        this.incomingQos1Interceptor = incomingQos1Interceptor;
-        this.outgoingQos1Interceptor = outgoingQos1Interceptor;
-        this.incomingQos2Interceptor = incomingQos2Interceptor;
-        this.outgoingQos2Interceptor = outgoingQos2Interceptor;
+        this.inboundQos1Interceptor = inboundQos1Interceptor;
+        this.outboundQos1Interceptor = outboundQos1Interceptor;
+        this.inboundQos2Interceptor = inboundQos2Interceptor;
+        this.outboundQos2Interceptor = outboundQos2Interceptor;
     }
 
     @Override
-    public @Nullable Mqtt5IncomingQos1Interceptor getIncomingQos1Interceptor() {
-        return incomingQos1Interceptor;
+    public @Nullable Mqtt5InboundQos1Interceptor getInboundQos1Interceptor() {
+        return inboundQos1Interceptor;
     }
 
     @Override
-    public @Nullable Mqtt5OutgoingQos1Interceptor getOutgoingQos1Interceptor() {
-        return outgoingQos1Interceptor;
+    public @Nullable Mqtt5OutboundQos1Interceptor getOutboundQos1Interceptor() {
+        return outboundQos1Interceptor;
     }
 
     @Override
-    public @Nullable Mqtt5IncomingQos2Interceptor getIncomingQos2Interceptor() {
-        return incomingQos2Interceptor;
+    public @Nullable Mqtt5InboundQos2Interceptor getInboundQos2Interceptor() {
+        return inboundQos2Interceptor;
     }
 
     @Override
-    public @Nullable Mqtt5OutgoingQos2Interceptor getOutgoingQos2Interceptor() {
-        return outgoingQos2Interceptor;
+    public @Nullable Mqtt5OutboundQos2Interceptor getOutboundQos2Interceptor() {
+        return outboundQos2Interceptor;
     }
 
     @Override
@@ -85,18 +85,18 @@ public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
         }
         final MqttClientInterceptors that = (MqttClientInterceptors) o;
 
-        return Objects.equals(incomingQos1Interceptor, that.incomingQos1Interceptor) &&
-                Objects.equals(outgoingQos1Interceptor, that.outgoingQos1Interceptor) &&
-                Objects.equals(incomingQos2Interceptor, that.incomingQos2Interceptor) &&
-                Objects.equals(outgoingQos2Interceptor, that.outgoingQos2Interceptor);
+        return Objects.equals(inboundQos1Interceptor, that.inboundQos1Interceptor) &&
+                Objects.equals(outboundQos1Interceptor, that.outboundQos1Interceptor) &&
+                Objects.equals(inboundQos2Interceptor, that.inboundQos2Interceptor) &&
+                Objects.equals(outboundQos2Interceptor, that.outboundQos2Interceptor);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(incomingQos1Interceptor);
-        result = 31 * result + Objects.hashCode(outgoingQos1Interceptor);
-        result = 31 * result + Objects.hashCode(incomingQos2Interceptor);
-        result = 31 * result + Objects.hashCode(outgoingQos2Interceptor);
+        int result = Objects.hashCode(inboundQos1Interceptor);
+        result = 31 * result + Objects.hashCode(outboundQos1Interceptor);
+        result = 31 * result + Objects.hashCode(inboundQos2Interceptor);
+        result = 31 * result + Objects.hashCode(outboundQos2Interceptor);
         return result;
     }
 }

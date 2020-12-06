@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0
  */
 @ApiStatus.OverrideOnly
-public interface Mqtt5OutgoingQos1Interceptor {
+public interface Mqtt5OutboundQos1Interceptor {
 
     /**
      * Called when a server sent a PubAck message for a Publish message with QoS 1.
