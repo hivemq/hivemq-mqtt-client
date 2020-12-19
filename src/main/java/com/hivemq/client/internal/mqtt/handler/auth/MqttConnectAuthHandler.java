@@ -75,9 +75,11 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     /**
      * Handles the outgoing CONNECT message.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthMechanism#onAuth(Mqtt5ClientConfig, Mqtt5Connect, Mqtt5EnhancedAuthBuilder)}
-     * which adds enhanced auth data to the CONNECT message.</li>
-     * <li>Sends the CONNECT message with the enhanced auth data.</li>
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onAuth(Mqtt5ClientConfig, Mqtt5Connect, Mqtt5EnhancedAuthBuilder)}
+     *     which can add enhanced auth data to the outgoing CONNECT message, then
+     *   <li>Sends the CONNECT message with the enhanced auth data, or
+     *   <li>Closes the connection with a {@link ConnectionFailedException} if the enhanced auth mechanism rejected the
+     *     CONNECT message, which leads to {@link #onDisconnectEvent} being called.
      * </ul>
      *
      * @param connect the CONNECT message.
@@ -108,13 +110,8 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
 
     /**
      * Handles the incoming CONNACK message.
-     * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthMechanism#onAuthRejected(Mqtt5ClientConfig, Mqtt5ConnAck)} and closes the
-     * channel if the CONNACK message contains an Error Code.</li>
-     * <li>Sends a DISCONNECT message if the enhanced auth data of the CONNACK message is not valid.</li>
-     * <li>Otherwise calls {@link Mqtt5EnhancedAuthMechanism#onAuthSuccess(Mqtt5ClientConfig, Mqtt5ConnAck)}.</li>
-     * <li>Sends a DISCONNECT message if the enhanced auth mechanism did not accept the enhanced auth data.</li>
-     * </ul>
+     * <p>
+     * Sends a DISCONNECT message if the CONNACK message has a successful reason code but is not valid.
      *
      * @param ctx     the channel handler context.
      * @param connAck the received CONNACK message.
@@ -129,6 +126,16 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
         }
     }
 
+    /**
+     * Handles the incoming CONNACK message with an error reason code.
+     * <ul>
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onAuthRejected(Mqtt5ClientConfig, Mqtt5ConnAck)} and
+     *   <li>Fires a disconnect event with a {@link Mqtt5ConnAckException} which leads to closing the connection.
+     * </ul>
+     *
+     * @param ctx     the channel handler context.
+     * @param connAck the received CONNACK message.
+     */
     private void readConnAckError(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         callMechanism(() -> authMechanism.onAuthRejected(clientConfig, connAck));
         state = MqttAuthState.NONE;
@@ -138,6 +145,18 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
                 MqttDisconnectSource.SERVER);
     }
 
+    /**
+     * Handles the incoming CONNACK message with a successful reason code.
+     * <ul>
+     *   <li>Sends a DISCONNECT message if client side authentication is pending, or
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onAuthSuccess(Mqtt5ClientConfig, Mqtt5ConnAck)}, then
+     *   <li>Fires the CONNACK message to the next handler, or
+     *   <li>Sends a DISCONNECT message if the enhanced auth mechanism rejected the CONNACK message.
+     * </ul>
+     *
+     * @param ctx     the channel handler context.
+     * @param connAck the received CONNACK message.
+     */
     private void readConnAckSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
@@ -157,7 +176,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     /**
-     * Validates the enhanced auth data of an incoming CONNACK message.
+     * Validates the enhanced auth data of the incoming CONNACK message.
      * <p>
      * If validation fails, disconnection and closing of the channel is already handled.
      *
@@ -181,7 +200,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     /**
-     * Disconnects on an incoming AUTH message with the Reason Code SUCCESS.
+     * Disconnects on an incoming AUTH message with the reason code SUCCESS.
      *
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
@@ -193,7 +212,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     /**
-     * Disconnects on an incoming AUTH message with the Reason Code REAUTHENTICATE.
+     * Disconnects on an incoming AUTH message with the reason code REAUTHENTICATE.
      *
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
@@ -206,10 +225,10 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     /**
-     * Calls {@link Mqtt5EnhancedAuthMechanism#onAuthError(Mqtt5ClientConfig, Throwable)} with the cause why the channel
-     * was closed if auth is still in progress.
+     * Calls {@link Mqtt5EnhancedAuthMechanism#onAuthError(Mqtt5ClientConfig, Throwable)} with the cause why the
+     * connection was disconnected if auth is still in progress.
      *
-     * @param disconnectEvent the channel close event.
+     * @param disconnectEvent the disconnect event.
      */
     @Override
     protected void onDisconnectEvent(

@@ -72,7 +72,9 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     }
 
     /**
-     * Handles an incoming AUTH message. Sends a DISCONNECT message if the AUTH message is not valid.
+     * Handles an incoming AUTH message.
+     * <p>
+     * Sends a DISCONNECT message if the AUTH message is not valid.
      *
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
@@ -114,15 +116,18 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     }
 
     /**
-     * Handles an incoming AUTH message with the Reason Code CONTINUE AUTHENTICATION.
+     * Handles an incoming AUTH message with the reason code CONTINUE AUTHENTICATION.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthMechanism#onContinue(Mqtt5ClientConfig, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
-     * <li>Sends a new AUTH message if the enhanced auth mechanism accepted the incoming AUTH message.</li>
-     * <li>Otherwise sends a DISCONNECT message.</li>
+     *   <li>Sends a DISCONNECT message if client side authentication is pending, or
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onContinue(Mqtt5ClientConfig, Mqtt5Auth, Mqtt5AuthBuilder)} which
+     *     can add enhanced auth data to the outgoing AUTH message, then
+     *   <li>Sends the AUTH message with the reason code CONTINUE AUTHENTICATION, or
+     *   <li>Sends a DISCONNECT message if the enhanced auth mechanism rejected the incoming AUTH message, which leads
+     *     to {@link #onDisconnectEvent} being called.
      * </ul>
      *
      * @param ctx  the channel handler context.
-     * @param auth the received AUTH message.
+     * @param auth the incoming AUTH message.
      */
     private void readAuthContinue(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
@@ -143,7 +148,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     }
 
     /**
-     * Disconnects on an incoming AUTH message with the Reason Code SUCCESS.
+     * Handles an incoming AUTH message with the reason code SUCCESS.
      *
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
@@ -151,7 +156,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     abstract void readAuthSuccess(@NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth);
 
     /**
-     * Disconnects on an incoming AUTH message with the Reason Code REAUTHENTICATE.
+     * Handles an incoming AUTH message with the reason code REAUTHENTICATE.
      *
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
