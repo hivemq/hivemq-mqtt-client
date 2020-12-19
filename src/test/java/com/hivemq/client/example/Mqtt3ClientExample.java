@@ -105,8 +105,8 @@ class Mqtt3ClientExample {
                                         "' received count: " + receivedCount);
                     } else {
                         System.out.println("received message without payload on topic '" + publish.getTopic() + "'");
-            }
-        });
+                    }
+                });
 
         // define what to do when we disconnect, this does not disconnect yet
         final Completable disconnectScenario =
