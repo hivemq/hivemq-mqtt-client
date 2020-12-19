@@ -59,9 +59,15 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     }
 
     /**
-     * Sends a AUTH message with the Reason Code REAUTHENTICATE.
-     * <p>
-     * Calls {@link Mqtt5EnhancedAuthMechanism#onReAuth(Mqtt5ClientConfig, Mqtt5AuthBuilder)}.
+     * <ul>
+     *   <li>Errors the flow if the client is not connected, or
+     *   <li>Errors the flow if reauthentication is pending, or
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onReAuth(Mqtt5ClientConfig, Mqtt5AuthBuilder)} which can add
+     *     enhanced auth data to the outgoing AUTH message, then
+     *   <li>Sends the AUTH message with the reason code REAUTHENTICATE, or
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onReAuthError(Mqtt5ClientConfig, Throwable)} if the enhanced auth
+     *     mechanism rejected the reauthentication (it does not disconnect).
+     * </ul>
      *
      * @param flow the flow for the reauth result.
      */
@@ -102,10 +108,13 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     }
 
     /**
-     * Handles an incoming AUTH message with the Reason Code SUCCESS.
+     * Handles an incoming AUTH message with the reason code SUCCESS.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthMechanism#onReAuthSuccess(Mqtt5ClientConfig, Mqtt5Auth)}.</li>
-     * <li>Sends a DISCONNECT message if the enhanced auth mechanism did not accept the AUTH message.</li>
+     *   <li>Sends a DISCONNECT message if client side authentication is pending, or
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onReAuthSuccess(Mqtt5ClientConfig, Mqtt5Auth)}, then
+     *   <li>Completes the flow, or
+     *   <li>Sends a DISCONNECT message if the enhanced auth mechanism rejected the incoming AUTH message, which leads
+     *     to {@link #onDisconnectEvent} being called.
      * </ul>
      *
      * @param ctx  the channel handler context.
@@ -138,11 +147,12 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     /**
      * Handles an incoming AUTH message with the Reason Code REAUTHENTICATE.
      * <ul>
-     * <li>Sends a DISCONNECT message if server reauth is not allowed.</li>
-     * <li>Otherwise calls
-     * {@link Mqtt5EnhancedAuthMechanism#onServerReAuth(Mqtt5ClientConfig, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
-     * <li>Sends a new AUTH message if the enhanced auth mechanism accepted the incoming AUTH message.</li>
-     * <li>Otherwise sends a DISCONNECT message.</li>
+     *   <li>Sends a DISCONNECT message if reauthentication is already pending, or
+     *   <li>Calls {@link Mqtt5EnhancedAuthMechanism#onServerReAuth(Mqtt5ClientConfig, Mqtt5Auth, Mqtt5AuthBuilder)}
+     *     which can add enhanced auth data to the outgoing AUTH message, then
+     *   <li>Sends the AUTH message with the reason code CONTINUE AUTHENTICATION, or
+     *   <li>Sends a DISCONNECT message if the enhanced auth mechanism rejected the incoming AUTH message, which leads
+     *     to {@link #onDisconnectEvent} being called.
      * </ul>
      *
      * @param ctx  the channel handler context.
@@ -188,7 +198,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
     /**
      * Calls {@link Mqtt5EnhancedAuthMechanism#onReAuthError(Mqtt5ClientConfig, Throwable)} with the cause why the
-     * channel was closed if reauth is still in progress.
+     * connection was disconnected if reauth is still in progress.
      *
      * @param disconnectEvent the channel close event.
      */
