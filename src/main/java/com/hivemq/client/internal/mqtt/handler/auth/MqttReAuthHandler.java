@@ -150,11 +150,6 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      */
     @Override
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
-        if (!clientConfig.getAdvancedConfig().isAllowServerReAuth()) {
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5AuthException(auth, "Must not receive AUTH with reason code REAUTHENTICATE."));
-            return;
-        }
         if (state != MqttAuthState.NONE) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5AuthException(auth,

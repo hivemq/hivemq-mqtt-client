@@ -95,8 +95,7 @@ public interface Mqtt5EnhancedAuthMechanism {
      * Called when a server reauthenticates a client and the client used this enhanced auth mechanism during
      * connection.
      * <p>
-     * This is an addition to the MQTT 5 specification and so defaults to {@link #onReAuth(Mqtt5ClientConfig,
-     * Mqtt5AuthBuilder)}. The feature must be explicitly enabled during client creation.
+     * This is an addition to the MQTT 5 specification. The default denies the reauthentication.
      *
      * @param clientConfig the config of the client.
      * @param auth         the Auth message sent by the server.
@@ -109,7 +108,7 @@ public interface Mqtt5EnhancedAuthMechanism {
             final @NotNull Mqtt5Auth auth,
             final @NotNull Mqtt5AuthBuilder authBuilder) {
 
-        return onReAuth(clientConfig, authBuilder).thenApply(aVoid -> true);
+        return CompletableFuture.completedFuture(false);
     }
 
     /**

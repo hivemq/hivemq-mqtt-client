@@ -41,11 +41,6 @@ public interface Mqtt5AdvancedConfig {
     }
 
     /**
-     * @return whether server re-authentication is allowed.
-     */
-    boolean isAllowServerReAuth();
-
-    /**
      * Returns whether the payload format is validated if {@link com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish#getPayloadFormatIndicator
      * Mqtt5Publish#getPayloadFormatIndicator()} is present.
      *
