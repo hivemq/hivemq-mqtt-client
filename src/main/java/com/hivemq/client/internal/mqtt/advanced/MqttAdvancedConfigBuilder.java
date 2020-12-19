@@ -31,24 +31,17 @@ import java.util.function.Function;
  */
 public abstract class MqttAdvancedConfigBuilder<B extends MqttAdvancedConfigBuilder<B>> {
 
-    private boolean allowServerReAuth;
     private boolean validatePayloadFormat;
     private @Nullable MqttClientInterceptors interceptors;
 
     MqttAdvancedConfigBuilder() {}
 
     MqttAdvancedConfigBuilder(final @NotNull MqttAdvancedConfig advancedConfig) {
-        allowServerReAuth = advancedConfig.isAllowServerReAuth();
         validatePayloadFormat = advancedConfig.isValidatePayloadFormat();
         interceptors = advancedConfig.getInterceptors();
     }
 
     abstract @NotNull B self();
-
-    public @NotNull B allowServerReAuth(final boolean allowServerReAuth) {
-        this.allowServerReAuth = allowServerReAuth;
-        return self();
-    }
 
     public @NotNull B validatePayloadFormat(final boolean validatePayloadFormat) {
         this.validatePayloadFormat = validatePayloadFormat;
@@ -65,7 +58,7 @@ public abstract class MqttAdvancedConfigBuilder<B extends MqttAdvancedConfigBuil
     }
 
     public @NotNull MqttAdvancedConfig build() {
-        return new MqttAdvancedConfig(allowServerReAuth, validatePayloadFormat, interceptors);
+        return new MqttAdvancedConfig(validatePayloadFormat, interceptors);
     }
 
     public static class Default extends MqttAdvancedConfigBuilder<Default> implements Mqtt5AdvancedConfigBuilder {

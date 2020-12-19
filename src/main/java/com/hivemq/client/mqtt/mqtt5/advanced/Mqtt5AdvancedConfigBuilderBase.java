@@ -34,15 +34,6 @@ import org.jetbrains.annotations.Nullable;
 public interface Mqtt5AdvancedConfigBuilderBase<B extends Mqtt5AdvancedConfigBuilderBase<B>> {
 
     /**
-     * Sets whether {@link Mqtt5AdvancedConfig#isAllowServerReAuth() server re-auth is allowed}.
-     *
-     * @param allowServerReAuth whether server re-auth is allowed.
-     * @return the builder.
-     */
-    @CheckReturnValue
-    @NotNull B allowServerReAuth(boolean allowServerReAuth);
-
-    /**
      * Sets whether {@link Mqtt5AdvancedConfig#isValidatePayloadFormat() the payload format is validated}.
      *
      * @param validatePayloadFormat whether the payload format is validated.

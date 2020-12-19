@@ -30,25 +30,14 @@ import java.util.Objects;
 @Unmodifiable
 public class MqttAdvancedConfig implements Mqtt5AdvancedConfig {
 
-    public static final @NotNull MqttAdvancedConfig DEFAULT = new MqttAdvancedConfig(false, false, null);
+    public static final @NotNull MqttAdvancedConfig DEFAULT = new MqttAdvancedConfig(false, null);
 
-    private final boolean allowServerReAuth;
     private final boolean validatePayloadFormat;
     private final @Nullable MqttClientInterceptors interceptors;
 
-    MqttAdvancedConfig(
-            final boolean allowServerReAuth,
-            final boolean validatePayloadFormat,
-            final @Nullable MqttClientInterceptors interceptors) {
-
-        this.allowServerReAuth = allowServerReAuth;
+    MqttAdvancedConfig(final boolean validatePayloadFormat, final @Nullable MqttClientInterceptors interceptors) {
         this.validatePayloadFormat = validatePayloadFormat;
         this.interceptors = interceptors;
-    }
-
-    @Override
-    public boolean isAllowServerReAuth() {
-        return allowServerReAuth;
     }
 
     @Override
@@ -76,14 +65,12 @@ public class MqttAdvancedConfig implements Mqtt5AdvancedConfig {
         }
         final MqttAdvancedConfig that = (MqttAdvancedConfig) o;
 
-        return (allowServerReAuth == that.allowServerReAuth) && (validatePayloadFormat == that.validatePayloadFormat) &&
-                Objects.equals(interceptors, that.interceptors);
+        return (validatePayloadFormat == that.validatePayloadFormat) && Objects.equals(interceptors, that.interceptors);
     }
 
     @Override
     public int hashCode() {
-        int result = Boolean.hashCode(allowServerReAuth);
-        result = 31 * result + Boolean.hashCode(validatePayloadFormat);
+        int result = Boolean.hashCode(validatePayloadFormat);
         result = 31 * result + Objects.hashCode(interceptors);
         return result;
     }
