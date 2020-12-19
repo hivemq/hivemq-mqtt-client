@@ -17,8 +17,8 @@
 package com.hivemq.client.internal.mqtt.handler.connect;
 
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

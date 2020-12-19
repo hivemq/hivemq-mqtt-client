@@ -38,10 +38,10 @@ import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.reactor.Mqtt5ReactorClient;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
-import reactor.adapter.rxjava.RxJava2Adapter;
+import reactor.adapter.rxjava.RxJava3Adapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -63,7 +63,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
 
     @Override
     public @NotNull Mono<Mqtt5ConnAck> connect(final @NotNull Mqtt5Connect connect) {
-        return RxJava2Adapter.singleToMono(delegate.connect(connect));
+        return RxJava3Adapter.singleToMono(delegate.connect(connect));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
 
     @Override
     public @NotNull Mono<Mqtt5SubAck> subscribe(final @NotNull Mqtt5Subscribe subscribe) {
-        return RxJava2Adapter.singleToMono(delegate.subscribe(subscribe));
+        return RxJava3Adapter.singleToMono(delegate.subscribe(subscribe));
     }
 
     @Override
@@ -109,12 +109,12 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
     public @NotNull Flux<Mqtt5Publish> publishes(
             final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
 
-        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
+        return RxJava3Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
     }
 
     @Override
     public @NotNull Mono<Mqtt5UnsubAck> unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
-        return RxJava2Adapter.singleToMono(delegate.unsubscribe(unsubscribe));
+        return RxJava3Adapter.singleToMono(delegate.unsubscribe(unsubscribe));
     }
 
     @Override
@@ -124,12 +124,12 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
 
     @Override
     public @NotNull Flux<Mqtt5PublishResult> publish(final @NotNull Publisher<Mqtt5Publish> publisher) {
-        return RxJava2Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
+        return RxJava3Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
     @Override
     public @NotNull Mono<Void> reauth() {
-        return RxJava2Adapter.completableToMono(delegate.reauth());
+        return RxJava3Adapter.completableToMono(delegate.reauth());
     }
 
     @Override
@@ -139,7 +139,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
 
     @Override
     public @NotNull Mono<Void> disconnect(final @NotNull Mqtt5Disconnect disconnect) {
-        return RxJava2Adapter.completableToMono(delegate.disconnect(disconnect));
+        return RxJava3Adapter.completableToMono(delegate.disconnect(disconnect));
     }
 
     @Override

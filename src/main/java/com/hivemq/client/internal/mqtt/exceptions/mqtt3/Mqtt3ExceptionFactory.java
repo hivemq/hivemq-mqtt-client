@@ -28,7 +28,7 @@ import com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException;
 import com.hivemq.client.mqtt.mqtt3.exceptions.*;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
-import io.reactivex.functions.Function;
+import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 
 /**

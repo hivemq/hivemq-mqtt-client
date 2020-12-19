@@ -49,12 +49,12 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.rx.FlowableWithSingle;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.functions.Function;
-import io.reactivex.internal.fuseable.ScalarCallable;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.internal.fuseable.ScalarSupplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
@@ -203,9 +203,9 @@ public class MqttRxClient implements Mqtt5RxClient {
             final @NotNull Publisher<P> publisher, final @NotNull Function<P, MqttPublish> publishMapper) {
 
         final Scheduler applicationScheduler = clientConfig.getExecutorConfig().getApplicationScheduler();
-        if (publisher instanceof ScalarCallable) {
+        if (publisher instanceof ScalarSupplier) {
             //noinspection unchecked
-            final P publish = ((ScalarCallable<P>) publisher).call();
+            final P publish = ((ScalarSupplier<P>) publisher).get();
             if (publish == null) {
                 return Flowable.empty();
             }

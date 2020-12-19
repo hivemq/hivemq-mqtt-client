@@ -18,7 +18,7 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttExecutorConfigBuilder;
-import io.reactivex.Scheduler;
+import io.reactivex.rxjava3.core.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
