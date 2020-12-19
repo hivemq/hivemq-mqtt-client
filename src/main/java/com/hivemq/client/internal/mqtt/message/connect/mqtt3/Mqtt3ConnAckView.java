@@ -23,7 +23,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnAckReturnCode;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnAckReasonCode;
-import io.reactivex.functions.Function;
+import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;

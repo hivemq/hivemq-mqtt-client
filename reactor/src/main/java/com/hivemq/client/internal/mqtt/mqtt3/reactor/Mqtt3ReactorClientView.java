@@ -35,10 +35,10 @@ import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client.mqtt.mqtt3.reactor.Mqtt3ReactorClient;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
-import reactor.adapter.rxjava.RxJava2Adapter;
+import reactor.adapter.rxjava.RxJava3Adapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -60,7 +60,7 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
 
     @Override
     public @NotNull Mono<Mqtt3ConnAck> connect(final @NotNull Mqtt3Connect connect) {
-        return RxJava2Adapter.singleToMono(delegate.connect(connect));
+        return RxJava3Adapter.singleToMono(delegate.connect(connect));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
 
     @Override
     public @NotNull Mono<Mqtt3SubAck> subscribe(final @NotNull Mqtt3Subscribe subscribe) {
-        return RxJava2Adapter.singleToMono(delegate.subscribe(subscribe));
+        return RxJava3Adapter.singleToMono(delegate.subscribe(subscribe));
     }
 
     @Override
@@ -106,12 +106,12 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     public @NotNull Flux<Mqtt3Publish> publishes(
             final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
 
-        return RxJava2Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
+        return RxJava3Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
     }
 
     @Override
     public @NotNull Mono<Mqtt3UnsubAck> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return RxJava2Adapter.singleToMono(delegate.unsubscribe(unsubscribe));
+        return RxJava3Adapter.singleToMono(delegate.unsubscribe(unsubscribe));
     }
 
     @Override
@@ -121,12 +121,12 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
 
     @Override
     public @NotNull Flux<Mqtt3PublishResult> publish(final @NotNull Publisher<Mqtt3Publish> publisher) {
-        return RxJava2Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
+        return RxJava3Adapter.flowableToFlux(delegate.publish(Flowable.fromPublisher(publisher)));
     }
 
     @Override
     public @NotNull Mono<Void> disconnect() {
-        return RxJava2Adapter.completableToMono(delegate.disconnect());
+        return RxJava3Adapter.completableToMono(delegate.disconnect());
     }
 
     @Override

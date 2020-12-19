@@ -51,8 +51,8 @@ import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableSubscriber;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.FlowableSubscriber;
 import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

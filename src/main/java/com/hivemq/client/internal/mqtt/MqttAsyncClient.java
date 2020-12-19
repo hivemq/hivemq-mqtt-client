@@ -27,7 +27,6 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
-import com.hivemq.client.internal.rx.RxFutureConverter;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
@@ -40,8 +39,8 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
-import io.reactivex.FlowableSubscriber;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.FlowableSubscriber;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscription;
@@ -113,7 +112,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
 
-        return RxFutureConverter.toFuture(delegate.connect(mqttConnect));
+        return delegate.connect(mqttConnect).toCompletionStage().toCompletableFuture();
     }
 
     @Override
@@ -125,7 +124,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
-        return handleSubAck(RxFutureConverter.toFuture(delegate.subscribe(mqttSubscribe)), mqttSubscribe);
+        return handleSubAck(delegate.subscribe(mqttSubscribe).toCompletionStage().toCompletableFuture(), mqttSubscribe);
     }
 
     @Override
@@ -228,7 +227,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
 
-        return handleUnsubAck(RxFutureConverter.toFuture(delegate.unsubscribe(mqttUnsubscribe)), mqttUnsubscribe);
+        return handleUnsubAck(
+                delegate.unsubscribe(mqttUnsubscribe).toCompletionStage().toCompletableFuture(), mqttUnsubscribe);
     }
 
     @Override
@@ -240,7 +240,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @Nullable Mqtt5Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
 
-        return RxFutureConverter.toFuture(delegate.publish(mqttPublish));
+        return delegate.publish(mqttPublish).toCompletionStage().toCompletableFuture();
     }
 
     @Override
@@ -250,7 +250,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<Void> reauth() {
-        return RxFutureConverter.toFuture(delegate.reauth());
+        return delegate.reauth().toCompletionStage((Void) null).toCompletableFuture();
     }
 
     @Override
@@ -262,7 +262,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public @NotNull CompletableFuture<Void> disconnect(final @Nullable Mqtt5Disconnect disconnect) {
         final MqttDisconnect mqttDisconnect = MqttChecks.disconnect(disconnect);
 
-        return RxFutureConverter.toFuture(delegate.disconnect(mqttDisconnect));
+        return delegate.disconnect(mqttDisconnect).toCompletionStage((Void) null).toCompletableFuture();
     }
 
     @Override

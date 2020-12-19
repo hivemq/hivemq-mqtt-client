@@ -17,7 +17,7 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.CheckReturnValue;
-import io.reactivex.Scheduler;
+import io.reactivex.rxjava3.core.Scheduler;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
