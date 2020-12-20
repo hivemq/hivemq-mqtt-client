@@ -56,8 +56,8 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @NotNull Optional<MqttClientIdentifier> getClientIdentifier() {
-        return delegate.getClientIdentifier();
+    public @NotNull Optional<MqttClientIdentifier> getIdentifier() {
+        return delegate.getIdentifier();
     }
 
     @Override

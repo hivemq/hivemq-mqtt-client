@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> extends MqttTransportConfigBuilderBase<B> {
 
     /**
-     * Sets the {@link MqttClientConfig#getClientIdentifier() Client Identifier}.
+     * Sets the {@link MqttClientConfig#getIdentifier() Client Identifier}.
      *
      * @param identifier the string representation of the Client Identifier.
      * @return the builder.
@@ -46,7 +46,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> exten
     @NotNull B identifier(@NotNull String identifier);
 
     /**
-     * Sets the {@link MqttClientConfig#getClientIdentifier() Client Identifier}.
+     * Sets the {@link MqttClientConfig#getIdentifier() Client Identifier}.
      *
      * @param identifier the Client Identifier.
      * @return the builder.

@@ -47,7 +47,7 @@ public interface MqttClientConfig {
      *
      * @return the (currently not present) identifier of the client.
      */
-    @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
+    @NotNull Optional<MqttClientIdentifier> getIdentifier();
 
     /**
      * @return the transport configuration of the client.

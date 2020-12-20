@@ -102,7 +102,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull Optional<MqttClientIdentifier> getClientIdentifier() {
+    public @NotNull Optional<MqttClientIdentifier> getIdentifier() {
         return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ? Optional.empty() :
                 Optional.of(clientIdentifier);
     }
