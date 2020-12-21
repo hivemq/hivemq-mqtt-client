@@ -15,7 +15,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "hivemq-mqtt-client"
+rootProject.name = "hivemq-mqtt-client2"
 
 listOf("websocket", "proxy", "epoll", "reactor", "examples").forEach { module ->
     include("${rootProject.name}-$module")

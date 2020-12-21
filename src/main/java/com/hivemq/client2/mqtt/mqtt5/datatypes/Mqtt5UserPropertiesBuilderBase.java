@@ -1,0 +1,95 @@
+/*
+ * Copyright 2018-present HiveMQ and the HiveMQ Community
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.hivemq.client2.mqtt.mqtt5.datatypes;
+
+import com.hivemq.client2.annotations.CheckReturnValue;
+import com.hivemq.client2.mqtt.datatypes.MqttUtf8String;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.stream.Stream;
+
+/**
+ * Builder base for {@link Mqtt5UserProperties}.
+ *
+ * @param <B> the type of the builder.
+ * @author Silvio Giebl
+ * @since 1.0
+ */
+@ApiStatus.NonExtendable
+public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBuilderBase<B>> {
+
+    /**
+     * Adds a {@link Mqtt5UserProperty User Property}.
+     *
+     * @param name  the name of the User Property.
+     * @param value the value of the User Property.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B add(@NotNull String name, @NotNull String value);
+
+    /**
+     * Adds a {@link Mqtt5UserProperty User Property}.
+     *
+     * @param name  the name of the User Property.
+     * @param value the value of the User Property.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B add(@NotNull MqttUtf8String name, @NotNull MqttUtf8String value);
+
+    /**
+     * Adds a {@link Mqtt5UserProperty User Property}.
+     *
+     * @param userProperty the User Property.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
+
+    /**
+     * Adds {@link Mqtt5UserProperty User Properties}.
+     *
+     * @param userProperties the User Properties.
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B addAll(@NotNull Mqtt5UserProperty @NotNull ... userProperties);
+
+    /**
+     * Adds a collection of {@link Mqtt5UserProperty User Properties}.
+     *
+     * @param userProperties the collection of User Properties.
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B addAll(@NotNull Collection<@NotNull ? extends Mqtt5UserProperty> userProperties);
+
+    /**
+     * Adds a stream of {@link Mqtt5UserProperty User Properties}.
+     *
+     * @param userProperties the stream of User Properties.
+     * @return the builder.
+     * @since 1.2
+     */
+    @CheckReturnValue
+    @NotNull B addAll(@NotNull Stream<@NotNull ? extends Mqtt5UserProperty> userProperties);
+}

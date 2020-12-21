@@ -8,7 +8,7 @@ plugins {
 description = "Reactor API for the HiveMQ MQTT Client"
 
 metadata {
-    moduleName.set("com.hivemq.client.mqtt.reactor")
+    moduleName.set("com.hivemq.client2.mqtt.reactor")
     readableName.set("HiveMQ MQTT Client reactor module")
 }
 
@@ -37,8 +37,8 @@ dependencies {
 tasks.jar {
     withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
         bnd("Export-Package: " +
-                "com.hivemq.client.mqtt.mqtt3.reactor," +
-                "com.hivemq.client.mqtt.mqtt5.reactor," +
-                "com.hivemq.client.rx.reactor")
+                "com.hivemq.client2.mqtt.mqtt3.reactor," +
+                "com.hivemq.client2.mqtt.mqtt5.reactor," +
+                "com.hivemq.client2.rx.reactor")
     }
 }

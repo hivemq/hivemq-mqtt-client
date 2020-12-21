@@ -189,7 +189,7 @@ allprojects {
                         val command = listOf(
                                 "perl", bin.resolve("japi-compliance-checker.pl").path,
                                 "-lib", artifactId,
-                                "-skip-internal-packages", "com.hivemq.client.internal",
+                                "-skip-internal-packages", "com.hivemq.client2.internal",
                                 "-non-impl", nonImplFile.path,
                                 "-check-annotations", "-s",
                                 prevJar.path, jar.path)
