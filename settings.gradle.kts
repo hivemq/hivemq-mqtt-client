@@ -1,4 +1,4 @@
-rootProject.name = "hivemq-mqtt-client"
+rootProject.name = "hivemq-mqtt-client2"
 
 pluginManagement {
     repositories {

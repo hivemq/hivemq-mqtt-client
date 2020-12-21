@@ -101,7 +101,7 @@ If you use Gradle, just include the following inside your `build.gradle(.kts)` f
 
 ```groovy
 dependencies {
-  implementation("com.hivemq:hivemq-mqtt-client:1.2.2")
+    implementation("com.hivemq:hivemq-mqtt-client2:2.0.0")
 }
 ```
 
@@ -109,10 +109,10 @@ For optional features you can choose to include additional modules:
 
 ```groovy
 dependencies {
-  implementation(platform("com.hivemq:hivemq-mqtt-client-websocket:1.2.2"))
-  implementation(platform("com.hivemq:hivemq-mqtt-client-proxy:1.2.2"))
-  implementation(platform("com.hivemq:hivemq-mqtt-client-epoll:1.2.2"))
-  implementation("com.hivemq:hivemq-mqtt-client-reactor:1.2.2")
+    implementation(platform("com.hivemq:hivemq-mqtt-client2-websocket:2.0.0"))
+    implementation(platform("com.hivemq:hivemq-mqtt-client2-proxy:2.0.0"))
+    implementation(platform("com.hivemq:hivemq-mqtt-client2-epoll:2.0.0"))
+    implementation("com.hivemq:hivemq-mqtt-client2-reactor:2.0.0")
 }
 ```
 
@@ -126,8 +126,8 @@ If you use Maven, just include the following inside your `pom.xml` file.
     <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.2.2</version>
+            <artifactId>hivemq-mqtt-client2</artifactId>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
     ...
@@ -155,32 +155,32 @@ For optional features you can choose to include additional modules:
     <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client-websocket</artifactId>
-            <version>1.2.2</version>
+            <artifactId>hivemq-mqtt-client2-websocket</artifactId>
+            <version>2.0.0</version>
             <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client-proxy</artifactId>
-            <version>1.2.2</version>
+            <artifactId>hivemq-mqtt-client2-proxy</artifactId>
+            <version>2.0.0</version>
             <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client-epoll</artifactId>
-            <version>1.2.2</version>
+            <artifactId>hivemq-mqtt-client2-epoll</artifactId>
+            <version>2.0.0</version>
             <type>pom</type>
         </dependency>
     </dependencies>
     <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client-reactor</artifactId>
-            <version>1.2.2</version>
+            <artifactId>hivemq-mqtt-client2-reactor</artifactId>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
     ...
@@ -198,7 +198,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-  implementation("com.hivemq:hivemq-mqtt-client-shaded:1.2.2")
+    implementation("com.hivemq:hivemq-mqtt-client2-shaded:2.0.0")
 }
 ```
 
@@ -210,8 +210,8 @@ dependencies {
     <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
-            <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.2.2</version>
+            <artifactId>hivemq-mqtt-client2-shaded</artifactId>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
     ...
@@ -226,18 +226,18 @@ Snapshots can be obtained using [JitPack](https://jitpack.io/#hivemq/hivemq-mqtt
 
 ```groovy
 repositories {
-  ...
-  maven { url 'https://jitpack.io' }
+    ...
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-  implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT")
+    implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client2:develop-SNAPSHOT")
 
-  // snapshots for optional modules
-  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT"))
-  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT"))
-  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT"))
-  implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT")
+    // snapshots for optional modules
+    implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client2-websocket:develop-SNAPSHOT"))
+    implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client2-proxy:develop-SNAPSHOT"))
+    implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client2-epoll:develop-SNAPSHOT"))
+    implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client2-reactor:develop-SNAPSHOT")
 }
 ```
 
@@ -256,7 +256,7 @@ dependencies {
     <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
-            <artifactId>hivemq-mqtt-client</artifactId>
+            <artifactId>hivemq-mqtt-client2</artifactId>
             <version>develop-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -265,7 +265,7 @@ dependencies {
     <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
-            <artifactId>hivemq-mqtt-client-websocket</artifactId>
+            <artifactId>hivemq-mqtt-client2-websocket</artifactId>
             <version>develop-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
@@ -273,7 +273,7 @@ dependencies {
     <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
-            <artifactId>hivemq-mqtt-client-proxy</artifactId>
+            <artifactId>hivemq-mqtt-client2-proxy</artifactId>
             <version>develop-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
@@ -281,7 +281,7 @@ dependencies {
     <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
-            <artifactId>hivemq-mqtt-client-epoll</artifactId>
+            <artifactId>hivemq-mqtt-client2-epoll</artifactId>
             <version>develop-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
@@ -289,7 +289,7 @@ dependencies {
     <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
-            <artifactId>hivemq-mqtt-client-reactor</artifactId>
+            <artifactId>hivemq-mqtt-client2-reactor</artifactId>
             <version>develop-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -297,7 +297,7 @@ dependencies {
 </project>
 ```
 
-Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version.
+Change the artifact name to `hivemq-mqtt-client2-shaded` to get snapshots of the shaded version.
 
 JitPack works for all branches and also specific commits.
 Just specify `<branch>-SNAPSHOT` or the first 10 digits of the commit id in the version.
@@ -734,7 +734,7 @@ API but return `Completable`.
 
 [Semantic Versioning](https://semver.org/) is used.
 
-All code inside `com.hivemq.client.internal` packages must not be used directly. It can change at any time and is not
+All code inside `com.hivemq.client2.internal` packages must not be used directly. It can change at any time and is not
 part of the public API.
 
 Interfaces annotated with `DoNotImplement` must not be implemented. The implementation is provided by the library.

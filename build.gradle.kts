@@ -23,7 +23,7 @@ allprojects {
     plugins.apply("com.github.sgtsilvio.gradle.metadata")
 
     metadata {
-        moduleName.set("com.hivemq.client.mqtt")
+        moduleName.set("com.hivemq.client2.mqtt")
         readableName.set("HiveMQ MQTT Client")
         organization {
             name.set("HiveMQ and the HiveMQ Community")
@@ -158,10 +158,10 @@ allprojects {
 tasks.jar {
     withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
         bnd("Export-Package: " +
-                "com.hivemq.client.annotations.*," +
-                "com.hivemq.client.mqtt.*," +
-                "com.hivemq.client.rx.*," +
-                "com.hivemq.client.util.*")
+                "com.hivemq.client2.annotations.*," +
+                "com.hivemq.client2.mqtt.*," +
+                "com.hivemq.client2.rx.*," +
+                "com.hivemq.client2.util.*")
     }
 }
 
@@ -176,7 +176,7 @@ tasks.shadowJar {
         }
     })
 
-    val shadePrefix = "com.hivemq.client.internal.shaded."
+    val shadePrefix = "com.hivemq.client2.internal.shaded."
     val shadeFilePrefix = shadePrefix.replace(".", "_")
     relocate("io.netty", "${shadePrefix}io.netty")
     relocate("META-INF/native/libnetty", "META-INF/native/lib${shadeFilePrefix}netty")
