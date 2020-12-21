@@ -86,7 +86,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the SubAck message if all subscriptions of the Subscribe message were successful (the SubAck message
      *         contains no Error Codes).
      * @throws com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5SubAckException wrapping the SubAck message if it contains
-     *                                                                      at least one Error Code.
+     *                                                                       at least one Error Code.
      */
     @NotNull Mqtt5SubAck subscribe(@NotNull Mqtt5Subscribe subscribe);
 
@@ -129,7 +129,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @return the UnsubAck message if all Topic Filters of the Unsubscribe message were successfully unsubscribed (the
      *         UnsubAck message contains no Error Codes).
      * @throws com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException wrapping the UnsubAck message if it
-     *                                                                        contains at least one Error Code.
+     *                                                                         contains at least one Error Code.
      */
     @NotNull Mqtt5UnsubAck unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
@@ -151,10 +151,10 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @param publish the Publish message sent to the broker.
      * @return the {@link Mqtt5PublishResult} if the Publish message was successfully published (no acknowledgement
      *         message contains an Error Code, {@link Mqtt5PublishResult#getError()} will always be absent).
-     * @throws com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5PubAckException wrapping the corresponding PubAck message if
-     *                                                                      it contains an Error Code.
-     * @throws com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5PubRecException wrapping the corresponding PubRec message if
-     *                                                                      it contains an Error Code.
+     * @throws com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5PubAckException wrapping the corresponding PubAck message
+     *                                                                       if it contains an Error Code.
+     * @throws com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5PubRecException wrapping the corresponding PubRec message
+     *                                                                       if it contains an Error Code.
      */
     @NotNull Mqtt5PublishResult publish(@NotNull Mqtt5Publish publish);
 
@@ -174,7 +174,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * Re-authenticates this client.
      *
      * @throws com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5AuthException wrapping the Auth message with the Error Code
-     *                                                                    if not re-authenticated successfully.
+     *                                                                     if not re-authenticated successfully.
      */
     void reauth();
 

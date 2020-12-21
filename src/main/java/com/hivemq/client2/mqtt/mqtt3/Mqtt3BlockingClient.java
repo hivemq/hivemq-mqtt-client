@@ -84,7 +84,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return the SubAck message if all subscriptions of the Subscribe message were successful (the SubAck message
      *         contains no Error Codes).
      * @throws com.hivemq.client2.mqtt.mqtt3.exceptions.Mqtt3SubAckException wrapping the SubAck message if it contains
-     *                                                                      at least one Error Code.
+     *                                                                       at least one Error Code.
      */
     @NotNull Mqtt3SubAck subscribe(@NotNull Mqtt3Subscribe subscribe);
 
