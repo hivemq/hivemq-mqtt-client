@@ -26,7 +26,7 @@ import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -58,12 +58,16 @@ public class FluxWithSingleTransform<F, FT, S> extends FluxWithSingleOperator<F,
 
     private static class SerializeSubscriber<F, S> implements CoreSubscriber<F>, Consumer<S>, Subscription {
 
+        @SuppressWarnings("rawtypes")
+        private static final @NotNull AtomicIntegerFieldUpdater<SerializeSubscriber> WIP =
+                AtomicIntegerFieldUpdater.newUpdater(SerializeSubscriber.class, "wip");
+
         private final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber;
         private @Nullable Subscription subscription;
         private final @NotNull ConcurrentLinkedQueue<F> queue = new ConcurrentLinkedQueue<>();
         private @Nullable S single;
         private @Nullable Object done;
-        private final @NotNull AtomicInteger wip = new AtomicInteger();
+        private volatile int wip;
 
         SerializeSubscriber(final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber) {
             this.subscriber = subscriber;
@@ -104,7 +108,7 @@ public class FluxWithSingleTransform<F, FT, S> extends FluxWithSingleOperator<F,
         }
 
         private void drain() {
-            if (wip.getAndIncrement() != 0) {
+            if (WIP.getAndIncrement(this) != 0) {
                 return;
             }
             int missed = 1;
@@ -130,7 +134,7 @@ public class FluxWithSingleTransform<F, FT, S> extends FluxWithSingleOperator<F,
                         subscriber.onComplete();
                     }
                 }
-                missed = wip.addAndGet(-missed);
+                missed = WIP.addAndGet(this, -missed);
             } while (missed != 0);
         }
 

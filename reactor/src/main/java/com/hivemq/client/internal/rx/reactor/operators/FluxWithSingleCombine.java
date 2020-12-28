@@ -48,7 +48,6 @@ class FluxWithSingleCombine<F, S> extends Flux<Object> {
 
     private static class CombineSubscriber<F, S> implements CoreWithSingleSubscriber<F, S>, Subscription {
 
-        private static final @NotNull Object COMPLETE = new Object();
         @SuppressWarnings("rawtypes")
         private static final @NotNull AtomicLongFieldUpdater<CombineSubscriber> REQUESTED =
                 AtomicLongFieldUpdater.newUpdater(CombineSubscriber.class, "requested");
@@ -97,7 +96,7 @@ class FluxWithSingleCombine<F, S> extends Flux<Object> {
         public void onComplete() {
             synchronized (this) {
                 if (queued != null) {
-                    done = COMPLETE;
+                    done = new Object();
                 } else {
                     subscriber.onComplete();
                 }
