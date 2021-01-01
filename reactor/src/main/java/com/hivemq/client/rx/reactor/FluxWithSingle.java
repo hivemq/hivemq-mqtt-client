@@ -17,10 +17,7 @@
 package com.hivemq.client.rx.reactor;
 
 import com.hivemq.client.internal.rx.reactor.CoreWithSingleStrictSubscriber;
-import com.hivemq.client.internal.rx.reactor.operators.FluxWithSingleFrom;
-import com.hivemq.client.internal.rx.reactor.operators.FluxWithSingleMap;
-import com.hivemq.client.internal.rx.reactor.operators.FluxWithSinglePublishOn;
-import com.hivemq.client.internal.rx.reactor.operators.FluxWithSingleTransform;
+import com.hivemq.client.internal.rx.reactor.operators.*;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
@@ -119,7 +116,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         Checks.notNull(singleMapper, "Single mapper");
-        return FluxWithSingleMap.mapSingle(this, singleMapper);
+        return new FluxWithSingleMap<>(this, null, singleMapper);
     }
 
     /**
@@ -137,7 +134,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
 
         Checks.notNull(fluxMapper, "Flux mapper");
         Checks.notNull(singleMapper, "Single mapper");
-        return FluxWithSingleMap.mapBoth(this, fluxMapper, singleMapper);
+        return new FluxWithSingleMap<>(this, fluxMapper, singleMapper);
     }
 
     /**
@@ -148,10 +145,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      */
     public final @NotNull FluxWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
         Checks.notNull(singleConsumer, "Single consumer");
-        return FluxWithSingleMap.mapSingle(this, s -> {
-            singleConsumer.accept(s);
-            return s;
-        });
+        return new FluxWithSingleDo<>(this, singleConsumer);
     }
 
     /**

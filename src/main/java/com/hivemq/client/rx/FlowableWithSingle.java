@@ -18,10 +18,7 @@ package com.hivemq.client.rx;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.internal.rx.WithSingleStrictSubscriber;
-import com.hivemq.client.internal.rx.operators.FlowableWithSingleMap;
-import com.hivemq.client.internal.rx.operators.FlowableWithSingleMapError;
-import com.hivemq.client.internal.rx.operators.FlowableWithSingleObserveOn;
-import com.hivemq.client.internal.rx.operators.FlowableWithSingleTransform;
+import com.hivemq.client.internal.rx.operators.*;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
@@ -124,7 +121,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         Checks.notNull(singleMapper, "Single mapper");
-        return FlowableWithSingleMap.mapSingle(this, singleMapper);
+        return new FlowableWithSingleMap<>(this, null, singleMapper);
     }
 
     /**
@@ -147,7 +144,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
 
         Checks.notNull(flowableMapper, "Flowable mapper");
         Checks.notNull(singleMapper, "Single mapper");
-        return FlowableWithSingleMap.mapBoth(this, flowableMapper, singleMapper);
+        return new FlowableWithSingleMap<>(this, flowableMapper, singleMapper);
     }
 
     /**
@@ -177,10 +174,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull FlowableWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
         Checks.notNull(singleConsumer, "Single consumer");
-        return FlowableWithSingleMap.mapSingle(this, s -> {
-            singleConsumer.accept(s);
-            return s;
-        });
+        return new FlowableWithSingleDo<>(this, singleConsumer);
     }
 
     /**

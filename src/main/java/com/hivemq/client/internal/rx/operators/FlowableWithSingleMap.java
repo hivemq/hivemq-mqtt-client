@@ -34,25 +34,10 @@ import org.reactivestreams.Subscription;
  */
 public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, S, FM, SM> {
 
-    public static <F, S, FM, SM> @NotNull FlowableWithSingleMap<F, S, FM, SM> mapBoth(
-            final @NotNull FlowableWithSingle<F, S> source,
-            final @Nullable Function<? super F, ? extends FM> flowableMapper,
-            final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
-        return new FlowableWithSingleMap<>(source, flowableMapper, singleMapper);
-    }
-
-    public static <F, S, SM> @NotNull FlowableWithSingleMap<F, S, F, SM> mapSingle(
-            final @NotNull FlowableWithSingle<F, S> source,
-            final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
-        return new FlowableWithSingleMap<>(source, null, singleMapper);
-    }
-
     private final @Nullable Function<? super F, ? extends FM> flowableMapper;
     private final @NotNull Function<? super S, ? extends SM> singleMapper;
 
-    private FlowableWithSingleMap(
+    public FlowableWithSingleMap(
             final @NotNull FlowableWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
@@ -140,7 +125,7 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
             }
         }
 
-        void fail(final @NotNull Throwable throwable) {
+        final void fail(final @NotNull Throwable throwable) {
             assert subscription != null;
             Exceptions.throwIfFatal(throwable);
             subscription.cancel();

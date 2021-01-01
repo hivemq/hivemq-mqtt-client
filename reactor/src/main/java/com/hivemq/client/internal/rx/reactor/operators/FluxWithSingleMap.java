@@ -35,24 +35,10 @@ import java.util.function.Function;
  */
 public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, SM> {
 
-    public static <F, S, FM, SM> @NotNull FluxWithSingleMap<F, S, FM, SM> mapBoth(
-            final @NotNull FluxWithSingle<F, S> source,
-            final @Nullable Function<? super F, ? extends FM> fluxMapper,
-            final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
-        return new FluxWithSingleMap<>(source, fluxMapper, singleMapper);
-    }
-
-    public static <F, S, SM> @NotNull FluxWithSingleMap<F, S, F, SM> mapSingle(
-            final @NotNull FluxWithSingle<F, S> source, final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
-        return new FluxWithSingleMap<>(source, null, singleMapper);
-    }
-
     private final @Nullable Function<? super F, ? extends FM> fluxMapper;
     private final @NotNull Function<? super S, ? extends SM> singleMapper;
 
-    private FluxWithSingleMap(
+    public FluxWithSingleMap(
             final @NotNull FluxWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
@@ -141,7 +127,7 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
             }
         }
 
-        void fail(final @NotNull Throwable throwable) {
+        final void fail(final @NotNull Throwable throwable) {
             assert subscription != null;
             Exceptions.throwIfFatal(throwable);
             subscription.cancel();
@@ -176,8 +162,7 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
         }
 
         private static class Conditional<F, S, FM, SM, T extends Fuseable.ConditionalSubscriber<? super FM>>
-                extends FluxWithSingleMap.MapSubscriber<F, S, FM, SM, T>
-                implements CoreWithSingleConditionalSubscriber<F, S> {
+                extends MapSubscriber<F, S, FM, SM, T> implements CoreWithSingleConditionalSubscriber<F, S> {
 
             Conditional(
                     final @NotNull T subscriber,
