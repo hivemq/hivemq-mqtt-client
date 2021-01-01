@@ -28,6 +28,7 @@ dependencies {
 
 dependencies {
     testImplementation("io.projectreactor:reactor-test:${property("reactor.version")}")
+    testImplementation("org.mockito:mockito-core:${property("mockito.version")}")
     testImplementation("com.google.guava:guava:${property("guava.version")}")
 }
 

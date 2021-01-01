@@ -54,7 +54,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      * @param source the source to decorate.
      * @param <F>    the type of the flow items.
      * @param <S>    the type of the single item.
-     * @return a new {@link FluxWithSingle}.
+     * @return a {@link FluxWithSingle}.
      */
     public static <F, S> @NotNull FluxWithSingle<F, S> from(
             final @NotNull PublisherWithSingle<? extends F, ? extends S> source) {
@@ -63,6 +63,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
             //noinspection unchecked
             return (FluxWithSingle<F, S>) source;
         }
+        Checks.notNull(source, "Source");
         return new FluxWithSingleFrom<>(source);
     }
 

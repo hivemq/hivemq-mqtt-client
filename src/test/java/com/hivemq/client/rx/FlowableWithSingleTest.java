@@ -17,6 +17,7 @@
 package com.hivemq.client.rx;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -41,6 +42,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Silvio Giebl
@@ -53,6 +57,43 @@ class FlowableWithSingleTest {
                         StringBuilder.class),
                 new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), new StringBuilder("single"),
                         0));
+    }
+
+    @Test
+    void from() {
+        final PublisherWithSingle<?, ?> publisherWithSingle = mock(PublisherWithSingle.class);
+        final FlowableWithSingle<?, ?> flowableWithSingle =
+                FlowableWithSingle.fromPublisherWithSingle(publisherWithSingle);
+        assertNotSame(publisherWithSingle, flowableWithSingle);
+
+        final WithSingleSubscriber<Object, Object> subscriber = new WithSingleSubscriber<Object, Object>() {
+            @Override
+            public void onSingle(final @NotNull Object o) {}
+
+            @Override
+            public void onSubscribe(final @NotNull Subscription s) {}
+
+            @Override
+            public void onNext(final @NotNull Object o) {}
+
+            @Override
+            public void onError(final @NotNull Throwable t) {}
+
+            @Override
+            public void onComplete() {}
+        };
+        flowableWithSingle.subscribe(subscriber);
+        verify(publisherWithSingle).subscribe(any());
+        flowableWithSingle.subscribeBoth(subscriber);
+        verify(publisherWithSingle).subscribeBoth(any());
+    }
+
+    @Test
+    void from_flowableWithSingle_returnsSame() {
+        final FlowableWithSingle<?, ?> publisherWithSingle = mock(FlowableWithSingle.class);
+        final FlowableWithSingle<?, ?> flowableWithSingle =
+                FlowableWithSingle.fromPublisherWithSingle(publisherWithSingle);
+        assertSame(publisherWithSingle, flowableWithSingle);
     }
 
     @MethodSource("singleNext3")

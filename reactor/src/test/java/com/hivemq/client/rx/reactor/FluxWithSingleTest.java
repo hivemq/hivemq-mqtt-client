@@ -17,6 +17,7 @@
 package com.hivemq.client.rx.reactor;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.hivemq.client.rx.reactivestreams.PublisherWithSingle;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Silvio Giebl
@@ -54,6 +58,41 @@ class FluxWithSingleTest {
                         StringBuilder.class),
                 new FluxWithSingleItem<>(Flux.fromIterable(Arrays.asList("next0", "next1", "next2")),
                         new StringBuilder("single"), 0));
+    }
+
+    @Test
+    void from() {
+        final PublisherWithSingle<?, ?> publisherWithSingle = mock(PublisherWithSingle.class);
+        final FluxWithSingle<?, ?> fluxWithSingle = FluxWithSingle.from(publisherWithSingle);
+        assertNotSame(publisherWithSingle, fluxWithSingle);
+
+        final WithSingleSubscriber<Object, Object> subscriber = new WithSingleSubscriber<Object, Object>() {
+            @Override
+            public void onSingle(final @NotNull Object o) {}
+
+            @Override
+            public void onSubscribe(final @NotNull Subscription s) {}
+
+            @Override
+            public void onNext(final @NotNull Object o) {}
+
+            @Override
+            public void onError(final @NotNull Throwable t) {}
+
+            @Override
+            public void onComplete() {}
+        };
+        fluxWithSingle.subscribe(subscriber);
+        verify(publisherWithSingle).subscribe(any());
+        fluxWithSingle.subscribeBoth(subscriber);
+        verify(publisherWithSingle).subscribeBoth(any());
+    }
+
+    @Test
+    void from_fluxWithSingle_returnsSame() {
+        final FluxWithSingle<?, ?> publisherWithSingle = mock(FluxWithSingle.class);
+        final FluxWithSingle<?, ?> fluxWithSingle = FluxWithSingle.from(publisherWithSingle);
+        assertSame(publisherWithSingle, fluxWithSingle);
     }
 
     @MethodSource("singleNext3")

@@ -50,6 +50,26 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWithSingle<F, S> {
 
     /**
+     * Converts an arbitrary {@link PublisherWithSingle} into a {@link FlowableWithSingle} if not already a {@link
+     * FlowableWithSingle}.
+     *
+     * @param source the source to convert.
+     * @param <F>    the type of the flow items.
+     * @param <S>    the type of the single item.
+     * @return a {@link FlowableWithSingle}.
+     */
+    public static <F, S> @NotNull FlowableWithSingle<F, S> fromPublisherWithSingle(
+            final @NotNull PublisherWithSingle<? extends F, ? extends S> source) {
+
+        if (source instanceof FlowableWithSingle) {
+            //noinspection unchecked
+            return (FlowableWithSingle<F, S>) source;
+        }
+        Checks.notNull(source, "Source");
+        return new FlowableWithSingleFrom<>(source);
+    }
+
+    /**
      * Modifies the upstream to perform its emissions and notifications including the single item on a specified {@link
      * Scheduler} asynchronously with a bounded buffer of {@link #bufferSize()} slots.
      *
