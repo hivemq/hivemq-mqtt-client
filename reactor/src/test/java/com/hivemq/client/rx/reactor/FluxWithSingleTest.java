@@ -254,6 +254,39 @@ class FluxWithSingleTest {
 
     @MethodSource("singleNext3")
     @ParameterizedTest
+    void mapBoth_mapSingleAlwaysFalse(final @NotNull FluxWithSingle<String, StringBuilder> flowableWithSingle) {
+        final AtomicInteger count = new AtomicInteger();
+        flowableWithSingle.mapBoth(String::length, stringBuilder -> {
+            fail();
+            return (double) stringBuilder.toString().length();
+        }, false).doOnNext(integer -> {
+            count.getAndIncrement();
+            assertEquals((Integer) 5, integer);
+        }).blockLast();
+        assertEquals(3, count.get());
+    }
+
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void mapBoth_mapSingleAlwaysFalse_consumeSingle(
+            final @NotNull FluxWithSingle<String, StringBuilder> flowableWithSingle) {
+
+        final AtomicInteger count = new AtomicInteger();
+        flowableWithSingle.mapBoth(String::length, stringBuilder -> (double) stringBuilder.toString().length(), false)
+                .doOnSingle(aDouble -> {
+                    count.getAndIncrement();
+                    assertEquals((Double) 6d, aDouble);
+                })
+                .doOnNext(integer -> {
+                    count.getAndIncrement();
+                    assertEquals((Integer) 5, integer);
+                })
+                .blockLast();
+        assertEquals(4, count.get());
+    }
+
+    @MethodSource("singleNext3")
+    @ParameterizedTest
     void doOnSingle_multiple(final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle) {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());

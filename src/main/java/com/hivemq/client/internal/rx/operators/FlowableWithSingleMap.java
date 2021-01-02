@@ -34,27 +34,34 @@ import org.reactivestreams.Subscription;
  */
 public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, S, FM, SM> {
 
-    private final @Nullable Function<? super F, ? extends FM> flowableMapper;
+    private final @NotNull Function<? super F, ? extends FM> flowableMapper;
     private final @NotNull Function<? super S, ? extends SM> singleMapper;
+    private final boolean alwaysMapSingle;
 
     public FlowableWithSingleMap(
             final @NotNull FlowableWithSingle<F, S> source,
-            final @Nullable Function<? super F, ? extends FM> flowableMapper,
-            final @NotNull Function<? super S, ? extends SM> singleMapper) {
+            final @NotNull Function<? super F, ? extends FM> flowableMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper,
+            final boolean alwaysMapSingle) {
 
         super(source);
         this.flowableMapper = flowableMapper;
         this.singleMapper = singleMapper;
+        this.alwaysMapSingle = alwaysMapSingle;
     }
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super FM> subscriber) {
-        if (subscriber instanceof ConditionalSubscriber) {
-            //noinspection unchecked
-            final ConditionalSubscriber<? super FM> conditional = (ConditionalSubscriber<? super FM>) subscriber;
-            source.subscribeBoth(new MapSubscriber.Conditional<>(conditional, flowableMapper, singleMapper));
+        if (alwaysMapSingle) {
+            if (subscriber instanceof ConditionalSubscriber) {
+                //noinspection unchecked
+                final ConditionalSubscriber<? super FM> conditional = (ConditionalSubscriber<? super FM>) subscriber;
+                source.subscribeBoth(new MapSubscriber.Conditional<>(conditional, flowableMapper, singleMapper));
+            } else {
+                source.subscribeBoth(new MapSubscriber<>(subscriber, flowableMapper, singleMapper));
+            }
         } else {
-            source.subscribeBoth(new MapSubscriber<>(subscriber, flowableMapper, singleMapper));
+            source.map(flowableMapper).subscribe(subscriber);
         }
     }
 
@@ -74,13 +81,13 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
             implements FlowableWithSingleSubscriber<F, S>, Subscription {
 
         final @NotNull T subscriber;
-        final @Nullable Function<? super F, ? extends FM> flowableMapper;
+        final @NotNull Function<? super F, ? extends FM> flowableMapper;
         private final @NotNull Function<? super S, ? extends SM> singleMapper;
         private @Nullable Subscription subscription;
 
         MapSubscriber(
                 final @NotNull T subscriber,
-                final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                final @NotNull Function<? super F, ? extends FM> flowableMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
             this.subscriber = subscriber;
@@ -110,19 +117,14 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
 
         @Override
         public void onNext(final @NotNull F f) {
-            if (flowableMapper == null) {
-                //noinspection unchecked
-                subscriber.onNext((FM) f);
-            } else {
-                final FM fm;
-                try {
-                    fm = Checks.notNull(flowableMapper.apply(f), "Mapped value");
-                } catch (final Throwable throwable) {
-                    fail(throwable);
-                    return;
-                }
-                subscriber.onNext(fm);
+            final FM fm;
+            try {
+                fm = Checks.notNull(flowableMapper.apply(f), "Mapped value");
+            } catch (final Throwable throwable) {
+                fail(throwable);
+                return;
             }
+            subscriber.onNext(fm);
         }
 
         final void fail(final @NotNull Throwable throwable) {
@@ -159,7 +161,7 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
 
             Conditional(
                     final @NotNull T subscriber,
-                    final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                    final @NotNull Function<? super F, ? extends FM> flowableMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
                 super(subscriber, flowableMapper, singleMapper);
@@ -167,19 +169,14 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
 
             @Override
             public boolean tryOnNext(final @NotNull F f) {
-                if (flowableMapper == null) {
-                    //noinspection unchecked
-                    return subscriber.tryOnNext((FM) f);
-                } else {
-                    final FM fm;
-                    try {
-                        fm = Checks.notNull(flowableMapper.apply(f), "Mapped value");
-                    } catch (final Throwable throwable) {
-                        fail(throwable);
-                        return false;
-                    }
-                    return subscriber.tryOnNext(fm);
+                final FM fm;
+                try {
+                    fm = Checks.notNull(flowableMapper.apply(f), "Mapped value");
+                } catch (final Throwable throwable) {
+                    fail(throwable);
+                    return false;
                 }
+                return subscriber.tryOnNext(fm);
             }
         }
     }
@@ -189,7 +186,7 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
 
         WithSingleMapSubscriber(
                 final @NotNull WithSingleSubscriber<? super FM, ? super SM> subscriber,
-                final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                final @NotNull Function<? super F, ? extends FM> flowableMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
             super(subscriber, flowableMapper, singleMapper);
@@ -205,7 +202,7 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
 
             Conditional(
                     final @NotNull WithSingleConditionalSubscriber<? super FM, ? super SM> subscriber,
-                    final @Nullable Function<? super F, ? extends FM> flowableMapper,
+                    final @NotNull Function<? super F, ? extends FM> flowableMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
                 super(subscriber, flowableMapper, singleMapper);

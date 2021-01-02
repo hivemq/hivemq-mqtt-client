@@ -145,7 +145,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
 
         return delegate.subscribePublishes(mqttSubscribe, manualAcknowledgement)
                 .mapError(Mqtt3ExceptionFactory.MAPPER)
-                .mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
+                .mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER, false);
     }
 
     @Override

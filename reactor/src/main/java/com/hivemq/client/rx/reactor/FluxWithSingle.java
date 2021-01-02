@@ -116,8 +116,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
     public final <SM> @NotNull FluxWithSingle<F, SM> mapSingle(
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
-        Checks.notNull(singleMapper, "Single mapper");
-        return new FluxWithSingleMap<>(this, null, singleMapper);
+        return mapBoth(f -> f, singleMapper);
     }
 
     /**
@@ -133,9 +132,28 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
             final @NotNull Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
+        return mapBoth(fluxMapper, singleMapper, true);
+    }
+
+    /**
+     * Transform the items emitted by this {@link FluxWithSingle} by applying a synchronous function to each item.
+     *
+     * @param fluxMapper      the synchronous transforming {@link Function} for the flow of items.
+     * @param singleMapper    the synchronous transforming {@link Function} for the single item.
+     * @param mapSingleAlways whether the single mapper must always be called even if the the mapped item is not
+     *                        consumed downstream.
+     * @param <FM>            the type of the transformed flow items.
+     * @param <SM>            the type of the transformed single item.
+     * @return a transformed {@link FluxWithSingle}.
+     */
+    public final <FM, SM> @NotNull FluxWithSingle<FM, SM> mapBoth(
+            final @NotNull Function<? super F, ? extends FM> fluxMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper,
+            final boolean mapSingleAlways) {
+
         Checks.notNull(fluxMapper, "Flux mapper");
         Checks.notNull(singleMapper, "Single mapper");
-        return new FluxWithSingleMap<>(this, fluxMapper, singleMapper);
+        return new FluxWithSingleMap<>(this, fluxMapper, singleMapper, mapSingleAlways);
     }
 
     /**

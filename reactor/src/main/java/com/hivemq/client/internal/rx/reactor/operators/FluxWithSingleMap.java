@@ -35,28 +35,35 @@ import java.util.function.Function;
  */
 public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, SM> {
 
-    private final @Nullable Function<? super F, ? extends FM> fluxMapper;
+    private final @NotNull Function<? super F, ? extends FM> fluxMapper;
     private final @NotNull Function<? super S, ? extends SM> singleMapper;
+    private final boolean mapSingleAlways;
 
     public FluxWithSingleMap(
             final @NotNull FluxWithSingle<F, S> source,
-            final @Nullable Function<? super F, ? extends FM> fluxMapper,
-            final @NotNull Function<? super S, ? extends SM> singleMapper) {
+            final @NotNull Function<? super F, ? extends FM> fluxMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper,
+            final boolean mapSingleAlways) {
 
         super(source);
         this.fluxMapper = fluxMapper;
         this.singleMapper = singleMapper;
+        this.mapSingleAlways = mapSingleAlways;
     }
 
     @Override
     public void subscribe(final @NotNull CoreSubscriber<? super FM> subscriber) {
-        if (subscriber instanceof Fuseable.ConditionalSubscriber) {
-            //noinspection unchecked
-            final Fuseable.ConditionalSubscriber<? super FM> conditional =
-                    (Fuseable.ConditionalSubscriber<? super FM>) subscriber;
-            source.subscribeBoth(new MapSubscriber.Conditional<>(conditional, fluxMapper, singleMapper));
+        if (mapSingleAlways) {
+            if (subscriber instanceof Fuseable.ConditionalSubscriber) {
+                //noinspection unchecked
+                final Fuseable.ConditionalSubscriber<? super FM> conditional =
+                        (Fuseable.ConditionalSubscriber<? super FM>) subscriber;
+                source.subscribeBoth(new MapSubscriber.Conditional<>(conditional, fluxMapper, singleMapper));
+            } else {
+                source.subscribeBoth(new MapSubscriber<>(subscriber, fluxMapper, singleMapper));
+            }
         } else {
-            source.subscribeBoth(new MapSubscriber<>(subscriber, fluxMapper, singleMapper));
+            source.map(fluxMapper).subscribe(subscriber);
         }
     }
 
@@ -76,13 +83,13 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
             implements CoreWithSingleSubscriber<F, S>, Subscription {
 
         final @NotNull T subscriber;
-        final @Nullable Function<? super F, ? extends FM> fluxMapper;
+        final @NotNull Function<? super F, ? extends FM> fluxMapper;
         private final @NotNull Function<? super S, ? extends SM> singleMapper;
         private @Nullable Subscription subscription;
 
         MapSubscriber(
                 final @NotNull T subscriber,
-                final @Nullable Function<? super F, ? extends FM> fluxMapper,
+                final @NotNull Function<? super F, ? extends FM> fluxMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
             this.subscriber = subscriber;
@@ -112,19 +119,14 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
 
         @Override
         public void onNext(final @NotNull F f) {
-            if (fluxMapper == null) {
-                //noinspection unchecked
-                subscriber.onNext((FM) f);
-            } else {
-                final FM fm;
-                try {
-                    fm = Checks.notNull(fluxMapper.apply(f), "Mapped value");
-                } catch (final Throwable throwable) {
-                    fail(throwable);
-                    return;
-                }
-                subscriber.onNext(fm);
+            final FM fm;
+            try {
+                fm = Checks.notNull(fluxMapper.apply(f), "Mapped value");
+            } catch (final Throwable throwable) {
+                fail(throwable);
+                return;
             }
+            subscriber.onNext(fm);
         }
 
         final void fail(final @NotNull Throwable throwable) {
@@ -166,7 +168,7 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
 
             Conditional(
                     final @NotNull T subscriber,
-                    final @Nullable Function<? super F, ? extends FM> fluxMapper,
+                    final @NotNull Function<? super F, ? extends FM> fluxMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
                 super(subscriber, fluxMapper, singleMapper);
@@ -174,19 +176,14 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
 
             @Override
             public boolean tryOnNext(final @NotNull F f) {
-                if (fluxMapper == null) {
-                    //noinspection unchecked
-                    return subscriber.tryOnNext((FM) f);
-                } else {
-                    final FM fm;
-                    try {
-                        fm = Checks.notNull(fluxMapper.apply(f), "Mapped value");
-                    } catch (final Throwable throwable) {
-                        fail(throwable);
-                        return false;
-                    }
-                    return subscriber.tryOnNext(fm);
+                final FM fm;
+                try {
+                    fm = Checks.notNull(fluxMapper.apply(f), "Mapped value");
+                } catch (final Throwable throwable) {
+                    fail(throwable);
+                    return false;
                 }
+                return subscriber.tryOnNext(fm);
             }
         }
     }
@@ -196,7 +193,7 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
 
         WithSingleMapSubscriber(
                 final @NotNull CoreWithSingleSubscriber<? super FM, ? super SM> subscriber,
-                final @Nullable Function<? super F, ? extends FM> fluxMapper,
+                final @NotNull Function<? super F, ? extends FM> fluxMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
             super(subscriber, fluxMapper, singleMapper);
@@ -212,7 +209,7 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
 
             Conditional(
                     final @NotNull CoreWithSingleConditionalSubscriber<? super FM, ? super SM> subscriber,
-                    final @Nullable Function<? super F, ? extends FM> fluxMapper,
+                    final @NotNull Function<? super F, ? extends FM> fluxMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
                 super(subscriber, fluxMapper, singleMapper);

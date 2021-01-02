@@ -304,13 +304,47 @@ class FlowableWithSingleTest {
                 .blockingSubscribe();
     }
 
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void mapBoth_mapSingleAlwaysFalse(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
+        final AtomicInteger count = new AtomicInteger();
+        flowableWithSingle.mapBoth(String::length, stringBuilder -> {
+            fail();
+            return (double) stringBuilder.toString().length();
+        }, false).doOnNext(integer -> {
+            count.getAndIncrement();
+            assertEquals((Integer) 5, integer);
+        }).blockingSubscribe();
+        assertEquals(3, count.get());
+    }
+
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void mapBoth_mapSingleAlwaysFalse_consumeSingle(
+            final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
+
+        final AtomicInteger count = new AtomicInteger();
+        flowableWithSingle.mapBoth(String::length, stringBuilder -> (double) stringBuilder.toString().length(), false)
+                .doOnSingle(aDouble -> {
+                    count.getAndIncrement();
+                    assertEquals((Double) 6d, aDouble);
+                })
+                .doOnNext(integer -> {
+                    count.getAndIncrement();
+                    assertEquals((Integer) 5, integer);
+                })
+                .blockingSubscribe();
+        assertEquals(4, count.get());
+    }
+
     @Test
     void mapError() {
         final Flowable<? extends CharSequence> flowable = Flowable.error(new IllegalArgumentException("test"));
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
                 new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
-        final IllegalStateException exception = assertThrows(IllegalStateException.class,
+        final IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
                 () -> flowableWithSingle.mapError(throwable -> new IllegalStateException(throwable.getMessage()))
                         .blockingSubscribe());
         assertEquals("test", exception.getMessage());

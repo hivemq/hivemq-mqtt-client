@@ -140,8 +140,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     public final <SM> @NotNull FlowableWithSingle<F, SM> mapSingle(
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
-        Checks.notNull(singleMapper, "Single mapper");
-        return new FlowableWithSingleMap<>(this, null, singleMapper);
+        return mapBoth(f -> f, singleMapper);
     }
 
     /**
@@ -162,9 +161,33 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
             final @NotNull Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
+        return mapBoth(flowableMapper, singleMapper, true);
+    }
+
+    /**
+     * Modifies the upstream so that it applies a specified function to the flow of items of type <code>F</code> mapping
+     * them to items of type <code>FM</code> and a specified function to the single item of type <code>S</code> mapping
+     * it to an item of type <code>SM</code>.
+     *
+     * @param flowableMapper  the mapper function to apply to the flow items.
+     * @param singleMapper    the mapper function to apply to the single item.
+     * @param alwaysMapSingle whether the single mapper must always be called even if the the mapped item is not
+     *                        consumed downstream.
+     * @param <FM>            the type of the mapped flow items.
+     * @param <SM>            the type of the mapped single item.
+     * @return a {@link FlowableWithSingle} that applies the mapper functions to the single item and the flow items.
+     */
+    @CheckReturnValue
+    @BackpressureSupport(BackpressureKind.PASS_THROUGH)
+    @SchedulerSupport(SchedulerSupport.NONE)
+    public final <FM, SM> @NotNull FlowableWithSingle<FM, SM> mapBoth(
+            final @NotNull Function<? super F, ? extends FM> flowableMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper,
+            final boolean alwaysMapSingle) {
+
         Checks.notNull(flowableMapper, "Flowable mapper");
         Checks.notNull(singleMapper, "Single mapper");
-        return new FlowableWithSingleMap<>(this, flowableMapper, singleMapper);
+        return new FlowableWithSingleMap<>(this, flowableMapper, singleMapper, alwaysMapSingle);
     }
 
     /**
