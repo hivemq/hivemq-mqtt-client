@@ -65,4 +65,19 @@ class InternalSlf4jLogger implements InternalLogger {
     public void warn(final @NotNull String format, final @NotNull Object arg1, final @NotNull Object arg2) {
         delegate.warn(format, arg1, arg2);
     }
+
+    @Override
+    public void trace(@NotNull String message) {
+        delegate.trace(message);
+    }
+
+    @Override
+    public void trace(@NotNull String format, @NotNull Object arg) {
+        delegate.trace(format, arg);
+    }
+
+    @Override
+    public void trace(@NotNull String format, @NotNull Object arg1, @NotNull Object arg2) {
+        delegate.trace(format, arg1, arg2);
+    }
 }

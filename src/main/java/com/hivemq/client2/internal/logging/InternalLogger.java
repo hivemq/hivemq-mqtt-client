@@ -36,4 +36,10 @@ public interface InternalLogger {
     void warn(@NotNull String format, @NotNull Object arg);
 
     void warn(@NotNull String format, @NotNull Object arg1, @NotNull Object arg2);
+
+    void trace(@NotNull String message);
+
+    void trace(@NotNull String format, @NotNull Object arg);
+
+    void trace(@NotNull String format, @NotNull Object arg1, @NotNull Object arg2);
 }
