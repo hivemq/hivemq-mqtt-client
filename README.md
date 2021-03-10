@@ -81,6 +81,8 @@ backpressure support.
 ](https://github.com/OSGP/open-smart-grid-platform) &nbsp;&nbsp; [
 <img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" height="60px"/>
 ](https://github.com/EXXETA/correomqtt)
+<img src="https://avatars.githubusercontent.com/u/32634858?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
+](https://github.com/SmartsquareGmbH/mqtt-starter)
 
 If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
 
