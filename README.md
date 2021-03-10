@@ -80,7 +80,7 @@ backpressure support.
 <img src="https://avatars3.githubusercontent.com/u/11352045?s=200&v=4" alt="Open Smart Grid Platform" height="60px"/>
 ](https://github.com/OSGP/open-smart-grid-platform) &nbsp;&nbsp; [
 <img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" height="60px"/>
-](https://github.com/EXXETA/correomqtt)
+](https://github.com/EXXETA/correomqtt) &nbsp;&nbsp; [
 <img src="https://avatars.githubusercontent.com/u/32634858?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
 ](https://github.com/SmartsquareGmbH/mqtt-starter)
 
