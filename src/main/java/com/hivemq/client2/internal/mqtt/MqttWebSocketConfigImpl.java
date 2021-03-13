@@ -30,34 +30,33 @@ import org.jetbrains.annotations.Unmodifiable;
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     static final @NotNull MqttWebSocketConfigImpl DEFAULT =
-            new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_QUERY_STRING, DEFAULT_MQTT_SUBPROTOCOL,
-                    DEFAULT_HANDSHAKE_TIMEOUT_MS);
+            new MqttWebSocketConfigImpl(DEFAULT_PATH, DEFAULT_QUERY, DEFAULT_SUBPROTOCOL, DEFAULT_HANDSHAKE_TIMEOUT_MS);
 
-    private final @NotNull String serverPath;
-    private final @NotNull String queryString;
+    private final @NotNull String path;
+    private final @NotNull String query;
     private final @NotNull String subprotocol;
     private final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs;
 
     MqttWebSocketConfigImpl(
-            final @NotNull String serverPath,
-            final @NotNull String queryString,
+            final @NotNull String path,
+            final @NotNull String query,
             final @NotNull String subprotocol,
             final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs) {
 
-        this.serverPath = serverPath;
-        this.queryString = queryString;
+        this.path = path;
+        this.query = query;
         this.subprotocol = subprotocol;
         this.handshakeTimeoutMs = handshakeTimeoutMs;
     }
 
     @Override
-    public @NotNull String getServerPath() {
-        return serverPath;
+    public @NotNull String getPath() {
+        return path;
     }
 
     @Override
-    public @NotNull String getQueryString() {
-        return queryString;
+    public @NotNull String getQuery() {
+        return query;
     }
 
     @Override
@@ -85,14 +84,14 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         }
         final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
 
-        return serverPath.equals(that.serverPath) && queryString.equals(that.queryString) &&
-                subprotocol.equals(that.subprotocol) && (handshakeTimeoutMs == that.handshakeTimeoutMs);
+        return path.equals(that.path) && query.equals(that.query) && subprotocol.equals(that.subprotocol) &&
+                (handshakeTimeoutMs == that.handshakeTimeoutMs);
     }
 
     @Override
     public int hashCode() {
-        int result = serverPath.hashCode();
-        result = 31 * result + queryString.hashCode();
+        int result = path.hashCode();
+        result = 31 * result + query.hashCode();
         result = 31 * result + subprotocol.hashCode();
         result = 31 * result + Integer.hashCode(handshakeTimeoutMs);
         return result;
