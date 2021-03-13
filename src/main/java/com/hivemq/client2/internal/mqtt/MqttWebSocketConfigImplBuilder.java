@@ -30,9 +30,9 @@ import java.util.function.Function;
  */
 public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConfigImplBuilder<B>> {
 
-    private @NotNull String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
-    private @NotNull String queryString = MqttWebSocketConfigImpl.DEFAULT_QUERY_STRING;
-    private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
+    private @NotNull String path = MqttWebSocketConfigImpl.DEFAULT_PATH;
+    private @NotNull String query = MqttWebSocketConfigImpl.DEFAULT_QUERY;
+    private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_SUBPROTOCOL;
     private @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs =
             MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
@@ -40,8 +40,8 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
 
     MqttWebSocketConfigImplBuilder(final @Nullable MqttWebSocketConfigImpl webSocketConfig) {
         if (webSocketConfig != null) {
-            serverPath = webSocketConfig.getServerPath();
-            queryString = webSocketConfig.getQueryString();
+            path = webSocketConfig.getPath();
+            query = webSocketConfig.getQuery();
             subprotocol = webSocketConfig.getSubprotocol();
             handshakeTimeoutMs = webSocketConfig.getHandshakeTimeoutMs();
         }
@@ -49,14 +49,14 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
 
     abstract @NotNull B self();
 
-    public @NotNull B serverPath(final @Nullable String serverPath) {
+    public @NotNull B path(final @Nullable String path) {
         // remove any leading slashes
-        this.serverPath = Checks.notNull(serverPath, "Server path").replaceAll("^/+", "");
+        this.path = Checks.notNull(path, "Server path").replaceAll("^/+", "");
         return self();
     }
 
-    public @NotNull B queryString(final @Nullable String queryString) {
-        this.queryString = Checks.notNull(queryString, "Query string");
+    public @NotNull B query(final @Nullable String query) {
+        this.query = Checks.notNull(query, "Query string");
         return self();
     }
 
@@ -73,7 +73,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     }
 
     public @NotNull MqttWebSocketConfigImpl build() {
-        return new MqttWebSocketConfigImpl(serverPath, queryString, subprotocol, handshakeTimeoutMs);
+        return new MqttWebSocketConfigImpl(path, query, subprotocol, handshakeTimeoutMs);
     }
 
     public static class Default extends MqttWebSocketConfigImplBuilder<Default> implements MqttWebSocketConfigBuilder {

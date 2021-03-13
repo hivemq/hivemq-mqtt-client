@@ -33,22 +33,22 @@ import java.util.concurrent.TimeUnit;
 public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBuilderBase<B>> {
 
     /**
-     * Sets the {@link MqttWebSocketConfig#getServerPath() server path}.
+     * Sets the {@link MqttWebSocketConfig#getPath() path}.
      *
-     * @param serverPath the server path.
+     * @param path the path.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B serverPath(@NotNull String serverPath);
+    @NotNull B path(@NotNull String path);
 
     /**
-     * Sets the {@link MqttWebSocketConfig#getQueryString() query string}.
+     * Sets the {@link MqttWebSocketConfig#getQuery() query}.
      *
-     * @param queryString the query string.
+     * @param query the query.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B queryString(@NotNull String queryString);
+    @NotNull B query(@NotNull String query);
 
     /**
      * Sets the {@link MqttWebSocketConfig#getSubprotocol() subprotocol}.
@@ -60,11 +60,11 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
     @NotNull B subprotocol(@NotNull String subprotocol);
 
     /**
-     * Sets the {@link MqttWebSocketConfig#getHandshakeTimeoutMs() websocket handshake timeout}.
+     * Sets the {@link MqttWebSocketConfig#getHandshakeTimeoutMs() WebSocket handshake timeout}.
      * <p>
      * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
      *
-     * @param timeout  the websocket handshake timeout or <code>0</code> to disable the timeout.
+     * @param timeout  the WebSocket handshake timeout or <code>0</code> to disable the timeout.
      * @param timeUnit the time unit of the given timeout (this timeout only supports millisecond precision).
      * @return the builder.
      * @since 1.2

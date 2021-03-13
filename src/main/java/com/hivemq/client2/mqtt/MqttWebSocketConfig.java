@@ -32,22 +32,22 @@ import org.jetbrains.annotations.Range;
 public interface MqttWebSocketConfig {
 
     /**
-     * The default WebSocket server path.
+     * The default WebSocket path.
      */
-    @NotNull String DEFAULT_SERVER_PATH = "";
+    @NotNull String DEFAULT_PATH = "";
     /**
-     * The default WebSocket query string.
+     * The default WebSocket query.
      */
-    @NotNull String DEFAULT_QUERY_STRING = "";
+    @NotNull String DEFAULT_QUERY = "";
     /**
      * The default WebSocket subprotocol.
      * <p>
      * See the <a href="https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name">WebSocket Subprotocol
      * Name Registry</a>
      */
-    @NotNull String DEFAULT_MQTT_SUBPROTOCOL = "mqtt";
+    @NotNull String DEFAULT_SUBPROTOCOL = "mqtt";
     /**
-     * The default websocket handshake timeout in milliseconds.
+     * The default WebSocket handshake timeout in milliseconds.
      *
      * @since 1.2
      */
@@ -63,14 +63,14 @@ public interface MqttWebSocketConfig {
     }
 
     /**
-     * @return the WebSocket server path.
+     * @return the WebSocket path.
      */
-    @NotNull String getServerPath();
+    @NotNull String getPath();
 
     /**
-     * @return the WebSocket query string.
+     * @return the WebSocket query.
      */
-    @NotNull String getQueryString();
+    @NotNull String getQuery();
 
     /**
      * @return the WebSocket subprotocol.
@@ -78,7 +78,7 @@ public interface MqttWebSocketConfig {
     @NotNull String getSubprotocol();
 
     /**
-     * @return the websocket handshake timeout in milliseconds.
+     * @return the WebSocket handshake timeout in milliseconds.
      * @since 1.2
      */
     @Range(from = 0, to = Integer.MAX_VALUE) int getHandshakeTimeoutMs();
