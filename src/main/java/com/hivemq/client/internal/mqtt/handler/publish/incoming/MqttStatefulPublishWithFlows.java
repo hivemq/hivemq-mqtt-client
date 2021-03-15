@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 import com.hivemq.client.internal.annotations.NotThreadSafe;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.util.collections.HandleList;
+import com.hivemq.client.mqtt.datatypes.MqttQos;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,7 +40,7 @@ class MqttStatefulPublishWithFlows extends HandleList<MqttIncomingPublishFlow> {
 
     @Override
     public @NotNull Handle<MqttIncomingPublishFlow> add(final @NotNull MqttIncomingPublishFlow flow) {
-        if (flow.manualAcknowledgement) {
+        if ((publish.stateless().getQos() != MqttQos.AT_MOST_ONCE) && flow.manualAcknowledgement) {
             missingAcknowledgements++;
             flow.increaseMissingAcknowledgements();
         }
