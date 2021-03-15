@@ -121,6 +121,18 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
     <img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" class="user-img"/>
   </a>
 
+  <a href="https://github.com/SmartsquareGmbH/mqtt-starter" class="user-link">
+    <img src="https://avatars.githubusercontent.com/u/32634858?s=200&v=4" alt="mqtt-starter" class="user-img"/>
+  </a>
+
+  <a href="https://www.openmuc.org/" class="user-link">
+    <img src="https://avatars.githubusercontent.com/u/16953511?s=200&v=4" alt="OpenMUC" class="user-img"/>
+  </a>
+
+  <a href="https://github.com/leftshiftone/gaia-sdk" class="user-link">
+    <img src="https://avatars.githubusercontent.com/u/20456341?s=200&v=4" alt="GAIA SDK" class="user-img"/>
+  </a>
+
 </div>
 
 If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
