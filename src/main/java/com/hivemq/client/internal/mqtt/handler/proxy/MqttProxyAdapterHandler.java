@@ -18,8 +18,8 @@ package com.hivemq.client.internal.mqtt.handler.proxy;
 
 import com.hivemq.client.internal.mqtt.MqttProxyConfigImpl;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.proxy.HttpProxyHandler;
 import io.netty.handler.proxy.ProxyHandler;
@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
+class MqttProxyAdapterHandler extends ChannelDuplexHandler {
 
     public static final @NotNull String NAME = "proxy.adapter";
     private static final @NotNull String PROXY_HANDLER_NAME = "proxy";
@@ -96,17 +96,26 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
         proxyHandler.setConnectTimeoutMillis(proxyConfig.getHandshakeTimeoutMs());
 
         proxyHandler.connectFuture().addListener(future -> {
-            channel.pipeline().remove(PROXY_HANDLER_NAME);
             if (future.isSuccess()) {
+                // remove this before the proxy handler, so exceptionCaught is not called even if the proxy handler
+                // would fire an exception after setting the future (which it does not, just to be safe)
+                // this ensures that either onSuccess or onError is called exactly once
+                channel.pipeline().remove(this).remove(PROXY_HANDLER_NAME);
                 onSuccess.accept(channel);
-            } else {
-                onError.accept(channel, future.cause());
             }
+            // onError is handled in exceptionCaught because the exception is fired after the connect future is set and
+            // otherwise "An exceptionCaught() event was fired, and it reached at the tail of the pipeline" is logged
         });
 
-        channel.pipeline().addFirst(PROXY_HANDLER_NAME, proxyHandler).remove(this);
+        channel.pipeline().addFirst(PROXY_HANDLER_NAME, proxyHandler);
 
         ctx.connect(serverAddress, localAddress, promise);
+    }
+
+    @Override
+    public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        ctx.pipeline().remove(this).remove(PROXY_HANDLER_NAME);
+        onError.accept(ctx.channel(), cause);
     }
 
     @Override
