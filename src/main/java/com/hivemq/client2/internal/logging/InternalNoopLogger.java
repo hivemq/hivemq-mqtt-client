@@ -49,6 +49,18 @@ class InternalNoopLogger implements InternalLogger {
     public void warn(final @NotNull String format, final @NotNull Object arg1, final @NotNull Object arg2) {}
 
     @Override
+    public void debug(@NotNull String message) {}
+
+    @Override
+    public void debug(@NotNull String format, @NotNull Object arg) {}
+
+    @Override
+    public void debug(@NotNull String format, @NotNull Object arg1, @NotNull Object arg2) {}
+
+    @Override
+    public void debug(@NotNull String format, @NotNull Object arg1, @NotNull Object arg2, @NotNull Object arg3) {}
+
+    @Override
     public void trace(@NotNull String message) {}
 
     @Override
