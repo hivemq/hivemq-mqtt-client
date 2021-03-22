@@ -25,25 +25,25 @@ allprojects {
     plugins.apply("com.github.sgtsilvio.gradle.metadata")
 
     metadata {
-        moduleName = "com.hivemq.client.mqtt"
-        readableName = "HiveMQ MQTT Client"
+        moduleName.set("com.hivemq.client.mqtt")
+        readableName.set("HiveMQ MQTT Client")
         organization {
-            name = "HiveMQ and the HiveMQ Community"
-            url = "https://www.hivemq.com/"
+            name.set("HiveMQ and the HiveMQ Community")
+            url.set("https://www.hivemq.com/")
         }
         license {
             apache2()
         }
         developers {
             developer {
-                id = "SgtSilvio"
-                name = "Silvio Giebl"
-                email = "silvio.giebl@hivemq.com"
+                id.set("SgtSilvio")
+                name.set("Silvio Giebl")
+                email.set("silvio.giebl@hivemq.com")
             }
         }
         github {
-            org = "hivemq"
-            repo = "hivemq-mqtt-client"
+            org.set("hivemq")
+            repo.set("hivemq-mqtt-client")
             pages()
             issues()
         }
@@ -280,10 +280,10 @@ allprojects {
                 repo = "HiveMQ"
                 name = "hivemq-mqtt-client"
                 desc = project.description
-                websiteUrl = metadata.url
-                issueTrackerUrl = metadata.issueManagement.url
-                vcsUrl = metadata.scm.url
-                setLicenses(metadata.license.shortName)
+                websiteUrl = metadata.url.get()
+                issueTrackerUrl = metadata.issueManagement!!.url.get()
+                vcsUrl = metadata.scm!!.url.get()
+                setLicenses(metadata.license!!.shortName.get())
                 setLabels("mqtt", "mqtt-client", "iot", "internet-of-things", "rxjava2", "reactive-streams", "backpressure")
                 version.apply {
                     released = Date().toString()
@@ -314,8 +314,8 @@ allprojects {
 
 githubRelease {
     token("${rootProject.extra["github_token"]}")
-    owner.set(metadata.github.org)
-    repo.set(metadata.github.repo)
+    owner.set(metadata.github!!.org.get())
+    repo.set(metadata.github!!.repo.get())
     targetCommitish.set("master")
     tagName.set("v${project.version}")
     releaseName.set("${project.version}")
