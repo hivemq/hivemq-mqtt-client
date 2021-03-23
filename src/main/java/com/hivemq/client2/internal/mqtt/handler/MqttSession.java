@@ -17,6 +17,8 @@
 package com.hivemq.client2.internal.mqtt.handler;
 
 import com.hivemq.client2.internal.annotations.CallByThread;
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttDecoder;
 import com.hivemq.client2.internal.mqtt.handler.publish.incoming.MqttIncomingQosHandler;
@@ -34,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 @ClientScope
 public class MqttSession {
 
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttSession.class);
     private final @NotNull MqttSubscriptionHandler subscriptionHandler;
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
@@ -65,10 +69,16 @@ public class MqttSession {
             final @NotNull MqttClientConnectionConfig connectionConfig,
             final @NotNull ChannelPipeline pipeline,
             final @NotNull EventLoop eventLoop) {
-
-        if (hasSession && !connAck.isSessionPresent()) {
-            final String message = "Session expired as CONNACK did not contain the session present flag.";
-            end(new MqttSessionExpiredException(message, new Mqtt5ConnAckException(connAck, message)));
+        if (hasSession) {
+            if (!connAck.isSessionPresent()) {
+                final String message = "Session expired as CONNACK did not contain the session present flag.";
+                end(new MqttSessionExpiredException(message, new Mqtt5ConnAckException(connAck, message)));
+                LOGGER.trace("Session START");
+            } else {
+                LOGGER.trace("Session RESUME");
+            }
+        } else {
+            LOGGER.trace("Session START");
         }
         hasSession = true;
 
@@ -109,6 +119,7 @@ public class MqttSession {
 
     @CallByThread("Netty EventLoop")
     private void end(final @NotNull Throwable cause) {
+        LOGGER.debug("Session END, cause {}", cause);
         if (hasSession) {
             hasSession = false;
             outgoingQosHandler.onSessionEnd(cause);

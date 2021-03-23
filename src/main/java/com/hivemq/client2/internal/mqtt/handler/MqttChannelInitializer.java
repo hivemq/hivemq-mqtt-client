@@ -16,6 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.handler;
 
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
 import com.hivemq.client2.internal.mqtt.MqttProxyConfigImpl;
 import com.hivemq.client2.internal.mqtt.MqttTlsConfigImpl;
@@ -57,6 +59,7 @@ import javax.inject.Inject;
 @ConnectionScope
 public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttChannelInitializer.class);
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttConnect connect;
     private final @NotNull MqttConnAckFlow connAckFlow;
@@ -91,6 +94,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
+        LOGGER.debug("Initialize channel");
         ctx.pipeline().remove(this);
 
         ((SocketChannel) ctx.channel()).config()
@@ -109,6 +113,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
         if (proxyConfig == null) {
             initTls(channel);
         } else {
+            LOGGER.trace("initProxy");
             MqttProxyInitializer.initChannel(channel, clientConfig, proxyConfig, this::initTls, this::onError);
         }
     }
@@ -118,6 +123,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
         if (tlsConfig == null) {
             initWebsocket(channel);
         } else {
+            LOGGER.trace("initTls");
             MqttTlsInitializer.initChannel(channel, clientConfig, tlsConfig, this::initWebsocket, this::onError);
         }
     }
@@ -128,20 +134,24 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
         if (webSocketConfig == null) {
             initMqtt(channel);
         } else {
+            LOGGER.trace("initWebsocket");
             webSocketInitializer.get()
                     .initChannel(channel, clientConfig, webSocketConfig, this::initMqtt, this::onError);
         }
     }
 
     private void initMqtt(final @NotNull Channel channel) {
+        LOGGER.trace("initMqtt");
         channel.pipeline()
                 .addLast(MqttEncoder.NAME, encoder)
                 .addLast(MqttAuthHandler.NAME, authHandler)
                 .addLast(MqttConnectHandler.NAME, connectHandler)
                 .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
+        LOGGER.debug("Channel initialization succeeded");
     }
 
     private void onError(final @NotNull Channel channel, final @NotNull Throwable cause) {
+        LOGGER.debug("Channel initialization failed: {}", cause);
         channel.close();
         MqttConnAckSingle.reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause),
                 connect, connAckFlow, channel.eventLoop());

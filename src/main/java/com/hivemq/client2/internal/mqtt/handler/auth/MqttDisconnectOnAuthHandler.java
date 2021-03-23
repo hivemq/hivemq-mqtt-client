@@ -16,6 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.handler.auth;
 
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client2.internal.mqtt.message.auth.MqttAuth;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnAck;
@@ -40,6 +42,8 @@ import javax.inject.Singleton;
 @Singleton
 public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter implements MqttAuthHandler {
 
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttDisconnectOnAuthHandler.class);
+
     @Inject
     MqttDisconnectOnAuthHandler() {}
 
@@ -55,12 +59,14 @@ public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter im
     }
 
     private void readAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
+        LOGGER.debug("Read AUTH {}", auth);
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 new Mqtt5AuthException(auth, "Server must not send AUTH"));
     }
 
     private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         if (connAck.getRawEnhancedAuth() != null) {
+            LOGGER.debug("Read CONNACK with auth {}", connAck);
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5ConnAckException(connAck, "Server must not include auth in CONNACK"));
         } else {

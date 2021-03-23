@@ -118,13 +118,16 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         if (!connectWritten) {
             connectWritten = true;
             connectFlushTime = System.nanoTime();
-            ctx.writeAndFlush((connect.getRawEnhancedAuthMechanism() == null) ?
-                    connect.createStateful(clientConfig.getRawClientIdentifier(), null) : connect).addListener(this);
+            Object connectObj = connect.getRawEnhancedAuthMechanism() == null ?
+                connect.createStateful(clientConfig.getRawClientIdentifier(), null) :  connect;
+            LOGGER.debug("Write CONNECT {} to {}", connectObj, ctx.channel().remoteAddress());
+            ctx.writeAndFlush(connectObj).addListener(this);
         }
     }
 
     @Override
     protected void operationSuccessful(final @NotNull ChannelHandlerContext ctx) {
+        LOGGER.trace("operationSuccessful");
         if (connect.getRawEnhancedAuthMechanism() == null) {
             scheduleTimeout(ctx.channel());
         }
@@ -154,6 +157,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param channel the channel.
      */
     private void readConnAck(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
+        LOGGER.debug("Read CONNACK {} from {}", connAck, ctx.channel().remoteAddress());
         if (connAck.getReasonCode().isError()) {
             MqttDisconnectUtil.fireDisconnectEvent(channel, new Mqtt5ConnAckException(connAck,
                             "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."),
@@ -204,6 +208,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param channel the channel.
      */
     private void readOtherThanConnAck(final @NotNull Object msg, final @NotNull Channel channel) {
+        LOGGER.error("Read NON CONNACK {} from {}", msg, ctx.channel().remoteAddress());
         if (msg instanceof MqttMessage) {
             MqttDisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     ((MqttMessage) msg).getType() + " message must not be received before CONNACK");
