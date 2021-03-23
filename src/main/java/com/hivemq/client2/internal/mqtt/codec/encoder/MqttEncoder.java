@@ -16,6 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.codec.encoder;
 
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client2.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client2.internal.mqtt.message.MqttMessage;
@@ -37,6 +39,7 @@ import javax.inject.Inject;
 public class MqttEncoder extends ChannelDuplexHandler {
 
     public static final @NotNull String NAME = "encoder";
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttEncoder.class);
 
     private final @NotNull MqttMessageEncoders encoders;
     private final @NotNull MqttEncoderContext context;
@@ -84,16 +87,19 @@ public class MqttEncoder extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
+        LOGGER.trace("channelRead: {} from {}", msg, ctx.channel().remoteAddress());
         inRead = true;
         ctx.fireChannelRead(msg);
     }
 
     @Override
     public void channelReadComplete(final @NotNull ChannelHandlerContext ctx) {
+        LOGGER.trace("channelRead complete");
         ctx.fireChannelReadComplete();
         inRead = false;
         if (pendingFlush) {
             pendingFlush = false;
+            LOGGER.trace("flush pendingFlush");
             ctx.flush();
         }
     }

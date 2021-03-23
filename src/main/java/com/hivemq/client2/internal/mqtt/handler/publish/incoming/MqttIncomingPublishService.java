@@ -109,6 +109,7 @@ class MqttIncomingPublishService {
                 referencedFlowCount++;
             }
         }
+        LOGGER.trace("emit {}", publishWithFlows.publish);
         emit(publishWithFlows);
     }
 
