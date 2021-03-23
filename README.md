@@ -82,7 +82,11 @@ backpressure support.
 <img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" height="60px"/>
 ](https://github.com/EXXETA/correomqtt) &nbsp;&nbsp; [
 <img src="https://avatars.githubusercontent.com/u/32634858?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
-](https://github.com/SmartsquareGmbH/mqtt-starter)
+](https://github.com/SmartsquareGmbH/mqtt-starter) &nbsp;&nbsp; [
+<img src="https://avatars.githubusercontent.com/u/16953511?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
+](https://www.openmuc.org/) &nbsp;&nbsp; [
+<img src="https://avatars.githubusercontent.com/u/20456341?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
+](https://github.com/leftshiftone/gaia-sdk)
 
 If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
 
