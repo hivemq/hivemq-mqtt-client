@@ -146,8 +146,11 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     @Override
     public void onNext(final @NotNull MqttPublishWithFlow publishWithFlow) {
+        LOGGER.trace("onNext: queuing/scheduling outgoing {}", publishWithFlow.getPublish());
+
         queue.offer(publishWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
+            LOGGER.trace("Trigger actual publish (runnable)");
             publishWithFlow.getAckFlow().getEventLoop().execute(this);
         }
     }
@@ -180,14 +183,17 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     @CallByThread("Netty EventLoop")
     @Override
     public void run() {
+        LOGGER.trace("run BEGIN");
         if (!hasSession) {
             if (!isRepublishIfSessionExpired()) {
                 clearQueued(MqttClientStateExceptions.notConnected());
             }
+            LOGGER.trace("run: !hasSession");
             return;
         }
         final ChannelHandlerContext ctx = this.ctx;
         if (ctx == null) {
+            LOGGER.trace("run: ctx == null");
             return;
         }
         final Channel channel = ctx.channel();
@@ -213,9 +219,11 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             final boolean wasWritable = channel.isWritable();
             ctx.flush();
             if ((dequeued > 0) && (queuedCounter.addAndGet(-dequeued) > 0) && wasWritable) {
+                LOGGER.trace("Retrigger actual publish (runnable)");
                 channel.eventLoop().execute(this);
             }
         }
+        LOGGER.trace("run END");
     }
 
     @Override
@@ -254,7 +262,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     private void writeQos0Publish(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPublishWithFlow publishWithFlow) {
-
+        LOGGER.debug("Write PUBLISH {} to {}", publishWithFlow.getPublish(), ctx.channel().remoteAddress());
         ctx.write(publishWithFlow.getPublish().createStateful(NO_PACKET_IDENTIFIER_QOS_0, false, topicAliasMapping),
                 new DefaultContextPromise<>(ctx.channel(), publishWithFlow)).addListener(this);
     }
@@ -294,7 +302,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             final @NotNull ChannelHandlerContext ctx,
             final @NotNull MqttStatefulPublish publish,
             final @NotNull MqttPublishWithFlow publishWithFlow) {
-
+        LOGGER.debug("Write PUBLISH {} to {}", publish, ctx.channel().remoteAddress());
         currentPending = publishWithFlow;
         ctx.write(publish, ctx.voidPromise());
         currentPending = null;
@@ -314,6 +322,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubAck pubAck) {
+        LOGGER.debug("Read PUBACK {} from {}", pubAck, ctx.channel().remoteAddress());
         final int packetIdentifier = pubAck.getPacketIdentifier();
         final MqttPubOrRelWithFlow removed = pendingIndex.remove(packetIdentifier);
 
@@ -344,6 +353,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
+        LOGGER.debug("Read PUBREC {} from {}", pubRec, ctx.channel().remoteAddress());
         final int packetIdentifier = pubRec.getPacketIdentifier();
         final MqttPubOrRelWithFlow got = pendingIndex.get(packetIdentifier);
 
@@ -390,6 +400,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void writePubRel(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRel pubRel) {
+        LOGGER.debug("Write PUBREL {} to {}", pubRel, ctx.channel().remoteAddress());
         ctx.write(pubRel, ctx.voidPromise());
     }
 
@@ -402,6 +413,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubComp(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubComp pubComp) {
+        LOGGER.debug("Read PUBCOMP {} from {}", pubComp, ctx.channel().remoteAddress());
         final int packetIdentifier = pubComp.getPacketIdentifier();
         final MqttPubOrRelWithFlow removed = pendingIndex.remove(packetIdentifier);
 
@@ -457,6 +469,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         if (!(cause instanceof IOException) && (currentPending != null)) {
+            LOGGER.debug("Exception caught: {}, remote address: {}", cause, ctx.channel().remoteAddress());
             pendingIndex.remove(currentPending.packetIdentifier);
             currentPending.getAckFlow().onNext(new MqttPublishResult(currentPending.getPublish(), cause));
             completePending(ctx, currentPending);
@@ -502,6 +515,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void clearQueued(final @NotNull Throwable cause) {
+        LOGGER.trace("clear queued, cause: {}", cause);
         int polled = 0;
         while (true) {
             final MqttPublishWithFlow publishWithFlow = queue.poll();

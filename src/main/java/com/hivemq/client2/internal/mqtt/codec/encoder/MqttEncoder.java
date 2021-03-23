@@ -70,8 +70,10 @@ public class MqttEncoder extends ChannelDuplexHandler {
                 throw new UnsupportedOperationException();
             }
             final ByteBuf out = messageEncoder.castAndEncode(message, context);
+            LOGGER.trace("Write MqttMessage {} to {}", message, ctx.channel().remoteAddress());
             ctx.write(out, promise);
         } else {
+            LOGGER.trace("Write message {} to {}", msg, ctx.channel().remoteAddress());
             ctx.write(msg, promise);
         }
     }
@@ -81,6 +83,7 @@ public class MqttEncoder extends ChannelDuplexHandler {
         if (inRead) {
             pendingFlush = true;
         } else {
+            LOGGER.trace("flush");
             ctx.flush();
         }
     }

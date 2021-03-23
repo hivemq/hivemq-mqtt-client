@@ -50,7 +50,9 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
         synchronized (this) {
             while (requested == 0) {
                 try {
+                    LOGGER.debug("Publish blocked (requested == 0)");
                     this.wait();
+                    LOGGER.debug("Publish unblocked");
                 } catch (final InterruptedException e) {
                     LOGGER.error("thread interrupted while waiting to publish.", e);
                     return;
