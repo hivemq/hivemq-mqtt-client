@@ -5,7 +5,8 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("biz.aQute.bnd.builder")
     id("maven-publish")
-    id("com.jfrog.bintray")
+    id("io.github.gradle-nexus.publish-plugin")
+    id("signing")
     id("com.github.breadmoirai.github-release")
     id("com.github.hierynomus.license")
     id("pmd")
@@ -271,44 +272,29 @@ allprojects {
 
         plugins.apply("com.jfrog.bintray")
 
-        bintray {
-            user = "${rootProject.extra["bintray_username"]}"
-            key = "${rootProject.extra["bintray_apiKey"]}"
-            publish = true
-            pkg.apply {
-                userOrg = "hivemq"
-                repo = "HiveMQ"
-                name = "hivemq-mqtt-client"
-                desc = project.description
-                websiteUrl = metadata.url.get()
-                issueTrackerUrl = metadata.issueManagement!!.url.get()
-                vcsUrl = metadata.scm!!.url.get()
-                setLicenses(metadata.license!!.shortName.get())
-                setLabels("mqtt", "mqtt-client", "iot", "internet-of-things", "rxjava2", "reactive-streams", "backpressure")
-                version.apply {
-                    released = Date().toString()
-                    vcsTag = "v${project.version}"
-                    gpg.apply {
-                        sign = true
+        afterEvaluate {
+            publishing {
+                publications {
+                    create<MavenPublication>("sonatype") {
+                        from(components["java"]);
                     }
                 }
             }
-        }
-        afterEvaluate {
-            bintray.setPublications(*publishing.publications.withType<MavenPublication>().names.toTypedArray())
+
+            signing {
+                val signingKey = "${project.findProperty("signingKey")}"
+                val signingPassword = "${project.findProperty("signingPassword")}"
+                useInMemoryPgpKeys(signingKey, signingPassword)
+                sign(publishing.publications["sonatype"])
+            }
         }
 
-        // workaround for publishing gradle module metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
-        tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
-            doFirst {
-                publishing.publications.withType<MavenPublication> {
-                    val moduleFile = buildDir.resolve("publications/$name/module.json")
-                    if (moduleFile.exists()) {
-                        artifact(moduleFile).extension = "module"
-                    }
-                }
-            }
-        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype()
     }
 }
 
