@@ -1,3 +1,5 @@
+rootProject.name = "hivemq-mqtt-client"
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -15,7 +17,11 @@ pluginManagement {
     }
 }
 
-rootProject.name = "hivemq-mqtt-client"
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
 
 listOf("websocket", "proxy", "epoll", "reactor", "examples").forEach { module ->
     include("${rootProject.name}-$module")

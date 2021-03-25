@@ -66,12 +66,6 @@ allprojects {
 
 /* ******************** dependencies ******************** */
 
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-}
-
 dependencies {
     api("io.reactivex.rxjava2:rxjava:${property("rxjava.version")}")
     api("org.reactivestreams:reactive-streams:${property("reactive-streams.version")}")
