@@ -270,8 +270,6 @@ allprojects {
 allprojects {
     plugins.withId("maven-publish") {
 
-        plugins.apply("com.jfrog.bintray")
-
         afterEvaluate {
             publishing {
                 publications {

@@ -14,4 +14,3 @@ out/
 .DS_Store
 
 credentials.gradle
-bintray.gradle
