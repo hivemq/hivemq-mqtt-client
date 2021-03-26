@@ -1,5 +1,3 @@
-import java.util.*
-
 plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow")
@@ -269,24 +267,13 @@ allprojects {
 
 allprojects {
     plugins.withId("maven-publish") {
-
-        afterEvaluate {
-            publishing {
-                publications {
-                    create<MavenPublication>("sonatype") {
-                        from(components["java"]);
-                    }
-                }
-            }
-
-            signing {
-                val signingKey = "${project.findProperty("signingKey")}"
-                val signingPassword = "${project.findProperty("signingPassword")}"
-                useInMemoryPgpKeys(signingKey, signingPassword)
-                sign(publishing.publications["sonatype"])
-            }
+        plugins.apply("signing")
+        signing {
+            val signingKey = "${project.findProperty("signingKey")}"
+            val signingPassword = "${project.findProperty("signingPassword")}"
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications["sonatype"])
         }
-
     }
 }
 
