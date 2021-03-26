@@ -266,13 +266,19 @@ allprojects {
 }
 
 allprojects {
-    plugins.withId("java-library") {
+    plugins.withId("maven-publish") {
+
         plugins.apply("signing")
+
         signing {
-            val signingKey = "${project.findProperty("signingKey")}"
-            val signingPassword = "${project.findProperty("signingPassword")}"
+            val signingKey = "${findProperty("signingKey")}"
+            val signingPassword = "${findProperty("signingPassword")}"
             useInMemoryPgpKeys(signingKey, signingPassword)
-            sign(publishing.publications["base"])
+            afterEvaluate {
+                for (publication in publishing.publications) {
+                    sign(publication)
+                }
+            }
         }
     }
 }
@@ -316,7 +322,7 @@ allprojects {
     }
 }
 
-apply("${rootDir}/gradle/japicc.gradle.kts")
+apply("$rootDir/gradle/japicc.gradle.kts")
 
 
 /* ******************** build cache ******************** */
