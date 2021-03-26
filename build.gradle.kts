@@ -265,13 +265,11 @@ allprojects {
         plugins.apply("signing")
 
         signing {
-            val signingKey = "${findProperty("signingKey")}"
-            val signingPassword = "${findProperty("signingPassword")}"
+            val signingKey: String? by project
+            val signingPassword: String? by project
             useInMemoryPgpKeys(signingKey, signingPassword)
-            afterEvaluate {
-                for (publication in publishing.publications) {
-                    sign(publication)
-                }
+            publishing.publications.configureEach {
+                sign(this)
             }
         }
     }
