@@ -266,13 +266,13 @@ allprojects {
 }
 
 allprojects {
-    plugins.withId("maven-publish") {
+    plugins.withId("java-library") {
         plugins.apply("signing")
         signing {
             val signingKey = "${project.findProperty("signingKey")}"
             val signingPassword = "${project.findProperty("signingPassword")}"
             useInMemoryPgpKeys(signingKey, signingPassword)
-            sign(publishing.publications["sonatype"])
+            sign(publishing.publications["base"])
         }
     }
 }
