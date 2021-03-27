@@ -87,8 +87,8 @@ dependencies {
 
 /* ******************** optional dependencies ******************** */
 
-listOf("websocket", "proxy", "epoll").forEach {
-    java.registerFeature(it) {
+for (feature in listOf("websocket", "proxy", "epoll")) {
+    java.registerFeature(feature) {
         usingSourceSet(sourceSets["main"])
     }
 }
@@ -170,12 +170,10 @@ tasks.shadowJar {
     archiveAppendix.set("shaded")
     archiveClassifier.set("")
 
-    configurations = listOf(project.run {
-        configurations.create("shaded") {
-            extendsFrom(configurations["runtimeClasspath"])
-            configurations["apiElements"].allDependencies.forEach {
-                exclude(it.group, it.name)
-            }
+    configurations = listOf(project.configurations.create("shaded") {
+        extendsFrom(project.configurations["runtimeClasspath"])
+        for (apiDependency in project.configurations["apiElements"].allDependencies) {
+            exclude(apiDependency.group, apiDependency.name)
         }
     })
 
@@ -195,7 +193,7 @@ tasks.shadowJar {
 
 /* ******************** publishing ******************** */
 
-apply("${rootDir}/gradle/publishing.gradle.kts")
+apply("$rootDir/gradle/publishing.gradle.kts")
 
 allprojects {
     plugins.withId("java-library") {
@@ -226,11 +224,11 @@ publishing.publications.register<MavenPublication>("shaded") {
     artifact(tasks["sourcesJar"])
     pom.withXml {
         asNode().appendNode("dependencies").apply {
-            configurations["apiElements"].allDependencies.forEach {
+            for (apiDependency in configurations["apiElements"].allDependencies) {
                 appendNode("dependency").apply {
-                    appendNode("groupId", it.group)
-                    appendNode("artifactId", it.name)
-                    appendNode("version", it.version)
+                    appendNode("groupId", apiDependency.group)
+                    appendNode("artifactId", apiDependency.name)
+                    appendNode("version", apiDependency.version)
                     appendNode("scope", "compile")
                 }
             }
@@ -240,18 +238,14 @@ publishing.publications.register<MavenPublication>("shaded") {
 
 allprojects {
     plugins.withId("maven-publish") {
-        afterEvaluate {
-            publishing.publications.withType<MavenPublication>().configureEach {
-                pom.withXml {
-                    (asNode()["dependencies"] as groovy.util.NodeList).forEach { dependencies ->
-                        (dependencies as groovy.util.Node).children().forEach { dependency ->
-                            val dep = dependency as groovy.util.Node
-                            val optional = dep["optional"] as groovy.util.NodeList
-                            val scope = dep["scope"] as groovy.util.NodeList
-                            if (!optional.isEmpty() && (optional[0] as groovy.util.Node).text() == "true") {
-                                (scope[0] as groovy.util.Node).setValue("runtime")
-                            }
-                        }
+        publishing.publications.withType<MavenPublication>().configureEach {
+            pom.withXml {
+                val dependencies = (asNode()["dependencies"] as groovy.util.NodeList)[0] as groovy.util.Node
+                for (dependency in dependencies.children()) {
+                    dependency as groovy.util.Node
+                    val optional = dependency["optional"] as groovy.util.NodeList
+                    if (!optional.isEmpty() && (optional[0] as groovy.util.Node).text() == "true") {
+                        ((dependency["scope"] as groovy.util.NodeList)[0] as groovy.util.Node).setValue("runtime")
                     }
                 }
             }
