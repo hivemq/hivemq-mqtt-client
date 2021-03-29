@@ -94,6 +94,9 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
         ctx.pipeline().remove(this);
 
         ((SocketChannel) ctx.channel()).config()
+                // close not on write error (concurrent write while remote closes the connection), only on read
+                // this ensures that always all bytes are read, e.g. of the DISCONNECT sent before the close
+                .setAutoClose(false)
                 .setKeepAlive(true)
                 .setTcpNoDelay(true)
                 .setConnectTimeoutMillis(clientConfig.getCurrentTransportConfig().getSocketConnectTimeoutMs());
