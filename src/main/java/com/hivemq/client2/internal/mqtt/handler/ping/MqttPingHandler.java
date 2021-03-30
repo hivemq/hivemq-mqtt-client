@@ -16,6 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.handler.ping;
 
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.handler.MqttConnectionAwareHandler;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -46,6 +48,7 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
         implements DefaultChannelOutboundHandler, Runnable, ChannelFutureListener {
 
     public static final @NotNull String NAME = "ping";
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttPingHandler.class);
     private static final boolean PINGRESP_REQUIRED = false; // TODO configurable
 
     private final long keepAliveNanos;
@@ -78,6 +81,7 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         lastReadTimeNanos = System.nanoTime();
         if (msg instanceof MqttPingResp) {
+            LOGGER.debug("Read PINGRESP from {}", ctx.channel().remoteAddress());
             messageRead = true;
         } else {
             messageRead = !PINGRESP_REQUIRED;
@@ -100,10 +104,12 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
         }
         if (pingReqWritten) {
             if (!pingReqFlushed) {
+                LOGGER.warn("Timeout while writing PINGREQ to {}", ctx.channel().remoteAddress());
                 MqttDisconnectUtil.close(ctx.channel(), "Timeout while writing PINGREQ");
                 return;
             }
             if (!messageRead) {
+                LOGGER.warn("Timeout while waiting for PINGRESP from {}", ctx.channel().remoteAddress());
                 MqttDisconnectUtil.close(ctx.channel(), "Timeout while waiting for PINGRESP");
                 return;
             }
@@ -116,6 +122,7 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
             pingReqWritten = false;
             schedule(ctx, nextDelayNanos);
         } else {
+            LOGGER.debug("Write PINGREQ to {}", ctx.channel().remoteAddress());
             pingReqWritten = true;
             schedule(ctx, keepAliveNanos);
             lastFlushTimeNanos = timeNanos;
@@ -126,7 +133,10 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
     @Override
     public void operationComplete(final @NotNull ChannelFuture future) {
         if (future.isSuccess()) {
+            LOGGER.trace("PINGREQ sent");
             pingReqFlushed = true;
+        } else {
+            LOGGER.debug("PINGREQ failed: cancelled: {}, cause: {}", future.isCancelled(), future.cause());
         }
     }
 

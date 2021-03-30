@@ -119,6 +119,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     public void subscribe(
             final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
+        LOGGER.trace("subscribe: schedule SUBSCRIBE {}", subscribe);
 
         flow.getEventLoop().execute(() -> {
             if (flow.init()) {
@@ -132,6 +133,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     public void unsubscribe(
             final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> flow) {
+        LOGGER.trace("unsubscribe: schedule UNSUBSCRIBE {}", unsubscribe);
 
         flow.getEventLoop().execute(() -> {
             if (flow.init()) {
@@ -199,6 +201,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                 subscribeWithFlow.subscribe.createStateful(subscribeWithFlow.packetIdentifier, subscriptionIdentifier);
 
         currentPending = subscribeWithFlow;
+        LOGGER.debug("Write SUBSCRIBE {} to {}", statefulSubscribe, ctx.channel().remoteAddress());
         ctx.write(statefulSubscribe, ctx.voidPromise());
         currentPending = null;
     }
@@ -210,6 +213,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                 unsubscribeWithFlow.unsubscribe.createStateful(unsubscribeWithFlow.packetIdentifier);
 
         currentPending = unsubscribeWithFlow;
+        LOGGER.debug("Write UNSUBSCRIBE {} to {}", statefulUnsubscribe, ctx.channel().remoteAddress());
         ctx.write(statefulUnsubscribe, ctx.voidPromise());
         currentPending = null;
     }
@@ -226,6 +230,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     private void readSubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubAck subAck) {
+        LOGGER.debug("Read SUBACK {} from {}", subAck, ctx.channel().remoteAddress());
         final MqttSubOrUnsubWithFlow subOrUnsubWithFlow = pendingIndex.remove(subAck.getPacketIdentifier());
 
         if (subOrUnsubWithFlow == null) {
@@ -273,6 +278,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     private void readUnsubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubAck unsubAck) {
+        LOGGER.debug("Read UNSUBACK {} from {}", unsubAck, ctx.channel().remoteAddress());
         final MqttSubOrUnsubWithFlow subOrUnsubWithFlow = pendingIndex.remove(unsubAck.getPacketIdentifier());
 
         if (subOrUnsubWithFlow == null) {
@@ -326,6 +332,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        LOGGER.debug("Exception caught: {}, remote address: {}", cause, ctx.channel().remoteAddress());
         if (!(cause instanceof IOException) && (currentPending != null)) {
             pending.remove(currentPending);
             packetIdentifiers.returnId(currentPending.packetIdentifier);

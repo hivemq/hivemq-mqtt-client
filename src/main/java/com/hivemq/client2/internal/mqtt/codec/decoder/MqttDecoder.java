@@ -16,10 +16,13 @@
 
 package com.hivemq.client2.internal.mqtt.codec.decoder;
 
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client2.internal.mqtt.ioc.ConnectionScope;
+import com.hivemq.client2.internal.mqtt.message.MqttMessage;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnectRestrictions;
 import com.hivemq.client2.mqtt.exceptions.MqttDecodeException;
@@ -31,6 +34,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+
 import java.util.List;
 
 /**
@@ -43,6 +47,7 @@ import java.util.List;
 public class MqttDecoder extends ByteToMessageDecoder {
 
     public static final @NotNull String NAME = "decoder";
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttDecoder.class);
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
     private final @NotNull MqttMessageDecoders decoders;
@@ -106,15 +111,18 @@ public class MqttDecoder extends ByteToMessageDecoder {
             }
 
             in.writerIndex(readerIndexAfterFixedHeader + remainingLength);
-            out.add(decoder.decode(flags, in, context));
+            MqttMessage msg = decoder.decode(flags, in, context);
+            LOGGER.trace("Decoded MqttMessage {} from {}", msg, ctx.channel().remoteAddress());
+            out.add(msg);
             in.writerIndex(writerIndex);
-
         } catch (final MqttDecoderException e) {
             in.clear();
             final Mqtt5MessageType type = Mqtt5MessageType.fromCode(messageType);
             final String message =
                     "Exception while decoding " + ((type == null) ? "UNKNOWN" : type) + ": " + e.getMessage();
-            MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), new MqttDecodeException(message));
+            LOGGER.debug(message + ", Reason code: {}, remote address: {}", e.getReasonCode(), ctx.channel().remoteAddress());
+            MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(),
+                    new MqttDecodeException(message.concat(", Reason code: ").concat(e.getReasonCode().toString())));
         }
     }
 

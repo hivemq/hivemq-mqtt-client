@@ -17,6 +17,8 @@
 package com.hivemq.client2.internal.mqtt.handler.util;
 
 import com.hivemq.client2.internal.annotations.CallByThread;
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.handler.MqttConnectionAwareHandler;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -40,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandler
         implements Runnable, ChannelFutureListener {
 
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttTimeoutInboundHandler.class);
     private @Nullable ScheduledFuture<?> timeoutFuture;
 
     /**
@@ -109,6 +112,7 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
     @Override
     protected void onDisconnectEvent(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+        LOGGER.debug("OnDisconnectedEvent: source: {}, cause: {}", disconnectEvent.getSource(), disconnectEvent.getCause());
 
         cancelTimeout();
     }

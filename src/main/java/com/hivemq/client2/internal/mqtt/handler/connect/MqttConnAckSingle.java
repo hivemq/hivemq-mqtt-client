@@ -87,12 +87,14 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
             final MqttTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
 
+            LOGGER.trace("connect: schedule CONNECT {} to {}", connect, transportConfig.getRemoteAddress());
             bootstrap.group(eventLoop)
                     .connect(transportConfig.getRemoteAddress(), transportConfig.getRawLocalAddress())
                     .addListener(future -> {
                         final Throwable cause = future.cause();
                         if (cause != null) {
                             final ConnectionFailedException e = new ConnectionFailedException(cause);
+                            LOGGER.debug("connect failed: {}, remote address {}", e, transportConfig.getRemoteAddress());
                             if (eventLoop.inEventLoop()) {
                                 reconnect(clientConfig, MqttDisconnectSource.CLIENT, e, connect, flow, eventLoop);
                             } else {
@@ -151,6 +153,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
         }
 
         if (reconnector.isReconnect()) {
+            LOGGER.debug("Schedule reconnect.");
             clientConfig.getRawState().set(DISCONNECTED_RECONNECT);
             eventLoop.schedule(() -> {
                 reconnector.getFuture().whenComplete((ignored, throwable) -> {
@@ -177,6 +180,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             clientConfig.setRepublishIfSessionExpired(reconnector.isRepublishIfSessionExpired());
             reconnector.afterOnDisconnected();
         } else {
+            LOGGER.debug("Do not schedule reconnect.");
             clientConfig.getRawState().set(DISCONNECTED);
             clientConfig.releaseEventLoop();
             if (flow != null) {

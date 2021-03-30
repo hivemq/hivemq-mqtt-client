@@ -16,6 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.handler.auth;
 
+import com.hivemq.client2.internal.logging.InternalLogger;
+import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -53,6 +55,8 @@ import javax.inject.Inject;
  */
 @ConnectionScope
 public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements DefaultChannelOutboundHandler {
+
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttConnectAuthHandler.class);
 
     @Inject
     MqttConnectAuthHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
@@ -92,6 +96,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
             state = MqttAuthState.WAIT_FOR_SERVER;
             final MqttStatefulConnect statefulConnect =
                     connect.createStateful(clientConfig.getRawClientIdentifier(), enhancedAuthBuilder.build());
+            LOGGER.debug("Write CONNECT {}", statefulConnect);
             ctx.writeAndFlush(statefulConnect, promise).addListener(this);
 
         }, (ctx, throwable) -> MqttDisconnectUtil.close(ctx.channel(), new ConnectionFailedException(throwable)));
@@ -117,6 +122,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      * @param connAck the received CONNACK message.
      */
     private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
+        LOGGER.debug("Read CONNACK {}", connAck);
         cancelTimeout();
 
         if (connAck.getReasonCode().isError()) {
@@ -207,6 +213,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      */
     @Override
     void readAuthSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
+        LOGGER.debug("Read AUTH success {}", auth);
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 new Mqtt5AuthException(auth, "Must not receive AUTH with reason code SUCCESS during connect auth."));
     }
@@ -219,6 +226,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      */
     @Override
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
+        LOGGER.debug("Read re-AUTH {}", auth);
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 new Mqtt5AuthException(auth,
                         "Must not receive AUTH with reason code REAUTHENTICATE during connect auth."));
