@@ -98,11 +98,11 @@ Java 8 or higher is required.
 
 #### Gradle
 
-If you use Gradle, just include the following inside your `build.gradle` file.
+If you use Gradle, just include the following inside your `build.gradle(.kts)` file.
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.2.2'
+  implementation("com.hivemq:hivemq-mqtt-client:1.2.2")
 }
 ```
 
@@ -110,10 +110,10 @@ For optional features you can choose to include additional modules:
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-websocket', version: '1.2.2'
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-proxy', version: '1.2.2'
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-epoll', version: '1.2.2'
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-reactor', version: '1.2.2'
+  implementation(platform("com.hivemq:hivemq-mqtt-client-websocket:1.2.2"))
+  implementation(platform("com.hivemq:hivemq-mqtt-client-proxy:1.2.2"))
+  implementation(platform("com.hivemq:hivemq-mqtt-client-epoll:1.2.2"))
+  implementation("com.hivemq:hivemq-mqtt-client-reactor:1.2.2")
 }
 ```
 
@@ -199,7 +199,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.2.2'
+  implementation("com.hivemq:hivemq-mqtt-client-shaded:1.2.2")
 }
 ```
 
@@ -227,18 +227,18 @@ Snapshots can be obtained using [JitPack](https://jitpack.io/#hivemq/hivemq-mqtt
 
 ```groovy
 repositories {
-    ...
-    maven { url 'https://jitpack.io' }
+  ...
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT'
-    
-    // snapshots for optional modules
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT'
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT'
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT'
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT'
+  implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT")
+
+  // snapshots for optional modules
+  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT"))
+  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT"))
+  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT"))
+  implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT")
 }
 ```
 
