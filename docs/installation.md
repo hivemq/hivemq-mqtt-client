@@ -20,7 +20,7 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    implementation "com.hivemq:hivemq-mqtt-client:{{ site.version }}"
+    implementation("com.hivemq:hivemq-mqtt-client:{{ site.version }}")
 }
 ```
 
@@ -70,7 +70,7 @@ You have to set the compiler version to `1.8` or higher.
 
 The HiveMQ MQTT Client provides optional features via additional modules.
 
-| Module name | Description |
+| Module name | Description |
 | ----------- | ----------- |
 | `hivemq-mqtt-client-websocket` | Adds dependencies for the WebSocket transport |
 | `hivemq-mqtt-client-proxy` | Adds dependencies for the proxy transport |
@@ -91,7 +91,7 @@ Gradle
 
 ```groovy
 dependencies {
-    implementation "com.hivemq:hivemq-mqtt-client:{{ site.version }}"
+    implementation("com.hivemq:hivemq-mqtt-client:{{ site.version }}")
 }
 ```
 
@@ -102,9 +102,22 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.hivemq:hivemq-mqtt-client-websocket:{{ site.version }}"
+    implementation("com.hivemq:hivemq-mqtt-client-websocket:{{ site.version }}")
 }
 ```
+
+{% capture admonition_content %}
+
+For versions 1.2.x, it is necessary to use the platform keyword:
+
+```groovy
+dependencies {
+    implementation(platform("com.hivemq:hivemq-mqtt-client-websocket:{{ site.version }}"))
+}
+```
+
+{% endcapture %}
+{% include admonition.html type="warn" content=admonition_content%}
 
   ====
 
@@ -113,9 +126,22 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.hivemq:hivemq-mqtt-client-proxy:{{ site.version }}"
+    implementation("com.hivemq:hivemq-mqtt-client-proxy:{{ site.version }}")
 }
 ```
+
+{% capture admonition_content %}
+
+For versions 1.2.x, it is necessary to use the platform keyword:
+
+```groovy
+dependencies {
+    implementation(platform("com.hivemq:hivemq-mqtt-client-proxy:{{ site.version }}"))
+}
+```
+
+{% endcapture %}
+{% include admonition.html type="warn" content=admonition_content%}
 
   ====
 
@@ -124,9 +150,22 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.hivemq:hivemq-mqtt-client-epoll:{{ site.version }}"
+    implementation("com.hivemq:hivemq-mqtt-client-epoll:{{ site.version }}")
 }
 ```
+
+{% capture admonition_content %}
+
+For versions 1.2.x, it is necessary to use the platform keyword:
+
+```groovy
+dependencies {
+    implementation(platform("com.hivemq:hivemq-mqtt-client-epoll:{{ site.version }}"))
+}
+```
+
+{% endcapture %}
+{% include admonition.html type="warn" content=admonition_content%}
 
   ====
 
@@ -135,7 +174,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.hivemq:hivemq-mqtt-client-reactor:{{ site.version }}"
+    implementation("com.hivemq:hivemq-mqtt-client-reactor:{{ site.version }}")
 }
 ```
 
@@ -266,7 +305,7 @@ Gradle
 
 ```groovy
 dependencies {
-    implementaion "com.hivemq:hivemq-mqtt-client-shaded:{{ site.version }}"
+    implementaion("com.hivemq:hivemq-mqtt-client-shaded:{{ site.version }}")
 }
 ```
 
@@ -316,7 +355,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT"
+    implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT")
 }
 ```
 
@@ -327,9 +366,22 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT"
+    implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT")
 }
 ```
+
+{% capture admonition_content %}
+
+For versions 1.2.x, it is necessary to use the platform keyword:
+
+```groovy
+dependencies {
+    implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT"))
+}
+```
+
+{% endcapture %}
+{% include admonition.html type="warn" content=admonition_content%}
 
   ====
 
@@ -338,9 +390,22 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT"
+    implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT")
 }
 ```
+
+{% capture admonition_content %}
+
+For versions 1.2.x, it is necessary to use the platform keyword:
+
+```groovy
+dependencies {
+    implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT"))
+}
+```
+
+{% endcapture %}
+{% include admonition.html type="warn" content=admonition_content%}
 
   ====
 
@@ -349,9 +414,22 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT"
+    implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT")
 }
 ```
+
+{% capture admonition_content %}
+
+For versions 1.2.x, it is necessary to use the platform keyword:
+
+```groovy
+dependencies {
+    implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT"))
+}
+```
+
+{% endcapture %}
+{% include admonition.html type="warn" content=admonition_content%}
 
   ====
 
@@ -360,7 +438,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation "com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT"
+    implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT")
 }
 ```
 
