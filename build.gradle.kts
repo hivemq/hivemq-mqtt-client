@@ -1,11 +1,10 @@
-import java.util.*
-
 plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow")
     id("biz.aQute.bnd.builder")
     id("maven-publish")
-    id("com.jfrog.bintray")
+    id("io.github.gradle-nexus.publish-plugin")
+    id("signing")
     id("com.github.breadmoirai.github-release")
     id("com.github.hierynomus.license")
     id("pmd")
@@ -25,25 +24,25 @@ allprojects {
     plugins.apply("com.github.sgtsilvio.gradle.metadata")
 
     metadata {
-        moduleName = "com.hivemq.client.mqtt"
-        readableName = "HiveMQ MQTT Client"
+        moduleName.set("com.hivemq.client.mqtt")
+        readableName.set("HiveMQ MQTT Client")
         organization {
-            name = "HiveMQ and the HiveMQ Community"
-            url = "https://www.hivemq.com/"
+            name.set("HiveMQ and the HiveMQ Community")
+            url.set("https://www.hivemq.com/")
         }
         license {
             apache2()
         }
         developers {
             developer {
-                id = "SgtSilvio"
-                name = "Silvio Giebl"
-                email = "silvio.giebl@hivemq.com"
+                id.set("SgtSilvio")
+                name.set("Silvio Giebl")
+                email.set("silvio.giebl@hivemq.com")
             }
         }
         github {
-            org = "hivemq"
-            repo = "hivemq-mqtt-client"
+            org.set("hivemq")
+            repo.set("hivemq-mqtt-client")
             pages()
             issues()
         }
@@ -67,12 +66,6 @@ allprojects {
 
 /* ******************** dependencies ******************** */
 
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-}
-
 dependencies {
     api("io.reactivex.rxjava2:rxjava:${property("rxjava.version")}")
     api("org.reactivestreams:reactive-streams:${property("reactive-streams.version")}")
@@ -94,8 +87,8 @@ dependencies {
 
 /* ******************** optional dependencies ******************** */
 
-listOf("websocket", "proxy", "epoll").forEach {
-    java.registerFeature(it) {
+for (feature in listOf("websocket", "proxy", "epoll")) {
+    java.registerFeature(feature) {
         usingSourceSet(sourceSets["main"])
     }
 }
@@ -120,7 +113,7 @@ allprojects {
         tasks.test {
             useJUnitPlatform()
             maxHeapSize = "1g"
-            maxParallelForks = Runtime.getRuntime().availableProcessors()
+            maxParallelForks = 1.coerceAtLeast(Runtime.getRuntime().availableProcessors() / 2)
             jvmArgs("-XX:+UseParallelGC")
         }
     }
@@ -177,12 +170,10 @@ tasks.shadowJar {
     archiveAppendix.set("shaded")
     archiveClassifier.set("")
 
-    configurations = listOf(project.run {
-        configurations.create("shaded") {
-            extendsFrom(configurations["runtimeClasspath"])
-            configurations["apiElements"].allDependencies.forEach {
-                exclude(it.group, it.name)
-            }
+    configurations = listOf(project.configurations.create("shaded") {
+        extendsFrom(project.configurations["runtimeClasspath"])
+        for (apiDependency in project.configurations["apiElements"].allDependencies) {
+            exclude(apiDependency.group, apiDependency.name)
         }
     })
 
@@ -201,8 +192,6 @@ tasks.shadowJar {
 
 
 /* ******************** publishing ******************** */
-
-apply("${rootDir}/gradle/publishing.gradle.kts")
 
 allprojects {
     plugins.withId("java-library") {
@@ -233,11 +222,11 @@ publishing.publications.register<MavenPublication>("shaded") {
     artifact(tasks["sourcesJar"])
     pom.withXml {
         asNode().appendNode("dependencies").apply {
-            configurations["apiElements"].allDependencies.forEach {
+            for (apiDependency in configurations["apiElements"].allDependencies) {
                 appendNode("dependency").apply {
-                    appendNode("groupId", it.group)
-                    appendNode("artifactId", it.name)
-                    appendNode("version", it.version)
+                    appendNode("groupId", apiDependency.group)
+                    appendNode("artifactId", apiDependency.name)
+                    appendNode("version", apiDependency.version)
                     appendNode("scope", "compile")
                 }
             }
@@ -247,18 +236,14 @@ publishing.publications.register<MavenPublication>("shaded") {
 
 allprojects {
     plugins.withId("maven-publish") {
-        afterEvaluate {
-            publishing.publications.withType<MavenPublication>().configureEach {
-                pom.withXml {
-                    (asNode()["dependencies"] as groovy.util.NodeList).forEach { dependencies ->
-                        (dependencies as groovy.util.Node).children().forEach { dependency ->
-                            val dep = dependency as groovy.util.Node
-                            val optional = dep["optional"] as groovy.util.NodeList
-                            val scope = dep["scope"] as groovy.util.NodeList
-                            if (!optional.isEmpty() && (optional[0] as groovy.util.Node).text() == "true") {
-                                (scope[0] as groovy.util.Node).setValue("runtime")
-                            }
-                        }
+        publishing.publications.withType<MavenPublication>().configureEach {
+            pom.withXml {
+                val dependencies = (asNode()["dependencies"] as groovy.util.NodeList)[0] as groovy.util.Node
+                for (dependency in dependencies.children()) {
+                    dependency as groovy.util.Node
+                    val optional = dependency["optional"] as groovy.util.NodeList
+                    if (!optional.isEmpty() && (optional[0] as groovy.util.Node).text() == "true") {
+                        ((dependency["scope"] as groovy.util.NodeList)[0] as groovy.util.Node).setValue("runtime")
                     }
                 }
             }
@@ -269,56 +254,33 @@ allprojects {
 allprojects {
     plugins.withId("maven-publish") {
 
-        plugins.apply("com.jfrog.bintray")
+        plugins.apply("signing")
 
-        bintray {
-            user = "${rootProject.extra["bintray_username"]}"
-            key = "${rootProject.extra["bintray_apiKey"]}"
-            publish = true
-            pkg.apply {
-                userOrg = "hivemq"
-                repo = "HiveMQ"
-                name = "hivemq-mqtt-client"
-                desc = project.description
-                websiteUrl = metadata.url
-                issueTrackerUrl = metadata.issueManagement.url
-                vcsUrl = metadata.scm.url
-                setLicenses(metadata.license.shortName)
-                setLabels("mqtt", "mqtt-client", "iot", "internet-of-things", "rxjava2", "reactive-streams", "backpressure")
-                version.apply {
-                    released = Date().toString()
-                    vcsTag = "v${project.version}"
-                    gpg.apply {
-                        sign = true
-                    }
-                }
-            }
-        }
-        afterEvaluate {
-            bintray.setPublications(*publishing.publications.withType<MavenPublication>().names.toTypedArray())
-        }
-
-        // workaround for publishing gradle module metadata https://github.com/bintray/gradle-bintray-plugin/issues/229
-        tasks.withType<com.jfrog.bintray.gradle.tasks.BintrayUploadTask> {
-            doFirst {
-                publishing.publications.withType<MavenPublication> {
-                    val moduleFile = buildDir.resolve("publications/$name/module.json")
-                    if (moduleFile.exists()) {
-                        artifact(moduleFile).extension = "module"
-                    }
-                }
+        signing {
+            val signingKey: String? by project
+            val signingPassword: String? by project
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            publishing.publications.configureEach {
+                sign(this)
             }
         }
     }
 }
 
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
+
 githubRelease {
-    token("${rootProject.extra["github_token"]}")
-    owner.set(metadata.github.org)
-    repo.set(metadata.github.repo)
+    owner.set(metadata.github!!.org.get())
+    repo.set(metadata.github!!.repo.get())
     targetCommitish.set("master")
     tagName.set("v${project.version}")
     releaseName.set("${project.version}")
+    val githubToken: String? by project
+    token(githubToken)
 }
 
 
@@ -340,11 +302,12 @@ allprojects {
 
         pmd {
             toolVersion = "5.7.0"
+            incrementalAnalysis.set(false)
         }
     }
 }
 
-apply("${rootDir}/gradle/japicc.gradle.kts")
+apply("$rootDir/gradle/japicc.gradle.kts")
 
 
 /* ******************** build cache ******************** */

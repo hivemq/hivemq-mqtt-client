@@ -18,7 +18,7 @@ jobs:
   include:
     - stage: release
       install: skip
-      script: ./gradlew bintrayUpload githubRelease
+      script: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository githubRelease
       jdk: oraclejdk8
 
 addons:

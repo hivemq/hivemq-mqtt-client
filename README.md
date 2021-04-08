@@ -6,6 +6,7 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
 [![JitPack](https://jitpack.io/v/hivemq/hivemq-mqtt-client.svg)](https://jitpack.io/#hivemq/hivemq-mqtt-client)
+[![javadoc](https://javadoc.io/badge2/com.hivemq/hivemq-mqtt-client/javadoc.svg)](https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client)
 [![Build Status](https://travis-ci.com/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.com/hivemq/hivemq-mqtt-client)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/context:java)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/alerts/)
@@ -79,7 +80,13 @@ backpressure support.
 <img src="https://avatars3.githubusercontent.com/u/11352045?s=200&v=4" alt="Open Smart Grid Platform" height="60px"/>
 ](https://github.com/OSGP/open-smart-grid-platform) &nbsp;&nbsp; [
 <img src="https://raw.githubusercontent.com/EXXETA/correomqtt/develop/icon/ico/Icon_128x128.png" alt="CorreoMQTT" height="60px"/>
-](https://github.com/EXXETA/correomqtt)
+](https://github.com/EXXETA/correomqtt) &nbsp;&nbsp; [
+<img src="https://avatars.githubusercontent.com/u/32634858?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
+](https://github.com/SmartsquareGmbH/mqtt-starter) &nbsp;&nbsp; [
+<img src="https://avatars.githubusercontent.com/u/16953511?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
+](https://www.openmuc.org/) &nbsp;&nbsp; [
+<img src="https://avatars.githubusercontent.com/u/20456341?s=200&v=4" alt="HiveMQ Spring Boot Starter" height="60px"/>
+](https://github.com/leftshiftone/gaia-sdk)
 
 If you use the HiveMQ MQTT Client in a project that is not listed here, feel free to open an issue or pull request.
 
@@ -91,11 +98,11 @@ Java 8 or higher is required.
 
 #### Gradle
 
-If you use Gradle, just include the following inside your `build.gradle` file.
+If you use Gradle, just include the following inside your `build.gradle(.kts)` file.
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.2.0'
+  implementation("com.hivemq:hivemq-mqtt-client:1.2.2")
 }
 ```
 
@@ -103,10 +110,10 @@ For optional features you can choose to include additional modules:
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-websocket', version: '1.2.0'
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-proxy', version: '1.2.0'
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-epoll', version: '1.2.0'
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-reactor', version: '1.2.0'
+  implementation(platform("com.hivemq:hivemq-mqtt-client-websocket:1.2.2"))
+  implementation(platform("com.hivemq:hivemq-mqtt-client-proxy:1.2.2"))
+  implementation(platform("com.hivemq:hivemq-mqtt-client-epoll:1.2.2"))
+  implementation("com.hivemq:hivemq-mqtt-client-reactor:1.2.2")
 }
 ```
 
@@ -121,7 +128,7 @@ If you use Maven, just include the following inside your `pom.xml` file.
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
         </dependency>
     </dependencies>
     ...
@@ -150,7 +157,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -158,7 +165,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -166,7 +173,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -174,7 +181,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-reactor</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
         </dependency>
     </dependencies>
     ...
@@ -192,7 +199,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-    implementation group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.2.0'
+  implementation("com.hivemq:hivemq-mqtt-client-shaded:1.2.2")
 }
 ```
 
@@ -205,7 +212,7 @@ dependencies {
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
         </dependency>
     </dependencies>
     ...
@@ -220,18 +227,18 @@ Snapshots can be obtained using [JitPack](https://jitpack.io/#hivemq/hivemq-mqtt
 
 ```groovy
 repositories {
-    ...
-    maven { url 'https://jitpack.io' }
+  ...
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT'
-    
-    // snapshots for optional modules
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT'
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT'
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT'
-    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT'
+  implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT")
+
+  // snapshots for optional modules
+  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-websocket:develop-SNAPSHOT"))
+  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-proxy:develop-SNAPSHOT"))
+  implementation(platform("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-epoll:develop-SNAPSHOT"))
+  implementation("com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client-reactor:develop-SNAPSHOT")
 }
 ```
 

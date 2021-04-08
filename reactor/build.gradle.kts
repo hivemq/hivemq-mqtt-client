@@ -8,8 +8,8 @@ plugins {
 description = "Reactor API for the HiveMQ MQTT Client"
 
 metadata {
-    moduleName = "com.hivemq.client.mqtt.reactor"
-    readableName = "HiveMQ MQTT Client reactor module"
+    moduleName.set("com.hivemq.client.mqtt.reactor")
+    readableName.set("HiveMQ MQTT Client reactor module")
 }
 
 

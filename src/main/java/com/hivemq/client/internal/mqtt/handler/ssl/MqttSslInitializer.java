@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLParameters;
 import java.net.InetSocketAddress;
 import java.util.function.BiConsumer;
@@ -73,20 +72,11 @@ public final class MqttSslInitializer {
             sslHandler.engine().setSSLParameters(sslParameters);
         }
 
-        sslHandler.handshakeFuture().addListener(future -> {
-            if (future.isSuccess()) {
-                if ((hostnameVerifier != null) &&
-                        !hostnameVerifier.verify(serverAddress.getHostString(), sslHandler.engine().getSession())) {
-                    onError.accept(channel, new SSLHandshakeException("Hostname verification failed"));
-                } else {
-                    onSuccess.accept(channel);
-                }
-            } else {
-                onError.accept(channel, future.cause());
-            }
-        });
+        final MqttSslAdapterHandler sslAdapterHandler =
+                new MqttSslAdapterHandler(sslHandler, serverAddress.getHostString(), hostnameVerifier, onSuccess,
+                        onError);
 
-        channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler);
+        channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler).addLast(MqttSslAdapterHandler.NAME, sslAdapterHandler);
     }
 
     static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {

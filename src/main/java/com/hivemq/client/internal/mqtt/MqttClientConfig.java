@@ -197,6 +197,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
                     synchronized (state) {
                         if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired
                             this.eventLoop = null;
+                            // releaseEventLoop must be the last statement so everything is cleaned up even if it throws
                             NettyEventLoopProvider.INSTANCE.releaseEventLoop(executorConfig.getRawNettyExecutor());
                         }
                     }

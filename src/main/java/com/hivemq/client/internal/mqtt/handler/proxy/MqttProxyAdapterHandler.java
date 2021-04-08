@@ -17,26 +17,26 @@
 package com.hivemq.client.internal.mqtt.handler.proxy;
 
 import com.hivemq.client.internal.mqtt.MqttProxyConfigImpl;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 import io.netty.handler.proxy.HttpProxyHandler;
 import io.netty.handler.proxy.ProxyHandler;
 import io.netty.handler.proxy.Socks4ProxyHandler;
 import io.netty.handler.proxy.Socks5ProxyHandler;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
  * @author Silvio Giebl
  */
-class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
+class MqttProxyAdapterHandler extends ChannelDuplexHandler implements FutureListener<Channel> {
 
     public static final @NotNull String NAME = "proxy.adapter";
     private static final @NotNull String PROXY_HANDLER_NAME = "proxy";
@@ -45,6 +45,7 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
     private final @NotNull InetSocketAddress serverAddress;
     private final @NotNull Consumer<Channel> onSuccess;
     private final @NotNull BiConsumer<Channel, Throwable> onError;
+    private boolean handshakeDone = false;
 
     public MqttProxyAdapterHandler(
             final @NotNull MqttProxyConfigImpl proxyConfig,
@@ -68,8 +69,6 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
         final Channel channel = ctx.channel();
         final String username = proxyConfig.getRawUsername();
         final String password = proxyConfig.getRawPassword();
-        final Consumer<Channel> onSuccess = this.onSuccess;
-        final BiConsumer<Channel, Throwable> onError = this.onError;
 
         final ProxyHandler proxyHandler;
         switch (proxyConfig.getProtocol()) {
@@ -88,25 +87,54 @@ class MqttProxyAdapterHandler extends ChannelOutboundHandlerAdapter {
                 }
                 break;
             default:
-                onError.accept(
-                        channel, new IllegalStateException("Unknown proxy protocol " + proxyConfig.getProtocol()));
+                if (setHandshakeDone(channel.pipeline())) {
+                    onError.accept(
+                            channel, new IllegalStateException("Unknown proxy protocol " + proxyConfig.getProtocol()));
+                }
                 return;
         }
 
         proxyHandler.setConnectTimeoutMillis(proxyConfig.getHandshakeTimeoutMs());
 
-        proxyHandler.connectFuture().addListener(future -> {
-            channel.pipeline().remove(PROXY_HANDLER_NAME);
-            if (future.isSuccess()) {
-                onSuccess.accept(channel);
-            } else {
-                onError.accept(channel, future.cause());
-            }
-        });
+        proxyHandler.connectFuture().addListener(this);
 
-        channel.pipeline().addFirst(PROXY_HANDLER_NAME, proxyHandler).remove(this);
+        channel.pipeline().addFirst(PROXY_HANDLER_NAME, proxyHandler);
 
         ctx.connect(serverAddress, localAddress, promise);
+    }
+
+    @Override
+    public void operationComplete(final @NotNull Future<Channel> future) {
+        if (future.isSuccess()) {
+            final Channel channel = future.getNow();
+            if (setHandshakeDone(channel.pipeline())) {
+                onSuccess.accept(channel);
+            }
+        }
+        // onError is handled in exceptionCaught because the exception is fired after the connect future is set and
+        // otherwise "An exceptionCaught() event was fired, and it reached at the tail of the pipeline" would be logged
+    }
+
+    @Override
+    public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        if (setHandshakeDone(ctx.pipeline())) {
+            onError.accept(ctx.channel(), cause);
+        } else {
+            ctx.fireExceptionCaught(cause);
+        }
+    }
+
+    private boolean setHandshakeDone(final @NotNull ChannelPipeline pipeline) {
+        if (!handshakeDone) {
+            handshakeDone = true;
+            pipeline.remove(this);
+            try {
+                pipeline.remove(PROXY_HANDLER_NAME);
+            } catch (final NoSuchElementException ignored) {
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -1,13 +1,14 @@
+# Gradle
 .gradle
-out/
 build/
 
+# IntelliJ
+out/
 *.iml
 .idea/*
 !.idea/codeStyles
 !.idea/inspectionProfiles
+!.idea/runConfigurations
 
-.DS_Store
 .java-version
-credentials.gradle
-bintray.gradle
+.DS_Store
