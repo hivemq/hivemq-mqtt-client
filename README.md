@@ -5,7 +5,6 @@
 # HiveMQ MQTT Client
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
-[![JitPack](https://jitpack.io/v/hivemq/hivemq-mqtt-client.svg)](https://jitpack.io/#hivemq/hivemq-mqtt-client)
 [![javadoc](https://javadoc.io/badge2/com.hivemq/hivemq-mqtt-client/javadoc.svg)](https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client)
 [![Build Status](https://travis-ci.com/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.com/hivemq/hivemq-mqtt-client)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/context:java)
