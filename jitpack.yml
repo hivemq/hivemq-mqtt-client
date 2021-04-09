@@ -1,2 +1,2 @@
 install:
-  ./gradlew publishToMavenLocal
+  ./gradlew publishToMavenLocal -x signBasePublication -x signShadedPublication
