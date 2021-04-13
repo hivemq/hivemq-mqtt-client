@@ -72,7 +72,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * The value must be in the range of an unsigned int: [0, 4_294_967_295].
      *
      * @param sessionExpiryInterval the session expiry interval in seconds.
-     * @return teh builder.
+     * @return the builder.
      */
     @CheckReturnValue
     @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
