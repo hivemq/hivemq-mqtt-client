@@ -273,17 +273,6 @@ nexusPublishing {
     }
 }
 
-githubRelease {
-    owner.set(metadata.github!!.org.get())
-    repo.set(metadata.github!!.repo.get())
-    targetCommitish.set("master")
-    tagName.set("v${project.version}")
-    releaseName.set("${project.version}")
-    val githubToken: String? by project
-    token(githubToken)
-}
-
-
 /* ******************** checks ******************** */
 
 allprojects {
