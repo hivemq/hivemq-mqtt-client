@@ -5,7 +5,6 @@ plugins {
     id("maven-publish")
     id("io.github.gradle-nexus.publish-plugin")
     id("signing")
-    id("com.github.breadmoirai.github-release")
     id("com.github.hierynomus.license")
     id("pmd")
     id("com.github.sgtsilvio.gradle.utf8")
