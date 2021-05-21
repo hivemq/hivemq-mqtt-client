@@ -6,7 +6,7 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
 [![javadoc](https://javadoc.io/badge2/com.hivemq/hivemq-mqtt-client/javadoc.svg)](https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client)
-[![Build Status](https://github.com/hivemq/hivemq-mqtt-client/actions/workflows/check.yml/badge.svg)](https://github.com/hivemq/hivemq-mqtt-client/actions/workflows/check.yml/)
+[![Build Status](https://github.com/hivemq/hivemq-mqtt-client/actions/workflows/check.yml/badge.svg?branch=master)](https://github.com/hivemq/hivemq-mqtt-client/actions/workflows/check.yml/)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/context:java)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/alerts/)
 
