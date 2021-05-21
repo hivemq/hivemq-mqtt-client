@@ -1,4 +1,4 @@
-name: Publish to Maven Central and Docker Hub
+name: Publish to Maven Central
 
 on:
   release:
