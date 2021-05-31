@@ -5,7 +5,6 @@ plugins {
     id("maven-publish")
     id("io.github.gradle-nexus.publish-plugin")
     id("signing")
-    id("com.github.breadmoirai.github-release")
     id("com.github.hierynomus.license")
     id("pmd")
     id("com.github.sgtsilvio.gradle.utf8")
@@ -272,17 +271,6 @@ nexusPublishing {
         sonatype()
     }
 }
-
-githubRelease {
-    owner.set(metadata.github!!.org.get())
-    repo.set(metadata.github!!.repo.get())
-    targetCommitish.set("master")
-    tagName.set("v${project.version}")
-    releaseName.set("${project.version}")
-    val githubToken: String? by project
-    token(githubToken)
-}
-
 
 /* ******************** checks ******************** */
 
