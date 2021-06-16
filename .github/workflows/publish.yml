@@ -4,10 +4,6 @@ on:
   release:
     types: [ published ]
 
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   publish:
     environment: mavenCentralPublish
