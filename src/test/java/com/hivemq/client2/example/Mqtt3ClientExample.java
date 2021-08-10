@@ -97,7 +97,7 @@ class Mqtt3ClientExample {
                     subscribedLatch.countDown();
                     System.out.println("subscribed to " + topic + ": return codes: " + subAck.getReturnCodes());
                 }).doOnNext(publish -> {
-                    if (publish.getPayload().isPresent()) {
+                    if (publish.getPayload().hasRemaining()) {
                         final int receivedCount = this.receivedCount.incrementAndGet();
                         final String message = new String(publish.getPayloadAsBytes());
                         System.out.println(

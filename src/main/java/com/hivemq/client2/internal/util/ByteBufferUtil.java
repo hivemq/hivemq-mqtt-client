@@ -27,18 +27,10 @@ import java.util.Optional;
  */
 public final class ByteBufferUtil {
 
-    private static final byte @NotNull [] EMPTY_BYTE_ARRAY = new byte[0];
+    public static final @NotNull ByteBuffer EMPTY_BYTE_BUFFER = ByteBuffer.wrap(ByteArrayUtil.EMPTY_BYTE_ARRAY);
 
     public static @NotNull ByteBuffer allocate(final int capacity, final boolean direct) {
         return direct ? ByteBuffer.allocateDirect(capacity) : ByteBuffer.allocate(capacity);
-    }
-
-    public static @Nullable ByteBuffer wrap(final byte @Nullable [] binary) {
-        return (binary == null) ? null : ByteBuffer.wrap(binary);
-    }
-
-    public static @Nullable ByteBuffer slice(final @Nullable ByteBuffer byteBuffer) {
-        return (byteBuffer == null) ? null : byteBuffer.slice();
     }
 
     public static @NotNull Optional<ByteBuffer> optionalReadOnly(final @Nullable ByteBuffer byteBuffer) {
@@ -55,9 +47,9 @@ public final class ByteBufferUtil {
         return copyBytes(byteBuffer);
     }
 
-    public static byte @NotNull [] copyBytes(final @Nullable ByteBuffer byteBuffer) {
-        if (byteBuffer == null) {
-            return EMPTY_BYTE_ARRAY;
+    public static byte @NotNull [] copyBytes(final @NotNull ByteBuffer byteBuffer) {
+        if (!byteBuffer.hasRemaining()) {
+            return ByteArrayUtil.EMPTY_BYTE_ARRAY;
         }
         final byte[] binary = new byte[byteBuffer.remaining()];
         byteBuffer.duplicate().get(binary);

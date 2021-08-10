@@ -53,7 +53,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     public static final long NO_MESSAGE_EXPIRY = -1;
 
     private final @NotNull MqttTopicImpl topic;
-    private final @Nullable ByteBuffer payload;
+    private final @NotNull ByteBuffer payload;
     private final @NotNull MqttQos qos;
     private final boolean retain;
     private final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval;
@@ -66,7 +66,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     public MqttPublish(
             final @NotNull MqttTopicImpl topic,
-            final @Nullable ByteBuffer payload,
+            final @NotNull ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean retain,
             final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval,
@@ -96,11 +96,11 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     @Override
-    public @NotNull Optional<ByteBuffer> getPayload() {
-        return ByteBufferUtil.optionalReadOnly(payload);
+    public @NotNull ByteBuffer getPayload() {
+        return payload.asReadOnlyBuffer();
     }
 
-    public @Nullable ByteBuffer getRawPayload() {
+    public @NotNull ByteBuffer getRawPayload() {
         return payload;
     }
 
@@ -211,13 +211,12 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     @Override
     protected @NotNull String toAttributeString() {
-        return "topic=" + topic + ((payload == null) ? "" : ", payload=" + payload.remaining() + "byte") + ", qos=" +
-                qos + ", retain=" + retain + ((messageExpiryInterval == NO_MESSAGE_EXPIRY) ? "" :
-                ", messageExpiryInterval=" + messageExpiryInterval) +
-                ((payloadFormatIndicator == null) ? "" : ", payloadFormatIndicator=" + payloadFormatIndicator) +
-                ((contentType == null) ? "" : ", contentType=" + contentType) +
-                ((responseTopic == null) ? "" : ", responseTopic=" + responseTopic) +
-                ((correlationData == null) ? "" : ", correlationData=" + correlationData.remaining() + "byte") +
+        return "topic=" + topic + ", payload=" + payload.remaining() + "byte" + ", qos=" + qos + ", retain=" + retain +
+                (messageExpiryInterval == NO_MESSAGE_EXPIRY ? "" : ", messageExpiryInterval=" + messageExpiryInterval) +
+                (payloadFormatIndicator == null ? "" : ", payloadFormatIndicator=" + payloadFormatIndicator) +
+                (contentType == null ? "" : ", contentType=" + contentType) +
+                (responseTopic == null ? "" : ", responseTopic=" + responseTopic) +
+                (correlationData == null ? "" : ", correlationData=" + correlationData.remaining() + "byte") +
                 StringUtil.prepend(", ", super.toAttributeString());
     }
 

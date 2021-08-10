@@ -62,9 +62,9 @@ public interface Mqtt5Publish extends Mqtt5Message {
     @NotNull MqttTopic getTopic();
 
     /**
-     * @return the optional payload of this Publish message.
+     * @return the payload of this Publish message.
      */
-    @NotNull Optional<ByteBuffer> getPayload();
+    @NotNull ByteBuffer getPayload();
 
     /**
      * @return the payload of this Publish message as a byte array. Empty byte array if the payload is not present.

@@ -39,7 +39,7 @@ import java.util.function.Function;
 public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<B>> {
 
     @Nullable MqttTopicImpl topic;
-    @Nullable ByteBuffer payload;
+    @NotNull ByteBuffer payload = ByteBufferUtil.EMPTY_BYTE_BUFFER;
     @NotNull MqttQos qos = Mqtt3PublishView.DEFAULT_QOS;
     boolean retain;
 
@@ -88,12 +88,12 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
 
         public @NotNull B payload(final byte @Nullable [] payload) {
-            this.payload = ByteBufferUtil.wrap(payload);
+            this.payload = ByteBuffer.wrap(Checks.notNull(payload, "Payload"));
             return self();
         }
 
         public @NotNull B payload(final @Nullable ByteBuffer payload) {
-            this.payload = ByteBufferUtil.slice(payload);
+            this.payload = Checks.notNull(payload, "Payload").slice();
             return self();
         }
 
@@ -167,12 +167,12 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
 
         public @NotNull B payload(final byte @Nullable [] payload) {
-            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
+            this.payload = MqttChecks.binaryData(payload, "Payload");
             return self();
         }
 
         public @NotNull B payload(final @Nullable ByteBuffer payload) {
-            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
+            this.payload = MqttChecks.binaryData(payload, "Payload");
             return self();
         }
 

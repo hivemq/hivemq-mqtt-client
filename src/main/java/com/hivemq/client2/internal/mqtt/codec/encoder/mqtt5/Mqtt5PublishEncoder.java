@@ -64,10 +64,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             remainingLength += 2;
         }
 
-        final ByteBuffer payload = stateless.getRawPayload();
-        if (payload != null) {
-            remainingLength += payload.remaining();
-        }
+        remainingLength += stateless.getRawPayload().remaining();
 
         return remainingLength;
     }
@@ -111,7 +108,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             final int omittedProperties) {
 
         final ByteBuffer payload = message.stateless().getRawPayload();
-        if ((payload != null) && payload.isDirect()) {
+        if (payload.hasRemaining() && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
             final ByteBuf out =
                     context.getAllocator().ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
@@ -207,7 +204,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     private void encodePayload(final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out) {
         final ByteBuffer payload = message.stateless().getRawPayload();
-        if ((payload != null) && !payload.isDirect()) {
+        if (payload.hasRemaining() && !payload.isDirect()) {
             out.writeBytes(payload.duplicate());
         }
     }

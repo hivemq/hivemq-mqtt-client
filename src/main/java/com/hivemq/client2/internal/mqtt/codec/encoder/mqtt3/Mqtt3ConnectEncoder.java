@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.codec.encoder.mqtt3;
 
+import com.hivemq.client2.internal.mqtt.datatypes.MqttBinaryData;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client2.internal.mqtt.message.auth.MqttSimpleAuth;
@@ -29,7 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
+import static com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoderUtil.encodeNullable;
+import static com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoderUtil.nullableEncodedLength;
 
 /**
  * @author Silvio Giebl
@@ -62,7 +64,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
         final MqttWillPublish willPublish = stateless.getRawWillPublish();
         if (willPublish != null) {
             remainingLength += willPublish.getTopic().encodedLength();
-            remainingLength += encodedOrEmptyLength(willPublish.getRawPayload());
+            remainingLength += MqttBinaryData.encodedLength(willPublish.getRawPayload());
         }
 
         return remainingLength;
@@ -132,7 +134,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
         final MqttWillPublish willPublish = message.stateless().getRawWillPublish();
         if (willPublish != null) {
             willPublish.getTopic().encode(out);
-            encodeNullable(willPublish.getRawPayload(), out);
+            MqttBinaryData.encode(willPublish.getRawPayload(), out);
         }
     }
 }

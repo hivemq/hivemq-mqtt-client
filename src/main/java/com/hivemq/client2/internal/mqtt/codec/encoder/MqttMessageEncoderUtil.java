@@ -62,10 +62,6 @@ public final class MqttMessageEncoderUtil {
         return (byteBuffer == null) ? 0 : MqttBinaryData.encodedLength(byteBuffer);
     }
 
-    public static int encodedOrEmptyLength(final @Nullable ByteBuffer byteBuffer) {
-        return (byteBuffer == null) ? MqttBinaryData.EMPTY_LENGTH : MqttBinaryData.encodedLength(byteBuffer);
-    }
-
     public static void encodeNullable(final @Nullable MqttUtf8StringImpl string, final @NotNull ByteBuf out) {
         if (string != null) {
             string.encode(out);
@@ -75,14 +71,6 @@ public final class MqttMessageEncoderUtil {
     public static void encodeNullable(final @Nullable ByteBuffer byteBuffer, final @NotNull ByteBuf out) {
         if (byteBuffer != null) {
             MqttBinaryData.encode(byteBuffer, out);
-        }
-    }
-
-    public static void encodeOrEmpty(final @Nullable ByteBuffer byteBuffer, final @NotNull ByteBuf out) {
-        if (byteBuffer != null) {
-            MqttBinaryData.encode(byteBuffer, out);
-        } else {
-            MqttBinaryData.encodeEmpty(out);
         }
     }
 

@@ -53,10 +53,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
             remainingLength += 2;
         }
 
-        final ByteBuffer payload = stateless.getRawPayload();
-        if (payload != null) {
-            remainingLength += payload.remaining();
-        }
+        remainingLength += stateless.getRawPayload().remaining();
 
         return remainingLength;
     }
@@ -69,7 +66,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
             final int remainingLength) {
 
         final ByteBuffer payload = message.stateless().getRawPayload();
-        if ((payload != null) && payload.isDirect()) {
+        if (payload.hasRemaining() && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
             final ByteBuf out =
                     context.getAllocator().ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
@@ -119,7 +116,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
 
     private void encodePayload(final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out) {
         final ByteBuffer payload = message.stateless().getRawPayload();
-        if ((payload != null) && !payload.isDirect()) {
+        if (payload.hasRemaining() && !payload.isDirect()) {
             out.writeBytes(payload.duplicate());
         }
     }

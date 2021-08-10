@@ -40,7 +40,7 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
 
     public MqttWillPublish(
             final @NotNull MqttTopicImpl topic,
-            final @Nullable ByteBuffer payload,
+            final @NotNull ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean isRetain,
             final @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval,

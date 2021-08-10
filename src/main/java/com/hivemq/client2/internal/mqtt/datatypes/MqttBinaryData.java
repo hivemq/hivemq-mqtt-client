@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.datatypes;
 
+import com.hivemq.client2.internal.util.ByteArrayUtil;
 import com.hivemq.client2.internal.util.ByteBufferUtil;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +45,9 @@ public final class MqttBinaryData {
             return null;
         }
         final int length = byteBuf.readUnsignedShort();
+        if (length == 0) {
+            return ByteArrayUtil.EMPTY_BYTE_ARRAY;
+        }
         if (byteBuf.readableBytes() < length) {
             return null;
         }
@@ -64,6 +68,9 @@ public final class MqttBinaryData {
             return null;
         }
         final int length = byteBuf.readUnsignedShort();
+        if (length == 0) {
+            return ByteBufferUtil.EMPTY_BYTE_BUFFER;
+        }
         if (byteBuf.readableBytes() < length) {
             return null;
         }
@@ -95,8 +102,12 @@ public final class MqttBinaryData {
      * @param byteBuf    the byte buffer to encode to.
      */
     public static void encode(final @NotNull ByteBuffer byteBuffer, final @NotNull ByteBuf byteBuf) {
-        byteBuf.writeShort(byteBuffer.remaining());
-        byteBuf.writeBytes(byteBuffer.duplicate());
+        if (byteBuffer.hasRemaining()) { // avoid calling byteBuffer.duplicate()
+            byteBuf.writeShort(byteBuffer.remaining());
+            byteBuf.writeBytes(byteBuffer.duplicate());
+        } else {
+            encodeEmpty(byteBuf);
+        }
     }
 
     /**

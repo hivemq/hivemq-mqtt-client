@@ -41,7 +41,7 @@ import java.util.function.Function;
 public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     @Nullable MqttTopicImpl topic;
-    @Nullable ByteBuffer payload;
+    @NotNull ByteBuffer payload = ByteBufferUtil.EMPTY_BYTE_BUFFER;
     @NotNull MqttQos qos = MqttPublish.DEFAULT_QOS;
     boolean retain;
     long messageExpiryInterval = MqttPublish.NO_MESSAGE_EXPIRY;
@@ -172,12 +172,12 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         }
 
         public @NotNull B payload(final byte @Nullable [] payload) {
-            this.payload = ByteBufferUtil.wrap(payload);
+            this.payload = ByteBuffer.wrap(Checks.notNull(payload, "Payload"));
             return self();
         }
 
         public @NotNull B payload(final @Nullable ByteBuffer payload) {
-            this.payload = ByteBufferUtil.slice(payload);
+            this.payload = Checks.notNull(payload, "Payload").slice();
             return self();
         }
 
@@ -270,12 +270,12 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         }
 
         public @NotNull B payload(final byte @Nullable [] payload) {
-            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
+            this.payload = MqttChecks.binaryData(payload, "Payload");
             return self();
         }
 
         public @NotNull B payload(final @Nullable ByteBuffer payload) {
-            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
+            this.payload = MqttChecks.binaryData(payload, "Payload");
             return self();
         }
 

@@ -22,8 +22,9 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Christian Hoff
@@ -43,15 +44,5 @@ class Mqtt3PublishViewTest {
         final Mqtt3PublishView publishView = Mqtt3PublishView.of(spyPublish);
         assertArrayEquals(payload, publishView.getPayloadAsBytes());
         verify(spyPublish).getPayloadAsBytes();
-    }
-
-    @Test
-    void getPayloadAsBytes_null_delegates() {
-        final MqttPublish spyPublish =
-                spy(new MqttPublishBuilder.Default().topic("topic").payload((byte[]) null).build());
-        final Mqtt3PublishView publishView = Mqtt3PublishView.of(spyPublish);
-        assertNotNull(publishView.getPayloadAsBytes());
-        assertEquals(0, publishView.getPayloadAsBytes().length);
-        verify(spyPublish, times(2)).getPayloadAsBytes();
     }
 }

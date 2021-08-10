@@ -32,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
-import java.util.Optional;
 
 /**
  * @author Silvio Giebl
@@ -46,7 +45,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     public static @NotNull MqttPublish delegate(
             final @NotNull MqttTopicImpl topic,
-            final @Nullable ByteBuffer payload,
+            final @NotNull ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean retain) {
 
@@ -63,7 +62,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     static @NotNull Mqtt3PublishView of(
             final @NotNull MqttTopicImpl topic,
-            final @Nullable ByteBuffer payload,
+            final @NotNull ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean retain) {
 
@@ -72,7 +71,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     static @NotNull Mqtt3PublishView willOf(
             final @NotNull MqttTopicImpl topic,
-            final @Nullable ByteBuffer payload,
+            final @NotNull ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean retain) {
 
@@ -101,7 +100,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @Override
-    public @NotNull Optional<ByteBuffer> getPayload() {
+    public @NotNull ByteBuffer getPayload() {
         return delegate.getPayload();
     }
 
@@ -135,9 +134,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     private @NotNull String toAttributeString() {
-        return "topic=" + getTopic() + ((delegate.getRawPayload() == null) ? "" :
-                ", payload=" + delegate.getRawPayload().remaining() + "byte") + ", qos=" + getQos() + ", retain=" +
-                isRetain();
+        return "topic=" + getTopic() + ", payload=" + delegate.getRawPayload().remaining() + "byte" + ", qos=" +
+                getQos() + ", retain=" + isRetain();
     }
 
     @Override

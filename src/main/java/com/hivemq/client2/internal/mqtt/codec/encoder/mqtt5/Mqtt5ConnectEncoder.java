@@ -18,6 +18,7 @@ package com.hivemq.client2.internal.mqtt.codec.encoder.mqtt5;
 
 import com.hivemq.client2.internal.mqtt.codec.encoder.MqttEncoderContext;
 import com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoder;
+import com.hivemq.client2.internal.mqtt.datatypes.MqttBinaryData;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client2.internal.mqtt.message.auth.MqttEnhancedAuth;
@@ -118,7 +119,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         final MqttWillPublish willPublish = stateless.getRawWillPublish();
         if (willPublish != null) {
             remainingLength += willPublish.getTopic().encodedLength();
-            remainingLength += encodedOrEmptyLength(willPublish.getRawPayload());
+            remainingLength += MqttBinaryData.encodedLength(willPublish.getRawPayload());
         }
 
         return remainingLength;
@@ -316,7 +317,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
                     MqttWillPublish.DEFAULT_DELAY_INTERVAL, out);
 
             willPublish.getTopic().encode(out);
-            encodeOrEmpty(willPublish.getRawPayload(), out);
+            MqttBinaryData.encode(willPublish.getRawPayload(), out);
         }
     }
 }

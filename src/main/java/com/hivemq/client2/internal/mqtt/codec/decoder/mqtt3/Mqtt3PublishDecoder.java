@@ -67,7 +67,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
         final int packetIdentifier = decodePublishPacketIdentifier(qos, in);
 
         final int payloadLength = in.readableBytes();
-        ByteBuffer payload = null;
+        ByteBuffer payload = ByteBufferUtil.EMPTY_BYTE_BUFFER;
         if (payloadLength > 0) {
             payload = ByteBufferUtil.allocate(payloadLength, context.useDirectBufferPayload());
             in.readBytes(payload);

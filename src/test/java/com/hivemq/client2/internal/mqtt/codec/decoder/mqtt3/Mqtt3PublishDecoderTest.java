@@ -45,7 +45,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
             final boolean retained,
             final int packetId,
             final byte[] topic,
-            final @NotNull byte[] payload) throws Exception {
+            final byte @NotNull [] payload) throws Exception {
 
         final ByteBuf byteBuf = channel.alloc().buffer();
 
@@ -107,7 +107,6 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
         assertEquals(topic, publishInternal.stateless().getTopic().toString());
-        assertTrue(publishInternal.stateless().getPayload().isPresent());
         assertArrayEquals(payload.getBytes(), publishInternal.stateless().getPayloadAsBytes());
         assertEquals(isDup, publishInternal.isDup());
         assertEquals(qos, publishInternal.stateless().getQos().getCode());
@@ -135,7 +134,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
         assertEquals(topic, publishInternal.stateless().getTopic().toString());
-        assertFalse(publishInternal.stateless().getPayload().isPresent());
+        assertFalse(publishInternal.stateless().getPayload().hasRemaining());
         assertEquals(isDup, publishInternal.isDup());
         assertEquals(qos, publishInternal.stateless().getQos().getCode());
         if (qos == 0) {
@@ -162,7 +161,6 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
-        assertTrue(publishInternal.stateless().getPayload().isPresent());
         assertArrayEquals(payload.getBytes(), publishInternal.stateless().getPayloadAsBytes());
         assertEquals(isDup, publishInternal.isDup());
         assertEquals(qos, publishInternal.stateless().getQos().getCode());

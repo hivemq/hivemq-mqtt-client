@@ -25,7 +25,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
-import java.util.Optional;
 
 /**
  * MQTT 3 Publish message. This message is translated from and to an MQTT 3 PUBLISH packet.
@@ -58,9 +57,9 @@ public interface Mqtt3Publish extends Mqtt3Message {
     @NotNull MqttTopic getTopic();
 
     /**
-     * @return the optional payload of this Publish message.
+     * @return the payload of this Publish message.
      */
-    @NotNull Optional<ByteBuffer> getPayload();
+    @NotNull ByteBuffer getPayload();
 
     /**
      * @return the payload of this Publish message as a byte array. Empty byte array if the payload is not present.

@@ -22,7 +22,6 @@ import com.hivemq.client2.mqtt.datatypes.MqttTopic;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 
@@ -75,22 +74,22 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
     interface Complete<C extends Mqtt3PublishBuilderBase.Complete<C>> extends Mqtt3PublishBuilderBase<C> {
 
         /**
-         * Sets the optional {@link Mqtt3Publish#getPayload() payload}.
+         * Sets the {@link Mqtt3Publish#getPayload() payload}.
          *
-         * @param payload the payload as byte array or <code>null</code> to remove any previously set payload.
+         * @param payload the payload as byte array.
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C payload(byte @Nullable [] payload);
+        @NotNull C payload(byte @NotNull [] payload);
 
         /**
-         * Sets the optional {@link Mqtt3Publish#getPayload() payload}.
+         * Sets the {@link Mqtt3Publish#getPayload() payload}.
          *
-         * @param payload the payload as {@link ByteBuffer} or <code>null</code> to remove any previously set payload.
+         * @param payload the payload as {@link ByteBuffer}.
          * @return the builder.
          */
         @CheckReturnValue
-        @NotNull C payload(@Nullable ByteBuffer payload);
+        @NotNull C payload(@NotNull ByteBuffer payload);
 
         /**
          * Sets the {@link Mqtt3Publish#getQos() QoS}.

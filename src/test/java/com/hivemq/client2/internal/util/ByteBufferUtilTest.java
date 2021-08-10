@@ -51,34 +51,6 @@ class ByteBufferUtilTest {
     }
 
     @Test
-    void wrap_notNull() {
-        final byte[] bytes = {0, 1, 2, 3, 4};
-        final ByteBuffer buffer = ByteBufferUtil.wrap(bytes);
-        assertNotNull(buffer);
-        assertEquals(ByteBuffer.wrap(bytes), buffer);
-    }
-
-    @Test
-    void wrap_null_null() {
-        //noinspection ConstantConditions
-        assertNull(ByteBufferUtil.wrap(null));
-    }
-
-    @Test
-    void slice_notNull() {
-        final byte[] bytes = {0, 1, 2, 3, 4};
-        final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        final ByteBuffer sliced = ByteBufferUtil.slice(buffer);
-        assertNotNull(sliced);
-        assertEquals(buffer.slice(), sliced);
-    }
-
-    @Test
-    void slice_null_null() {
-        assertNull(ByteBufferUtil.slice(null));
-    }
-
-    @Test
     void optionalReadOnly_notNull() {
         final byte[] bytes = {0, 1, 2, 3, 4};
         final ByteBuffer buffer = ByteBuffer.wrap(bytes);
@@ -183,10 +155,13 @@ class ByteBufferUtilTest {
     }
 
     @Test
-    void copyBytes_null() {
-        final byte[] bytes1 = ByteBufferUtil.copyBytes(null);
-        final byte[] bytes2 = ByteBufferUtil.copyBytes(null);
-        assertEquals(0, bytes1.length);
-        assertSame(bytes1, bytes2);
+    void copyBytes_empty() {
+        final ByteBuffer heapBuffer = ByteBuffer.allocate(0);
+        final ByteBuffer directBuffer = ByteBuffer.allocateDirect(0);
+        final byte[] copiedHeapBytes = ByteBufferUtil.copyBytes(heapBuffer);
+        final byte[] copiedDirectBytes = ByteBufferUtil.copyBytes(directBuffer);
+        assertEquals(0, copiedHeapBytes.length);
+        assertEquals(0, copiedDirectBytes.length);
+        assertSame(copiedHeapBytes, copiedDirectBytes);
     }
 }

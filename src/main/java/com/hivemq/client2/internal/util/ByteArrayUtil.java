@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ByteArrayUtil {
 
+    public static final byte @NotNull [] EMPTY_BYTE_ARRAY = new byte[0];
+
     public static boolean equals(
             final byte @NotNull [] array1,
             final int start1,

@@ -119,8 +119,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
 
-        assertTrue(publish.getPayload().isPresent());
-        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
+        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload());
     }
 
     @Test
@@ -160,8 +159,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
 
-        assertTrue(publish.getPayload().isPresent());
-        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
+        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload());
     }
 
     @Test
@@ -380,7 +378,6 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         final MqttPublish publish = decode(encoded);
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UTF_8, publish.getPayloadFormatIndicator().get());
-        assertTrue(publish.getPayload().isPresent());
         assertEquals("你 好", new String(publish.getPayloadAsBytes(), StandardCharsets.UTF_8));
     }
 
@@ -1210,12 +1207,12 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttPublish decode(final @NotNull byte[] encoded) {
+    private MqttPublish decode(final byte @NotNull [] encoded) {
         return decodeInternal(encoded).stateless();
     }
 
     @NotNull
-    private MqttStatefulPublish decodeInternal(final @NotNull byte[] encoded) {
+    private MqttStatefulPublish decodeInternal(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -1226,7 +1223,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         return publishInternal;
     }
 
-    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final byte @NotNull [] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

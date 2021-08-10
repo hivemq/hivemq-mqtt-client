@@ -191,7 +191,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         }
 
         final int payloadLength = in.readableBytes();
-        ByteBuffer payload = null;
+        ByteBuffer payload = ByteBufferUtil.EMPTY_BYTE_BUFFER;
         if (payloadLength > 0) {
             payload = ByteBufferUtil.allocate(payloadLength, context.useDirectBufferPayload());
             in.readBytes(payload);
