@@ -21,6 +21,7 @@ import com.hivemq.client.mqtt.MqttWebSocketConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -33,6 +34,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     private @NotNull String queryString = MqttWebSocketConfigImpl.DEFAULT_QUERY_STRING;
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
     private int handshakeTimeoutMs = MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @NotNull Map<String, String> httpHeaders = MqttWebSocketConfigImpl.DEFAULT_HTTP_HEADERS;
 
     MqttWebSocketConfigImplBuilder() {}
 
@@ -70,8 +72,14 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
         return self();
     }
 
+    public @NotNull B httpHeaders(final @Nullable Map<String, String> httpHeaders) {
+        Checks.notNull(httpHeaders, "Http headers");
+        this.httpHeaders = httpHeaders;
+        return self();
+    }
+
     public @NotNull MqttWebSocketConfigImpl build() {
-        return new MqttWebSocketConfigImpl(serverPath, queryString, subprotocol, handshakeTimeoutMs);
+        return new MqttWebSocketConfigImpl(serverPath, queryString, subprotocol, handshakeTimeoutMs, httpHeaders);
     }
 
     public static class Default extends MqttWebSocketConfigImplBuilder<Default> implements MqttWebSocketConfigBuilder {

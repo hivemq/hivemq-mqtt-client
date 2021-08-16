@@ -79,6 +79,7 @@ public class MqttWebSocketInitializer {
         channel.pipeline()
                 .addLast(HTTP_CODEC_NAME, new HttpClientCodec())
                 .addLast(HTTP_AGGREGATOR_NAME, new HttpObjectAggregator(65_535))
+                .addLast(MqttWebSocketHttpHeaders.HTTP_HEADERS, new MqttWebSocketHttpHeaders(webSocketConfig.getHttpHeaders()))
                 .addLast(MqttWebsocketHandshakeHandler.NAME,
                         new MqttWebsocketHandshakeHandler(handshaker, webSocketConfig.getHandshakeTimeoutMs(),
                                 onSuccess, onError))
