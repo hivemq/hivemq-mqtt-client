@@ -17,14 +17,14 @@ MqttClient.builder()
 
 ## General configuration
 
-| Method name | Description | Default value |
+| Method name | Description | Default value |
 | ----------- | ----------- | ------------- |
 | `identifier` | The unique identifier of the MQTT client | The server creates an identifier for the client |
 | `executorConfig` | Configuration of used Threads, see [Thread Management](thread-management.md) | Default Netty event loop and `Schedulers.comutation()` for callbacks |
 
 ## Transport configuration
 
-| Method name | Description | Default value |
+| Method name | Description | Default value |
 | ----------- | ----------- | ------------- |
 | `serverAddress` | The address (host + port) of the MQTT server | See `serverHost` and `serverPort` |
 | `serverHost` | The host name or IP address of the MQTT server | `localhost` |
@@ -35,7 +35,7 @@ MqttClient.builder()
 
 ## Lifecycle configuration
 
-| Method name | Description | Default value |
+| Method name | Description | Default value |
 | ----------- | ----------- | ------------- |
 | `automaticReconnect` <br/> `automaticReconnectWithDefaultConfig` | Automatic reconnect configuration | none |
 | `addConnectedListener` | Adds a listener that is notified when the client is connected | none |
@@ -72,7 +72,7 @@ Mqtt5Client client = Mqtt5Client.builder()
 
 The `Mqtt5ClientBuilder` has the following additional configuration methods:
 
-| Method name | Description | Default value |
+| Method name | Description | Default value |
 | ----------- | ----------- | ------------- |
 | `advancedConfig` | Advanced configuration options for special requirements | Sensible default values, you do not have to care about these if you do not require any of the advanced options |
 

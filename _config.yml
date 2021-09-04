@@ -10,15 +10,19 @@ color_scheme: dark
 
 permalink: pretty
 
+collections:
+  docs:
+    output: true
+
 just_the_docs:
   collections:
     html_pages:
-      root_path: docs/
+    docs:
 
 defaults:
   - scope:
-      path: "docs"
-      type: pages
+      path: ""
+      type: docs
     values:
       layout: default
 
@@ -46,6 +50,15 @@ plugins:
   - jekyll-titles-from-headings
   - jekyll-relative-links
   - jekyll-redirect-from
+
+titles_from_headings:
+  enabled: true
+  strip_title: false
+  collections: true
+
+relative_links:
+  enabled: true
+  collections: true
 
 sass:
   style: compressed

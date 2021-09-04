@@ -4,6 +4,7 @@ nav_order: 1
 redirect_from: /docs/installation/android.html
 ---
 
+{% comment %}disable jekyll-titles-from-headings{% endcomment %}
 # Installation on Android
 
 The HiveMQ MQTT Client library is supported on Android 4.4 (API level 19) and higher versions.

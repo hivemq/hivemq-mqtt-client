@@ -66,7 +66,7 @@ If connecting was not successful, the `Single` errors with:
 | `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
 | `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
 | `Mqtt5ConnAckException`     | if the ConnAck message contained an error code (the ConnAck message is contained in the exception) |
-| `MqttClientStateException`  | if the client is already connecting or connected |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 ====
 
@@ -121,7 +121,7 @@ If connecting was not successful, the `Single` errors with:
 | `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
 | `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
 | `Mqtt3ConnAckException`     | if the ConnAck message contained an error code (the ConnAck message is contained in the exception) |
-| `MqttClientStateException`  | if the client is already connecting or connected |
+| `MqttClientStateException`  | if the client is already connecting or connected |
 
 {% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
 
