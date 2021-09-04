@@ -1,7 +1,5 @@
 ---
-layout: default
 title: Android
-parent: Installation
 nav_order: 1
 redirect_from: /docs/installation/android.html
 ---

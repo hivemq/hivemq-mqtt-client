@@ -1,7 +1,4 @@
 ---
-layout: default
-title: Publish
-parent: MQTT Operations
 nav_order: 2
 redirect_from: /docs/mqtt_operations/publish.html
 ---

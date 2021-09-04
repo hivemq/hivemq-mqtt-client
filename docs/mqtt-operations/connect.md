@@ -1,7 +1,4 @@
 ---
-layout: default
-title: Connect
-parent: MQTT Operations
 nav_order: 1
 redirect_from: /docs/mqtt_operations/connect.html
 ---

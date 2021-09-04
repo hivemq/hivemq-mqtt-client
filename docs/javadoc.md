@@ -1,6 +1,4 @@
 ---
-layout: default
-title: Javadoc
 nav_order: 10
 ---
 

@@ -1,8 +1,5 @@
 ---
-layout: default
-title: Installation
 nav_order: 2
-has_children: true
 redirect_from: /docs/installation.html
 ---
 

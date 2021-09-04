@@ -5,8 +5,22 @@ version: 1.2.2
 android_retrofix_version: 0.3.6
 android_retrostreams_version: 1.7.2
 
-remote_theme: pmarsceill/just-the-docs@654da0a
+remote_theme: SgtSilvio/just-the-docs@98dc323f
 color_scheme: dark
+
+permalink: pretty
+
+just_the_docs:
+  collections:
+    html_pages:
+      root_path: docs/
+
+defaults:
+  - scope:
+      path: "docs"
+      type: pages
+    values:
+      layout: default
 
 search_enabled: true
 search:
@@ -27,10 +41,9 @@ aux_links:
 # site.github.releases_url
 # site.github.issues_url
 
-permalink: pretty
-
 plugins:
   - jekyll-remote-theme
+  - jekyll-titles-from-headings
   - jekyll-relative-links
   - jekyll-redirect-from
 
@@ -41,6 +54,6 @@ compress_html:
   clippings: all
   comments: all
   endings: all
-  startings: []
+  startings: [ ]
   blanklines: false
   profile: false

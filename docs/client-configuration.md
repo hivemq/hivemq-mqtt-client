@@ -1,6 +1,4 @@
 ---
-layout: default
-title: Client Configuration
 nav_order: 3
 redirect_from: /docs/client_configuration.html
 ---
