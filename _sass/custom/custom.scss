@@ -99,10 +99,6 @@ type parameter: #507874
 // Overrides
 //
 
-html {
-  scroll-behavior: auto;
-}
-
 th,
 td {
   font-size: 13px !important;
@@ -119,10 +115,6 @@ th {
 ::selection {
     color: $grey-dk-300;
     background: $yellow-200;
-}
-
-b, strong {
-    color: $yellow-300;
 }
 
 .main-content a {
