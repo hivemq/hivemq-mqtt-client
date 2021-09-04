@@ -1,3 +1,13 @@
+{%- comment -%}
+  include parameters:
+  - type: string
+    type of the admonition (note, tip, warn, important)
+  - title: string
+    optional title of the admonition
+  - content: string
+    markdown content of the admonition
+{%- endcomment -%}
+
 <div class="admonition admonition-{{ include.type }}">
   {% if include.title %}
     <div class="admonition-title">{{ include.title }}</div>
