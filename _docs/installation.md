@@ -114,7 +114,7 @@ dependencies {
 ```
 
 {% endcapture %}
-{% include admonition.html type="warn" content=admonition_content%}
+{% include admonition.html type="warn" content=admonition_content %}
 
   ====
 
@@ -138,7 +138,7 @@ dependencies {
 ```
 
 {% endcapture %}
-{% include admonition.html type="warn" content=admonition_content%}
+{% include admonition.html type="warn" content=admonition_content %}
 
   ====
 
@@ -162,7 +162,7 @@ dependencies {
 ```
 
 {% endcapture %}
-{% include admonition.html type="warn" content=admonition_content%}
+{% include admonition.html type="warn" content=admonition_content %}
 
   ====
 
@@ -378,7 +378,7 @@ dependencies {
 ```
 
 {% endcapture %}
-{% include admonition.html type="warn" content=admonition_content%}
+{% include admonition.html type="warn" content=admonition_content %}
 
   ====
 
@@ -402,7 +402,7 @@ dependencies {
 ```
 
 {% endcapture %}
-{% include admonition.html type="warn" content=admonition_content%}
+{% include admonition.html type="warn" content=admonition_content %}
 
   ====
 
@@ -426,7 +426,7 @@ dependencies {
 ```
 
 {% endcapture %}
-{% include admonition.html type="warn" content=admonition_content%}
+{% include admonition.html type="warn" content=admonition_content %}
 
   ====
 
