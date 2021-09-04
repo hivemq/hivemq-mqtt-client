@@ -54,7 +54,7 @@ Flowable<Mqtt5PublishResult> publishResultFlowable = client.publish(
         Flowable.range(0, 100).map(i -> Mqtt5Publish.builder().topic("test/topic" + i).build()));
 ```
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content %}
 
 Depending on the Quality of Service (QoS) of the Publish message the result can be:
 
@@ -109,7 +109,7 @@ publish results have been received.
 Similarly, the result stream only completes normally if the provided message stream completes normally itself and after 
 all publish results have been received.
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content no_header=true %}
 
 ====
 
@@ -183,9 +183,9 @@ publish results have been received.
 Similarly, the result stream only completes normally if the provided message stream completes normally itself and after 
 all publish results have been received.
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content %}
 
 ***
 
@@ -228,7 +228,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 Mqtt5PublishResult publishResult = client.publish(publishMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -259,7 +259,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 CompletableFuture<Mqtt5PublishResult> publishResultFuture = client.publish(publishMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -268,7 +268,7 @@ CompletableFuture<Mqtt5PublishResult> publishResultFuture = client.publish(publi
 
   {% capture tab_content %}
   -===
-  {% endcapture %}{% include tabs.html tab_group="dummy" %}
+  {% endcapture %}{% include tabs.html group="dummy" content=tab_content %}
 
 ```java
 Flowable<Mqtt5PublishResult> publishResultFlowable = client.publish(
@@ -279,7 +279,7 @@ Flowable<Mqtt5PublishResult> publishResultFlowable = client.publish(
         ));
 ```
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content merge=true %}
 
 ====
 
@@ -319,7 +319,7 @@ Mqtt3Publish publishMessage = Mqtt3Publish.builder()
 Mqtt3PublishResult publishResult = client.publish(publishMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -350,7 +350,7 @@ Mqtt3Publish publishMessage = Mqtt5PuMqtt3Publishblish.builder()
 CompletableFuture<Mqtt3Publish> publishResultFuture = client.publish(publishMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -359,7 +359,7 @@ CompletableFuture<Mqtt3Publish> publishResultFuture = client.publish(publishMess
 
   {% capture tab_content %}
   -===
-  {% endcapture %}{% include tabs.html tab_group="dummy" %}
+  {% endcapture %}{% include tabs.html group="dummy" content=tab_content %}
 
 ```java
 Flowable<Mqtt3PublishResult> publishResultFlowable = client.publish(
@@ -370,9 +370,9 @@ Flowable<Mqtt3PublishResult> publishResultFlowable = client.publish(
         ));
 ```
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content merge=true %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -402,7 +402,7 @@ MQTT 3.1.1
 - [Quality of Service (QoS)](#quality-of-service-qos)
 - [Retain](#retain)
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content %}
 
 ***
 
@@ -442,7 +442,7 @@ client.publishWith().topic("test/topic")...;
 Mqtt5Publish publishMessage = Mqtt5Publish.builder().topic("test/topic")...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ====
 
@@ -471,9 +471,9 @@ client.publishWith().topic("test/topic")...;
 Mqtt3Publish publishMessage = Mqtt3Publish.builder().topic("test/topic")...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 ***
 
@@ -518,7 +518,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ====
 
@@ -554,9 +554,9 @@ Mqtt3Publish publishMessage = Mqtt3Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 ***
 
@@ -614,7 +614,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ====
 
@@ -650,9 +650,9 @@ Mqtt3Publish publishMessage = Mqtt3Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 ***
 
@@ -697,7 +697,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ====
 
@@ -733,9 +733,9 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -780,7 +780,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 Message expiry can be disabled (the default) by using the method `noMessageExpiry`.
 
@@ -809,7 +809,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content no_header=true %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/){:target="_blank"}
@@ -820,7 +820,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -866,7 +866,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/){:target="_blank"}
@@ -877,7 +877,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -923,7 +923,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Payload Format Description](https://www.hivemq.com/blog/mqtt5-essentials-part8-payload-format-description/){:target="_blank"}
@@ -936,7 +936,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -987,7 +987,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/){:target="_blank"}
@@ -998,7 +998,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -1046,7 +1046,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Request-Response Pattern](https://www.hivemq.com/blog/mqtt5-essentials-part9-request-response-pattern/){:target="_blank"}
@@ -1057,7 +1057,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -1123,7 +1123,7 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/){:target="_blank"}
@@ -1134,4 +1134,4 @@ Mqtt5Publish publishMessage = Mqtt5Publish.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}

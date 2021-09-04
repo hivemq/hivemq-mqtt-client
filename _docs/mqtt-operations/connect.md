@@ -61,7 +61,7 @@ Single<Mqtt5ConnAck> connAckSingle = client.connect();
 
 If connecting was not successful, the `Single` errors with:
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content %}
 
 | `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
 | `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
@@ -116,14 +116,14 @@ Single<Mqtt3ConnAck> connAckSingle = client.connect();
 
 If connecting was not successful, the `Single` errors with:
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content %}
 
 | `ConnectionFailedException` | if an error occurs before the Connect message could be sent |
 | `ConnectionClosedException` | if the connection is closed after the Connect message has been sent but before a ConnAck message has been received |
 | `Mqtt3ConnAckException`     | if the ConnAck message contained an error code (the ConnAck message is contained in the exception) |
 | `MqttClientStateException`  | if the client is already connecting or connected |
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content %}
 
 ***
 
@@ -166,7 +166,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 Mqtt5ConnAck connAckMessage = client.connect(connectMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -197,7 +197,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 CompletableFuture<Mqtt5ConnAck> connAckFuture = client.connect(connectMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -228,9 +228,9 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 Single<Mqtt5ConnAck> connAckSingle = client.connect(connectMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content merge=true %}
 
 ====
 
@@ -270,7 +270,7 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
 Mqtt3ConnAck connAckMessage = client.connect(connectMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -301,7 +301,7 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
 CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connect(connectMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
  ====
 
@@ -332,11 +332,11 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
 Single<Mqtt3ConnAck> connAckSingle = client.connect(connectMessage);
 ```
 
-  {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+  {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
- {% endcapture %}{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+ {% endcapture %}{% include tabs.html group="api-flavour" content=tab_content merge=true %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -364,7 +364,7 @@ MQTT 3.1.1
 - [Simple Auth (username & password)](#simple-auth-username--password)
 - [Will](#will)
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content %}
 
 ***
 
@@ -402,7 +402,7 @@ client.connectWith().cleanStart(false)...;
 Mqtt5Connect connectMessage = Mqtt5Connect.builder().cleanStart(false)...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ***
 
@@ -434,7 +434,7 @@ client.connectWith().sessionExpiryInterval(100)...;
 Mqtt5Connect connectMessage = Mqtt5Connect.builder().sessionExpiryInterval(100)...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 Session expiry can be disabled by setting it to `4_294_967_295` or using the method `noSessionExpiry`.
 
@@ -456,7 +456,7 @@ client.connectWith().noSessionExpiry()...;
 Mqtt5Connect connectMessage = Mqtt5Connect.builder().noSessionExpiry()...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content no_header=true %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - Session and Message Expiry Intervals](https://www.hivemq.com/blog/mqtt5-essentials-part4-session-and-message-expiry/){:target="_blank"}
@@ -496,9 +496,9 @@ client.connectWith().cleanSession(false)...;
 Mqtt3Connect connectMessage = Mqtt3Connect.builder().cleanSession(false)...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 ***
 
@@ -537,7 +537,7 @@ client.connectWith().keepAlive(30)...;
 Mqtt5Connect connectMessage = Mqtt5Connect.builder().keepAlive(30)...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 Keep alive can be disabled by setting it to `0` or using the method `noKeepAlive`.
 
@@ -559,7 +559,7 @@ client.connectWith().noKeepAlive()...;
 Mqtt5Connect connectMessage = Mqtt5Connect.builder().noKeepAlive()...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content no_header=true %}
 
 ====
 
@@ -589,7 +589,7 @@ client.connectWith().keepAlive(30)...;
 Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(30)...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 Keep alive can be disabled by setting it to `0` or using the method `noKeepAlive`.
 
@@ -611,9 +611,9 @@ client.connectWith().noKeepAlive()...;
 Mqtt3Connect connectMessage = Mqtt3Connect.builder().noKeepAlive()...build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content no_header=true %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 ***
 
@@ -674,7 +674,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ====
 
@@ -730,9 +730,9 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header="true" %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header="true" %}
 
 
 
@@ -781,7 +781,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ====
 
@@ -789,7 +789,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 ***
 
@@ -901,7 +901,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
  {: .mb-5 }
 
 Message expiry can be disabled (the default) by using the method `noMessageExpiry`.
@@ -976,12 +976,12 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
  {: .mb-5 }
 
 All properties of a Will publish message are the same as of a normal [`Mqtt3Publish` message](publish.md).
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -1071,7 +1071,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 ====
 
@@ -1079,7 +1079,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}
 
 
 
@@ -1141,7 +1141,7 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
         .build();
 ```
 
- {% endcapture %}{% include tabs.html tab_group="mqtt-operation-style" %}
+ {% endcapture %}{% include tabs.html group="mqtt-operation-style" content=tab_content %}
 
 {% capture admonition_content %}
 [MQTT 5 Essentials - User Properties](https://www.hivemq.com/blog/mqtt5-essentials-part6-user-properties/){:target="_blank"}
@@ -1153,4 +1153,4 @@ Mqtt5Connect connectMessage = Mqtt5Connect.builder()
 MQTT 3.1.1
 ===
 
-{% endcapture %}{% include tabs.html tab_group="mqtt-version" tab_no_header=true %}
+{% endcapture %}{% include tabs.html group="mqtt-version" content=tab_content no_header=true %}

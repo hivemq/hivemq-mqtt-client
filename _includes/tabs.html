@@ -1,17 +1,25 @@
-{%- assign parts = tab_content | split: "====" -%}
-{%- unless include.tab_no_header -%}
-<ul class="tab{% if include.tab_merge %} tab-merge{% endif %}" data-tab-group="{{ include.tab_group }}">
-    {% for part in parts %}
-    {%- assign header = part | split: "===" -%}
-    {%- assign header = header[0] -%}
-    <li><a href="#">{{ header | strip }}</a></li>
+{%- comment -%}
+  include parameters:
+  - group: string
+    the same tab is selected in all tabs with the same group
+  - content: string
+    markdown content, each tab is separated by `====` and tab header and content are seperated by `===`
+  - no_header: boolean
+    whether the tab headers should not be shown, useful to continue tabs on the same page
+  - merge: boolean
+    whether 2 levels of tabs should be merged, the upper level on the left, the lower on the right
+{%- endcomment -%}
+
+{%- assign tabs = include.content | split: "====" -%}
+{%- unless include.no_header -%}
+  <ul class="tab{% if include.merge %} tab-merge{% endif %}" data-tab-group="{{ include.group }}">
+    {% for tab in tabs %}
+      <li><a href="#">{{ tab | split: "===" | first | strip }}</a></li>
     {% endfor %}
-</ul>
+  </ul>
 {%- endunless -%}
-<ul class="tab-content" data-tab-group="{{ include.tab_group }}">
-    {% for part in parts %}
-    {%- assign content = part | split: "===" -%}
-    {%- assign content = content[1] -%}
-    <li>{{ content | markdownify }}</li>
-    {% endfor %}
+<ul class="tab-content" data-tab-group="{{ include.group }}">
+  {% for tab in tabs %}
+    <li>{{ tab | split: "===" | last | markdownify }}</li>
+  {% endfor %}
 </ul>

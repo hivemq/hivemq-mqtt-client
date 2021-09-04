@@ -60,7 +60,7 @@ You have to set the compiler version to `1.8` or higher.
 "%}
 
 {% endcapture %}
-{% include tabs.html tab_group="build-tool" %}
+{% include tabs.html group="build-tool" content=tab_content %}
 
 
 ## Optional features
@@ -176,7 +176,7 @@ dependencies {
 ```
 
   {% endcapture %}
-  {% include tabs.html tab_group="module" %}
+  {% include tabs.html group="module" content=tab_content %}
 
 ====
 
@@ -282,10 +282,10 @@ Maven
 ```
 
   {% endcapture %}
-  {% include tabs.html tab_group="module" %}
+  {% include tabs.html group="module" content=tab_content %}
 
 {% endcapture %}
-{% include tabs.html tab_group="build-tool" %}
+{% include tabs.html group="build-tool" content=tab_content %}
 
 
 ## Shaded version
@@ -326,7 +326,7 @@ Maven
 ```
 
 {% endcapture %}
-{% include tabs.html tab_group="build-tool" %}
+{% include tabs.html group="build-tool" content=tab_content %}
 
 
 ## Snapshots
@@ -440,7 +440,7 @@ dependencies {
 ```
 
   {% endcapture %}
-  {% include tabs.html tab_group="module" %}
+  {% include tabs.html group="module" content=tab_content %}
 
 ====
 
@@ -560,10 +560,10 @@ Maven
 ```
 
   {% endcapture %}
-  {% include tabs.html tab_group="module" %}
+  {% include tabs.html group="module" content=tab_content %}
 
 {% endcapture %}
-{% include tabs.html tab_group="build-tool" %}
+{% include tabs.html group="build-tool" content=tab_content %}
 
 Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version.
 

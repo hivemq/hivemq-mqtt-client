@@ -74,7 +74,7 @@ Mqtt3BlockingClient blockingClient = Mqtt3Client.builder().buildBlocking();
 ```
 
 {% endcapture %}
-{% include tabs.html tab_group="mqtt-version" %}
+{% include tabs.html group="mqtt-version" content=tab_content %}
 
 ====
 
@@ -126,7 +126,7 @@ Mqtt3AsyncClient asyncClient = Mqtt3Client.builder().buildAsync();
 ```
 
 {% endcapture %}
-{% include tabs.html tab_group="mqtt-version" %}
+{% include tabs.html group="mqtt-version" content=tab_content %}
 
 ====
 
@@ -184,7 +184,7 @@ Mqtt3RxClient rxClient = Mqtt3Client.builder().buildRx();
 ```
 
 {% endcapture %}
-{% include tabs.html tab_group="mqtt-version" %}
+{% include tabs.html group="mqtt-version" content=tab_content %}
 
 {% endcapture %}
-{% include tabs.html tab_group="api-flavour" %}
+{% include tabs.html group="api-flavour" content=tab_content %}

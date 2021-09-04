@@ -102,4 +102,4 @@ Mqtt3Client client = Mqtt3Client.builder()
 ```
 
 {% endcapture %}
-{% include tabs.html tab_group="mqtt-version" %}
+{% include tabs.html group="mqtt-version" content=tab_content %}
