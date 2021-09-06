@@ -5,7 +5,7 @@ version: 1.2.2
 android_retrofix_version: 0.3.6
 android_retrostreams_version: 1.7.2
 
-remote_theme: SgtSilvio/just-the-docs@98dc323f
+remote_theme: SgtSilvio/just-the-docs@a887e243
 color_scheme: dark
 
 permalink: pretty
@@ -18,6 +18,11 @@ just_the_docs:
   collections:
     html_pages:
     docs:
+  github:
+    repo_link:
+      enabled: true
+    edit_link:
+      enabled: true
 
 defaults:
   - scope:
@@ -39,9 +44,6 @@ search:
 aux_links:
   "News":
     - "https://hivemq.github.io/hivemq-mqtt-client/news"
-  "GitHub":
-    - "https://github.com/hivemq/hivemq-mqtt-client"
-# site.github.repository_url
 # site.github.releases_url
 # site.github.issues_url
 
@@ -50,6 +52,7 @@ plugins:
   - jekyll-titles-from-headings
   - jekyll-relative-links
   - jekyll-redirect-from
+  - jekyll-github-metadata
 
 titles_from_headings:
   enabled: true
