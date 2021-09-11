@@ -17,7 +17,7 @@
 package com.hivemq.client2.internal.rx;
 
 import com.hivemq.client2.rx.FlowableWithSingleSubscriber;
-import io.reactivex.rxjava3.internal.fuseable.ConditionalSubscriber;
+import io.reactivex.rxjava3.operators.ConditionalSubscriber;
 
 /**
  * @author Silvio Giebl
