@@ -80,7 +80,9 @@ dependencies {
 
     compileOnly("org.slf4j:slf4j-api:${property("slf4j.version")}")
 
-    annotationProcessor("com.google.dagger:dagger-compiler:${property("dagger.version")}")
+    annotationProcessor("com.google.dagger:dagger-compiler:${property("dagger.version")}") {
+        exclude("com.google.devtools.ksp", "symbol-processing-api")
+    }
 }
 
 
