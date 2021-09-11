@@ -33,7 +33,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoop;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.internal.disposables.EmptyDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +59,8 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     @Override
     protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
         if (!clientConfig.getRawState().compareAndSet(DISCONNECTED, CONNECTING)) {
-            EmptyDisposable.error(MqttClientStateExceptions.alreadyConnected(), observer);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(MqttClientStateExceptions.alreadyConnected());
             return;
         }
 

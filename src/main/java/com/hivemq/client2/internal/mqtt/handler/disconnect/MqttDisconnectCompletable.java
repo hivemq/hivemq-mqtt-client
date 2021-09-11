@@ -24,7 +24,7 @@ import com.hivemq.client2.internal.rx.CompletableFlow;
 import io.netty.channel.Channel;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.internal.disposables.EmptyDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -43,21 +43,23 @@ public class MqttDisconnectCompletable extends Completable {
     }
 
     @Override
-    protected void subscribeActual(final @NotNull CompletableObserver s) {
+    protected void subscribeActual(final @NotNull CompletableObserver observer) {
         final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
         if (connectionConfig == null) {
-            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(MqttClientStateExceptions.notConnected());
             return;
         }
         final Channel channel = connectionConfig.getChannel();
         final MqttDisconnectHandler disconnectHandler =
                 (MqttDisconnectHandler) channel.pipeline().get(MqttDisconnectHandler.NAME);
         if (disconnectHandler == null) {
-            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(MqttClientStateExceptions.notConnected());
             return;
         }
-        final CompletableFlow flow = new CompletableFlow(s);
-        s.onSubscribe(flow);
+        final CompletableFlow flow = new CompletableFlow(observer);
+        observer.onSubscribe(flow);
         disconnectHandler.disconnect(disconnect, flow);
     }
 }

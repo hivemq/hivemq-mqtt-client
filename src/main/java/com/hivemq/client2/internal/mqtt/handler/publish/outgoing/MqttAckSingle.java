@@ -27,7 +27,6 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,7 +54,8 @@ public class MqttAckSingle extends Single<Mqtt5PublishResult> {
             observer.onSubscribe(flow);
             publishFlowables.add(Flowable.just(new MqttPublishWithFlow(publish, flow)));
         } else {
-            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), observer);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(MqttClientStateExceptions.notConnected());
         }
     }
 

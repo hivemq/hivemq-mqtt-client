@@ -24,7 +24,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.internal.disposables.EmptyDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,30 +39,34 @@ public class MqttReAuthCompletable extends Completable {
     }
 
     @Override
-    protected void subscribeActual(final @NotNull CompletableObserver s) {
+    protected void subscribeActual(final @NotNull CompletableObserver observer) {
         final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
         if (connectionConfig == null) {
-            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(MqttClientStateExceptions.notConnected());
             return;
         }
         if (connectionConfig.getRawEnhancedAuthMechanism() == null) {
-            EmptyDisposable.error(new UnsupportedOperationException(
-                    "Reauth is not available if enhanced auth was not used during connect"), s);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(new UnsupportedOperationException(
+                    "Reauth is not available if enhanced auth was not used during connect"));
             return;
         }
         final Channel channel = connectionConfig.getChannel();
         final ChannelHandler authHandler = channel.pipeline().get(MqttAuthHandler.NAME);
         if (authHandler == null) {
-            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(MqttClientStateExceptions.notConnected());
             return;
         }
         if (!(authHandler instanceof MqttReAuthHandler)) {
-            EmptyDisposable.error(new UnsupportedOperationException("Auth is still pending"), s);
+            observer.onSubscribe(Disposable.disposed());
+            observer.onError(new UnsupportedOperationException("Auth is still pending"));
             return;
         }
         final MqttReAuthHandler reAuthHandler = (MqttReAuthHandler) authHandler;
-        final CompletableFlow flow = new CompletableFlow(s);
-        s.onSubscribe(flow);
+        final CompletableFlow flow = new CompletableFlow(observer);
+        observer.onSubscribe(flow);
         reAuthHandler.reauth(flow);
     }
 }
