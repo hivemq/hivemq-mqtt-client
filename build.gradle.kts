@@ -33,9 +33,8 @@ allprojects {
             apache2()
         }
         developers {
-            developer {
-                id.set("SgtSilvio")
-                name.set("Silvio Giebl")
+            register("SgtSilvio") {
+                fullName.set("Silvio Giebl")
                 email.set("silvio.giebl@hivemq.com")
             }
         }
