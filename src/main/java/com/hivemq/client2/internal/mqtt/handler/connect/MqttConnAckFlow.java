@@ -63,12 +63,14 @@ public class MqttConnAckFlow {
         if (observer != null) {
             observer.onSuccess(connAck);
         }
+        disposable.dispose();
     }
 
     void onError(final @NotNull Throwable error) {
         if (observer != null) {
             observer.onError(error);
         }
+        disposable.dispose();
     }
 
     @NotNull Disposable getDisposable() {

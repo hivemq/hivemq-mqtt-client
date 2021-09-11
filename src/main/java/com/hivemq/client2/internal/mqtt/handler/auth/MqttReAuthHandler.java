@@ -133,7 +133,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         callMechanismFutureResult(() -> authMechanism.onReAuthSuccess(clientConfig, auth), ctx2 -> {
             state = MqttAuthState.NONE;
             if (flow != null) {
-                if (!flow.isCancelled()) {
+                if (!flow.isDisposed()) {
                     flow.onComplete();
                 } else {
                     LOGGER.warn("Reauth was successful but the Completable has been cancelled.");

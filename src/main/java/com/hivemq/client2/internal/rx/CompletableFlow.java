@@ -34,10 +34,12 @@ public class CompletableFlow implements Disposable {
 
     public void onComplete() {
         observer.onComplete();
+        disposed = true;
     }
 
     public void onError(final @NotNull Throwable error) {
         observer.onError(error);
+        disposed = true;
     }
 
     @Override
@@ -48,9 +50,5 @@ public class CompletableFlow implements Disposable {
     @Override
     public boolean isDisposed() {
         return disposed;
-    }
-
-    public boolean isCancelled() {
-        return isDisposed();
     }
 }
