@@ -22,6 +22,9 @@ import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +65,27 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      */
     @CheckReturnValue
     @NotNull B cleanSession(boolean cleanSession);
+
+    /**
+     * Sets the {@link Mqtt3Connect#getRestrictions() restrictions} from the client.
+     *
+     * @param restrictions the restrictions from the client.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B restrictions(@NotNull Mqtt3ConnectRestrictions restrictions);
+
+    /**
+     * Fluent counterpart of {@link #restrictions(Mqtt3ConnectRestrictions)}.
+     * <p>
+     * Calling {@link Mqtt3ConnectRestrictionsBuilder.Nested#applyRestrictions()} on the returned builder has the effect
+     * of {@link Mqtt3ConnectRestrictions#extend() extending} the current restrictions.
+     *
+     * @return the fluent builder for the restrictions.
+     * @see #restrictions(Mqtt3ConnectRestrictions)
+     */
+    @CheckReturnValue
+    Mqtt3ConnectRestrictionsBuilder.@NotNull Nested<? extends B> restrictions();
 
     /**
      * Sets the optional {@link Mqtt3Connect#getSimpleAuth() simple authentication and/or authorization related data}.

@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.mqtt3.message.Mqtt3Message;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -66,6 +67,11 @@ public interface Mqtt3Connect extends Mqtt3Message {
      * @return whether the client wants a clean session. If <code>true</code> an existing session is cleared.
      */
     boolean isCleanSession();
+
+    /**
+     * @return the restrictions set from the client.
+     */
+    @NotNull Mqtt3ConnectRestrictions getRestrictions();
 
     /**
      * @return the optional simple authentication and/or authorization related data of this Connect message.
