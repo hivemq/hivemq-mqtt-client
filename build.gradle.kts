@@ -128,6 +128,37 @@ dependencies {
     testRuntimeOnly("org.slf4j:slf4j-simple:${property("slf4j.version")}")
 }
 
+/* ******************** integration Tests ******************** */
+
+sourceSets.create("integrationTest") {
+    compileClasspath += sourceSets.main.get().output
+    runtimeClasspath += sourceSets.main.get().output
+}
+
+val integrationTestImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.testImplementation.get())
+}
+val integrationTestRuntimeOnly: Configuration by configurations.getting {
+    extendsFrom(configurations.testRuntimeOnly.get())
+}
+
+dependencies {
+    integrationTestImplementation("com.hivemq:hivemq-testcontainer-junit5:${property("hivemq-testcontainer.version")}")
+    integrationTestImplementation("com.hivemq:hivemq-extension-sdk:${property("hivemq-extension-sdk.version")}")
+}
+
+val integrationTest by tasks.registering(Test::class) {
+    group = "verification"
+    description = "Runs integration tests."
+    useJUnitPlatform()
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+    shouldRunAfter(tasks.test)
+//    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set( JavaLanguageVersion.of(11)) })
+}
+
+tasks.check { dependsOn(integrationTest) }
+
 
 /* ******************** jars ******************** */
 

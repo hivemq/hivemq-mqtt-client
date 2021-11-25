@@ -18,6 +18,7 @@ package com.hivemq.client.internal.mqtt.message.connect;
 
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectRestrictionsBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -98,7 +99,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>
-            implements Mqtt5ConnectRestrictionsBuilder {
+            implements Mqtt5ConnectRestrictionsBuilder, Mqtt3ConnectRestrictionsBuilder {
 
         public Default() {}
 
@@ -113,9 +114,9 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public static class Nested<P> extends MqttConnectRestrictionsBuilder<Nested<P>>
-            implements Mqtt5ConnectRestrictionsBuilder.Nested<P> {
+            implements Mqtt5ConnectRestrictionsBuilder.Nested<P>, Mqtt3ConnectRestrictionsBuilder.Nested<P> {
 
-        Nested(
+        public Nested(
                 final @NotNull MqttConnectRestrictions restrictions,
                 final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer) {
 
