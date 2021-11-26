@@ -3,8 +3,6 @@ package com.hivemq.client.restrictions;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3Client;
-import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
-import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -25,6 +23,7 @@ import com.hivemq.testcontainer.junit5.HiveMQTestContainerExtension;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -47,7 +46,8 @@ public class Mqtt3SendMaximumIT {
 
     @RegisterExtension
     public final @NotNull HiveMQTestContainerExtension hivemq =
-            new HiveMQTestContainerExtension().withExtension(NO_PUBACK_EXTENSION);
+            new HiveMQTestContainerExtension().withExtension(NO_PUBACK_EXTENSION)
+                    .withHiveMQConfig(MountableFile.forClasspathResource("/config.xml"));
 
     @Test
     void mqtt3_sendMaximum_applied() throws InterruptedException {
@@ -62,11 +62,7 @@ public class Mqtt3SendMaximumIT {
         subscriber.subscribeWith().topicFilter("#").send();
 
         for (int i = 0; i < 12; i++) {
-            publisher.toAsync()
-                    .publishWith()
-                    .topic("test")
-                    .qos(MqttQos.AT_LEAST_ONCE)
-                    .send();
+            publisher.toAsync().publishWith().topic("test").qos(MqttQos.AT_LEAST_ONCE).send();
         }
 
         Thread.sleep(10000);
