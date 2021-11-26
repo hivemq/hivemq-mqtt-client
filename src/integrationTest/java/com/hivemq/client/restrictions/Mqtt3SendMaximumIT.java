@@ -50,12 +50,10 @@ public class Mqtt3SendMaximumIT {
             new HiveMQTestContainerExtension().withExtension(NO_PUBACK_EXTENSION);
 
     @Test
-    void test() throws InterruptedException {
+    void mqtt3_sendMaximum_applied() throws InterruptedException {
 
         final Mqtt3Client publisher = Mqtt3Client.builder().serverPort(hivemq.getMqttPort()).build();
         publisher.toBlocking().connectWith().restrictions().sendMaximum(RECEIVE_MAXIMUM).applyRestrictions().send();
-
-        Mqtt3Connect.builder().restrictions().sendMaximum(10).sendMaximumPacketSize().applyRestrictions().build();
 
         final ConcurrentLinkedQueue<Mqtt5Publish> publishes = new ConcurrentLinkedQueue<>();
         final Mqtt5BlockingClient subscriber = Mqtt5Client.builder().serverPort(hivemq.getMqttPort()).buildBlocking();
@@ -68,15 +66,7 @@ public class Mqtt3SendMaximumIT {
                     .publishWith()
                     .topic("test")
                     .qos(MqttQos.AT_LEAST_ONCE)
-                    .send()
-                    .whenComplete((mqtt3Publish, throwable) -> {
-                        if (mqtt3Publish != null) {
-                            System.out.println("PUBACK");
-                        }
-                        if (throwable != null) {
-                            System.out.println("ERROR");
-                        }
-                    });
+                    .send();
         }
 
         Thread.sleep(10000);
