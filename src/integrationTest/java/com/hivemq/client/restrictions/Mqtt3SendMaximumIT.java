@@ -3,6 +3,8 @@ package com.hivemq.client.restrictions;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3Client;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -52,6 +54,8 @@ public class Mqtt3SendMaximumIT {
 
         final Mqtt3Client publisher = Mqtt3Client.builder().serverPort(hivemq.getMqttPort()).build();
         publisher.toBlocking().connectWith().restrictions().sendMaximum(RECEIVE_MAXIMUM).applyRestrictions().send();
+
+        Mqtt3Connect.builder().restrictions().sendMaximum(10).sendMaximumPacketSize().applyRestrictions().build();
 
         final ConcurrentLinkedQueue<Mqtt5Publish> publishes = new ConcurrentLinkedQueue<>();
         final Mqtt5BlockingClient subscriber = Mqtt5Client.builder().serverPort(hivemq.getMqttPort()).buildBlocking();
