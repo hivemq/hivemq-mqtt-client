@@ -155,11 +155,18 @@ val integrationTest by tasks.registering(Test::class) {
     testClassesDirs = sourceSets["integrationTest"].output.classesDirs
     classpath = sourceSets["integrationTest"].runtimeClasspath
     shouldRunAfter(tasks.test)
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    })
 }
 
 tasks.check { dependsOn(integrationTest) }
 
-
+tasks.named<JavaCompile>("compileIntegrationTestJava").configure {
+    javaCompiler.set(javaToolchains.compilerFor {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    })
+}
 /* ******************** jars ******************** */
 
 allprojects {
