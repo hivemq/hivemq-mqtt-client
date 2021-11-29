@@ -17,6 +17,7 @@
 package com.hivemq.client.internal.mqtt.message.connect;
 
 import com.hivemq.client.annotations.Immutable;
+import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectRestrictions;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
+public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt3ConnectRestrictions {
 
     public static final @NotNull MqttConnectRestrictions DEFAULT =
             new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_SEND_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE,

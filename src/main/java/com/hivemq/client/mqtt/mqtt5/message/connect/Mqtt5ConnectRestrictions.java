@@ -20,7 +20,6 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
-import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -44,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0
  */
 @DoNotImplement
-public interface Mqtt5ConnectRestrictions extends Mqtt3ConnectRestrictions {
+public interface Mqtt5ConnectRestrictions {
 
     /**
      * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts from the server
@@ -52,10 +51,20 @@ public interface Mqtt5ConnectRestrictions extends Mqtt3ConnectRestrictions {
      */
     int DEFAULT_RECEIVE_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     /**
+     * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
+     * concurrently.
+     */
+    int DEFAULT_SEND_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
+    /**
      * The default maximum packet size the client accepts from the server. By default the packet size is not limited
      * beyond the restrictions of the encoding.
      */
     int DEFAULT_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
+    /**
+     * The default maximum packet size the client sends to the server. By default the packet size is not limited beyond
+     * the restrictions of the encoding.
+     */
+    int DEFAULT_SEND_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
     /**
      * The default maximum amount of topic aliases the client accepts from the server.
      */
