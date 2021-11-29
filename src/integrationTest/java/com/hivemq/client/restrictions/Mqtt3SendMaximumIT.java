@@ -27,7 +27,9 @@ import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -57,7 +59,7 @@ public class Mqtt3SendMaximumIT {
 
         final ConcurrentLinkedQueue<Mqtt5Publish> publishes = new ConcurrentLinkedQueue<>();
         final Mqtt5BlockingClient subscriber = Mqtt5Client.builder().serverPort(hivemq.getMqttPort()).buildBlocking();
-        subscriber.connectWith().send();
+        subscriber.connect();
         subscriber.toAsync().publishes(MqttGlobalPublishFilter.ALL, publishes::add);
         subscriber.subscribeWith().topicFilter("#").send();
 
@@ -65,7 +67,9 @@ public class Mqtt3SendMaximumIT {
             publisher.toAsync().publishWith().topic("test").qos(MqttQos.AT_LEAST_ONCE).send();
         }
 
-        Thread.sleep(10000);
+        await().until(() -> publishes.size() == RECEIVE_MAXIMUM);
+
+        TimeUnit.SECONDS.sleep(2);
 
         assertEquals(RECEIVE_MAXIMUM, publishes.size());
     }

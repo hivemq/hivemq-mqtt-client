@@ -145,6 +145,7 @@ val integrationTestRuntimeOnly: Configuration by configurations.getting {
 dependencies {
     integrationTestImplementation("com.hivemq:hivemq-testcontainer-junit5:${property("hivemq-testcontainer.version")}")
     integrationTestImplementation("com.hivemq:hivemq-extension-sdk:${property("hivemq-extension-sdk.version")}")
+    integrationTestImplementation("org.awaitility:awaitility:${property("awaitility.version")}")
 }
 
 val integrationTest by tasks.registering(Test::class) {

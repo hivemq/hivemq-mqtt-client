@@ -17,32 +17,17 @@
 package com.hivemq.client.mqtt.mqtt3.message.connect;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
-import com.hivemq.client.internal.util.UnsignedDataTypes;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Restrictions applied by the client in an {@link Mqtt3Connect MQTT 3 Connect message}.
- * <p>
  *
  * @author Yannick Weber
  * @since 1.3
  */
 @DoNotImplement
 public interface Mqtt3ConnectRestrictions {
-
-    /**
-     * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
-     * concurrently.
-     */
-    int DEFAULT_SEND_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
-    /**
-     * The default maximum packet size the client sends to the server. By default the packet size is not limited beyond
-     * the restrictions of the encoding.
-     */
-    int DEFAULT_SEND_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
 
     /**
      * Creates a builder for Connect restrictions.
@@ -55,17 +40,16 @@ public interface Mqtt3ConnectRestrictions {
 
     /**
      * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
-     * concurrently. The default is {@link #DEFAULT_SEND_MAXIMUM}.
+     * concurrently. The default is {@link com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions#DEFAULT_SEND_MAXIMUM}.
      *
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
      *         concurrently.
      */
     int getSendMaximum();
 
-
     /**
      * Returns the maximum packet size the client sends to the server. The default is {@link
-     * #DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
+     * com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions#DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
      *
      * @return the maximum packet size the client sends to the server.
      */
@@ -76,5 +60,5 @@ public interface Mqtt3ConnectRestrictions {
      *
      * @return the created builder.
      */
-    @NotNull Mqtt5ConnectRestrictionsBuilder extend();
+    @NotNull Mqtt3ConnectRestrictionsBuilder extend();
 }

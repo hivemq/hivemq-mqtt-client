@@ -18,7 +18,6 @@ package com.hivemq.client.mqtt.mqtt3.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,7 +34,6 @@ public interface Mqtt3ConnectRestrictionsBuilderBase<B extends Mqtt3ConnectRestr
      * Sets the {@link Mqtt3ConnectRestrictions#getSendMaximum() send maximum}.
      * <p>
      * The value must not be zero and must be in the range of an unsigned short: [1, 65_535].
-     * <p>
      *
      * @param receiveMaximum the send maximum.
      * @return the builder.
@@ -47,7 +45,6 @@ public interface Mqtt3ConnectRestrictionsBuilderBase<B extends Mqtt3ConnectRestr
      * Sets the {@link Mqtt3ConnectRestrictions#getSendMaximumPacketSize() maximum packet size for sending}.
      * <p>
      * The value must not be zero and in the range: [1, 268_435_460].
-     * <p>
      *
      * @param maximumPacketSize the maximum packet size for sending.
      * @return the builder.
