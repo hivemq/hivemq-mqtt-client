@@ -18,7 +18,6 @@ package com.hivemq.client.mqtt.mqtt5.message.connect;
 
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectRestrictionsBuilderBase;
 import org.jetbrains.annotations.NotNull;
 
 /**
