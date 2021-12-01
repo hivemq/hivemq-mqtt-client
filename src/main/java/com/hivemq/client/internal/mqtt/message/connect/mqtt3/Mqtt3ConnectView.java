@@ -22,15 +22,12 @@ import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictions;
-import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectRestrictions;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,28 +39,28 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3ConnectView implements Mqtt3Connect {
 
-    public static final @NotNull Mqtt3ConnectView DEFAULT = of(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_SESSION, null, null, MqttConnectRestrictions.DEFAULT);
+    public static final @NotNull Mqtt3ConnectView DEFAULT =
+            of(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_SESSION, MqttConnectRestrictions.DEFAULT, null, null);
 
     private static @NotNull MqttConnect delegate(
             final int keepAlive,
             final boolean cleanSession,
+            final @NotNull MqttConnectRestrictions restrictions,
             final @Nullable MqttSimpleAuth simpleAuth,
-            final @Nullable MqttWillPublish willPublish,
-            final @NotNull MqttConnectRestrictions restrictions) {
+            final @Nullable MqttWillPublish willPublish) {
 
-        return new MqttConnect(keepAlive, cleanSession, cleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
-                restrictions, simpleAuth, null, willPublish,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+        return new MqttConnect(keepAlive, cleanSession, cleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY, restrictions,
+                simpleAuth, null, willPublish, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     static @NotNull Mqtt3ConnectView of(
             final int keepAlive,
             final boolean cleanSession,
+            final @NotNull MqttConnectRestrictions restrictions,
             final @Nullable MqttSimpleAuth simpleAuth,
-            final @Nullable MqttWillPublish willPublish,
-            final @NotNull MqttConnectRestrictions mqttConnectRestrictions) {
+            final @Nullable MqttWillPublish willPublish) {
 
-        return new Mqtt3ConnectView(delegate(keepAlive, cleanSession, simpleAuth, willPublish, mqttConnectRestrictions));
+        return new Mqtt3ConnectView(delegate(keepAlive, cleanSession, restrictions, simpleAuth, willPublish));
     }
 
     public static @NotNull Mqtt3ConnectView of(final @NotNull MqttConnect delegate) {
@@ -123,7 +120,8 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     private @NotNull String toAttributeString() {
         final Mqtt3SimpleAuth simpleAuth = getRawSimpleAuth();
         final Mqtt3Publish willPublish = getRawWillPublish();
-        return "keepAlive=" + getKeepAlive() + ", cleanSession=" + isCleanSession() +
+        final Mqtt3ConnectRestrictions restrictions = getRestrictions();
+        return "keepAlive=" + getKeepAlive() + ", cleanSession=" + isCleanSession() + ", restrictions=" + restrictions +
                 ((simpleAuth == null) ? "" : ", simpleAuth=" + simpleAuth) +
                 ((willPublish == null) ? "" : ", willPublish=" + willPublish);
     }

@@ -29,9 +29,7 @@ import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectRestrictions;
-import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectRestrictionsBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,9 +42,9 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
 
     private int keepAliveSeconds = Mqtt3ConnectView.DEFAULT_KEEP_ALIVE;
     private boolean cleanSession = Mqtt3ConnectView.DEFAULT_CLEAN_SESSION;
+    private @NotNull MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable MqttWillPublish willPublish;
-    private @NotNull MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
 
     Mqtt3ConnectViewBuilder() {}
 
@@ -54,9 +52,9 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
         final MqttConnect delegate = connect.getDelegate();
         keepAliveSeconds = delegate.getKeepAlive();
         cleanSession = delegate.isCleanStart();
+        restrictions = delegate.getRestrictions();
         simpleAuth = delegate.getRawSimpleAuth();
         willPublish = delegate.getRawWillPublish();
-        restrictions = delegate.getRestrictions();
     }
 
     abstract @NotNull B self();
@@ -106,7 +104,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     }
 
     public @NotNull Mqtt3ConnectView build() {
-        return Mqtt3ConnectView.of(keepAliveSeconds, cleanSession, simpleAuth, willPublish, restrictions);
+        return Mqtt3ConnectView.of(keepAliveSeconds, cleanSession, restrictions, simpleAuth, willPublish);
     }
 
     public static class Default extends Mqtt3ConnectViewBuilder<Default> implements Mqtt3ConnectBuilder {
