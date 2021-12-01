@@ -22,9 +22,6 @@ import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,6 +68,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      *
      * @param restrictions the restrictions from the client.
      * @return the builder.
+     * @since 1.3
      */
     @CheckReturnValue
     @NotNull B restrictions(@NotNull Mqtt3ConnectRestrictions restrictions);
@@ -83,6 +81,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      *
      * @return the fluent builder for the restrictions.
      * @see #restrictions(Mqtt3ConnectRestrictions)
+     * @since 1.3
      */
     @CheckReturnValue
     Mqtt3ConnectRestrictionsBuilder.@NotNull Nested<? extends B> restrictions();

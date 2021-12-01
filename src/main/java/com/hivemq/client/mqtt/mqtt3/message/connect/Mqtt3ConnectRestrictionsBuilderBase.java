@@ -37,7 +37,6 @@ public interface Mqtt3ConnectRestrictionsBuilderBase<B extends Mqtt3ConnectRestr
      *
      * @param receiveMaximum the send maximum.
      * @return the builder.
-     * @since 1.3
      */
     @CheckReturnValue
     @NotNull B sendMaximum(int receiveMaximum);
@@ -49,7 +48,6 @@ public interface Mqtt3ConnectRestrictionsBuilderBase<B extends Mqtt3ConnectRestr
      *
      * @param maximumPacketSize the maximum packet size for sending.
      * @return the builder.
-     * @since 1.3
      */
     @CheckReturnValue
     @NotNull B sendMaximumPacketSize(int maximumPacketSize);

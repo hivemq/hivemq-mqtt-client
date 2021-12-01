@@ -148,6 +148,12 @@ dependencies {
     integrationTestImplementation("org.awaitility:awaitility:${property("awaitility.version")}")
 }
 
+tasks.named<JavaCompile>("compileIntegrationTestJava") {
+    javaCompiler.set(javaToolchains.compilerFor {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    })
+}
+
 val integrationTest by tasks.registering(Test::class) {
     group = "verification"
     description = "Runs integration tests."
@@ -162,11 +168,6 @@ val integrationTest by tasks.registering(Test::class) {
 
 tasks.check { dependsOn(integrationTest) }
 
-tasks.named<JavaCompile>("compileIntegrationTestJava").configure {
-    javaCompiler.set(javaToolchains.compilerFor {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    })
-}
 /* ******************** jars ******************** */
 
 allprojects {
