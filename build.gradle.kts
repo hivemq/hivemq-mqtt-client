@@ -297,7 +297,7 @@ allprojects {
         signing {
             val signKey: String? by project
             val signKeyPass: String? by project
-            useInMemoryPgpKeys(signKey!!, signKeyPass!!)
+            useInMemoryPgpKeys(signKey, signKeyPass)
             publishing.publications.configureEach {
                 sign(this)
             }
