@@ -295,9 +295,9 @@ allprojects {
         plugins.apply("signing")
 
         signing {
-            val signingKey: String? by project
-            val signingPassword: String? by project
-            useInMemoryPgpKeys(signingKey, signingPassword)
+            val signKey: String? by project
+            val signKeyPass: String? by project
+            useInMemoryPgpKeys(signKey!!, signKeyPass!!)
             publishing.publications.configureEach {
                 sign(this)
             }
