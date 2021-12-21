@@ -68,6 +68,12 @@ public interface Mqtt3Connect extends Mqtt3Message {
     boolean isCleanSession();
 
     /**
+     * @return the restrictions set from the client.
+     * @since 1.3
+     */
+    @NotNull Mqtt3ConnectRestrictions getRestrictions();
+
+    /**
      * @return the optional simple authentication and/or authorization related data of this Connect message.
      */
     @NotNull Optional<Mqtt3SimpleAuth> getSimpleAuth();

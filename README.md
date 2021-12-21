@@ -101,7 +101,7 @@ If you use Gradle, just include the following inside your `build.gradle(.kts)` f
 
 ```groovy
 dependencies {
-  implementation("com.hivemq:hivemq-mqtt-client:1.2.2")
+  implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
 }
 ```
 
@@ -109,10 +109,10 @@ For optional features you can choose to include additional modules:
 
 ```groovy
 dependencies {
-  implementation(platform("com.hivemq:hivemq-mqtt-client-websocket:1.2.2"))
-  implementation(platform("com.hivemq:hivemq-mqtt-client-proxy:1.2.2"))
-  implementation(platform("com.hivemq:hivemq-mqtt-client-epoll:1.2.2"))
-  implementation("com.hivemq:hivemq-mqtt-client-reactor:1.2.2")
+  implementation(platform("com.hivemq:hivemq-mqtt-client-websocket:1.3.0"))
+  implementation(platform("com.hivemq:hivemq-mqtt-client-proxy:1.3.0"))
+  implementation(platform("com.hivemq:hivemq-mqtt-client-epoll:1.3.0"))
+  implementation("com.hivemq:hivemq-mqtt-client-reactor:1.3.0")
 }
 ```
 
@@ -127,7 +127,7 @@ If you use Maven, just include the following inside your `pom.xml` file.
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.2.2</version>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
     ...
@@ -156,7 +156,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-websocket</artifactId>
-            <version>1.2.2</version>
+            <version>1.3.0</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -164,7 +164,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-proxy</artifactId>
-            <version>1.2.2</version>
+            <version>1.3.0</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -172,7 +172,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-epoll</artifactId>
-            <version>1.2.2</version>
+            <version>1.3.0</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -180,7 +180,7 @@ For optional features you can choose to include additional modules:
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-reactor</artifactId>
-            <version>1.2.2</version>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
     ...
@@ -198,7 +198,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-  implementation("com.hivemq:hivemq-mqtt-client-shaded:1.2.2")
+  implementation("com.hivemq:hivemq-mqtt-client-shaded:1.3.0")
 }
 ```
 
@@ -211,7 +211,7 @@ dependencies {
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.2.2</version>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
     ...
