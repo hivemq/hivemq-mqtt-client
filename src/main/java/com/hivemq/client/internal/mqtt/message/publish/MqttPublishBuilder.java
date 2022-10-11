@@ -47,6 +47,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     @Nullable MqttUtf8StringImpl contentType;
     @Nullable MqttTopicImpl responseTopic;
     @Nullable ByteBuffer correlationData;
+    @Nullable Object localCorrelationData;
     @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     MqttPublishBuilder() {}
@@ -62,6 +63,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         responseTopic = publish.getRawResponseTopic();
         correlationData = publish.getRawCorrelationData();
         userProperties = publish.getUserProperties();
+        localCorrelationData = publish.getLocalCorrelationData();
     }
 
     MqttPublishBuilder(final @NotNull MqttPublishBuilder<?> publishBuilder) {
@@ -152,6 +154,11 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
+    public @NotNull B localCorrelationData(final @Nullable Object localCorrelationData) {
+        this.localCorrelationData = localCorrelationData;
+        return self();
+    }
+
     public @NotNull B userProperties(final @Nullable Mqtt5UserProperties userProperties) {
         this.userProperties = MqttChecks.userProperties(userProperties);
         return self();
@@ -186,7 +193,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         public @NotNull MqttPublish build() {
             Checks.notNull(topic, "Topic");
             return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                    contentType, responseTopic, correlationData, userProperties, null);
+                    contentType, responseTopic, correlationData, userProperties, null, localCorrelationData);
         }
     }
 

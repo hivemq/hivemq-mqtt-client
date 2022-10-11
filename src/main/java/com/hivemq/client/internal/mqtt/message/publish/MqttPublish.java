@@ -59,6 +59,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     private final @Nullable MqttUtf8StringImpl contentType;
     private final @Nullable MqttTopicImpl responseTopic;
     private final @Nullable ByteBuffer correlationData;
+    private final @Nullable Object localCorrelationData;
 
     private final @Nullable Confirmable confirmable;
 
@@ -73,7 +74,8 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
             final @Nullable MqttTopicImpl responseTopic,
             final @Nullable ByteBuffer correlationData,
             final @NotNull MqttUserPropertiesImpl userProperties,
-            final @Nullable Confirmable confirmable) {
+            final @Nullable Confirmable confirmable,
+            final @Nullable Object localCorrelationData) {
 
         super(userProperties);
         this.topic = topic;
@@ -86,6 +88,24 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         this.responseTopic = responseTopic;
         this.correlationData = correlationData;
         this.confirmable = confirmable;
+        this.localCorrelationData = localCorrelationData;
+    }
+
+    public MqttPublish(
+            final @NotNull MqttTopicImpl topic,
+            final @Nullable ByteBuffer payload,
+            final @NotNull MqttQos qos,
+            final boolean retain,
+            final long messageExpiryInterval,
+            final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
+            final @Nullable MqttUtf8StringImpl contentType,
+            final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable ByteBuffer correlationData,
+            final @NotNull MqttUserPropertiesImpl userProperties,
+            final @Nullable Confirmable confirmable) {
+
+        this(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
+                responseTopic, correlationData, userProperties, confirmable, null);
     }
 
     @Override
@@ -163,6 +183,10 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         return correlationData;
     }
 
+    public @Nullable Object getLocalCorrelationData() {
+        return localCorrelationData;
+    }
+
     @Override
     public void acknowledge() {
         final Confirmable confirmable = this.confirmable;
@@ -204,7 +228,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     public @NotNull MqttPublish withConfirmable(final @NotNull Confirmable confirmable) {
         return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
-                responseTopic, correlationData, getUserProperties(), confirmable);
+                responseTopic, correlationData, getUserProperties(), confirmable, localCorrelationData);
     }
 
     @Override
@@ -216,6 +240,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
                 ((contentType == null) ? "" : ", contentType=" + contentType) +
                 ((responseTopic == null) ? "" : ", responseTopic=" + responseTopic) +
                 ((correlationData == null) ? "" : ", correlationData=" + correlationData.remaining() + "byte") +
+                ((localCorrelationData == null) ? "" : ", localCorrelationData=" + localCorrelationData + " " + localCorrelationData.getClass().getSimpleName()) +
                 StringUtil.prepend(", ", super.toAttributeString());
     }
 
@@ -239,7 +264,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
                 (messageExpiryInterval == that.messageExpiryInterval) &&
                 (payloadFormatIndicator == that.payloadFormatIndicator) &&
                 Objects.equals(contentType, that.contentType) && Objects.equals(responseTopic, that.responseTopic) &&
-                Objects.equals(correlationData, that.correlationData);
+                Objects.equals(correlationData, that.correlationData) && Objects.equals(localCorrelationData, that.localCorrelationData);
     }
 
     protected boolean canEqual(final @Nullable Object o) {
@@ -258,6 +283,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         result = 31 * result + Objects.hashCode(contentType);
         result = 31 * result + Objects.hashCode(responseTopic);
         result = 31 * result + Objects.hashCode(correlationData);
+        result = 31 * result + Objects.hashCode(localCorrelationData);
         return result;
     }
 }

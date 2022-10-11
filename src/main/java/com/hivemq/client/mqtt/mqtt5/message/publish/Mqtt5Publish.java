@@ -110,6 +110,12 @@ public interface Mqtt5Publish extends Mqtt5Message {
     @NotNull Mqtt5UserProperties getUserProperties();
 
     /**
+     * @return the optional local correlation data of this Publish message. This data is never propagated and kept
+     * locally for correlation.
+     */
+    Object getLocalCorrelationData();
+
+    /**
      * Acknowledges this Publish message.
      *
      * @throws UnsupportedOperationException if manual acknowledgement is not enabled.

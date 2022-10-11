@@ -78,6 +78,12 @@ public interface Mqtt3Publish extends Mqtt3Message {
     boolean isRetain();
 
     /**
+     * @return the optional local correlation data of this Publish message. This data is never propagated and kept
+     * locally for correlation.
+     */
+    Object localCorrelationData();
+
+    /**
      * Acknowledges this Publish message.
      *
      * @throws UnsupportedOperationException if manual acknowledgement is not enabled.
