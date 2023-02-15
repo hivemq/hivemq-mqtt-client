@@ -20,6 +20,9 @@ import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * @author David Katz
  * @author Christian Hoff
@@ -28,23 +31,26 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     static final @NotNull MqttWebSocketConfigImpl DEFAULT =
             new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_QUERY_STRING, DEFAULT_MQTT_SUBPROTOCOL,
-                    DEFAULT_HANDSHAKE_TIMEOUT_MS);
+                    DEFAULT_HANDSHAKE_TIMEOUT_MS, DEFAULT_HTTP_HEADERS);
 
     private final @NotNull String serverPath;
     private final @NotNull String queryString;
     private final @NotNull String subprotocol;
     private final int handshakeTimeoutMs;
+    private final Map<String, String> httpHeaders;
 
     MqttWebSocketConfigImpl(
             final @NotNull String serverPath,
             final @NotNull String queryString,
             final @NotNull String subprotocol,
-            final int handshakeTimeoutMs) {
+            final int handshakeTimeoutMs,
+            final @NotNull Map<String, String> httpHeaders) {
 
         this.serverPath = serverPath;
         this.queryString = queryString;
         this.subprotocol = subprotocol;
         this.handshakeTimeoutMs = handshakeTimeoutMs;
+        this.httpHeaders = httpHeaders;
     }
 
     @Override
@@ -68,6 +74,11 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     }
 
     @Override
+    public @NotNull Map<String, String> getHttpHeaders() {
+        return httpHeaders;
+    }
+
+    @Override
     public MqttWebSocketConfigImplBuilder.@NotNull Default extend() {
         return new MqttWebSocketConfigImplBuilder.Default(this);
     }
@@ -83,7 +94,8 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
 
         return serverPath.equals(that.serverPath) && queryString.equals(that.queryString) &&
-                subprotocol.equals(that.subprotocol) && (handshakeTimeoutMs == that.handshakeTimeoutMs);
+                subprotocol.equals(that.subprotocol) && (handshakeTimeoutMs == that.handshakeTimeoutMs) &&
+                Objects.equals(httpHeaders, that.httpHeaders);
     }
 
     @Override
@@ -92,6 +104,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         result = 31 * result + queryString.hashCode();
         result = 31 * result + subprotocol.hashCode();
         result = 31 * result + Integer.hashCode(handshakeTimeoutMs);
+        result = 31 * result + httpHeaders.hashCode();
         return result;
     }
 }
