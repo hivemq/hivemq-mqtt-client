@@ -6,9 +6,7 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
 [![javadoc](https://javadoc.io/badge2/com.hivemq/hivemq-mqtt-client/javadoc.svg)](https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/hivemq/hivemq-mqtt-client/CI%20Check/master)](https://github.com/hivemq/hivemq-mqtt-client/actions/workflows/check.yml?query=branch%3Amaster)
-[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/context:java)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/hivemq/hivemq-mqtt-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hivemq/hivemq-mqtt-client/alerts/)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/hivemq/hivemq-mqtt-client/.github/workflows/check.yml?branch=master)](https://img.shields.io/github/actions/workflow/status/hivemq/hivemq-mqtt-client/.github/workflows/check.yml?branch=master)
 
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
