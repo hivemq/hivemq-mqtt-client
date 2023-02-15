@@ -20,6 +20,9 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Configuration for a WebSocket transport to use by {@link MqttClient MQTT clients}.
  *
@@ -51,6 +54,12 @@ public interface MqttWebSocketConfig {
      * @since 1.2
      */
     int DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
+    /**
+     * The default map of headers.
+     * @since 1.2.3
+     */
+    @NotNull Map<String, String> DEFAULT_HTTP_HEADERS = new LinkedHashMap<>();
+
 
     /**
      * Creates a builder for a WebSocket configuration.
@@ -83,10 +92,17 @@ public interface MqttWebSocketConfig {
     int getHandshakeTimeoutMs();
 
     /**
+     * @return map of already set headers.
+     * @since 1.2.3
+     */
+    @NotNull Map<String, String> getHttpHeaders();
+
+    /**
      * Creates a builder for extending this WebSocket configuration.
      *
      * @return the created builder.
      * @since 1.1
      */
     @NotNull MqttWebSocketConfigBuilder extend();
+
 }

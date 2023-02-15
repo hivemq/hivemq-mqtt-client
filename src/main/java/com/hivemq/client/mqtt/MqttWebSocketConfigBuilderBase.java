@@ -20,6 +20,7 @@ import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,4 +72,13 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
      */
     @CheckReturnValue
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
+
+    /**
+     * Sets the {@link MqttWebSocketConfig#getHttpHeaders() headers}.
+     *
+     * @param httpHeaders http headers.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B httpHeaders(@NotNull Map<String, String> httpHeaders);
 }
