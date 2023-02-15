@@ -63,7 +63,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         responseTopic = publish.getRawResponseTopic();
         correlationData = publish.getRawCorrelationData();
         userProperties = publish.getUserProperties();
-        localCorrelationData = publish.getLocalCorrelationData();
+        localCorrelationData = publish.getLocalContext();
     }
 
     MqttPublishBuilder(final @NotNull MqttPublishBuilder<?> publishBuilder) {

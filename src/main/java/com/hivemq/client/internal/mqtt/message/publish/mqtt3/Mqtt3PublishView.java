@@ -48,20 +48,11 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final @NotNull MqttTopicImpl topic,
             final @Nullable ByteBuffer payload,
             final @NotNull MqttQos qos,
-            final boolean retain) {
-
-        return delegate(topic, payload, qos, retain, null);
-    }
-
-    public static @NotNull MqttPublish delegate(
-            final @NotNull MqttTopicImpl topic,
-            final @Nullable ByteBuffer payload,
-            final @NotNull MqttQos qos,
             final boolean retain,
-            final Object localCorrelationData) {
+            final @Nullable Object localContext) {
 
         return new MqttPublish(topic, payload, qos, retain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, null, localCorrelationData);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, null, localContext);
     }
 
     public static @NotNull MqttStatefulPublish statefulDelegate(
@@ -75,9 +66,10 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final @NotNull MqttTopicImpl topic,
             final @Nullable ByteBuffer payload,
             final @NotNull MqttQos qos,
-            final boolean retain) {
+            final boolean retain,
+            final @Nullable Object localContext) {
 
-        return new Mqtt3PublishView(delegate(topic, payload, qos, retain));
+        return new Mqtt3PublishView(delegate(topic, payload, qos, retain, localContext));
     }
 
     static @NotNull Mqtt3PublishView willOf(
@@ -135,8 +127,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @Override
-    public Object localCorrelationData() {
-        return delegate.getLocalCorrelationData();
+    public Object localContext() {
+        return delegate.getLocalContext();
     }
 
     @Override

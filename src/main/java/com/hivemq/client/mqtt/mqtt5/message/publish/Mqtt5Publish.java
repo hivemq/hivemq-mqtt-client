@@ -113,7 +113,7 @@ public interface Mqtt5Publish extends Mqtt5Message {
      * @return the optional local correlation data of this Publish message. This data is never propagated and kept
      * locally for correlation.
      */
-    Object getLocalCorrelationData();
+    Object getLocalContext();
 
     /**
      * Acknowledges this Publish message.
