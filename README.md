@@ -2,6 +2,8 @@
 
 The documentation uses [Jekyll](https://jekyllrb.com/) as a static site generator.
 
+It requires a modern and updated install of Ruby.
+
 ## Setup
 
 1. (Skip on MacOS as already installed ) Install Ruby development environment: https://jekyllrb.com/docs/installation/
@@ -13,5 +15,5 @@ The documentation uses [Jekyll](https://jekyllrb.com/) as a static site generato
 
 ## Build
 
-1. `bundler exec jekyll serve` (add `--incremental` for incremental and shorter builds)
-1. Open your browser at http://localhost:4000/
+1. `bundle exec jekyll serve --livereload --drafts` (add `--incremental` for incremental and shorter builds)
+2. Open your browser at http://localhost:4000/
