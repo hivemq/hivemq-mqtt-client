@@ -41,9 +41,12 @@ search:
   rel_url: false
   button: true
 
-aux_links:
-  "News":
-    - "https://hivemq.github.io/hivemq-mqtt-client/news"
+# Disabled link to news because of lack of updates.
+# To re-enable, uncomment the next 3 lines.
+#aux_links:
+#  "News":
+#    - "https://hivemq.github.io/hivemq-mqtt-client/news"
+
 # site.github.releases_url
 # site.github.issues_url
 
