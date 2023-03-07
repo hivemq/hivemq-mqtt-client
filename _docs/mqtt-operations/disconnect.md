@@ -234,6 +234,8 @@ MQTT 5.0
 - [Session Expiry Interval](#session-expiry-interval)
 - [User Properties](#user-properties)
 
+See Also: [Mqtt5DisconnectBuilderBase](https://github.com/hivemq/hivemq-mqtt-client/blob/d709dc3aeea8a6837ecc21413988de154a66be1c/src/main/java/com/hivemq/client/mqtt/mqtt5/message/disconnect/Mqtt5DisconnectBuilderBase.java#L35)
+
 ***
 
 
