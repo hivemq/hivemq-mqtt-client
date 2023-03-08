@@ -20,7 +20,7 @@ MqttClient.builder()
 | Method name | Description | Default value |
 | ----------- | ----------- | ------------- |
 | `identifier` | The unique identifier of the MQTT client | The server creates an identifier for the client |
-| `executorConfig` | Configuration of used Threads, see [Thread Management](thread-management.md) | Default Netty event loop and `Schedulers.comutation()` for callbacks |
+| `executorConfig` | Configuration of used Threads | Default Netty event loop and `Schedulers.comutation()` for callbacks |
 
 ## Transport configuration
 
@@ -29,8 +29,8 @@ MqttClient.builder()
 | `serverAddress` | The address (host + port) of the MQTT server | See `serverHost` and `serverPort` |
 | `serverHost` | The host name or IP address of the MQTT server | `localhost` |
 | `serverPort` | The port of the MQTT server | - `1883` <br/> - `8883` (SSL/TLS) <br/> - `80` (WebSocket) <br/> - `443` (Secure WebSocket) |
-| `sslConfig` <br/> `sslWithDefaultConfig` | Secure transport configuration (SSL/TLS), see [Security](security/ssl-tls.md) | none |
-| `webSocketConfig` <br/> `webSocketWithDefaultConfig` | WebSocket transport configuration, see [Transports](transports/websocket.md) | none |
+| `sslConfig` <br/> `sslWithDefaultConfig` | Secure transport configuration (SSL/TLS) | none |
+| `webSocketConfig` <br/> `webSocketWithDefaultConfig` | WebSocket transport configuration | none |
 | `transportConfig` | Transport configuration which combines: <br/> - server address (host + port) <br/> - secure transport configuration <br/> - WebSocket transport configuration | See <br/> - `serverAddress` /`Host` /`Port` <br/> - `sslConfig` <br/> - `webSocketConfig` |
 
 ## Lifecycle configuration
