@@ -9,8 +9,9 @@
 {%- endcomment -%}
 
 <div class="admonition admonition-{{ include.type }}">
-  {% if include.title %}
+  {%- if include.title -%}
     <div class="admonition-title">{{ include.title }}</div>
-  {% endif %}
-  <div class="admonition-content">{{ include.content | markdownify }}</div>
+  {%- endif -%}
+  <div class="admonition-content" markdown="1">{{ include.content }}</div>
+  {%- comment -%}removes the newline{%- endcomment -%}
 </div>
