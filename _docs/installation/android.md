@@ -10,104 +10,191 @@ redirect_from: /docs/installation/android.html
 The HiveMQ MQTT Client library is supported on Android 4.4 (API level 19) and higher versions.
 This covers almost 100% of all Android devices.
 
-To be able to use the HiveMQ MQTT Client on Android, you have to grant your app the permission to use internet 
-communication.
-You configure this permission in the `AndroidManifest.xml` that is typically located at 
-`$PROJECT_DIR/app/src/main/AndroidManifest.xml`:
+To be able to use the HiveMQ MQTT Client on Android, configure your Android project with the following 5 steps:
 
-```xml
-<manifest>
-    ...
-    <uses-permission android:name="android.permission.INTERNET"/>
-    ...
-</manifest>
-```
+1. Use Android Gradle plugin 7.0 or newer.
 
-As the HiveMQ MQTT Client uses Java 8 language features, you also have to specify the following in the app's 
-`build.gradle` file that is typically located at `$PROJECT_DIR/app/build.gradle`:
+2. Grant your app the permission to use internet communication.
+   You configure this permission in the `AndroidManifest.xml` that is typically located at 
+   `$PROJECT_DIR/app/src/main/AndroidManifest.xml`:
 
-```groovy
-...
-android {
-    ...
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    packagingOptions {
-        exclude 'META-INF/INDEX.LIST'
-        exclude 'META-INF/io.netty.versions.properties'
-    }
-}
-...
-```
+   ```xml
+   <manifest>
+       <uses-permission android:name="android.permission.INTERNET"/>
+   </manifest>
+   ```
 
-Additionally you have to set some proguard rules in the app's proguard rules file that is typically located at 
-`$PROJECT_DIR/app/proguard-rules.pro`:
+3. Configure your app's `build.gradle(.kts)` file that is typically located at `$PROJECT_DIR/app/build.gradle(.kts)`:
 
-```
-...
--keepclassmembernames class io.netty.** { *; }
--keepclassmembers class org.jctools.** { *; }
-...
-```
+   {% capture tab_content %}
 
-Please make sure that the `proguard-rules.pro` file is referenced in the app's `build.gradle` file:
+   Groovy DSL
+   ===
 
-```groovy
-...
-android {
-    ...
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        ...
-    }
-    ...
-}
-...
-```
+   ```groovy
+   android {
+       compileOptions {
+           sourceCompatibility = JavaVersion.VERSION_1_8
+           targetCompatibility = JavaVersion.VERSION_1_8
+       }
+       packagingOptions {
+           resources {
+               excludes += ['META-INF/INDEX.LIST', 'META-INF/io.netty.versions.properties']
+           }
+       }
+   }
+   ```
 
+   ====
 
-## Android API levels below 24
+   Kotlin DSL
+   ===
+
+   ```kotlin
+   android {
+       compileOptions {
+           sourceCompatibility = JavaVersion.VERSION_1_8
+           targetCompatibility = JavaVersion.VERSION_1_8
+       }
+       packagingOptions {
+           resources {
+               excludes += listOf("META-INF/INDEX.LIST", "META-INF/io.netty.versions.properties")
+           }
+       }
+   }
+   ```
+
+   {% endcapture %}
+   {% include tabs.html group="gradle-dsl" content=tab_content %}
+
+4. Add the following lines to your app's proguard rules file that is typically located at 
+   `$PROJECT_DIR/app/proguard-rules.pro`:
+
+   ```
+   -keepclassmembernames class io.netty.** { *; }
+   -keepclassmembers class org.jctools.** { *; }
+   ```
+   
+   Please make sure that the `proguard-rules.pro` file is referenced in your app's `build.gradle(.kts)` file:
+
+   {% capture tab_content %}
+
+   Groovy DSL
+   ===
+
+   ```groovy
+   android {
+       buildTypes {
+           release {
+               minifyEnabled = true
+               proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')
+           }
+       }
+   }
+   ```
+
+   ====
+
+   Kotlin DSL
+   ===
+
+   ```kotlin
+   android {
+       buildTypes {
+           release {
+               isMinifyEnabled = true
+               proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+           }
+       }
+   }
+   ```
+
+   {% endcapture %}
+   {% include tabs.html group="gradle-dsl" content=tab_content %}
+
+5. You are done if your minimum supported Android API level is at least 24 (7.0 Nougat).
+   If you want to support older Android versions, continue with [the next step](#android-api-levels-below-24).
+
+## Android API Levels below 24
 
 The above configuration is enough if your minimum supported Android API level is at least 24 (7.0 Nougat).
-Targeting lower Android versions requires additional configuration as Android still lacks support for Java 8 APIs like 
-`java.util.Optional`, `java.util.function.*` and `java.util.concurrent.CompletableFuture` on versions below 24.
+Supporting older Android versions requires additional configuration as Android still lacks support for Java 8 APIs like
+`java.util.concurrent.CompletableFuture` on versions below 24.
 
-You can use the [Android RetroFix gradle plugin](https://github.com/SgtSilvio/android-retrofix) to backport these APIs 
+You can use the [Android RetroFix Gradle plugin](https://github.com/SgtSilvio/android-retrofix) to backport these APIs 
 automatically.
 This plugin enables you to use the Java 8 APIs even if you have to support lower Android versions.
 
-The following shows how to configure the Android RetroFix plugin in the app’s `build.gradle` file.
-You have to add the plugin and the two backport dependencies `android-retrostreams` and `android-retrofuture`:
+The following shows how to configure the Android RetroFix plugin.
+
+{% capture tab_content %}
+
+Groovy DSL
+===
+
+Ensure that the `google` and `gradlePluginPortal` plugin repositories are configured in the `settings.gradle` file:
 
 ```groovy
-buildscript {
+pluginManagement {
     repositories {
         google()
         gradlePluginPortal()
     }
-    dependencies {
-        classpath 'gradle.plugin.com.github.sgtsilvio.gradle:android-retrofix:{{ site.android_retrofix_version }}'
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'com.github.sgtsilvio.gradle.android-retrofix'
-
-...
-
-dependencies {
-    implementation 'com.hivemq:hivemq-mqtt-client:{{ site.version }}'
-    
-    implementation 'net.sourceforge.streamsupport:android-retrostreams:{{ site.android_retrostreams_version }}'
-    implementation 'net.sourceforge.streamsupport:android-retrofuture:{{ site.android_retrostreams_version }}'
-    ...
 }
 ```
+
+In your app’s `build.gradle` file, apply the Android RetroFix plugin and add the backport dependencies
+`android-retrostreams` and `android-retrofuture`:
+
+```groovy
+plugins {
+    id('com.android.application')
+    id('com.github.sgtsilvio.gradle.android-retrofix') version '{{ site.android_retrofix_version }}'
+}
+
+dependencies {
+    implementation('com.hivemq:hivemq-mqtt-client:{{ site.version }}')
+
+    retrofix('net.sourceforge.streamsupport:android-retrostreams:{{ site.android_retrostreams_version }}')
+    retrofix('net.sourceforge.streamsupport:android-retrofuture:{{ site.android_retrostreams_version }}')
+}
+```
+
+====
+
+Kotlin DSL
+===
+
+Ensure that the `google` and `gradlePluginPortal` plugin repositories are configured in the `settings.gradle.kts` file:
+
+```kotlin
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+    }
+}
+```
+
+In your app’s `build.gradle.kts` file, apply the Android RetroFix plugin and add the backport dependencies
+`android-retrostreams` and `android-retrofuture`:
+
+```kotlin
+plugins {
+    id("com.android.application")
+    id("com.github.sgtsilvio.gradle.android-retrofix") version "{{ site.android_retrofix_version }}"
+}
+
+dependencies {
+    implementation("com.hivemq:hivemq-mqtt-client:{{ site.version }}")
+
+    retrofix("net.sourceforge.streamsupport:android-retrostreams:{{ site.android_retrostreams_version }}")
+    retrofix("net.sourceforge.streamsupport:android-retrofuture:{{ site.android_retrostreams_version }}")
+}
+```
+
+{% endcapture %}
+{% include tabs.html group="gradle-dsl" content=tab_content %}
 
 When you increase the Android API level to 24+ in the future, you will only need to remove the plugin and the backport 
 dependencies.
