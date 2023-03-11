@@ -13,13 +13,13 @@
 {%- assign tabs = include.content | split: "====" -%}
 {%- unless include.no_header -%}
   <ul class="tab{% if include.merge %} tab-merge{% endif %}" data-tab-group="{{ include.group }}">
-    {% for tab in tabs %}
-      <li><a href="#">{{ tab | split: "===" | first | strip }}</a></li>
-    {% endfor %}
+    {%- for tab in tabs -%}
+      <li><a href="#" markdown="1">{{ tab | split: "===" | first | strip }}</a></li>
+    {%- endfor -%}
   </ul>
 {%- endunless -%}
 <ul class="tab-content" data-tab-group="{{ include.group }}">
-  {% for tab in tabs %}
-    <li>{{ tab | split: "===" | last | markdownify }}</li>
-  {% endfor %}
+  {%- for tab in tabs -%}
+    <li markdown="1">{{ tab | split: "===" | last }}</li>
+  {%- endfor -%}
 </ul>
