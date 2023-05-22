@@ -746,7 +746,8 @@ MQTT 5.0
 ## Enhanced Auth
 
 You need to implement an `Mqtt5EnhancedAuthMechanism` for enhanced auth.
-See the [Enhanced Auth](../security/auth.md) section for more details.
+
+[//]: # (See the [Enhanced Auth]&#40;../security/auth.md&#41; section for more details.) 
 
 Simple and enhanced auth can be used both at the same time.
 
