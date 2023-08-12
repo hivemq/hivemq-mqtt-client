@@ -159,24 +159,18 @@ For optional features you can choose to include additional modules:
             <version>2.0.0</version>
             <type>pom</type>
         </dependency>
-    </dependencies>
-    <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client2-proxy</artifactId>
             <version>2.0.0</version>
             <type>pom</type>
         </dependency>
-    </dependencies>
-    <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client2-epoll</artifactId>
             <version>2.0.0</version>
             <type>pom</type>
         </dependency>
-    </dependencies>
-    <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client2-reactor</artifactId>
@@ -259,34 +253,26 @@ dependencies {
             <artifactId>hivemq-mqtt-client2</artifactId>
             <version>develop-SNAPSHOT</version>
         </dependency>
-    </dependencies>
 
-    <!-- snapshots for optional modules -->
-    <dependencies>
+        <!-- snapshots for optional modules -->
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client2-websocket</artifactId>
             <version>develop-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
-    </dependencies>
-    <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client2-proxy</artifactId>
             <version>develop-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
-    </dependencies>
-    <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client2-epoll</artifactId>
             <version>develop-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
-    </dependencies>
-    <dependencies>
         <dependency>
             <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client2-reactor</artifactId>
