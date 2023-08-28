@@ -20,6 +20,7 @@ import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
+import com.hivemq.client.internal.util.StringUtil;
 import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
 import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ public class MqttPubRec extends MqttMessageWithUserProperties.WithReason.WithCod
 
     @Override
     public @NotNull String toString() {
-        return "MqttPubRec{" + toAttributeString() + "}";
+        return "MqttPubRec{reasonCode=" + getReasonCode() + StringUtil.prepend(", ", super.toAttributeString()) + "}";
     }
 
     @Override
