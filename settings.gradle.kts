@@ -1,10 +1,6 @@
 rootProject.name = "hivemq-mqtt-client2"
 
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
     plugins {
         id("com.github.johnrengelman.shadow") version "${extra["plugin.shadow.version"]}"
         id("biz.aQute.bnd.builder") version "${extra["plugin.bnd.version"]}"
