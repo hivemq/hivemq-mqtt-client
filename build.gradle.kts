@@ -1,15 +1,15 @@
 plugins {
-    id("java-library")
+    `java-library`
     id("com.github.johnrengelman.shadow")
     id("biz.aQute.bnd.builder")
-    id("maven-publish")
+    `maven-publish`
+    signing
     id("io.github.gradle-nexus.publish-plugin")
-    id("signing")
-    id("com.github.hierynomus.license")
-    id("pmd")
     id("io.github.sgtsilvio.gradle.defaults")
     id("io.github.sgtsilvio.gradle.metadata")
     id("io.github.sgtsilvio.gradle.javadoc-links")
+    id("com.github.hierynomus.license")
+    pmd
 }
 
 

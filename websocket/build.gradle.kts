@@ -1,5 +1,5 @@
 plugins {
-    id("java-platform")
+    `java-platform`
 }
 
 
