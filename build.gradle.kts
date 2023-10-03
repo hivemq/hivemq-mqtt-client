@@ -9,7 +9,7 @@ plugins {
     id("pmd")
     id("com.github.sgtsilvio.gradle.utf8")
     id("com.github.sgtsilvio.gradle.metadata")
-    id("com.github.sgtsilvio.gradle.javadoc-links")
+    id("io.github.sgtsilvio.gradle.javadoc-links")
 }
 
 
@@ -146,7 +146,7 @@ allprojects {
             withSourcesJar()
         }
 
-        plugins.apply("com.github.sgtsilvio.gradle.javadoc-links")
+        plugins.apply("io.github.sgtsilvio.gradle.javadoc-links")
 
         tasks.javadoc {
             exclude("**/internal/**")
@@ -186,6 +186,11 @@ tasks.shadowJar {
     relocate("javax.inject", "${shadePrefix}javax.inject")
 
     minimize()
+}
+
+val javaComponent = components["java"] as AdhocComponentWithVariants
+javaComponent.withVariantsFromConfiguration(configurations.shadowRuntimeElements.get()) {
+    skip()
 }
 
 
@@ -266,7 +271,7 @@ allprojects {
 }
 
 nexusPublishing {
-    repositories {
+    this.repositories {
         sonatype()
     }
 }
