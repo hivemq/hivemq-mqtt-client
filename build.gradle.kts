@@ -53,8 +53,9 @@ allprojects {
 allprojects {
     plugins.withId("java") {
         java {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(8))
+            }
         }
 
         plugins.apply("com.github.sgtsilvio.gradle.utf8")
@@ -87,7 +88,7 @@ dependencies {
 
 for (feature in listOf("websocket", "proxy", "epoll")) {
     java.registerFeature(feature) {
-        usingSourceSet(sourceSets["main"])
+        usingSourceSet(sourceSets.main.get())
     }
 }
 
@@ -220,9 +221,9 @@ allprojects {
 
 publishing.publications.register<MavenPublication>("shaded") {
     artifactId = "${project.name}-shaded"
-    artifact(tasks["shadowJar"])
-    artifact(tasks["javadocJar"])
-    artifact(tasks["sourcesJar"])
+    artifact(tasks.shadowJar)
+    artifact(tasks.named("javadocJar"))
+    artifact(tasks.named("sourcesJar"))
     pom.withXml {
         asNode().appendNode("dependencies").apply {
             for (apiDependency in configurations["apiElements"].allDependencies) {
