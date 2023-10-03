@@ -122,8 +122,8 @@ dependencies {
     testImplementation("nl.jqno.equalsverifier:equalsverifier:${property("equalsverifier.version")}")
     testImplementation("org.mockito:mockito-core:${property("mockito.version")}")
     testImplementation("com.google.guava:guava:${property("guava.version")}")
-    testImplementation("org.bouncycastle:bcprov-jdk15on:${property("bouncycastle.version")}")
-    testImplementation("org.bouncycastle:bcpkix-jdk15on:${property("bouncycastle.version")}")
+    testImplementation("org.bouncycastle:bcprov-jdk18on:${property("bouncycastle.version")}")
+    testImplementation("org.bouncycastle:bcpkix-jdk18on:${property("bouncycastle.version")}")
     testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:${property("paho.version")}")
     testRuntimeOnly("org.slf4j:slf4j-simple:${property("slf4j.version")}")
 }
