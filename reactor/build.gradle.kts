@@ -35,7 +35,7 @@ dependencies {
 /* ******************** jars ******************** */
 
 tasks.jar {
-    withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+    configure<aQute.bnd.gradle.BundleTaskExtension> {
         bnd("Export-Package: " +
                 "com.hivemq.client2.mqtt.mqtt3.reactor," +
                 "com.hivemq.client2.mqtt.mqtt5.reactor," +

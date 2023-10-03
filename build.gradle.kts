@@ -137,7 +137,7 @@ allprojects {
         plugins.apply("biz.aQute.bnd.builder")
 
         tasks.jar {
-            withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+            configure<aQute.bnd.gradle.BundleTaskExtension> {
                 bnd("-consumer-policy: \${range;[==,=+)}", "-removeheaders: Private-Package")
             }
         }
@@ -156,7 +156,7 @@ allprojects {
 }
 
 tasks.jar {
-    withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+    configure<aQute.bnd.gradle.BundleTaskExtension> {
         bnd("Export-Package: " +
                 "com.hivemq.client2.annotations.*," +
                 "com.hivemq.client2.mqtt.*," +
