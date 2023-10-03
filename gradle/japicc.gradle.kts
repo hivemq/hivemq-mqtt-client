@@ -45,7 +45,7 @@ allprojects {
 
                 val workingDir = buildDir.resolve("japicc")
                 val nonImplFile by extra(workingDir.resolve("non-impl"))
-                val sourceSet by extra(project.the<JavaPluginConvention>().sourceSets["main"].java.filterNot {
+                val sourceSet by extra(project.the<JavaPluginExtension>().sourceSets["main"].java.filterNot {
                     it.path.matches(Regex(".*/internal/.*"))
                 })
 
@@ -120,7 +120,7 @@ allprojects {
                                     generics = generics.replace(" ", "")
                                     qualifiedName += generics
                                 }
-                                writer.appendln(qualifiedName)
+                                writer.appendLine(qualifiedName)
                             }
                             index = end + 1
                         }
