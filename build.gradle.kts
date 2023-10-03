@@ -7,8 +7,8 @@ plugins {
     id("signing")
     id("com.github.hierynomus.license")
     id("pmd")
-    id("com.github.sgtsilvio.gradle.utf8")
-    id("com.github.sgtsilvio.gradle.metadata")
+    id("io.github.sgtsilvio.gradle.defaults")
+    id("io.github.sgtsilvio.gradle.metadata")
     id("io.github.sgtsilvio.gradle.javadoc-links")
 }
 
@@ -20,7 +20,7 @@ allprojects {
     description = "HiveMQ MQTT Client is an MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance " +
             "Java client library with different API flavours and backpressure support"
 
-    plugins.apply("com.github.sgtsilvio.gradle.metadata")
+    plugins.apply("io.github.sgtsilvio.gradle.metadata")
 
     metadata {
         moduleName.set("com.hivemq.client2.mqtt")
@@ -58,7 +58,7 @@ allprojects {
             }
         }
 
-        plugins.apply("com.github.sgtsilvio.gradle.utf8")
+        plugins.apply("io.github.sgtsilvio.gradle.defaults")
     }
 }
 
