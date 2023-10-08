@@ -1,14 +1,14 @@
 plugins {
     `java-library`
-    id("com.github.johnrengelman.shadow")
-    id("biz.aQute.bnd.builder")
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.bnd)
     `maven-publish`
     signing
-    id("io.github.gradle-nexus.publish-plugin")
-    id("io.github.sgtsilvio.gradle.defaults")
-    id("io.github.sgtsilvio.gradle.metadata")
-    id("io.github.sgtsilvio.gradle.javadoc-links")
-    id("com.github.hierynomus.license")
+    alias(libs.plugins.nexusPublish)
+    alias(libs.plugins.defaults)
+    alias(libs.plugins.metadata)
+    alias(libs.plugins.javadocLinks)
+    alias(libs.plugins.license)
     pmd
 }
 
@@ -66,21 +66,21 @@ allprojects {
 /* ******************** dependencies ******************** */
 
 dependencies {
-    api("io.reactivex.rxjava3:rxjava:${property("rxjava.version")}")
-    api("org.reactivestreams:reactive-streams:${property("reactive-streams.version")}")
+    api(libs.rxjava)
+    api(libs.reactiveStreams)
 
-    implementation("io.netty:netty-buffer:${property("netty.version")}")
-    implementation("io.netty:netty-codec:${property("netty.version")}")
-    implementation("io.netty:netty-common:${property("netty.version")}")
-    implementation("io.netty:netty-handler:${property("netty.version")}")
-    implementation("io.netty:netty-transport:${property("netty.version")}")
-    implementation("org.jctools:jctools-core:${property("jctools.version")}")
-    implementation("org.jetbrains:annotations:${property("annotations.version")}")
-    implementation("com.google.dagger:dagger:${property("dagger.version")}")
+    implementation(libs.netty.buffer)
+    implementation(libs.netty.codec)
+    implementation(libs.netty.common)
+    implementation(libs.netty.handler)
+    implementation(libs.netty.transport)
+    implementation(libs.jctools)
+    implementation(libs.jetbrains.annotations)
+    implementation(libs.dagger)
 
-    compileOnly("org.slf4j:slf4j-api:${property("slf4j.version")}")
+    compileOnly(libs.slf4j.api)
 
-    annotationProcessor("com.google.dagger:dagger-compiler:${property("dagger.version")}")
+    annotationProcessor(libs.dagger.compiler)
 }
 
 
@@ -93,9 +93,9 @@ for (feature in listOf("websocket", "proxy", "epoll")) {
 }
 
 dependencies {
-    "websocketImplementation"("io.netty:netty-codec-http:${property("netty.version")}")
-    "proxyImplementation"("io.netty:netty-handler-proxy:${property("netty.version")}")
-    "epollImplementation"("io.netty:netty-transport-native-epoll:${property("netty.version")}:linux-x86_64")
+    "websocketImplementation"(libs.netty.codec.http)
+    "proxyImplementation"(libs.netty.handler.proxy)
+    "epollImplementation"(variantOf(libs.netty.transport.native.epoll) { classifier("linux-x86_64") })
 }
 
 
@@ -104,9 +104,9 @@ dependencies {
 allprojects {
     plugins.withId("java") {
         dependencies {
-            testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit-jupiter.version")}")
-            testImplementation("org.junit.jupiter:junit-jupiter-params")
-            testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+            testImplementation(libs.junit.jupiter.api)
+            testImplementation(libs.junit.jupiter.params)
+            testRuntimeOnly(libs.junit.jupiter.engine)
         }
 
         tasks.test {
@@ -119,13 +119,13 @@ allprojects {
 }
 
 dependencies {
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:${property("equalsverifier.version")}")
-    testImplementation("org.mockito:mockito-core:${property("mockito.version")}")
-    testImplementation("com.google.guava:guava:${property("guava.version")}")
-    testImplementation("org.bouncycastle:bcprov-jdk18on:${property("bouncycastle.version")}")
-    testImplementation("org.bouncycastle:bcpkix-jdk18on:${property("bouncycastle.version")}")
-    testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:${property("paho.version")}")
-    testRuntimeOnly("org.slf4j:slf4j-simple:${property("slf4j.version")}")
+    testImplementation(libs.equalsVerifier)
+    testImplementation(libs.mockito)
+    testImplementation(libs.guava)
+    testImplementation(libs.bouncycastle.prov)
+    testImplementation(libs.bouncycastle.pkix)
+    testImplementation(libs.paho.mqttClient)
+    testRuntimeOnly(libs.slf4j.simple)
 }
 
 

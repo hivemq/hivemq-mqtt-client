@@ -17,18 +17,18 @@ metadata {
 
 dependencies {
     api(rootProject)
-    api("io.projectreactor:reactor-core:${property("reactor.version")}")
+    api(libs.reactor)
 
-    implementation("io.projectreactor.addons:reactor-adapter:${property("reactor-addons.version")}")
-    implementation("org.jetbrains:annotations:${property("annotations.version")}")
+    implementation(libs.reactor.adapter)
+    implementation(libs.jetbrains.annotations)
 }
 
 
 /* ******************** test ******************** */
 
 dependencies {
-    testImplementation("io.projectreactor:reactor-test:${property("reactor.version")}")
-    testImplementation("com.google.guava:guava:${property("guava.version")}")
+    testImplementation(libs.reactor.test)
+    testImplementation(libs.guava)
 }
 
 

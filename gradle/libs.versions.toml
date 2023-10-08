@@ -1,0 +1,55 @@
+[versions]
+bouncycastle = "1.76"
+dagger = "2.48"
+equalsverifier = "3.15.2"
+guava = "32.1.2-jre"
+jctools = "4.0.1"
+jetbrains-annotations = "24.0.1"
+junit-jupiter = "5.10.0"
+mockito = "4.11.0"
+netty = "4.1.99.Final"
+paho-mqttClient = "1.2.5"
+reactiveStreams = "1.0.4"
+reactor = "3.5.10"
+reactor-addons = "3.5.1"
+rxjava = "3.1.8"
+slf4j = "1.7.36"
+
+[libraries]
+bouncycastle-pkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-prov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
+equalsVerifier = { module = "nl.jqno.equalsverifier:equalsverifier", version.ref = "equalsverifier" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+jctools = { module = "org.jctools:jctools-core", version.ref = "jctools" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
+netty-codec = { module = "io.netty:netty-codec", version.ref = "netty" }
+netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
+netty-common = { module = "io.netty:netty-common", version.ref = "netty" }
+netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
+netty-transport = { module = "io.netty:netty-transport", version.ref = "netty" }
+netty-transport-native-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty" }
+paho-mqttClient = { module = "org.eclipse.paho:org.eclipse.paho.client.mqttv3", version.ref = "paho-mqttClient" }
+reactiveStreams = { module = "org.reactivestreams:reactive-streams", version.ref = "reactiveStreams" }
+reactor = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
+reactor-adapter = { module = "io.projectreactor.addons:reactor-adapter", version.ref = "reactor-addons" }
+reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "reactor" }
+rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+[plugins]
+shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+bnd = { id = "biz.aQute.bnd.builder", version = "6.4.0" }
+nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "1.3.0" }
+defaults = { id = "io.github.sgtsilvio.gradle.defaults", version = "0.2.0" }
+metadata = { id = "io.github.sgtsilvio.gradle.metadata", version = "0.5.0" }
+javadocLinks = { id = "io.github.sgtsilvio.gradle.javadoc-links", version = "0.8.0" }
+license = { id = "com.github.hierynomus.license", version = "0.16.1" }
