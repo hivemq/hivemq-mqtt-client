@@ -68,6 +68,7 @@ allprojects {
 dependencies {
     api(libs.rxjava)
     api(libs.reactiveStreams)
+    compileOnlyApi(libs.jetbrains.annotations)
 
     implementation(libs.netty.buffer)
     implementation(libs.netty.codec)
@@ -75,7 +76,6 @@ dependencies {
     implementation(libs.netty.handler)
     implementation(libs.netty.transport)
     implementation(libs.jctools)
-    implementation(libs.jetbrains.annotations)
     implementation(libs.dagger)
 
     compileOnly(libs.slf4j.api)
