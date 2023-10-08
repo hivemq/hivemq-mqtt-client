@@ -69,7 +69,6 @@ dependencies {
     api(libs.rxjava)
     api(libs.reactiveStreams)
     compileOnlyApi(libs.jetbrains.annotations)
-
     implementation(libs.netty.buffer)
     implementation(libs.netty.codec)
     implementation(libs.netty.common)
@@ -77,10 +76,8 @@ dependencies {
     implementation(libs.netty.transport)
     implementation(libs.jctools)
     implementation(libs.dagger)
-
-    compileOnly(libs.slf4j.api)
-
     annotationProcessor(libs.dagger.compiler)
+    compileOnly(libs.slf4j.api)
 }
 
 
@@ -119,11 +116,11 @@ allprojects {
 }
 
 dependencies {
-    testImplementation(libs.equalsVerifier)
     testImplementation(libs.mockito)
+    testImplementation(libs.equalsVerifier)
     testImplementation(libs.guava)
-    testImplementation(libs.bouncycastle.prov)
     testImplementation(libs.bouncycastle.pkix)
+    testImplementation(libs.bouncycastle.prov)
     testImplementation(libs.paho.mqttClient)
     testRuntimeOnly(libs.slf4j.simple)
 }
