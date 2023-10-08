@@ -24,9 +24,7 @@ equalsVerifier = { module = "nl.jqno.equalsverifier:equalsverifier", version.ref
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 jctools = { module = "org.jctools:jctools-core", version.ref = "jctools" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
 netty-codec = { module = "io.netty:netty-codec", version.ref = "netty" }
