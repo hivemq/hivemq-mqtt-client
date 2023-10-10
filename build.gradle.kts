@@ -116,6 +116,7 @@ allprojects {
 dependencies {
     testImplementation(libs.mockito)
     testImplementation(libs.equalsVerifier)
+    testImplementation(libs.jetbrains.annotations)
     testImplementation(libs.guava)
     testImplementation(libs.bouncycastle.pkix)
     testImplementation(libs.bouncycastle.prov)
