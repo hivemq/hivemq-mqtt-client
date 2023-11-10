@@ -120,7 +120,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
                     "Exception while decoding " + ((type == null) ? "UNKNOWN" : type) + ": " + e.getMessage();
             if (Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID.equals(e.getReasonCode()) &&
                     Mqtt5MessageType.PUBLISH.equals(type)) {
-                // PUBLISH message catch malformed topic, print log, don't disconnect
+                // PUBLISH message catch malformed topic, print log and  don't disconnect
                 LOGGER.error(message);
             } else {
                 MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), new MqttDecodeException(message));
