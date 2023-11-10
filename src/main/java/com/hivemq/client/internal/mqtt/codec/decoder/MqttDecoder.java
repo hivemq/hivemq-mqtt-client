@@ -29,6 +29,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.jetbrains.annotations.NotNull;
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -47,6 +49,8 @@ public class MqttDecoder extends ByteToMessageDecoder {
 
     private final @NotNull MqttMessageDecoders decoders;
     private final @NotNull MqttDecoderContext context;
+
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttDecoder.class);
 
     @Inject
     MqttDecoder(
@@ -114,7 +118,13 @@ public class MqttDecoder extends ByteToMessageDecoder {
             final Mqtt5MessageType type = Mqtt5MessageType.fromCode(messageType);
             final String message =
                     "Exception while decoding " + ((type == null) ? "UNKNOWN" : type) + ": " + e.getMessage();
-            MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), new MqttDecodeException(message));
+            if (Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID.equals(e.getReasonCode()) &&
+                    Mqtt5MessageType.PUBLISH.equals(type)) {
+                // PUBLISH message catch malformed topic, print log, don't disconnect
+                LOGGER.error(message);
+            } else {
+                MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), new MqttDecodeException(message));
+            }
         }
     }
 
