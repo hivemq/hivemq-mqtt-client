@@ -118,14 +118,14 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
         /**
          * Sets the {@link Mqtt5Publish#getMessageExpiryInterval() message expiry interval} in seconds.
          * <p>
-         * The value must be in the range of an unsigned int: [0, 4_294_967_295].
+         * The value must be in the range of an unsigned int: [0, 4_294_967_295] or -1 to disable message expiry.
          *
          * @param messageExpiryInterval the message expiry interval in seconds.
          * @return the builder.
          */
         @CheckReturnValue
         @NotNull C messageExpiryInterval(
-                @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval);
+                @Range(from = -1, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long messageExpiryInterval);
 
         /**
          * Disables the {@link Mqtt5Publish#getMessageExpiryInterval() message expiry}.
