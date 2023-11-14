@@ -325,7 +325,6 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
                     final int newSize = size + elementsSize;
                     final Object[] array = ensureCapacity(newSize);
                     if ((elements instanceof List) && (elements instanceof RandomAccess)) {
-                        //noinspection unchecked
                         final List<? extends E> list = (List<? extends E>) elements;
                         for (int i = 0; i < elementsSize; i++) {
                             array[size + i] = Checks.notNull(list.get(i), "Immutable list");
