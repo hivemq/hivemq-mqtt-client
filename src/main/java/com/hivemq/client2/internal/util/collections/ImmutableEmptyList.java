@@ -105,7 +105,7 @@ import java.util.function.Consumer;
         if (!(o instanceof List)) {
             return false;
         }
-        return ((List<?>) o).size() == 0;
+        return ((List<?>) o).isEmpty();
     }
 
     @Override

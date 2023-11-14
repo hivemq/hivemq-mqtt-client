@@ -47,7 +47,7 @@ import org.jetbrains.annotations.Unmodifiable;
         if (!(o instanceof ImmutableIntList)) {
             return false;
         }
-        return ((ImmutableIntList) o).size() == 0;
+        return ((ImmutableIntList) o).isEmpty();
     }
 
     @Override
