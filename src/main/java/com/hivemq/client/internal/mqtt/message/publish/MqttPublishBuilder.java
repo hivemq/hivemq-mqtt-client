@@ -104,7 +104,11 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull B messageExpiryInterval(final long messageExpiryInterval) {
-        this.messageExpiryInterval = Checks.unsignedInt(messageExpiryInterval, "Message expiry interval");
+        if (messageExpiryInterval == -1) {
+            this.messageExpiryInterval = MqttPublish.NO_MESSAGE_EXPIRY;
+        } else {
+            this.messageExpiryInterval = Checks.unsignedInt(messageExpiryInterval, "Message expiry interval");
+        }
         return self();
     }
 
