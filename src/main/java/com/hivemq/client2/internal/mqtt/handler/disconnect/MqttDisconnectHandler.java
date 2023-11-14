@@ -252,11 +252,6 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
                 clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect, eventLoop);
     }
 
-    @Override
-    public boolean isSharable() {
-        return false;
-    }
-
     private static class DisconnectingState implements Runnable {
 
         private final @NotNull Channel channel;
