@@ -48,7 +48,7 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
     /**
      * @return the Topic Filters of this Unsubscribe message. The list contains at least one Topic Filter.
      */
-    @Unmodifiable @NotNull List<@NotNull ? extends MqttTopicFilter> getTopicFilters();
+    @Unmodifiable @NotNull List<? extends @NotNull MqttTopicFilter> getTopicFilters();
 
     /**
      * @return the optional user properties of this Unsubscribe message.

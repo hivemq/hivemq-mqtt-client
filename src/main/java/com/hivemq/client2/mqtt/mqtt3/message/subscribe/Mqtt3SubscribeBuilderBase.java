@@ -76,7 +76,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.C
      * @since 1.2
      */
     @CheckReturnValue
-    @NotNull C addSubscriptions(@NotNull Collection<@NotNull ? extends Mqtt3Subscription> subscriptions);
+    @NotNull C addSubscriptions(@NotNull Collection<? extends @NotNull Mqtt3Subscription> subscriptions);
 
     /**
      * Adds a stream of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
@@ -87,7 +87,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.C
      * @since 1.2
      */
     @CheckReturnValue
-    @NotNull C addSubscriptions(@NotNull Stream<@NotNull ? extends Mqtt3Subscription> subscriptions);
+    @NotNull C addSubscriptions(@NotNull Stream<? extends @NotNull Mqtt3Subscription> subscriptions);
 
     /**
      * {@link Mqtt3SubscribeBuilderBase} that is complete which means all mandatory fields are set.

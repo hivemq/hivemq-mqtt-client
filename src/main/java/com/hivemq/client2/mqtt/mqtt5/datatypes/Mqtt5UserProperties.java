@@ -74,7 +74,7 @@ public interface Mqtt5UserProperties {
     /**
      * @return the User Properties as an immutable list.
      */
-    @Unmodifiable @NotNull List<@NotNull ? extends Mqtt5UserProperty> asList();
+    @Unmodifiable @NotNull List<? extends @NotNull Mqtt5UserProperty> asList();
 
     /**
      * @return a builder for extending this collection of User Properties.

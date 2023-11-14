@@ -47,7 +47,7 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
      * @return the {@link Mqtt3Subscription Subscriptions} of this Subscribe message. The list contains at least one
      *         Subscription.
      */
-    @Unmodifiable @NotNull List<@NotNull ? extends Mqtt3Subscription> getSubscriptions();
+    @Unmodifiable @NotNull List<? extends @NotNull Mqtt3Subscription> getSubscriptions();
 
     @Override
     default @NotNull Mqtt3MessageType getType() {
