@@ -30,7 +30,7 @@ import java.util.function.UnaryOperator;
  * @author Silvio Giebl
  */
 @Unmodifiable
-public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
+public interface ImmutableList<E> extends List<E>, RandomAccess {
 
     static <E> @NotNull ImmutableList<E> of() {
         return ImmutableEmptyList.of();
@@ -122,6 +122,9 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
 
     @Override
     @NotNull E get(int index);
+
+    @Override
+    @NotNull Object @NotNull [] toArray();
 
     @Override
     default boolean contains(final @Nullable Object o) {
@@ -263,7 +266,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
         private static final int INITIAL_CAPACITY = 4;
 
         private @Nullable E e;
-        private @NotNull Object @Nullable [] array;
+        private @Nullable Object @Nullable [] array;
         private int size;
 
         private Builder() {}
@@ -278,7 +281,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
             return capacity + (capacity >> 1);
         }
 
-        private @NotNull Object @NotNull [] ensureCapacity(final int capacity) {
+        private @Nullable Object @NotNull [] ensureCapacity(final int capacity) {
             assert capacity > 1;
             if (array == null) {
                 array = new Object[Math.max(INITIAL_CAPACITY, capacity)];
@@ -354,6 +357,8 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
                 default:
                     assert array != null;
                     if (array.length == size) {
+                        // all elements of array are nonnull
+                        //noinspection NullableProblems
                         return new ImmutableArray<>(array);
                     }
                     return new ImmutableArray<>(Arrays.copyOfRange(array, 0, size, Object[].class));
