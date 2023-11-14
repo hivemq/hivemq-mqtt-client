@@ -84,13 +84,13 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
     }
 
     @Contract("null -> fail")
-    static <E> @NotNull ImmutableList<E> copyOf(final @Nullable Collection<@Nullable ? extends E> elements) {
+    static <E> @NotNull ImmutableList<E> copyOf(final @Nullable Collection<? extends @Nullable E> elements) {
         return copyOf(elements, "Immutable list");
     }
 
     @Contract("null, _ -> fail")
     static <E> @NotNull ImmutableList<E> copyOf(
-            final @Nullable Collection<@Nullable ? extends E> elements, final @NotNull String name) {
+            final @Nullable Collection<? extends @Nullable E> elements, final @NotNull String name) {
 
         Checks.notNull(elements, name);
         if (elements instanceof ImmutableList) {
@@ -129,7 +129,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
     }
 
     @Override
-    default boolean containsAll(final @NotNull Collection<@Nullable ?> c) {
+    default boolean containsAll(final @NotNull Collection<?> c) {
         Checks.notNull(c, "Collection");
         for (final Object o : c) {
             if (!contains(o)) {
@@ -312,7 +312,7 @@ public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
             return this;
         }
 
-        public @NotNull Builder<E> addAll(final @NotNull Collection<@NotNull ? extends E> elements) {
+        public @NotNull Builder<E> addAll(final @NotNull Collection<? extends @NotNull E> elements) {
             Checks.notNull(elements, "Immutable list elements");
             final int elementsSize = elements.size();
             switch (elementsSize) {

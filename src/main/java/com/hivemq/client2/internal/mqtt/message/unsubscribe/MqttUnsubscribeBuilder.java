@@ -79,7 +79,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return self();
     }
 
-    public @NotNull B addTopicFilters(final @Nullable Collection<@Nullable ? extends MqttTopicFilter> topicFilters) {
+    public @NotNull B addTopicFilters(final @Nullable Collection<? extends @Nullable MqttTopicFilter> topicFilters) {
         Checks.notNull(topicFilters, "Topic Filters");
         topicFiltersBuilder.ensureFree(topicFilters.size());
         topicFilters.forEach(this::addTopicFilter);
@@ -87,7 +87,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return self();
     }
 
-    public @NotNull B addTopicFilters(final @Nullable Stream<@Nullable ? extends MqttTopicFilter> topicFilters) {
+    public @NotNull B addTopicFilters(final @Nullable Stream<? extends @Nullable MqttTopicFilter> topicFilters) {
         Checks.notNull(topicFilters, "Topic Filters");
         topicFilters.forEach(this::addTopicFilter);
         ensureAtLeastOneSubscription();

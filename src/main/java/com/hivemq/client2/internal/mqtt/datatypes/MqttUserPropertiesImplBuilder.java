@@ -72,14 +72,14 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
         return self();
     }
 
-    public @NotNull B addAll(final @Nullable Collection<@Nullable ? extends Mqtt5UserProperty> userProperties) {
+    public @NotNull B addAll(final @Nullable Collection<? extends @Nullable Mqtt5UserProperty> userProperties) {
         Checks.notNull(userProperties, "User Properties");
         listBuilder.ensureFree(userProperties.size());
         userProperties.forEach(this::add);
         return self();
     }
 
-    public @NotNull B addAll(final @Nullable Stream<@Nullable ? extends Mqtt5UserProperty> userProperties) {
+    public @NotNull B addAll(final @Nullable Stream<? extends @Nullable Mqtt5UserProperty> userProperties) {
         Checks.notNull(userProperties, "User Properties");
         userProperties.forEach(this::add);
         return self();
