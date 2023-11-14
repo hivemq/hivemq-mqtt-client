@@ -47,7 +47,6 @@ public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implement
     @Override
     public void onSuccess(final @NotNull MqttSubAck subAck) {
         if (subscriber instanceof FlowableWithSingleSubscriber) {
-            //noinspection unchecked
             ((FlowableWithSingleSubscriber<? super Mqtt5Publish, ? super Mqtt5SubAck>) subscriber).onSingle(subAck);
         }
     }

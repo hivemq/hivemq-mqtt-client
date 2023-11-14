@@ -157,7 +157,6 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
             final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
 
         if (subscriber instanceof WithSingleConditionalSubscriber) {
-            //noinspection unchecked
             source.subscribe(new SplitSubscriber.Conditional<>(
                     (WithSingleConditionalSubscriber<? super F, ? super S>) subscriber));
         } else {

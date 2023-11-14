@@ -65,7 +65,6 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super FM> subscriber) {
         if (subscriber instanceof ConditionalSubscriber) {
-            //noinspection unchecked
             final ConditionalSubscriber<? super FM> conditional = (ConditionalSubscriber<? super FM>) subscriber;
             source.subscribeBoth(new MapSubscriber.Conditional<>(conditional, flowableMapper, singleMapper));
         } else {
@@ -76,7 +75,6 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
     @Override
     protected void subscribeBothActual(final @NotNull WithSingleSubscriber<? super FM, ? super SM> subscriber) {
         if (subscriber instanceof WithSingleConditionalSubscriber) {
-            //noinspection unchecked
             final WithSingleConditionalSubscriber<? super FM, ? super SM> conditional =
                     (WithSingleConditionalSubscriber<? super FM, ? super SM>) subscriber;
             source.subscribeBoth(new WithSingleMapSubscriber.Conditional<>(conditional, flowableMapper, singleMapper));

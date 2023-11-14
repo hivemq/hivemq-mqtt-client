@@ -186,7 +186,6 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @SchedulerSupport(SchedulerSupport.NONE)
     public final void subscribeBoth(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
         if (subscriber instanceof FlowableWithSingleSubscriber) {
-            //noinspection unchecked
             subscribeBoth((FlowableWithSingleSubscriber<? super F, ? super S>) subscriber);
         } else {
             Checks.notNull(subscriber, "Subscriber");
