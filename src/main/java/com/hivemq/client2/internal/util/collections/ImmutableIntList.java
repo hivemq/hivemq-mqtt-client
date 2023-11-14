@@ -45,12 +45,12 @@ public interface ImmutableIntList {
         return new ImmutableIntArray(i1, i2, i3);
     }
 
-    static @NotNull ImmutableIntList of(final int i1, final int i2, final int i3, final @NotNull int... others) {
+    static @NotNull ImmutableIntList of(final int i1, final int i2, final int i3, final int @NotNull ... others) {
         Checks.notNull(others, "Int array");
         final int[] array = new int[3 + others.length];
         array[0] = i1;
-        array[0] = i2;
-        array[0] = i3;
+        array[1] = i2;
+        array[2] = i3;
         System.arraycopy(others, 0, array, 3, others.length);
         return new ImmutableIntArray(array);
     }
