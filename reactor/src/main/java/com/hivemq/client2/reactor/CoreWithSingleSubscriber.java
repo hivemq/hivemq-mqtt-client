@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.rx.reactor;
+package com.hivemq.client2.reactor;
 
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import reactor.core.CoreSubscriber;
 
 /**

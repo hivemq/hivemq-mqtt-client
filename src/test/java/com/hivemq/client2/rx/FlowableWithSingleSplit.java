@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.rx;
 
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

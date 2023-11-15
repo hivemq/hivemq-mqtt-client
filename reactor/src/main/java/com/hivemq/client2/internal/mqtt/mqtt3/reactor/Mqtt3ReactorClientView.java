@@ -34,7 +34,7 @@ import com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client2.mqtt.mqtt3.reactor.Mqtt3ReactorClient;
-import com.hivemq.client2.rx.reactor.FluxWithSingle;
+import com.hivemq.client2.reactor.FluxWithSingle;
 import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;

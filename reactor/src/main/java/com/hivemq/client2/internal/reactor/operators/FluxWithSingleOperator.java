@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.rx.reactor;
+package com.hivemq.client2.internal.reactor.operators;
 
-import com.hivemq.client2.rx.reactor.CoreWithSingleSubscriber;
-import reactor.core.Fuseable;
+import com.hivemq.client2.reactor.FluxWithSingle;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public interface CoreWithSingleConditionalSubscriber<F, S>
-        extends CoreWithSingleSubscriber<F, S>, Fuseable.ConditionalSubscriber<F> {}
+abstract class FluxWithSingleOperator<FU, SU, F, S> extends FluxWithSingle<F, S> {
+
+    final @NotNull FluxWithSingle<FU, SU> source;
+
+    FluxWithSingleOperator(final @NotNull FluxWithSingle<FU, SU> source) {
+        this.source = source;
+    }
+}

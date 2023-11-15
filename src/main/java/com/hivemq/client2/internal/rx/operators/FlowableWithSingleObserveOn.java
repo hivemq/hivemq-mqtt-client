@@ -16,8 +16,8 @@
 
 package com.hivemq.client2.internal.rx.operators;
 
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import com.hivemq.client2.rx.FlowableWithSingle;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
 import io.reactivex.rxjava3.core.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;

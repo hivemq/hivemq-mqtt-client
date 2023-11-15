@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.rx.reactivestreams;
+package com.hivemq.client2.reactivestreams;
 
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;

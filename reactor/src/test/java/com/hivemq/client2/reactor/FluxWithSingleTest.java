@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.rx.reactor;
+package com.hivemq.client2.reactor;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;

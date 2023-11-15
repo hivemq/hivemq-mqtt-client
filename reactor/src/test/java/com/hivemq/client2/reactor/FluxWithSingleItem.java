@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.rx.reactor;
+package com.hivemq.client2.reactor;
 
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Flux;
@@ -27,45 +25,44 @@ import reactor.core.publisher.Flux;
 /**
  * @author Silvio Giebl
  */
-public class FluxWithSingleSplit<U, F, S> extends FluxWithSingle<F, S> {
+public class FluxWithSingleItem<F, S> extends FluxWithSingle<F, S> {
 
-    private final @NotNull Flux<U> source;
-    private final @NotNull Class<F> flowableClass;
-    private final @NotNull Class<S> singleClass;
+    private final @NotNull Flux<F> source;
+    private final @NotNull S single;
+    private final int index;
 
-    public FluxWithSingleSplit(
-            final @NotNull Flux<U> source, final @NotNull Class<F> flowableClass, final @NotNull Class<S> singleClass) {
-
+    public FluxWithSingleItem(final @NotNull Flux<F> source, final @NotNull S single, final int index) {
         this.source = source;
-        this.flowableClass = flowableClass;
-        this.singleClass = singleClass;
+        this.single = single;
+        this.index = index;
     }
 
     @Override
     public void subscribe(final @NotNull CoreSubscriber<? super F> subscriber) {
-        source.subscribe(new SplitSubscriber<>(subscriber, flowableClass, singleClass));
+        source.subscribe(subscriber);
     }
 
     @Override
     public void subscribeBoth(final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber) {
-        source.subscribe(new SplitSubscriber<>(subscriber, flowableClass, singleClass));
+        source.subscribe(new SingleItemSubscriber<>(subscriber, single, index));
     }
 
-    private static class SplitSubscriber<U, F, S> implements Subscriber<U>, Subscription {
+    private static class SingleItemSubscriber<F, S> implements CoreSubscriber<F>, Subscription {
 
-        private final @NotNull Subscriber<? super F> subscriber;
-        private final @NotNull Class<F> flowableClass;
-        private final @NotNull Class<S> singleClass;
+        private final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber;
+        private final @NotNull S single;
+        private int index;
+        private int currentIndex;
         private @Nullable Subscription subscription;
 
-        SplitSubscriber(
-                final @NotNull Subscriber<? super F> subscriber,
-                final @NotNull Class<F> flowableClass,
-                final @NotNull Class<S> singleClass) {
+        SingleItemSubscriber(
+                final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber,
+                final @NotNull S single,
+                final int index) {
 
             this.subscriber = subscriber;
-            this.flowableClass = flowableClass;
-            this.singleClass = singleClass;
+            this.single = single;
+            this.index = index;
         }
 
         @Override
@@ -75,18 +72,11 @@ public class FluxWithSingleSplit<U, F, S> extends FluxWithSingle<F, S> {
         }
 
         @Override
-        public void onNext(final @NotNull U u) {
-            assert subscription != null;
-            if (singleClass.isInstance(u)) {
-                if (subscriber instanceof WithSingleSubscriber) {
-                    //noinspection unchecked
-                    ((WithSingleSubscriber<F, S>) subscriber).onSingle(singleClass.cast(u));
-                }
-                subscription.request(1);
-            } else if (flowableClass.isInstance(u)) {
-                subscriber.onNext(flowableClass.cast(u));
-            } else {
-                subscription.request(1);
+        public void onNext(final @NotNull F f) {
+            subscriber.onNext(f);
+            if (index == ++currentIndex) {
+                index = -1;
+                subscriber.onSingle(single);
             }
         }
 
@@ -103,6 +93,10 @@ public class FluxWithSingleSplit<U, F, S> extends FluxWithSingle<F, S> {
         @Override
         public void request(final long n) {
             assert subscription != null;
+            if (index == 0) {
+                index = -1;
+                subscriber.onSingle(single);
+            }
             subscription.request(n);
         }
 

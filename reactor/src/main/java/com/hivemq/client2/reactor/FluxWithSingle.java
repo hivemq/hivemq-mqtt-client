@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.rx.reactor;
+package com.hivemq.client2.reactor;
 
-import com.hivemq.client2.internal.rx.reactor.CoreWithSingleStrictSubscriber;
-import com.hivemq.client2.internal.rx.reactor.operators.FluxWithSingleFrom;
-import com.hivemq.client2.internal.rx.reactor.operators.FluxWithSingleMap;
-import com.hivemq.client2.internal.rx.reactor.operators.FluxWithSinglePublishOn;
+import com.hivemq.client2.internal.reactor.CoreWithSingleStrictSubscriber;
+import com.hivemq.client2.internal.reactor.operators.FluxWithSingleFrom;
+import com.hivemq.client2.internal.reactor.operators.FluxWithSingleMap;
+import com.hivemq.client2.internal.reactor.operators.FluxWithSinglePublishOn;
 import com.hivemq.client2.internal.util.Checks;
-import com.hivemq.client2.rx.reactivestreams.PublisherWithSingle;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
+import com.hivemq.client2.reactivestreams.PublisherWithSingle;
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;

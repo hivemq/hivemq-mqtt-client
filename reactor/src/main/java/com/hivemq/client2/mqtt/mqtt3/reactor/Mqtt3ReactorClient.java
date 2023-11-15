@@ -30,7 +30,7 @@ import com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import com.hivemq.client2.rx.reactor.FluxWithSingle;
+import com.hivemq.client2.reactor.FluxWithSingle;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;

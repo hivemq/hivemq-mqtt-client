@@ -22,8 +22,8 @@ import com.hivemq.client2.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import com.hivemq.client2.rx.FlowableWithSingle;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 

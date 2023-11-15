@@ -18,9 +18,9 @@ package com.hivemq.client2.internal.rx.operators;
 
 import com.hivemq.client2.internal.rx.WithSingleConditionalSubscriber;
 import com.hivemq.client2.internal.util.Checks;
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import com.hivemq.client2.rx.FlowableWithSingle;
 import com.hivemq.client2.rx.FlowableWithSingleSubscriber;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
 import io.reactivex.rxjava3.exceptions.Exceptions;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.operators.ConditionalSubscriber;

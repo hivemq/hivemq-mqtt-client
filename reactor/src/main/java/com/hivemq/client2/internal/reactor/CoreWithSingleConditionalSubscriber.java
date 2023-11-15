@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.rx.reactor;
+package com.hivemq.client2.internal.reactor;
 
-import com.hivemq.client2.internal.rx.WithSingleStrictSubscriber;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
-import com.hivemq.client2.rx.reactor.CoreWithSingleSubscriber;
-import org.jetbrains.annotations.NotNull;
+import com.hivemq.client2.reactor.CoreWithSingleSubscriber;
+import reactor.core.Fuseable;
 
 /**
  * @author Silvio Giebl
  */
-public class CoreWithSingleStrictSubscriber<F, S> extends WithSingleStrictSubscriber<F, S>
-        implements CoreWithSingleSubscriber<F, S> {
-
-    public CoreWithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<F, S> subscriber) {
-        super(subscriber);
-    }
-}
+public interface CoreWithSingleConditionalSubscriber<F, S>
+        extends CoreWithSingleSubscriber<F, S>, Fuseable.ConditionalSubscriber<F> {}

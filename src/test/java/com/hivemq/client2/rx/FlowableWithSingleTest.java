@@ -17,7 +17,7 @@
 package com.hivemq.client2.rx;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;

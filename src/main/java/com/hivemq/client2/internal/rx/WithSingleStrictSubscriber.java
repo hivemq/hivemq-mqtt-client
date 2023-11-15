@@ -16,8 +16,8 @@
 
 package com.hivemq.client2.internal.rx;
 
+import com.hivemq.client2.reactivestreams.WithSingleSubscriber;
 import com.hivemq.client2.rx.FlowableWithSingleSubscriber;
-import com.hivemq.client2.rx.reactivestreams.WithSingleSubscriber;
 import io.reactivex.rxjava3.internal.subscriptions.SubscriptionHelper;
 import io.reactivex.rxjava3.internal.util.BackpressureHelper;
 import org.jetbrains.annotations.NotNull;
