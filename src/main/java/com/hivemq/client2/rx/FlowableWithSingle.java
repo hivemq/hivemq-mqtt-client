@@ -16,7 +16,6 @@
 
 package com.hivemq.client2.rx;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.internal.rx.WithSingleStrictSubscriber;
 import com.hivemq.client2.internal.rx.operators.FlowableWithSingleMap;
 import com.hivemq.client2.internal.rx.operators.FlowableWithSingleMapError;
@@ -32,6 +31,7 @@ import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Function;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;

@@ -16,13 +16,9 @@
 
 package com.hivemq.client2.mqtt.lifecycle;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.MqttTransportConfig;
 import com.hivemq.client2.mqtt.MqttTransportConfigBuilder;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;

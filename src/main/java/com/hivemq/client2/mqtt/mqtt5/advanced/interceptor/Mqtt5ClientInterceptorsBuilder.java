@@ -16,8 +16,8 @@
 
 package com.hivemq.client2.mqtt.mqtt5.advanced.interceptor;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 /**

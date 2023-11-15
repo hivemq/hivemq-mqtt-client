@@ -16,13 +16,13 @@
 
 package com.hivemq.client2.mqtt.mqtt3;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.MqttClientBuilderBase;
 import com.hivemq.client2.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client2.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.client2.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client2.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

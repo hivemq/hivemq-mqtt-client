@@ -16,10 +16,10 @@
 
 package com.hivemq.client2.mqtt;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.mqtt3.Mqtt3ClientBuilder;
 import com.hivemq.client2.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 /**

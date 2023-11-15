@@ -16,7 +16,6 @@
 
 package com.hivemq.client2.mqtt.mqtt5.message.connect;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.internal.util.UnsignedDataTypes;
 import com.hivemq.client2.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client2.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -25,10 +24,7 @@ import com.hivemq.client2.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.client2.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 /**
  * Builder base for a {@link Mqtt5Connect}.

@@ -16,12 +16,12 @@
 
 package com.hivemq.client2.mqtt.mqtt5.advanced.interceptor;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5InboundQos1Interceptor;
 import com.hivemq.client2.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutboundQos1Interceptor;
 import com.hivemq.client2.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5InboundQos2Interceptor;
 import com.hivemq.client2.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutboundQos2Interceptor;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

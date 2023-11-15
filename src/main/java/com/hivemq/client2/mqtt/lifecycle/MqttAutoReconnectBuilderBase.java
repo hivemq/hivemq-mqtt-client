@@ -16,8 +16,8 @@
 
 package com.hivemq.client2.mqtt.lifecycle;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 

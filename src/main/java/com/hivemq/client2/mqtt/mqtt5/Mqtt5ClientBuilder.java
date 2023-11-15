@@ -16,7 +16,6 @@
 
 package com.hivemq.client2.mqtt.mqtt5;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.MqttClientBuilderBase;
 import com.hivemq.client2.mqtt.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.client2.mqtt.mqtt5.advanced.Mqtt5AdvancedConfigBuilder;
@@ -26,6 +25,7 @@ import com.hivemq.client2.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

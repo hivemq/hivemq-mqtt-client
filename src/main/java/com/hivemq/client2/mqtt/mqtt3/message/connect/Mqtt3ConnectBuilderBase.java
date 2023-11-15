@@ -16,16 +16,12 @@
 
 package com.hivemq.client2.mqtt.mqtt3.message.connect;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.internal.util.UnsignedDataTypes;
 import com.hivemq.client2.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client2.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.client2.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client2.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 /**
  * Builder base for a {@link Mqtt3Connect}.

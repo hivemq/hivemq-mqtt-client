@@ -16,13 +16,13 @@
 
 package com.hivemq.client2.mqtt.mqtt5.message.unsubscribe;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicFilterBuilder;
 import com.hivemq.client2.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client2.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

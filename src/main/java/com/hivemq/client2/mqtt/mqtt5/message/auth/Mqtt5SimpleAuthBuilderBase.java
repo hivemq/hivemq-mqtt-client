@@ -16,9 +16,9 @@
 
 package com.hivemq.client2.mqtt.mqtt5.message.auth;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.datatypes.MqttUtf8String;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;

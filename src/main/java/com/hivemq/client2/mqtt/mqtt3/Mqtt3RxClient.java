@@ -16,7 +16,6 @@
 
 package com.hivemq.client2.mqtt.mqtt3;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -34,6 +33,7 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 

@@ -16,7 +16,6 @@
 
 package com.hivemq.client2.mqtt.mqtt3;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -31,6 +30,7 @@ import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;

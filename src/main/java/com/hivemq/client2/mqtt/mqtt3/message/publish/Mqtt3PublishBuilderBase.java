@@ -16,11 +16,11 @@
 
 package com.hivemq.client2.mqtt.mqtt3.message.publish;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.datatypes.MqttTopic;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicBuilder;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;

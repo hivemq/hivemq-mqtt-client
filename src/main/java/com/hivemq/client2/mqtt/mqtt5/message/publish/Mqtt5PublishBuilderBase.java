@@ -16,7 +16,6 @@
 
 package com.hivemq.client2.mqtt.mqtt5.message.publish;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.internal.util.UnsignedDataTypes;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.datatypes.MqttTopic;
@@ -24,10 +23,7 @@ import com.hivemq.client2.mqtt.datatypes.MqttTopicBuilder;
 import com.hivemq.client2.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client2.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client2.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 import java.nio.ByteBuffer;
 

@@ -16,12 +16,8 @@
 
 package com.hivemq.client2.mqtt;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.internal.util.UnsignedDataTypes;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;

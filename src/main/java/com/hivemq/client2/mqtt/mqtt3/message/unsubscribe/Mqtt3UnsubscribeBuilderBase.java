@@ -16,11 +16,11 @@
 
 package com.hivemq.client2.mqtt.mqtt3.message.unsubscribe;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicFilterBuilder;
 import com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

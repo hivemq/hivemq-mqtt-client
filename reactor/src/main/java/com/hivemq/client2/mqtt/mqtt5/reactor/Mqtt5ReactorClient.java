@@ -16,7 +16,6 @@
 
 package com.hivemq.client2.mqtt.mqtt5.reactor;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.internal.mqtt.reactor.MqttReactorClient;
 import com.hivemq.client2.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client2.mqtt.mqtt5.Mqtt5Client;
@@ -35,6 +34,7 @@ import com.hivemq.client2.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client2.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import com.hivemq.client2.rx.reactor.FluxWithSingle;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;

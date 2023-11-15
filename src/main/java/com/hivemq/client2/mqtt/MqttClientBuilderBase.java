@@ -16,13 +16,13 @@
 
 package com.hivemq.client2.mqtt;
 
-import com.hivemq.client2.annotations.CheckReturnValue;
 import com.hivemq.client2.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client2.mqtt.lifecycle.MqttAutoReconnect;
 import com.hivemq.client2.mqtt.lifecycle.MqttAutoReconnectBuilder;
 import com.hivemq.client2.mqtt.lifecycle.MqttConnectedListener;
 import com.hivemq.client2.mqtt.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
