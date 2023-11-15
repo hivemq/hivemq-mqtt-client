@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.util.collections;
+package com.hivemq.client2.internal.collections;
 
 import com.hivemq.client2.internal.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;

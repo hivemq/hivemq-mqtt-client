@@ -16,10 +16,10 @@
 
 package com.hivemq.client2.internal.mqtt.codec.encoder.mqtt3;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscription;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;

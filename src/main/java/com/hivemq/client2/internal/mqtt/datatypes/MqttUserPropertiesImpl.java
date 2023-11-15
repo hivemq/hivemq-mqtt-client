@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.datatypes;
 
-import com.hivemq.client2.internal.util.collections.ImmutableList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;

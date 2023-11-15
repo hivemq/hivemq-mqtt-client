@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.handler.publish.outgoing;
 
-import com.hivemq.client2.internal.util.collections.NodeList;
+import com.hivemq.client2.internal.collections.NodeList;
 import org.jetbrains.annotations.NotNull;
 
 /**

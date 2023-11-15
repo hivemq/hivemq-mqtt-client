@@ -16,9 +16,9 @@
 
 package com.hivemq.client2.internal.mqtt.handler.tls;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.MqttTlsConfigImpl;
 import com.hivemq.client2.internal.mqtt.MqttTlsConfigImplBuilder;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslContextBuilder;

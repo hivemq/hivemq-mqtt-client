@@ -16,10 +16,10 @@
 
 package com.hivemq.client2.internal.mqtt.codec.decoder.mqtt5;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttPubAck;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.client2.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import com.hivemq.client2.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;

@@ -17,14 +17,14 @@
 package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client2.internal.annotations.NotThreadSafe;
+import com.hivemq.client2.internal.collections.HandleList.Handle;
+import com.hivemq.client2.internal.collections.Index;
+import com.hivemq.client2.internal.collections.NodeList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicIterator;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicLevel;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicLevels;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscription;
-import com.hivemq.client2.internal.util.collections.HandleList.Handle;
-import com.hivemq.client2.internal.util.collections.Index;
-import com.hivemq.client2.internal.util.collections.NodeList;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.jetbrains.annotations.NotNull;

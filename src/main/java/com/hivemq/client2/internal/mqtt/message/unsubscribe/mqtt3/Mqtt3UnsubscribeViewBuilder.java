@@ -16,12 +16,12 @@
 
 package com.hivemq.client2.internal.mqtt.message.unsubscribe.mqtt3;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client2.internal.mqtt.util.MqttChecks;
 import com.hivemq.client2.internal.util.Checks;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;

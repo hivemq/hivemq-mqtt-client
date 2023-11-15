@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.message;
 
-import com.hivemq.client2.internal.util.collections.ImmutableList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.jetbrains.annotations.NotNull;
 

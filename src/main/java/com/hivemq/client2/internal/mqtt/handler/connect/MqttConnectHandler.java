@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.handler.connect;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.logging.InternalLogger;
 import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
@@ -35,7 +36,6 @@ import com.hivemq.client2.internal.mqtt.message.connect.MqttConnAck;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnAckRestrictions;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnectRestrictions;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.MqttClientState;
 import com.hivemq.client2.mqtt.MqttVersion;
 import com.hivemq.client2.mqtt.lifecycle.MqttConnectedContext;

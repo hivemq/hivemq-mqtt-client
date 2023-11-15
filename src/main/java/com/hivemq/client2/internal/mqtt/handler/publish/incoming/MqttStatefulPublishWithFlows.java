@@ -17,8 +17,8 @@
 package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client2.internal.annotations.NotThreadSafe;
+import com.hivemq.client2.internal.collections.HandleList;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttStatefulPublish;
-import com.hivemq.client2.internal.util.collections.HandleList;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import org.jetbrains.annotations.NotNull;
 

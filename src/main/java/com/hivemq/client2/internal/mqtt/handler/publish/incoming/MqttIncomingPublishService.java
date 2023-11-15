@@ -18,12 +18,12 @@ package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client2.internal.annotations.CallByThread;
 import com.hivemq.client2.internal.checkpoint.Confirmable;
+import com.hivemq.client2.internal.collections.ChunkedArrayQueue;
+import com.hivemq.client2.internal.collections.HandleList.Handle;
 import com.hivemq.client2.internal.logging.InternalLogger;
 import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttPublish;
-import com.hivemq.client2.internal.util.collections.ChunkedArrayQueue;
-import com.hivemq.client2.internal.util.collections.HandleList.Handle;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import org.jetbrains.annotations.NotNull;
 

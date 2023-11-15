@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.codec.decoder;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
 import com.hivemq.client2.internal.mqtt.MqttExecutorConfigImpl;
 import com.hivemq.client2.internal.mqtt.MqttTransportConfigImpl;
@@ -25,7 +26,6 @@ import com.hivemq.client2.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client2.internal.mqtt.message.disconnect.MqttDisconnect;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.MqttVersion;
 import com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import com.hivemq.client2.mqtt.mqtt5.message.Mqtt5Message;

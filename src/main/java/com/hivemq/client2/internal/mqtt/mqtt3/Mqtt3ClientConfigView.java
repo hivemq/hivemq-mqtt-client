@@ -16,12 +16,12 @@
 
 package com.hivemq.client2.internal.mqtt.mqtt3;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
 import com.hivemq.client2.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client2.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client2.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.MqttClientState;
 import com.hivemq.client2.mqtt.MqttExecutorConfig;
 import com.hivemq.client2.mqtt.MqttTransportConfig;

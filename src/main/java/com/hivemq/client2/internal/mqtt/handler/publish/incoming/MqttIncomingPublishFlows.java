@@ -17,15 +17,15 @@
 package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client2.internal.annotations.NotThreadSafe;
+import com.hivemq.client2.internal.collections.HandleList;
+import com.hivemq.client2.internal.collections.HandleList.Handle;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client2.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client2.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client2.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
-import com.hivemq.client2.internal.util.collections.HandleList;
-import com.hivemq.client2.internal.util.collections.HandleList.Handle;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import com.hivemq.client2.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode;

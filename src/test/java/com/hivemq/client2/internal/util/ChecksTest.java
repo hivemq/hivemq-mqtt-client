@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.internal.util;
 
-import com.hivemq.client2.internal.util.collections.ImmutableList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

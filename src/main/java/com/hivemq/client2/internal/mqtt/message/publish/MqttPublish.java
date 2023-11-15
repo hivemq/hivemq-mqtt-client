@@ -17,6 +17,7 @@
 package com.hivemq.client2.internal.mqtt.message.publish;
 
 import com.hivemq.client2.internal.checkpoint.Confirmable;
+import com.hivemq.client2.internal.collections.ImmutableIntList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUtf8StringImpl;
@@ -25,7 +26,6 @@ import com.hivemq.client2.internal.mqtt.message.MqttMessageWithUserProperties;
 import com.hivemq.client2.internal.util.ByteBufferUtil;
 import com.hivemq.client2.internal.util.StringUtil;
 import com.hivemq.client2.internal.util.UnsignedDataTypes;
-import com.hivemq.client2.internal.util.collections.ImmutableIntList;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.datatypes.MqttTopic;
 import com.hivemq.client2.mqtt.datatypes.MqttUtf8String;

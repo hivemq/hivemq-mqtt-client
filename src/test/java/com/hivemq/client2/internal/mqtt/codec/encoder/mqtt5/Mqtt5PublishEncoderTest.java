@@ -16,14 +16,14 @@
 
 package com.hivemq.client2.internal.mqtt.codec.encoder.mqtt5;
 
+import com.hivemq.client2.internal.collections.ImmutableIntList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client2.internal.mqtt.datatypes.*;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttPublishBuilder;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttPublishProperty;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttStatefulPublish;
-import com.hivemq.client2.internal.util.collections.ImmutableIntList;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.exceptions.MqttEncodeException;
 import com.hivemq.client2.mqtt.mqtt5.message.Mqtt5MessageType;

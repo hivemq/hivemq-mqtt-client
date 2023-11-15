@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt;
 
+import com.hivemq.client2.internal.collections.NodeList;
 import com.hivemq.client2.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnectBuilder;
@@ -30,7 +31,6 @@ import com.hivemq.client2.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuild
 import com.hivemq.client2.internal.mqtt.util.MqttChecks;
 import com.hivemq.client2.internal.util.AsyncRuntimeException;
 import com.hivemq.client2.internal.util.Checks;
-import com.hivemq.client2.internal.util.collections.NodeList;
 import com.hivemq.client2.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client2.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5SubAckException;

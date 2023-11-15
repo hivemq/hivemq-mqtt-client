@@ -17,6 +17,9 @@
 package com.hivemq.client2.internal.mqtt.handler.subscribe;
 
 import com.hivemq.client2.internal.annotations.CallByThread;
+import com.hivemq.client2.internal.collections.ImmutableList;
+import com.hivemq.client2.internal.collections.IntIndex;
+import com.hivemq.client2.internal.collections.NodeList;
 import com.hivemq.client2.internal.logging.InternalLogger;
 import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
@@ -38,9 +41,6 @@ import com.hivemq.client2.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client2.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubAckView;
 import com.hivemq.client2.internal.util.Ranges;
 import com.hivemq.client2.internal.util.UnsignedDataTypes;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
-import com.hivemq.client2.internal.util.collections.IntIndex;
-import com.hivemq.client2.internal.util.collections.NodeList;
 import com.hivemq.client2.mqtt.MqttClientState;
 import com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5SubAckException;
 import com.hivemq.client2.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException;

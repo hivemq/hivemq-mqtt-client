@@ -17,13 +17,13 @@
 package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
 import com.google.common.collect.ImmutableSet;
+import com.hivemq.client2.internal.collections.HandleList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttPublishBuilder;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
-import com.hivemq.client2.internal.util.collections.HandleList;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

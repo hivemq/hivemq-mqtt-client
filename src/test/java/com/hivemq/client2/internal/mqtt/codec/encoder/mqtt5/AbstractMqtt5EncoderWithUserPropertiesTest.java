@@ -16,11 +16,11 @@
 
 package com.hivemq.client2.internal.mqtt.codec.encoder.mqtt5;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUtf8StringImpl;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

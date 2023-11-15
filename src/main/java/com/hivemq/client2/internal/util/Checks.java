@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.internal.util;
 
-import com.hivemq.client2.internal.util.collections.ImmutableList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

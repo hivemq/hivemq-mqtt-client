@@ -16,10 +16,10 @@
 
 package com.hivemq.client2.internal.mqtt.message.unsubscribe;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUtf8StringImpl;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.client2.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode;
 import nl.jqno.equalsverifier.EqualsVerifier;

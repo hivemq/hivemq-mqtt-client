@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.advanced.MqttAdvancedConfig;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client2.internal.mqtt.lifecycle.MqttAutoReconnectImpl;
@@ -23,7 +24,6 @@ import com.hivemq.client2.internal.mqtt.lifecycle.MqttAutoReconnectImplBuilder;
 import com.hivemq.client2.internal.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 import com.hivemq.client2.internal.mqtt.util.MqttChecks;
 import com.hivemq.client2.internal.util.Checks;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.*;
 import com.hivemq.client2.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client2.mqtt.lifecycle.MqttAutoReconnect;

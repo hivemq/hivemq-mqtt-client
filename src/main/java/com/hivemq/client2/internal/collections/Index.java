@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.util.collections;
+package com.hivemq.client2.internal.collections;
 
 import com.hivemq.client2.internal.annotations.NotThreadSafe;
 import com.hivemq.client2.internal.util.Pow2Util;
@@ -22,40 +22,41 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public class IntIndex<E> {
+public class Index<E, K> {
 
     private static final int MAX_CAPACITY = 1 << 30;
 
-    public static class Spec<E> {
+    public static class Spec<E, K> {
 
         private static final int DEFAULT_MIN_CAPACITY = 1 << 4;
         private static final float DEFAULT_NODE_THRESHOLD_FACTOR = 0.25f;
 
-        final @NotNull ToIntFunction<? super E> keyFunction;
+        final @NotNull Function<? super E, ? extends K> keyFunction;
         final int minCapacity;
         final float nodeThresholdFactor;
 
-        public Spec(final @NotNull ToIntFunction<? super E> keyFunction) {
+        public Spec(final @NotNull Function<? super E, ? extends K> keyFunction) {
             this(keyFunction, DEFAULT_MIN_CAPACITY, DEFAULT_NODE_THRESHOLD_FACTOR);
         }
 
-        public Spec(final @NotNull ToIntFunction<? super E> keyFunction, final int minCapacity) {
+        public Spec(final @NotNull Function<? super E, ? extends K> keyFunction, final int minCapacity) {
             this(keyFunction, minCapacity, DEFAULT_NODE_THRESHOLD_FACTOR);
         }
 
-        public Spec(final @NotNull ToIntFunction<? super E> keyFunction, final float nodeThresholdFactor) {
+        public Spec(final @NotNull Function<? super E, ? extends K> keyFunction, final float nodeThresholdFactor) {
             this(keyFunction, DEFAULT_MIN_CAPACITY, nodeThresholdFactor);
         }
 
         public Spec(
-                final @NotNull ToIntFunction<? super E> keyFunction,
+                final @NotNull Function<? super E, ? extends K> keyFunction,
                 final int minCapacity,
                 final float nodeThresholdFactor) {
 
@@ -65,13 +66,13 @@ public class IntIndex<E> {
         }
     }
 
-    private final @NotNull Spec<E> spec;
+    private final @NotNull Spec<E, K> spec;
     private @Nullable Object @NotNull [] table;
     private int size;
     private int nodeCount;
     private int nodeThreshold;
 
-    public IntIndex(final @NotNull Spec<E> spec) {
+    public Index(final @NotNull Spec<E, K> spec) {
         this.spec = spec;
         final int minCapacityPow2 = 1 << Pow2Util.roundToPowerOf2Bits(spec.minCapacity);
         table = new Object[minCapacityPow2];
@@ -92,8 +93,9 @@ public class IntIndex<E> {
 
     private @Nullable E put(final @NotNull E entry, final boolean overwrite) {
         final Object[] table = this.table;
-        final int key = spec.keyFunction.applyAsInt(entry);
-        final int index = key & (table.length - 1);
+        final K key = spec.keyFunction.apply(entry);
+        final int hash = key.hashCode();
+        final int index = hash & (table.length - 1);
         final Object o = table[index];
         if (o == null) {
             table[index] = entry;
@@ -103,7 +105,7 @@ public class IntIndex<E> {
         if (o.getClass() == Node.class) {
             Node node = (Node) o;
             while (true) {
-                if (node.key == key) {
+                if ((node.hash == hash) && spec.keyFunction.apply(cast(node.value)).equals(key)) {
                     final Object nodeValue = node.value;
                     if (overwrite) {
                         node.value = entry;
@@ -115,14 +117,14 @@ public class IntIndex<E> {
                     node = (Node) next;
                 } else {
                     final E e = cast(next);
-                    final int nextKey = spec.keyFunction.applyAsInt(e);
-                    if (nextKey == key) {
+                    final K nextKey = spec.keyFunction.apply(e);
+                    if (nextKey.equals(key)) {
                         if (overwrite) {
                             node.next = entry;
                         }
                         return e;
                     }
-                    node.next = new Node(nextKey, next, entry);
+                    node.next = new Node(nextKey.hashCode(), next, entry);
                     added();
                     addedNode();
                     return null;
@@ -130,22 +132,23 @@ public class IntIndex<E> {
             }
         }
         final E e = cast(o);
-        final int oKey = spec.keyFunction.applyAsInt(e);
-        if (oKey == key) {
+        final K oKey = spec.keyFunction.apply(e);
+        if (oKey.equals(key)) {
             if (overwrite) {
                 table[index] = entry;
             }
             return e;
         }
-        table[index] = new Node(oKey, o, entry);
+        table[index] = new Node(oKey.hashCode(), o, entry);
         added();
         addedNode();
         return null;
     }
 
-    public @Nullable E get(final int key) {
+    public @Nullable E get(final @NotNull K key) {
         final Object[] table = this.table;
-        final int index = key & (table.length - 1);
+        final int hash = key.hashCode();
+        final int index = hash & (table.length - 1);
         final Object o = table[index];
         if (o == null) {
             return null;
@@ -153,7 +156,7 @@ public class IntIndex<E> {
         if (o.getClass() == Node.class) {
             Node node = (Node) o;
             while (true) {
-                if (node.key == key) {
+                if ((node.hash == hash) && spec.keyFunction.apply(cast(node.value)).equals(key)) {
                     return cast(node.value);
                 }
                 final Object next = node.next;
@@ -161,7 +164,7 @@ public class IntIndex<E> {
                     node = (Node) next;
                 } else {
                     final E e = cast(next);
-                    if (spec.keyFunction.applyAsInt(e) == key) {
+                    if (spec.keyFunction.apply(e).equals(key)) {
                         return e;
                     }
                     return null;
@@ -169,22 +172,23 @@ public class IntIndex<E> {
             }
         }
         final E e = cast(o);
-        if (spec.keyFunction.applyAsInt(e) == key) {
+        if (spec.keyFunction.apply(e).equals(key)) {
             return e;
         }
         return null;
     }
 
-    public @Nullable E remove(final int key) {
+    public @Nullable E remove(final @NotNull K key) {
         final Object[] table = this.table;
-        final int index = key & (table.length - 1);
+        final int hash = key.hashCode();
+        final int index = hash & (table.length - 1);
         final Object o = table[index];
         if (o == null) {
             return null;
         }
         if (o.getClass() == Node.class) {
             Node node = (Node) o;
-            if (node.key == key) {
+            if ((node.hash == hash) && spec.keyFunction.apply(cast(node.value)).equals(key)) {
                 table[index] = node.next;
                 removedNode();
                 removed();
@@ -193,7 +197,7 @@ public class IntIndex<E> {
             Object next = node.next;
             if (next.getClass() != Node.class) {
                 final E e = cast(next);
-                if (spec.keyFunction.applyAsInt(e) == key) {
+                if (spec.keyFunction.apply(e).equals(key)) {
                     table[index] = node.value;
                     removedNode();
                     removed();
@@ -205,7 +209,7 @@ public class IntIndex<E> {
             while (true) {
                 prevNode = node;
                 node = (Node) next;
-                if (node.key == key) {
+                if ((node.hash == hash) && spec.keyFunction.apply(cast(node.value)).equals(key)) {
                     prevNode.next = node.next;
                     removedNode();
                     removed();
@@ -214,7 +218,7 @@ public class IntIndex<E> {
                 next = node.next;
                 if (next.getClass() != Node.class) {
                     final E e = cast(next);
-                    if (spec.keyFunction.applyAsInt(e) == key) {
+                    if (spec.keyFunction.apply(e).equals(key)) {
                         prevNode.next = node.value;
                         removedNode();
                         removed();
@@ -225,7 +229,7 @@ public class IntIndex<E> {
             }
         }
         final E e = cast(o);
-        if (spec.keyFunction.applyAsInt(e) == key) {
+        if (spec.keyFunction.apply(e).equals(key)) {
             table[index] = null;
             removed();
             return e;
@@ -244,6 +248,19 @@ public class IntIndex<E> {
             nodeCount = 0;
             calcThresholds(spec.minCapacity);
         }
+    }
+
+    public @NotNull E any() {
+        for (final Object o : table) {
+            if (o != null) {
+                if (o.getClass() == Node.class) {
+                    final Node node = (Node) o;
+                    return cast(node.value);
+                }
+                return cast(o);
+            }
+        }
+        throw new NoSuchElementException();
     }
 
     public void forEach(final @NotNull Consumer<? super E> consumer) {
@@ -290,7 +307,7 @@ public class IntIndex<E> {
                         Node high = null, prevHigh = null;
                         final int highIndex = oldIndex + oldCapacity;
                         while (true) {
-                            if ((node.key & newMask) == oldIndex) {
+                            if ((node.hash & newMask) == oldIndex) {
                                 if (low == null) {
                                     low = node;
                                     newTable[oldIndex] = node;
@@ -315,7 +332,7 @@ public class IntIndex<E> {
                                 node = (Node) next;
                             } else {
                                 final E e = cast(next);
-                                if ((spec.keyFunction.applyAsInt(e) & newMask) == oldIndex) {
+                                if ((spec.keyFunction.apply(e).hashCode() & newMask) == oldIndex) {
                                     if (low == null) {
                                         newTable[oldIndex] = e;
                                     } else {
@@ -348,8 +365,8 @@ public class IntIndex<E> {
                             }
                         }
                     } else {
-                        final int key = spec.keyFunction.applyAsInt(cast(o));
-                        final int newIndex = key & newMask;
+                        final int hash = spec.keyFunction.apply(cast(o)).hashCode();
+                        final int newIndex = hash & newMask;
                         newTable[newIndex] = o;
                     }
                 }
@@ -392,10 +409,10 @@ public class IntIndex<E> {
                                 break;
                             }
                         }
-                        node.next = new Node(spec.keyFunction.applyAsInt(cast(next)), next, old);
+                        node.next = new Node(spec.keyFunction.apply(cast(next)).hashCode(), next, old);
                         newNodeCount++;
                     } else {
-                        newTable[newIndex] = new Node(spec.keyFunction.applyAsInt(cast(o)), o, old);
+                        newTable[newIndex] = new Node(spec.keyFunction.apply(cast(o)).hashCode(), o, old);
                         newNodeCount++;
                     }
                 }
@@ -418,12 +435,12 @@ public class IntIndex<E> {
 
     private static class Node {
 
-        final int key;
+        final int hash;
         @NotNull Object value;
         @NotNull Object next;
 
-        Node(final int key, final @NotNull Object value, final @NotNull Object next) {
-            this.key = key;
+        Node(final int hash, final @NotNull Object value, final @NotNull Object next) {
+            this.hash = hash;
             this.value = value;
             this.next = next;
         }

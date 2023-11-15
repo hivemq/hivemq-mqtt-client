@@ -16,10 +16,10 @@
 
 package com.hivemq.client2.internal.mqtt.message;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client2.internal.util.StringUtil;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client2.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.jetbrains.annotations.NotNull;

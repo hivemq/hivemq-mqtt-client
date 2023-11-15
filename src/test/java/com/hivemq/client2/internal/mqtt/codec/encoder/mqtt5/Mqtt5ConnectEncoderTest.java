@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.codec.encoder.mqtt5;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client2.internal.mqtt.datatypes.*;
 import com.hivemq.client2.internal.mqtt.message.auth.MqttEnhancedAuth;
@@ -25,7 +26,6 @@ import com.hivemq.client2.internal.mqtt.message.connect.MqttConnectRestrictions;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
 import com.hivemq.client2.internal.mqtt.message.connect.MqttStatefulConnect;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttWillPublish;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client2.mqtt.exceptions.MqttEncodeException;

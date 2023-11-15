@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.message.unsubscribe;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -23,7 +24,6 @@ import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client2.internal.mqtt.util.MqttChecks;
 import com.hivemq.client2.internal.util.Checks;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client2.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;

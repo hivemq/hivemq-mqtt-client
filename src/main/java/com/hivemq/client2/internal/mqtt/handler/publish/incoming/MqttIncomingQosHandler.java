@@ -17,6 +17,7 @@
 package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client2.internal.annotations.CallByThread;
+import com.hivemq.client2.internal.collections.IntIndex;
 import com.hivemq.client2.internal.logging.InternalLogger;
 import com.hivemq.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
@@ -26,7 +27,6 @@ import com.hivemq.client2.internal.mqtt.handler.MqttSessionAwareHandler;
 import com.hivemq.client2.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client2.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client2.internal.mqtt.message.publish.*;
-import com.hivemq.client2.internal.util.collections.IntIndex;
 import com.hivemq.client2.mqtt.MqttVersion;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5InboundQos1Interceptor;

@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.message.unsubscribe;
 
-import com.hivemq.client2.internal.util.collections.ImmutableList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client2.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.junit.jupiter.api.Test;

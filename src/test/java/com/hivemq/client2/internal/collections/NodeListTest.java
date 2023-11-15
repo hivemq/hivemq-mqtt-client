@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.util.collections;
+package com.hivemq.client2.internal.collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;

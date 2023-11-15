@@ -17,10 +17,10 @@
 package com.hivemq.client2.internal.mqtt.handler.publish.outgoing;
 
 import com.hivemq.client2.internal.annotations.CallByThread;
+import com.hivemq.client2.internal.collections.ChunkedArrayQueue;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
 import com.hivemq.client2.internal.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkedFlow;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttPublishResult;
-import com.hivemq.client2.internal.util.collections.ChunkedArrayQueue;
 import io.reactivex.rxjava3.internal.util.BackpressureHelper;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;

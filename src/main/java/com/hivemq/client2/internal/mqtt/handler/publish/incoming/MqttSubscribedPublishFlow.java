@@ -16,11 +16,11 @@
 
 package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
+import com.hivemq.client2.internal.collections.HandleList;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client2.internal.mqtt.handler.subscribe.MqttSubscriptionFlow;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubAck;
-import com.hivemq.client2.internal.util.collections.HandleList;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5SubAck;
 import com.hivemq.client2.rx.FlowableWithSingleSubscriber;

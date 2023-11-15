@@ -16,8 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.handler.publish.outgoing;
 
+import com.hivemq.client2.internal.collections.Index;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttTopicImpl;
-import com.hivemq.client2.internal.util.collections.Index;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

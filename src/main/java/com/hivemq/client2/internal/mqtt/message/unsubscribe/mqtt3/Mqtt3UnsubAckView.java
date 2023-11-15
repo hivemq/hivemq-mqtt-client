@@ -16,9 +16,9 @@
 
 package com.hivemq.client2.internal.mqtt.message.unsubscribe.mqtt3;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client2.internal.mqtt.message.unsubscribe.MqttUnsubAck;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client2.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.client2.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubAck;

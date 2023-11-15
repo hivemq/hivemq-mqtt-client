@@ -16,11 +16,11 @@
 
 package com.hivemq.client2.internal.mqtt.codec.encoder.mqtt5;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client2.internal.mqtt.datatypes.*;
 import com.hivemq.client2.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import com.hivemq.client2.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.exceptions.MqttEncodeException;
 import com.hivemq.client2.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.NotNull;

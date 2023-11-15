@@ -16,9 +16,9 @@
 
 package com.hivemq.client2.internal.mqtt.message.publish;
 
+import com.hivemq.client2.internal.collections.ImmutableIntList;
 import com.hivemq.client2.internal.mqtt.message.MqttStatefulMessage;
 import com.hivemq.client2.internal.util.UnsignedDataTypes;
-import com.hivemq.client2.internal.util.collections.ImmutableIntList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 

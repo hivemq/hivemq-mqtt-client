@@ -16,6 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.codec.decoder.mqtt5;
 
+import com.hivemq.client2.internal.collections.ImmutableIntList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttDecoderContext;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttMessageDecoder;
@@ -24,8 +26,6 @@ import com.hivemq.client2.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client2.internal.util.ByteBufferUtil;
 import com.hivemq.client2.internal.util.Utf8Util;
-import com.hivemq.client2.internal.util.collections.ImmutableIntList;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;

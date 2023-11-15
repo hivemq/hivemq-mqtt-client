@@ -16,6 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.advanced.MqttAdvancedConfig;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client2.internal.mqtt.ioc.ClientComponent;
@@ -24,7 +25,6 @@ import com.hivemq.client2.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client2.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client2.internal.netty.NettyEventLoopProvider;
 import com.hivemq.client2.internal.util.ExecutorUtil;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.MqttClientState;
 import com.hivemq.client2.mqtt.MqttVersion;
 import com.hivemq.client2.mqtt.datatypes.MqttClientIdentifier;

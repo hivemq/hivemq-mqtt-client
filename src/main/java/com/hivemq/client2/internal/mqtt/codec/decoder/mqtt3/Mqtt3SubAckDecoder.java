@@ -16,12 +16,12 @@
 
 package com.hivemq.client2.internal.mqtt.codec.decoder.mqtt3;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttDecoderContext;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttMessageDecoder;
 import com.hivemq.client2.internal.mqtt.message.subscribe.MqttSubAck;
 import com.hivemq.client2.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubAckView;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3SubAckReturnCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;

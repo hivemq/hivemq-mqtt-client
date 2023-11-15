@@ -16,8 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.handler.publish.incoming;
 
+import com.hivemq.client2.internal.collections.HandleList.Handle;
 import com.hivemq.client2.internal.mqtt.MqttClientConfig;
-import com.hivemq.client2.internal.util.collections.HandleList.Handle;
 import com.hivemq.client2.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;

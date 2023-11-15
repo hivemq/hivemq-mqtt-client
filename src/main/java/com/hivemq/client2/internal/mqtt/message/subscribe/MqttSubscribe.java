@@ -16,10 +16,10 @@
 
 package com.hivemq.client2.internal.mqtt.message.subscribe;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client2.internal.mqtt.message.MqttMessageWithUserProperties;
 import com.hivemq.client2.internal.util.StringUtil;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

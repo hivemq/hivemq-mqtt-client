@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.util.collections;
+package com.hivemq.client2.internal.collections;
 
-import com.hivemq.client2.internal.util.Checks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -24,23 +23,20 @@ import org.jetbrains.annotations.Unmodifiable;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable class ImmutableIntElement implements ImmutableIntList {
+@Unmodifiable class ImmutableEmptyIntList implements ImmutableIntList {
 
-    private final int element;
+    static final @NotNull ImmutableEmptyIntList INSTANCE = new ImmutableEmptyIntList();
 
-    ImmutableIntElement(final int element) {
-        this.element = element;
-    }
+    private ImmutableEmptyIntList() {}
 
     @Override
     public int size() {
-        return 1;
+        return 0;
     }
 
     @Override
     public int get(final int index) {
-        Checks.index(index, 1);
-        return element;
+        throw new IndexOutOfBoundsException("Empty int list");
     }
 
     @Override
@@ -51,18 +47,16 @@ import org.jetbrains.annotations.Unmodifiable;
         if (!(o instanceof ImmutableIntList)) {
             return false;
         }
-        final ImmutableIntList that = (ImmutableIntList) o;
-
-        return (that.size() == 1) && (element == that.get(0));
+        return ((ImmutableIntList) o).isEmpty();
     }
 
     @Override
     public int hashCode() {
-        return 31 + element;
+        return 1;
     }
 
     @Override
     public @NotNull String toString() {
-        return "[" + element + "]";
+        return "[]";
     }
 }

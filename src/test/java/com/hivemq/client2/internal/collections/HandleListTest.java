@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.util.collections;
+package com.hivemq.client2.internal.collections;
 
-import com.hivemq.client2.internal.util.collections.HandleList.Handle;
+import com.hivemq.client2.internal.collections.HandleList.Handle;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

@@ -16,13 +16,13 @@
 
 package com.hivemq.client2.internal.mqtt.codec.decoder.mqtt5;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttDecoderContext;
 import com.hivemq.client2.internal.mqtt.codec.decoder.MqttDecoderException;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttBinaryData;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client2.internal.mqtt.datatypes.MqttVariableByteInteger;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import com.hivemq.client2.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;

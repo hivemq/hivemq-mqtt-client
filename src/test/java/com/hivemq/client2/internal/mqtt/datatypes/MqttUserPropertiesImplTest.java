@@ -16,8 +16,8 @@
 
 package com.hivemq.client2.internal.mqtt.datatypes;
 
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.internal.mqtt.message.MqttProperty;
-import com.hivemq.client2.internal.util.collections.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;

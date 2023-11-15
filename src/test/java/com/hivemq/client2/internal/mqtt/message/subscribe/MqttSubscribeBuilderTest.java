@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.internal.mqtt.message.subscribe;
 
-import com.hivemq.client2.internal.util.collections.ImmutableList;
+import com.hivemq.client2.internal.collections.ImmutableList;
 import com.hivemq.client2.mqtt.datatypes.MqttQos;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
