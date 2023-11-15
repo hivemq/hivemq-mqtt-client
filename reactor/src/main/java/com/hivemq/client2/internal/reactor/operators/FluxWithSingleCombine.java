@@ -165,7 +165,6 @@ class FluxWithSingleCombine<F, S> extends Flux<Object> {
             final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber) {
 
         if (subscriber instanceof CoreWithSingleConditionalSubscriber) {
-            //noinspection unchecked
             source.subscribe(new SplitSubscriber.Conditional<>(
                     (CoreWithSingleConditionalSubscriber<? super F, ? super S>) subscriber));
         } else {

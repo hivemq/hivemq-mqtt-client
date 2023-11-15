@@ -65,7 +65,6 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
     @Override
     public void subscribe(final @NotNull CoreSubscriber<? super FM> subscriber) {
         if (subscriber instanceof Fuseable.ConditionalSubscriber) {
-            //noinspection unchecked
             final Fuseable.ConditionalSubscriber<? super FM> conditional =
                     (Fuseable.ConditionalSubscriber<? super FM>) subscriber;
             source.subscribeBoth(new MapSubscriber.Conditional<>(conditional, fluxMapper, singleMapper));
@@ -77,7 +76,6 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
     @Override
     public void subscribeBoth(final @NotNull CoreWithSingleSubscriber<? super FM, ? super SM> subscriber) {
         if (subscriber instanceof CoreWithSingleConditionalSubscriber) {
-            //noinspection unchecked
             final CoreWithSingleConditionalSubscriber<? super FM, ? super SM> conditional =
                     (CoreWithSingleConditionalSubscriber<? super FM, ? super SM>) subscriber;
             source.subscribeBoth(new WithSingleMapSubscriber.Conditional<>(conditional, fluxMapper, singleMapper));
