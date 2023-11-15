@@ -77,8 +77,8 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
             @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval);
 
     /**
-     * Disables the {@link Mqtt5Connect#getSessionExpiryInterval() session expiry} by setting it to {@link
-     * Mqtt5Connect#NO_SESSION_EXPIRY}.
+     * Disables the {@link Mqtt5Connect#getSessionExpiryInterval() session expiry} by setting it to
+     * {@link Mqtt5Connect#NO_SESSION_EXPIRY}.
      *
      * @return the builder.
      */
@@ -120,8 +120,8 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * Fluent counterpart of {@link #simpleAuth(Mqtt5SimpleAuth)}.
      * <p>
      * Calling {@link Mqtt5SimpleAuthBuilder.Nested.Complete#applySimpleAuth()} on the returned builder has the same
-     * effect as calling {@link #simpleAuth(Mqtt5SimpleAuth)} with the result of {@link
-     * Mqtt5SimpleAuthBuilder.Complete#build()}.
+     * effect as calling {@link #simpleAuth(Mqtt5SimpleAuth)} with the result of
+     * {@link Mqtt5SimpleAuthBuilder.Complete#build()}.
      *
      * @return the fluent builder for the simple auth related data.
      * @see #simpleAuth(Mqtt5SimpleAuth)
@@ -152,8 +152,8 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
      * Fluent counterpart of {@link #willPublish(Mqtt5Publish)}.
      * <p>
      * Calling {@link Mqtt5WillPublishBuilder.Nested.Complete#applyWillPublish()} on the returned builder has the same
-     * effect as calling {@link #willPublish(Mqtt5Publish)} with the result of {@link
-     * Mqtt5WillPublishBuilder.Complete#build()}.
+     * effect as calling {@link #willPublish(Mqtt5Publish)} with the result of
+     * {@link Mqtt5WillPublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt5Publish)

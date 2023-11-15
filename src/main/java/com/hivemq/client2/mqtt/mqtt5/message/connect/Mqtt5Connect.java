@@ -80,8 +80,9 @@ public interface Mqtt5Connect extends Mqtt5Message {
     boolean isCleanStart();
 
     /**
-     * @return the session expiry interval in seconds the client wants to use. The default is {@link
-     *         #DEFAULT_SESSION_EXPIRY_INTERVAL}. If it is {@link #NO_SESSION_EXPIRY} the session does not expire.
+     * @return the session expiry interval in seconds the client wants to use. The default is
+     *         {@link #DEFAULT_SESSION_EXPIRY_INTERVAL}. If it is {@link #NO_SESSION_EXPIRY} the session does not
+     *         expire.
      */
     @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long getSessionExpiryInterval();
 

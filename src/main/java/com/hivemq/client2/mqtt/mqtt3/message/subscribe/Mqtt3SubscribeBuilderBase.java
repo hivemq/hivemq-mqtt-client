@@ -47,8 +47,8 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.C
      * Fluent counterpart of {@link #addSubscription(Mqtt3Subscription)}.
      * <p>
      * Calling {@link Mqtt3SubscriptionBuilder.Nested.Complete#applySubscription()} on the returned builder has the same
-     * effect as calling {@link #addSubscription(Mqtt3Subscription)} with the result of {@link
-     * Mqtt3SubscriptionBuilder.Complete#build()}.
+     * effect as calling {@link #addSubscription(Mqtt3Subscription)} with the result of
+     * {@link Mqtt3SubscriptionBuilder.Complete#build()}.
      *
      * @return the fluent builder for the subscription.
      * @see #addSubscription(Mqtt3Subscription)
@@ -68,8 +68,8 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.C
     @NotNull C addSubscriptions(@NotNull Mqtt3Subscription @NotNull ... subscriptions);
 
     /**
-     * Adds a collection of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
-     * subscriptions}. At least one subscription is mandatory.
+     * Adds a collection of {@link Mqtt3Subscription}s to the
+     * {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least one subscription is mandatory.
      *
      * @param subscriptions the collection of subscriptions.
      * @return the builder that is now complete as at least one subscription is set.
@@ -79,8 +79,8 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.C
     @NotNull C addSubscriptions(@NotNull Collection<? extends @NotNull Mqtt3Subscription> subscriptions);
 
     /**
-     * Adds a stream of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
-     * subscriptions}. At least one subscription is mandatory.
+     * Adds a stream of {@link Mqtt3Subscription}s to the
+     * {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least one subscription is mandatory.
      *
      * @param subscriptions the stream of subscriptions.
      * @return the builder that is now complete as at least one subscription is set.

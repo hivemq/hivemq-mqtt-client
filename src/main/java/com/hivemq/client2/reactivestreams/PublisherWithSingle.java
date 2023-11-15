@@ -36,8 +36,8 @@ public interface PublisherWithSingle<T, S> extends Publisher<T> {
      * In addition to signalling the stream of items via {@link WithSingleSubscriber#onNext(Object) onNext}, the single
      * item is signalled via {@link WithSingleSubscriber#onSingle(Object) onSingle}.
      *
-     * @param subscriber the {@link WithSingleSubscriber} that will consume signals from this {@link
-     *                   PublisherWithSingle}.
+     * @param subscriber the {@link WithSingleSubscriber} that will consume signals from this
+     *                   {@link PublisherWithSingle}.
      * @see Publisher#subscribe(Subscriber)
      */
     void subscribeBoth(@NotNull WithSingleSubscriber<? super T, ? super S> subscriber);

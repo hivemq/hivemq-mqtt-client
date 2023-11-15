@@ -240,8 +240,10 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         if (autoReconnect == null) {
             return disconnectedListenersBuilder.build();
         }
-        return ImmutableList.<MqttDisconnectedListener>builder(disconnectedListenersBuilder.getSize() + 1).add(
-                autoReconnect).addAll(disconnectedListenersBuilder.build()).build();
+        return ImmutableList.<MqttDisconnectedListener>builder(disconnectedListenersBuilder.getSize() + 1)
+                .add(autoReconnect)
+                .addAll(disconnectedListenersBuilder.build())
+                .build();
     }
 
     protected @NotNull MqttClientConfig buildClientConfig(

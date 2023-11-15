@@ -85,11 +85,11 @@ public interface Mqtt5Reconnector extends MqttReconnector {
     /**
      * Returns the currently set Connect message the client will try to reconnect with.
      * <p>
-     * If the {@link #connect(Mqtt5Connect)} method has not been called before (including previous {@link
-     * com.hivemq.client2.mqtt.lifecycle.MqttDisconnectedListener MqttDisconnectedListener}s) it will be the Connect
-     * message that is reconstructed from the {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5ClientConnectionConfig
-     * Mqtt5ClientConnectionConfig} or the Connect message of the previous connect try if it has not been successfully
-     * connected.
+     * If the {@link #connect(Mqtt5Connect)} method has not been called before (including previous
+     * {@link com.hivemq.client2.mqtt.lifecycle.MqttDisconnectedListener MqttDisconnectedListener}s) it will be the
+     * Connect message that is reconstructed from the
+     * {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5ClientConnectionConfig Mqtt5ClientConnectionConfig} or the Connect
+     * message of the previous connect try if it has not been successfully connected.
      *
      * @return the Connect message.
      */

@@ -69,8 +69,8 @@ public interface Mqtt5Subscription {
     @NotNull MqttQos getMaxQos();
 
     /**
-     * @return whether the client must not receive messages published by itself. The default is {@link
-     *         #DEFAULT_NO_LOCAL}.
+     * @return whether the client must not receive messages published by itself. The default is
+     *         {@link #DEFAULT_NO_LOCAL}.
      */
     boolean isNoLocal();
 

@@ -41,7 +41,8 @@ public interface Mqtt5AdvancedConfig {
     }
 
     /**
-     * Returns whether the payload format is validated if {@link com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5Publish#getPayloadFormatIndicator
+     * Returns whether the payload format is validated if
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.publish.Mqtt5Publish#getPayloadFormatIndicator
      * Mqtt5Publish#getPayloadFormatIndicator()} is present.
      *
      * @return whether the payload format is validated.

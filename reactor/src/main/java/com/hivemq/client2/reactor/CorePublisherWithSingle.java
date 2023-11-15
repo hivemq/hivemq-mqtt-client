@@ -37,8 +37,8 @@ import reactor.core.CoreSubscriber;
 public interface CorePublisherWithSingle<T, S> extends PublisherWithSingle<T, S>, CorePublisher<T> {
 
     /**
-     * {@link PublisherWithSingle#subscribeBoth(WithSingleSubscriber) Subscribes} to this {@link
-     * CorePublisherWithSingle}.
+     * {@link PublisherWithSingle#subscribeBoth(WithSingleSubscriber) Subscribes} to this
+     * {@link CorePublisherWithSingle}.
      * <p>
      * In addition to behave as expected by {@link Publisher#subscribe(Subscriber)} in a controlled manner, it supports
      * direct subscribe-time {@link reactor.util.context.Context Context} passing.

@@ -202,8 +202,8 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
     MqttProxyConfigBuilder.@NotNull Nested<? extends B> proxyConfigWith();
 
     /**
-     * Sets the {@link MqttTransportConfig#getSocketConnectTimeoutMs() timeout for connecting the socket to the
-     * server}.
+     * Sets the
+     * {@link MqttTransportConfig#getSocketConnectTimeoutMs() timeout for connecting the socket to the server}.
      * <p>
      * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
      *
@@ -216,8 +216,9 @@ public interface MqttTransportConfigBuilderBase<B extends MqttTransportConfigBui
     @NotNull B socketConnectTimeout(long timeout, @NotNull TimeUnit timeUnit);
 
     /**
-     * Sets the {@link MqttTransportConfig#getMqttConnectTimeoutMs() timeout between sending the Connect and receiving
-     * the ConnAck message}.
+     * Sets the
+     * {@link MqttTransportConfig#getMqttConnectTimeoutMs() timeout between sending the Connect and receiving the
+     * ConnAck message}.
      * <p>
      * The timeout in milliseconds must be in the range: [0, {@link Integer#MAX_VALUE}].
      *

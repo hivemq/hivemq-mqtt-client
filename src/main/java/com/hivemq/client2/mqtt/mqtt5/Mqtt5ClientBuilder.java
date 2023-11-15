@@ -60,8 +60,8 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
     Mqtt5AdvancedConfigBuilder.@NotNull Nested<? extends Mqtt5ClientBuilder> advancedConfigWith();
 
     /**
-     * Sets the optional {@link Mqtt5ClientConfig#getSimpleAuth() simple authentication and/or authorization related
-     * data}.
+     * Sets the optional
+     * {@link Mqtt5ClientConfig#getSimpleAuth() simple authentication and/or authorization related data}.
      *
      * @param simpleAuth the simple auth related data or <code>null</code> to remove any previously set simple auth
      *                   related data.
@@ -75,8 +75,8 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * Fluent counterpart of {@link #simpleAuth(Mqtt5SimpleAuth)}.
      * <p>
      * Calling {@link Mqtt5SimpleAuthBuilder.Nested.Complete#applySimpleAuth()} on the returned builder has the same
-     * effect as calling {@link #simpleAuth(Mqtt5SimpleAuth)} with the result of {@link
-     * Mqtt5SimpleAuthBuilder.Complete#build()}.
+     * effect as calling {@link #simpleAuth(Mqtt5SimpleAuth)} with the result of
+     * {@link Mqtt5SimpleAuthBuilder.Complete#build()}.
      *
      * @return the fluent builder for the simple auth related data.
      * @see #simpleAuth(Mqtt5SimpleAuth)
@@ -86,8 +86,8 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
     Mqtt5SimpleAuthBuilder.@NotNull Nested<? extends Mqtt5ClientBuilder> simpleAuthWith();
 
     /**
-     * Sets the {@link Mqtt5ClientConfig#getEnhancedAuthMechanism() enhanced authentication and/or authorization
-     * mechanism}.
+     * Sets the
+     * {@link Mqtt5ClientConfig#getEnhancedAuthMechanism() enhanced authentication and/or authorization mechanism}.
      *
      * @param enhancedAuthMechanism the enhanced auth mechanism or <code>null</code> to remove any previously set
      *                              enhanced auth mechanism.
@@ -111,8 +111,8 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * Fluent counterpart of {@link #willPublish(Mqtt5Publish)}.
      * <p>
      * Calling {@link Mqtt5WillPublishBuilder.Nested.Complete#applyWillPublish()} on the returned builder has the same
-     * effect as calling {@link #willPublish(Mqtt5Publish)} with the result of {@link
-     * Mqtt5WillPublishBuilder.Complete#build()}.
+     * effect as calling {@link #willPublish(Mqtt5Publish)} with the result of
+     * {@link Mqtt5WillPublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt5Publish)

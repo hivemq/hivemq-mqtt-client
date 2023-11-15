@@ -131,8 +131,8 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
      * Calculates the property length of the given MQTT message with omitting the given count of properties.
      *
      * @param message           the MQTT message to encode.
-     * @param propertyLength    the already calculated property length with a count of omitted properties of {@code
-     *                          omittedProperties - 1}.
+     * @param propertyLength    the already calculated property length with a count of omitted properties of
+     *                          {@code omittedProperties - 1}.
      * @param omittedProperties the count of omitted properties.
      * @return the property length of the MQTT message with omitting the given count of properties or -1 if no more
      *         properties can be omitted.

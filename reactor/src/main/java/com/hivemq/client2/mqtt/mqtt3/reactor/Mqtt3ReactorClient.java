@@ -133,8 +133,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}.
      * <p>
      * Calling {@link Mqtt3SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribe(Mqtt3Subscribe)} with the result of {@link
-     * Mqtt3SubscribeBuilder.Complete#build()}.
+     * effect as calling {@link #subscribe(Mqtt3Subscribe)} with the result of
+     * {@link Mqtt3SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
@@ -204,8 +204,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * Fluent counterpart of {@link #subscribePublishes(Mqtt3Subscribe, boolean)}.
      * <p>
      * Calling {@link Mqtt3SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribePublishes(Mqtt3Subscribe)} with the result of {@link
-     * Mqtt3SubscribeBuilder.Complete#build()}.
+     * effect as calling {@link #subscribePublishes(Mqtt3Subscribe)} with the result of
+     * {@link Mqtt3SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribePublishes(Mqtt3Subscribe, boolean)
@@ -276,8 +276,8 @@ public interface Mqtt3ReactorClient extends Mqtt3Client {
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
      * Calling {@link Mqtt3UnsubscribeBuilder.Nested.Complete#applyUnsubscribe()} on the returned builder has the same
-     * effect as calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link
-     * Mqtt3UnsubscribeBuilder.Complete#build()}.
+     * effect as calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of
+     * {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)

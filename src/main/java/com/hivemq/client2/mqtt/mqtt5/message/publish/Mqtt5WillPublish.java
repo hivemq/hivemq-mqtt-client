@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
- * MQTT 5 Will Publish which can be a part of an {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect MQTT
- * 5 Connect message}.
+ * MQTT 5 Will Publish which can be a part of an
+ * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect MQTT 5 Connect message}.
  *
  * @author Silvio Giebl
  * @since 1.0

@@ -39,12 +39,14 @@ public interface Mqtt3ClientConfig extends MqttClientConfig {
     /**
      * Returns the optional simple authentication and/or authorization related data of the client.
      * <p>
-     * It is used as default if {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getSimpleAuth()
-     * Mqtt3Connect.simpleAuth} is not set during connect.
+     * It is used as default if
+     * {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getSimpleAuth() Mqtt3Connect.simpleAuth} is not
+     * set during connect.
      * <p>
      * Keep in mind that the data is stored with the client in memory. If you want to use it only during connect or if
-     * you use a different token for each connection please set {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getSimpleAuth()
-     * Mqtt3Connect.simpleAuth} instead.
+     * you use a different token for each connection please set
+     * {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getSimpleAuth() Mqtt3Connect.simpleAuth}
+     * instead.
      *
      * @return the optional simple authentication and/or authorization related data of the client.
      * @since 1.1
@@ -54,12 +56,14 @@ public interface Mqtt3ClientConfig extends MqttClientConfig {
     /**
      * Returns the optional Will Publish of the client.
      * <p>
-     * It is used as default if {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getWillPublish()
-     * Mqtt3Connect.willPublish} is not set during connect.
+     * It is used as default if
+     * {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getWillPublish() Mqtt3Connect.willPublish} is
+     * not set during connect.
      * <p>
      * Keep in mind that the Will Publish is stored with the client in memory. If you use a different Will Publish for
-     * each connection please set {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getWillPublish()
-     * Mqtt3Connect.willPublish} instead.
+     * each connection please set
+     * {@link com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3Connect#getWillPublish() Mqtt3Connect.willPublish}
+     * instead.
      *
      * @return the optional Will Publish of the client.
      * @since 1.1

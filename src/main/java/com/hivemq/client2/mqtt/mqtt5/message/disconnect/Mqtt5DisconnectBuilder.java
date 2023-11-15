@@ -54,8 +54,8 @@ public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5
     }
 
     /**
-     * Builder for a {@link Mqtt5Disconnect} that is applied to a parent {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5Client}
-     * which then sends the Disconnect message.
+     * Builder for a {@link Mqtt5Disconnect} that is applied to a parent
+     * {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5Client} which then sends the Disconnect message.
      *
      * @param <P> the type of the result when the built {@link Mqtt5Disconnect} is sent by the parent.
      */
@@ -71,8 +71,9 @@ public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5
     }
 
     /**
-     * Builder for a {@link Mqtt5Disconnect} that is applied to a parent {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5Client}
-     * which then sends the Disconnect message without returning a result.
+     * Builder for a {@link Mqtt5Disconnect} that is applied to a parent
+     * {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5Client} which then sends the Disconnect message without returning a
+     * result.
      */
     @ApiStatus.NonExtendable
     interface SendVoid extends Mqtt5DisconnectBuilderBase<SendVoid> {

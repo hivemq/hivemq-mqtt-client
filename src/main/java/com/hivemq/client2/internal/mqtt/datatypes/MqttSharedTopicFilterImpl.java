@@ -47,8 +47,8 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
 
     /**
      * Checks if the given byte array with UTF-8 encoded data represents a Shared Topic Filter. This method does not
-     * validate whether it represents a valid Shared Topic Filter but only whether it starts with {@value
-     * #SHARE_PREFIX}.
+     * validate whether it represents a valid Shared Topic Filter but only whether it starts with
+     * {@value #SHARE_PREFIX}.
      *
      * @param binary the byte array with UTF-8 encoded data.
      * @return whether the byte array represents a Shared Topic Filter.
@@ -68,8 +68,9 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     /**
      * Validates and creates a Shared Topic Filter of the given UTF-16 encoded Java string.
      * <p>
-     * This method does not validate {@link MqttUtf8StringImpl#checkLength(String, String) length}, {@link
-     * MqttUtf8StringImpl#checkWellFormed(String, String) if well-fromed} and {@link #isShared(String) if shared}.
+     * This method does not validate {@link MqttUtf8StringImpl#checkLength(String, String) length},
+     * {@link MqttUtf8StringImpl#checkWellFormed(String, String) if well-fromed} and
+     * {@link #isShared(String) if shared}.
      *
      * @param string the UTF-16 encoded Java string staring with {@value #SHARE_PREFIX}.
      * @return the created Shared Topic Filter.
@@ -101,8 +102,8 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     /**
      * Validates and creates a Shared Topic Filter of the given byte array with UTF-8 encoded data.
      * <p>
-     * This method does not validate length, {@link MqttUtf8StringImpl#isWellFormed(byte[]) if well-formed} and {@link
-     * #isShared(byte[]) if shared}.
+     * This method does not validate length, {@link MqttUtf8StringImpl#isWellFormed(byte[]) if well-formed} and
+     * {@link #isShared(byte[]) if shared}.
      *
      * @param binary the byte array with UTF-8 encoded data staring with {@value #SHARE_PREFIX}.
      * @return the created Shared Topic Filter or <code>null</code> if the byte array is not a valid Shared Topic

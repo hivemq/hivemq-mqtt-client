@@ -40,7 +40,8 @@ public class MqttDecoderException extends Exception {
     }
 
     /**
-     * Creates a new Decoder exception with the Disconnect reason code {@link Mqtt5DisconnectReasonCode#MALFORMED_PACKET}.
+     * Creates a new Decoder exception with the Disconnect reason code
+     * {@link Mqtt5DisconnectReasonCode#MALFORMED_PACKET}.
      *
      * @param message the description of the decoder exception.
      */

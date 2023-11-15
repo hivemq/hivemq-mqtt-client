@@ -55,8 +55,8 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
      * Fluent counterpart of {@link #topicFilter(MqttTopicFilter)}.
      * <p>
      * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
-     * effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of {@link
-     * MqttTopicFilterBuilder.Complete#build()}.
+     * effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of
+     * {@link MqttTopicFilterBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Topic Filter.
      * @see #topicFilter(MqttTopicFilter)

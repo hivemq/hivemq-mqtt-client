@@ -75,8 +75,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #connect(Mqtt5Connect)}.
      * <p>
-     * Calling {@link Mqtt5ConnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
-     * #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
+     * Calling {@link Mqtt5ConnectBuilder.Send#send()} on the returned builder has the same effect as calling
+     * {@link #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
      *
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
@@ -87,10 +87,11 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     /**
      * Subscribes this client with the given Subscribe message.
      * <p>
-     * See {@link #publishes(MqttGlobalPublishFilter, Consumer)} or {@link #publishes(MqttGlobalPublishFilter, Consumer,
-     * Executor)} to consume the incoming Publish messages. Alternatively, call {@link #subscribe(Mqtt5Subscribe,
-     * Consumer)} or {@link #subscribe(Mqtt5Subscribe, Consumer, Executor)} to consume the incoming Publish messages
-     * matching the subscriptions of the Subscribe message directly.
+     * See {@link #publishes(MqttGlobalPublishFilter, Consumer)} or
+     * {@link #publishes(MqttGlobalPublishFilter, Consumer, Executor)} to consume the incoming Publish messages.
+     * Alternatively, call {@link #subscribe(Mqtt5Subscribe, Consumer)} or
+     * {@link #subscribe(Mqtt5Subscribe, Consumer, Executor)} to consume the incoming Publish messages matching the
+     * subscriptions of the Subscribe message directly.
      *
      * @param subscribe the Subscribe messages sent to the broker.
      * @return a {@link CompletableFuture} which
@@ -284,7 +285,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * Fluent counterpart of {@link #unsubscribe(Mqtt5Unsubscribe)}.
      * <p>
      * Calling {@link Mqtt5UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
-     * calling {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link Mqtt5UnsubscribeBuilder.Complete#build()}.
+     * calling {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of
+     * {@link Mqtt5UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
@@ -359,8 +361,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #disconnect(Mqtt5Disconnect)}.
      * <p>
-     * Calling {@link Mqtt5DisconnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
-     * #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
+     * Calling {@link Mqtt5DisconnectBuilder.Send#send()} on the returned builder has the same effect as calling
+     * {@link #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #disconnect(Mqtt5Disconnect)
@@ -375,9 +377,9 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     }
 
     /**
-     * Builder for a {@link Mqtt5Subscribe} and additional arguments that are applied to a {@link
-     * #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link
-     * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
+     * Builder for a {@link Mqtt5Subscribe} and additional arguments that are applied to a
+     * {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or
+     * {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
      */
     @ApiStatus.NonExtendable
     interface SubscribeBuilder extends Mqtt5SubscribeBuilderBase<SubscribeBuilder.Complete> {
@@ -408,9 +410,9 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         }
 
         /**
-         * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a {@link
-         * #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link #subscribe(Mqtt5Subscribe, Consumer, Executor,
-         * boolean)} call.
+         * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a
+         * {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or
+         * {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
          */
         @ApiStatus.NonExtendable
         interface AfterComplete {
@@ -425,9 +427,10 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             @NotNull AfterCallback callback(@NotNull Consumer<Mqtt5Publish> callback);
 
             /**
-             * Builds the {@link Mqtt5Subscribe} and applies it and additional arguments to a {@link
-             * #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or {@link
-             * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call which then sends the Subscribe message.
+             * Builds the {@link Mqtt5Subscribe} and applies it and additional arguments to a
+             * {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or
+             * {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call which then sends the Subscribe
+             * message.
              *
              * @return see {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)} or
              *         {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)}.
@@ -436,8 +439,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         }
 
         /**
-         * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a {@link
-         * #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
+         * Builder for additional arguments alongside the {@link Mqtt5Subscribe} that are applied to a
+         * {@link #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)} call.
          */
         @ApiStatus.NonExtendable
         interface AfterCallback extends AfterComplete {

@@ -37,9 +37,10 @@ import java.util.Optional;
 public interface Mqtt5SubAck extends Mqtt5Message {
 
     /**
-     * @return the Reason Codes of this SubAck message, each belonging to a {@link com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscription
-     *         Subscription} in the corresponding {@link com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe
-     *         Subscribe message} in the same order.
+     * @return the Reason Codes of this SubAck message, each belonging to a
+     *         {@link com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscription Subscription} in the
+     *         corresponding {@link com.hivemq.client2.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe Subscribe message} in
+     *         the same order.
      */
     @Unmodifiable @NotNull List<@NotNull Mqtt5SubAckReasonCode> getReasonCodes();
 

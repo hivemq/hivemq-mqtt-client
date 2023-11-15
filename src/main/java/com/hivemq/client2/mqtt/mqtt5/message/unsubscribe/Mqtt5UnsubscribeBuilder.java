@@ -86,8 +86,8 @@ public interface Mqtt5UnsubscribeBuilder extends Mqtt5UnsubscribeBuilderBase<Mqt
     }
 
     /**
-     * Builder for a {@link Mqtt5Unsubscribe} that is applied to a parent {@link com.hivemq.client2.mqtt.mqtt3.Mqtt3Client}
-     * which then sends the Unsubscribe message.
+     * Builder for a {@link Mqtt5Unsubscribe} that is applied to a parent
+     * {@link com.hivemq.client2.mqtt.mqtt3.Mqtt3Client} which then sends the Unsubscribe message.
      *
      * @param <P> the type of the result when the built {@link Mqtt5Unsubscribe} is sent by the parent.
      */

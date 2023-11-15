@@ -44,8 +44,8 @@ public interface Mqtt5PublishResult {
     @NotNull Optional<Throwable> getError();
 
     /**
-     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with {@link com.hivemq.client2.mqtt.datatypes.MqttQos#AT_LEAST_ONCE
-     * QoS level 1} sent by the client.
+     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with
+     * {@link com.hivemq.client2.mqtt.datatypes.MqttQos#AT_LEAST_ONCE QoS level 1} sent by the client.
      * <p>
      * This result additionally provides the {@link Mqtt5PubAck PubAck message} that acknowledged the Publish message.
      */
@@ -59,8 +59,8 @@ public interface Mqtt5PublishResult {
     }
 
     /**
-     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with {@link com.hivemq.client2.mqtt.datatypes.MqttQos#EXACTLY_ONCE
-     * QoS level 2} sent by the client.
+     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with
+     * {@link com.hivemq.client2.mqtt.datatypes.MqttQos#EXACTLY_ONCE QoS level 2} sent by the client.
      * <p>
      * This result additionally provides the {@link Mqtt5PubRec PubRec message} that acknowledged the Publish message.
      */
@@ -74,8 +74,8 @@ public interface Mqtt5PublishResult {
     }
 
     /**
-     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with {@link com.hivemq.client2.mqtt.datatypes.MqttQos#EXACTLY_ONCE
-     * QoS level 2} sent by the client.
+     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with
+     * {@link com.hivemq.client2.mqtt.datatypes.MqttQos#EXACTLY_ONCE QoS level 2} sent by the client.
      * <p>
      * This result additionally provides the {@link Mqtt5PubRec PubRec message}, {@link Mqtt5PubRel PubRel message} and
      * {@link Mqtt5PubComp PubComp message} that acknowledged the Publish message.

@@ -54,8 +54,9 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
             @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval);
 
     /**
-     * Disables the {@link Mqtt5Disconnect#getSessionExpiryInterval() session expiry} by setting it to {@link
-     * com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#NO_SESSION_EXPIRY Mqtt5Connect.NO_SESSION_EXPIRY}.
+     * Disables the {@link Mqtt5Disconnect#getSessionExpiryInterval() session expiry} by setting it to
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#NO_SESSION_EXPIRY
+     * Mqtt5Connect.NO_SESSION_EXPIRY}.
      *
      * @return the builder.
      */

@@ -66,8 +66,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #connect(Mqtt3Connect)}.
      * <p>
-     * Calling {@link Mqtt3ConnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
-     * #connect(Mqtt3Connect)} with the result of {@link Mqtt3ConnectBuilder#build()}.
+     * Calling {@link Mqtt3ConnectBuilder.Send#send()} on the returned builder has the same effect as calling
+     * {@link #connect(Mqtt3Connect)} with the result of {@link Mqtt3ConnectBuilder#build()}.
      *
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
@@ -132,7 +132,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
      * Calling {@link Mqtt3UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
-     * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
+     * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of
+     * {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
@@ -144,8 +145,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * Publishes the given Publish message.
      *
      * @param publish the Publish message sent to the broker.
-     * @return the {@link Mqtt3PublishResult} if the Publish message was successfully published ({@link
-     *         Mqtt3PublishResult#getError()} will always be absent).
+     * @return the {@link Mqtt3PublishResult} if the Publish message was successfully published
+     *         ({@link Mqtt3PublishResult#getError()} will always be absent).
      */
     @NotNull Mqtt3PublishResult publish(@NotNull Mqtt3Publish publish);
 

@@ -35,9 +35,10 @@ import java.util.List;
 public interface Mqtt3SubAck extends Mqtt3Message {
 
     /**
-     * @return the Return Codes of this SubAck message, each belonging to a {@link com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3Subscription
-     *         Subscription} in the corresponding {@link com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe
-     *         Subscribe message} in the same order.
+     * @return the Return Codes of this SubAck message, each belonging to a
+     *         {@link com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3Subscription Subscription} in the
+     *         corresponding {@link com.hivemq.client2.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe Subscribe message} in
+     *         the same order.
      */
     @Unmodifiable @NotNull List<@NotNull Mqtt3SubAckReturnCode> getReturnCodes();
 

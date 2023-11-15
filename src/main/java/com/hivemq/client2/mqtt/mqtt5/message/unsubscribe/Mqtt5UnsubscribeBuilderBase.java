@@ -39,8 +39,8 @@ import java.util.stream.Stream;
 public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> {
 
     /**
-     * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
-     * Filters}. At least one Topic Filter is mandatory.
+     * Adds a {@link MqttTopicFilter Topic Filter} to the
+     * {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic Filters}. At least one Topic Filter is mandatory.
      *
      * @param topicFilter the string representation of the Topic Filter.
      * @return the builder that is now complete as at least one Topic Filter is set.
@@ -49,8 +49,8 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
     @NotNull C addTopicFilter(@NotNull String topicFilter);
 
     /**
-     * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
-     * Filters}. At least one Topic Filter is mandatory.
+     * Adds a {@link MqttTopicFilter Topic Filter} to the
+     * {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic Filters}. At least one Topic Filter is mandatory.
      *
      * @param topicFilter the Topic Filter.
      * @return the builder that is now complete as at least one Topic Filter is set.
@@ -62,8 +62,8 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * Fluent counterpart of {@link #addTopicFilter(MqttTopicFilter)}.
      * <p>
      * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
-     * effect as calling {@link #addTopicFilter(MqttTopicFilter)} with the result of {@link
-     * MqttTopicFilterBuilder.Complete#build()}.
+     * effect as calling {@link #addTopicFilter(MqttTopicFilter)} with the result of
+     * {@link MqttTopicFilterBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Topic Filter.
      * @see #addTopicFilter(MqttTopicFilter)
@@ -72,8 +72,8 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
     MqttTopicFilterBuilder.@NotNull Nested<? extends C> addTopicFilterWith();
 
     /**
-     * Adds {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
-     * Filters}. At least one Topic Filter is mandatory.
+     * Adds {@link MqttTopicFilter Topic Filters} to the
+     * {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic Filters}. At least one Topic Filter is mandatory.
      *
      * @param topicFilters the Topic Filters.
      * @return the builder that is now complete as at least one Topic Filter is set.
@@ -83,8 +83,8 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
     @NotNull C addTopicFilters(@NotNull MqttTopicFilter @NotNull ... topicFilters);
 
     /**
-     * Adds a collection of {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list
-     * of Topic Filters}. At least one Topic Filter is mandatory.
+     * Adds a collection of {@link MqttTopicFilter Topic Filters} to the
+     * {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic Filters}. At least one Topic Filter is mandatory.
      *
      * @param topicFilters the collection of Topic Filters.
      * @return the builder that is now complete as at least one Topic Filter is set.
@@ -94,8 +94,8 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
     @NotNull C addTopicFilters(@NotNull Collection<? extends @NotNull MqttTopicFilter> topicFilters);
 
     /**
-     * Adds a stream of {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of
-     * Topic Filters}. At least one Topic Filter is mandatory.
+     * Adds a stream of {@link MqttTopicFilter Topic Filters} to the
+     * {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic Filters}. At least one Topic Filter is mandatory.
      *
      * @param topicFilters the stream of Topic Filters.
      * @return the builder that is now complete as at least one Topic Filter is set.
@@ -173,8 +173,8 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
          * Fluent counterpart of {@link #topicFilter(MqttTopicFilter)}.
          * <p>
          * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the
-         * same effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of {@link
-         * MqttTopicFilterBuilder.Complete#build()}.
+         * same effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of
+         * {@link MqttTopicFilterBuilder.Complete#build()}.
          *
          * @return the fluent builder for the Topic Filter.
          * @see #addTopicFilter(MqttTopicFilter)

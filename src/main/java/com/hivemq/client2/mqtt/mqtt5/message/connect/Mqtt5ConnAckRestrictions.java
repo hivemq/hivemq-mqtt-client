@@ -26,8 +26,9 @@ import org.jetbrains.annotations.Range;
 /**
  * Restrictions for the client set by the server in an {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  * <p>
- * These restrictions are used in conjunction with the {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions
- * Mqtt5ConnectRestrictions} to form the {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient
+ * These restrictions are used in conjunction with the
+ * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions Mqtt5ConnectRestrictions} to form the
+ * {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient
  * Mqtt5ClientConnectionConfig.RestrictionsForClient}.
  *
  * @author Silvio Giebl
@@ -77,14 +78,14 @@ public interface Mqtt5ConnAckRestrictions {
     @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getReceiveMaximum();
 
     /**
-     * @return the maximum packet size the server accepts from the client. The default is {@link
-     *         #DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT}.
+     * @return the maximum packet size the server accepts from the client. The default is
+     *         {@link #DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT}.
      */
     @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getMaximumPacketSize();
 
     /**
-     * @return the maximum amount of topic aliases the server accepts from the client. The default is {@link
-     *         #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
+     * @return the maximum amount of topic aliases the server accepts from the client. The default is
+     *         {@link #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
      */
     @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getTopicAliasMaximum();
 
@@ -99,19 +100,20 @@ public interface Mqtt5ConnAckRestrictions {
     boolean isRetainAvailable();
 
     /**
-     * @return whether the server accepts wildcard subscriptions. The default is {@link
-     *         #DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE}.
+     * @return whether the server accepts wildcard subscriptions. The default is
+     *         {@link #DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE}.
      */
     boolean isWildcardSubscriptionAvailable();
 
     /**
-     * @return whether the server accepts shared subscriptions. The default is {@link #DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE}.
+     * @return whether the server accepts shared subscriptions. The default is
+     *         {@link #DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE}.
      */
     boolean isSharedSubscriptionAvailable();
 
     /**
-     * @return whether the server accepts subscription identifiers. The default is {@link
-     *         #DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE}.
+     * @return whether the server accepts subscription identifiers. The default is
+     *         {@link #DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE}.
      */
     boolean areSubscriptionIdentifiersAvailable();
 }

@@ -118,8 +118,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}.
      * <p>
      * Calling {@link Mqtt5SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribe(Mqtt5Subscribe)} with the result of {@link
-     * Mqtt5SubscribeBuilder.Complete#build()}.
+     * effect as calling {@link #subscribe(Mqtt5Subscribe)} with the result of
+     * {@link Mqtt5SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
@@ -191,8 +191,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Fluent counterpart of {@link #subscribePublishes(Mqtt5Subscribe, boolean)}.
      * <p>
      * Calling {@link Mqtt5SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
-     * effect as calling {@link #subscribePublishes(Mqtt5Subscribe)} with the result of {@link
-     * Mqtt5SubscribeBuilder.Complete#build()}.
+     * effect as calling {@link #subscribePublishes(Mqtt5Subscribe)} with the result of
+     * {@link Mqtt5SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribePublishes(Mqtt5Subscribe, boolean)
@@ -269,8 +269,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Fluent counterpart of {@link #unsubscribe(Mqtt5Unsubscribe)}.
      * <p>
      * Calling {@link Mqtt5UnsubscribeBuilder.Nested.Complete#applyUnsubscribe()} on the returned builder has the same
-     * effect as calling {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link
-     * Mqtt5UnsubscribeBuilder.Complete#build()}.
+     * effect as calling {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of
+     * {@link Mqtt5UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)

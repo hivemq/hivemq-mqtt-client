@@ -124,8 +124,8 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      * @param binary the byte array with UTF-8 encoded data.
      * @param start  the index in the byte array to start validation at.
      * @return a combination of {@link #WILDCARD_FLAG_MULTI_LEVEL} and {@link #WILDCARD_FLAG_SINGLE_LEVEL} indicating
-     *         that a multi-level and/or single-level wildcards are present in the byte array or {@link
-     *         #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced.
+     *         that a multi-level and/or single-level wildcards are present in the byte array or
+     *         {@link #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced.
      */
     static int validateWildcards(final byte @NotNull [] binary, final int start) {
         int wildcardFlags = 0;

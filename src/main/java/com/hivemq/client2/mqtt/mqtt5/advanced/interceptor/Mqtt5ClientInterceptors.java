@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Collection of interceptors of MQTT messages received or sent by an {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5Client
- * MQTT5Client}.
+ * Collection of interceptors of MQTT messages received or sent by an
+ * {@link com.hivemq.client2.mqtt.mqtt5.Mqtt5Client MQTT5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0

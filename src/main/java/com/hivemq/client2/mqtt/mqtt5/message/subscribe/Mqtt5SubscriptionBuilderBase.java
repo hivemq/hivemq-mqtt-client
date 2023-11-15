@@ -55,8 +55,8 @@ public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilder
      * Fluent counterpart of {@link #topicFilter(MqttTopicFilter)}.
      * <p>
      * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
-     * effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of {@link
-     * MqttTopicFilterBuilder.Complete#build()}.
+     * effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of
+     * {@link MqttTopicFilterBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Topic Filter.
      * @see #topicFilter(MqttTopicFilter)
@@ -100,8 +100,8 @@ public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilder
         @NotNull C retainHandling(@NotNull Mqtt5RetainHandling retainHandling);
 
         /**
-         * Sets whether the Publish messages for the subscription are {@link Mqtt5Subscription#isRetainAsPublished()
-         * published with the retain flag}.
+         * Sets whether the Publish messages for the subscription are
+         * {@link Mqtt5Subscription#isRetainAsPublished() published with the retain flag}.
          *
          * @param retainAsPublished whether the Publish messages for the subscription are published with the retain
          *                          flag.

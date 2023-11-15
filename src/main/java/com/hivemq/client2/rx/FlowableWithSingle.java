@@ -51,8 +51,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWithSingle<F, S> {
 
     /**
-     * Modifies the upstream to perform its emissions and notifications including the single item on a specified {@link
-     * Scheduler} asynchronously with a bounded buffer of {@link #bufferSize()} slots.
+     * Modifies the upstream to perform its emissions and notifications including the single item on a specified
+     * {@link Scheduler} asynchronously with a bounded buffer of {@link #bufferSize()} slots.
      *
      * @param scheduler see {@link #observeOn(Scheduler)}.
      * @return the source {@link FlowableWithSingle} modified so that its {@link Subscriber}s are notified on the
@@ -67,8 +67,8 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Modifies the upstream to perform its emissions and notifications including the single item on a specified {@link
-     * Scheduler} asynchronously with a bounded buffer and optionally delays onError notifications.
+     * Modifies the upstream to perform its emissions and notifications including the single item on a specified
+     * {@link Scheduler} asynchronously with a bounded buffer and optionally delays onError notifications.
      *
      * @param scheduler  see {@link #observeOn(Scheduler)}.
      * @param delayError see {@link #observeOn(Scheduler)}.
@@ -86,8 +86,8 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     }
 
     /**
-     * Modifies the upstream to perform its emissions and notifications including the single item on a specified {@link
-     * Scheduler} asynchronously with a bounded buffer of configurable size and optionally delays onError
+     * Modifies the upstream to perform its emissions and notifications including the single item on a specified
+     * {@link Scheduler} asynchronously with a bounded buffer of configurable size and optionally delays onError
      * notifications.
      *
      * @param scheduler  see {@link #observeOn(Scheduler)}.

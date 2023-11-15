@@ -22,8 +22,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link MqttDisconnectedContext} with methods specific to an {@link com.hivemq.client2.mqtt.mqtt3.Mqtt3Client
- * Mqtt3Client}.
+ * A {@link MqttDisconnectedContext} with methods specific to an
+ * {@link com.hivemq.client2.mqtt.mqtt3.Mqtt3Client Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.1

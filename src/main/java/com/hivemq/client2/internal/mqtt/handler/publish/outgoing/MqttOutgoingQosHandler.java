@@ -114,7 +114,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         packetIdentifiers.resize(newSendMaximum);
         if (oldSendMaximum == 0) {
             publishFlowables.flatMap(
-                    f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES, Math.min(newSendMaximum, Flowable.bufferSize()))
+                            f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES, Math.min(newSendMaximum, Flowable.bufferSize()))
                     .subscribe(this);
             assert subscription != null;
             subscription.request(newSendMaximum);

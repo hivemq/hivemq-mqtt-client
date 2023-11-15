@@ -73,8 +73,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #connect(Mqtt3Connect)}.
      * <p>
-     * Calling {@link Mqtt3ConnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
-     * #connect(Mqtt3Connect)} with the result of {@link Mqtt3ConnectBuilder#build()}.
+     * Calling {@link Mqtt3ConnectBuilder.Send#send()} on the returned builder has the same effect as calling
+     * {@link #connect(Mqtt3Connect)} with the result of {@link Mqtt3ConnectBuilder#build()}.
      *
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
@@ -85,10 +85,11 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     /**
      * Subscribes this client with the given Subscribe message.
      * <p>
-     * See {@link #publishes(MqttGlobalPublishFilter, Consumer)} or {@link #publishes(MqttGlobalPublishFilter, Consumer,
-     * Executor)} to consume the incoming Publish messages. Alternatively, call {@link #subscribe(Mqtt3Subscribe,
-     * Consumer)} or {@link #subscribe(Mqtt3Subscribe, Consumer, Executor)} to consume the incoming Publish messages
-     * matching the subscriptions of the Subscribe message directly.
+     * See {@link #publishes(MqttGlobalPublishFilter, Consumer)} or
+     * {@link #publishes(MqttGlobalPublishFilter, Consumer, Executor)} to consume the incoming Publish messages.
+     * Alternatively, call {@link #subscribe(Mqtt3Subscribe, Consumer)} or
+     * {@link #subscribe(Mqtt3Subscribe, Consumer, Executor)} to consume the incoming Publish messages matching the
+     * subscriptions of the Subscribe message directly.
      *
      * @param subscribe the Subscribe messages sent to the broker.
      * @return a {@link CompletableFuture} which
@@ -278,7 +279,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
      * Calling {@link Mqtt3UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
-     * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
+     * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of
+     * {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
@@ -330,9 +332,9 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     }
 
     /**
-     * Builder for a {@link Mqtt3Subscribe} and additional arguments that are applied to a {@link
-     * #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link
-     * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
+     * Builder for a {@link Mqtt3Subscribe} and additional arguments that are applied to a
+     * {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or
+     * {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
      */
     @ApiStatus.NonExtendable
     interface SubscribeBuilder extends Mqtt3SubscribeBuilderBase<SubscribeBuilder.Complete> {
@@ -363,9 +365,9 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         }
 
         /**
-         * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a {@link
-         * #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link #subscribe(Mqtt3Subscribe, Consumer, Executor,
-         * boolean)} call.
+         * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a
+         * {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or
+         * {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
          */
         @ApiStatus.NonExtendable
         interface AfterComplete {
@@ -380,9 +382,10 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             @NotNull AfterCallback callback(@NotNull Consumer<Mqtt3Publish> callback);
 
             /**
-             * Builds the {@link Mqtt3Subscribe} and applies it and additional arguments to a {@link
-             * #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or {@link
-             * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call which then sends the Subscribe message.
+             * Builds the {@link Mqtt3Subscribe} and applies it and additional arguments to a
+             * {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or
+             * {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call which then sends the Subscribe
+             * message.
              *
              * @return see {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer, boolean)} or
              *         {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)}.
@@ -391,8 +394,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         }
 
         /**
-         * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a {@link
-         * #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
+         * Builder for additional arguments alongside the {@link Mqtt3Subscribe} that are applied to a
+         * {@link #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)} call.
          */
         @ApiStatus.NonExtendable
         interface AfterCallback extends AfterComplete {

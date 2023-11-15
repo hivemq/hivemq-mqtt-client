@@ -75,8 +75,8 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * Fluent counterpart of {@link #simpleAuth(Mqtt3SimpleAuth)}.
      * <p>
      * Calling {@link Mqtt3SimpleAuthBuilder.Nested.Complete#applySimpleAuth()} on the returned builder has the same
-     * effect as calling {@link #simpleAuth(Mqtt3SimpleAuth)} with the result of {@link
-     * Mqtt3SimpleAuthBuilder.Complete#build()}.
+     * effect as calling {@link #simpleAuth(Mqtt3SimpleAuth)} with the result of
+     * {@link Mqtt3SimpleAuthBuilder.Complete#build()}.
      *
      * @return the fluent builder for the simple auth related data.
      * @see #simpleAuth(Mqtt3SimpleAuth)
@@ -97,8 +97,8 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * Fluent counterpart of {@link #willPublish(Mqtt3Publish)}.
      * <p>
      * Calling {@link Mqtt3WillPublishBuilder.Nested.Complete#applyWillPublish()} on the returned builder has the same
-     * effect as calling {@link #willPublish(Mqtt3Publish)} with the result of {@link
-     * Mqtt3WillPublishBuilder.Complete#build()}.
+     * effect as calling {@link #willPublish(Mqtt3Publish)} with the result of
+     * {@link Mqtt3WillPublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt3Publish)

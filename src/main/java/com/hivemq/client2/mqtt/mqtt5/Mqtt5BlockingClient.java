@@ -68,8 +68,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #connect(Mqtt5Connect)}.
      * <p>
-     * Calling {@link Mqtt5ConnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
-     * #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
+     * Calling {@link Mqtt5ConnectBuilder.Send#send()} on the returned builder has the same effect as calling
+     * {@link #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
      *
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
@@ -137,7 +137,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * Fluent counterpart of {@link #unsubscribe(Mqtt5Unsubscribe)}.
      * <p>
      * Calling {@link Mqtt5UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
-     * calling {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link Mqtt5UnsubscribeBuilder.Complete#build()}.
+     * calling {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of
+     * {@link Mqtt5UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)

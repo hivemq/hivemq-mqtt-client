@@ -105,8 +105,8 @@ public interface Mqtt5ConnectRestrictions {
      * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
      * concurrently. The default is {@link #DEFAULT_SEND_MAXIMUM}.
      * <p>
-     * The actual amount a connected client will use is determined by the minimum of this value and {@link
-     * Mqtt5ConnAckRestrictions#getReceiveMaximum() MqttConnAckRestrictions#getReceiveMaximum()}.
+     * The actual amount a connected client will use is determined by the minimum of this value and
+     * {@link Mqtt5ConnAckRestrictions#getReceiveMaximum() MqttConnAckRestrictions#getReceiveMaximum()}.
      *
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
      *         concurrently.
@@ -114,54 +114,54 @@ public interface Mqtt5ConnectRestrictions {
     @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendMaximum();
 
     /**
-     * Returns the maximum packet size the client accepts from the server. The default is {@link
-     * #DEFAULT_MAXIMUM_PACKET_SIZE}.
+     * Returns the maximum packet size the client accepts from the server. The default is
+     * {@link #DEFAULT_MAXIMUM_PACKET_SIZE}.
      *
      * @return the maximum packet size the client accepts from the server.
      */
     @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getMaximumPacketSize();
 
     /**
-     * Returns the maximum packet size the client sends to the server. The default is {@link
-     * #DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
+     * Returns the maximum packet size the client sends to the server. The default is
+     * {@link #DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
      * <p>
-     * The actual size a connected client will use is determined by the minimum of this value and {@link
-     * Mqtt5ConnAckRestrictions#getMaximumPacketSize() MqttConnAckRestrictions#getMaximumPacketSize()}.
+     * The actual size a connected client will use is determined by the minimum of this value and
+     * {@link Mqtt5ConnAckRestrictions#getMaximumPacketSize() MqttConnAckRestrictions#getMaximumPacketSize()}.
      *
      * @return the maximum packet size the client sends to the server.
      */
     @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int getSendMaximumPacketSize();
 
     /**
-     * Returns the maximum amount of topic aliases the client accepts from the server. The default is {@link
-     * #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
+     * Returns the maximum amount of topic aliases the client accepts from the server. The default is
+     * {@link #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
      *
      * @return the maximum amount of topic aliases the client accepts from the server.
      */
     @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getTopicAliasMaximum();
 
     /**
-     * Returns the maximum amount of topic aliases the client sends to the server. The default is {@link
-     * #DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM}.
+     * Returns the maximum amount of topic aliases the client sends to the server. The default is
+     * {@link #DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM}.
      * <p>
-     * The actual amount a connected client will use is determined by the minimum of this value and {@link
-     * Mqtt5ConnAckRestrictions#getTopicAliasMaximum() MqttConnAckRestrictions#getTopicAliasMaximum()}.
+     * The actual amount a connected client will use is determined by the minimum of this value and
+     * {@link Mqtt5ConnAckRestrictions#getTopicAliasMaximum() MqttConnAckRestrictions#getTopicAliasMaximum()}.
      *
      * @return the maximum amount of topic aliases the client sends to the server.
      */
     @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int getSendTopicAliasMaximum();
 
     /**
-     * Returns whether the client requests problem information from the server. The default is {@link
-     * #DEFAULT_REQUEST_PROBLEM_INFORMATION}.
+     * Returns whether the client requests problem information from the server. The default is
+     * {@link #DEFAULT_REQUEST_PROBLEM_INFORMATION}.
      *
      * @return whether the client requests problem information from the server.
      */
     boolean isRequestProblemInformation();
 
     /**
-     * Returns whether the client requests response information from the server. The default is {@link
-     * #DEFAULT_REQUEST_RESPONSE_INFORMATION}.
+     * Returns whether the client requests response information from the server. The default is
+     * {@link #DEFAULT_REQUEST_RESPONSE_INFORMATION}.
      *
      * @return whether the client requests response information from the server.
      */

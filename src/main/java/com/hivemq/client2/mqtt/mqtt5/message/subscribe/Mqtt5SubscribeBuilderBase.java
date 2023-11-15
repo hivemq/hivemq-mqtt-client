@@ -49,8 +49,8 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * Fluent counterpart of {@link #addSubscription(Mqtt5Subscription)}.
      * <p>
      * Calling {@link Mqtt5SubscriptionBuilder.Nested.Complete#applySubscription()} on the returned builder has the same
-     * effect as calling {@link #addSubscription(Mqtt5Subscription)} with the result of {@link
-     * Mqtt5SubscriptionBuilder.Complete#build()}.
+     * effect as calling {@link #addSubscription(Mqtt5Subscription)} with the result of
+     * {@link Mqtt5SubscriptionBuilder.Complete#build()}.
      *
      * @return the fluent builder for the subscription.
      * @see #addSubscription(Mqtt5Subscription)
@@ -70,8 +70,9 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
     @NotNull C addSubscriptions(@NotNull Mqtt5Subscription @NotNull ... subscriptions);
 
     /**
-     * Adds a collection of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
-     * subscriptions}. At least one subscription in the collection is mandatory.
+     * Adds a collection of {@link Mqtt5Subscription}s to the
+     * {@link Mqtt5Subscribe#getSubscriptions() list of subscriptions}. At least one subscription in the collection is
+     * mandatory.
      *
      * @param subscriptions the collection of subscriptions.
      * @return the builder that is now complete as at least one subscription is set.

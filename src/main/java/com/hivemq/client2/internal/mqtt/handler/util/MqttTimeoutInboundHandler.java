@@ -33,7 +33,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * ChannelInboundHandler with timeout handling. Subclasses must not be {@link io.netty.channel.ChannelHandler.Sharable}.
+ * ChannelInboundHandler with timeout handling. Subclasses must not be
+ * {@link io.netty.channel.ChannelHandler.Sharable}.
  *
  * @author Silvio Giebl
  */

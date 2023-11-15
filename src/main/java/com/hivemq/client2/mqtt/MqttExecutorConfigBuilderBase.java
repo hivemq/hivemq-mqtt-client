@@ -52,8 +52,8 @@ public interface MqttExecutorConfigBuilderBase<B extends MqttExecutorConfigBuild
     @NotNull B nettyThreads(@Range(from = 1, to = Integer.MAX_VALUE) int nettyThreads);
 
     /**
-     * Sets the {@link MqttExecutorConfig#getApplicationScheduler() scheduler used for executing application specific
-     * code}.
+     * Sets the
+     * {@link MqttExecutorConfig#getApplicationScheduler() scheduler used for executing application specific code}.
      *
      * @param applicationScheduler the scheduler used for executing application specific code.
      * @return the builder.

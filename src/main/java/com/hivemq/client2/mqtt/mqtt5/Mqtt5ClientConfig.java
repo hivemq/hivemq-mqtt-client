@@ -46,12 +46,14 @@ public interface Mqtt5ClientConfig extends MqttClientConfig {
     /**
      * Returns the optional simple authentication and/or authorization related data of the client.
      * <p>
-     * It is used as default if {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getSimpleAuth()
-     * Mqtt5Connect.simpleAuth} is not set during connect.
+     * It is used as default if
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getSimpleAuth() Mqtt5Connect.simpleAuth} is not
+     * set during connect.
      * <p>
      * Keep in mind that the data is stored with the client in memory. If you want to use it only during connect or if
-     * you use a different token for each connection please set {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getSimpleAuth()
-     * Mqtt5Connect.simpleAuth} instead.
+     * you use a different token for each connection please set
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getSimpleAuth() Mqtt5Connect.simpleAuth}
+     * instead.
      *
      * @return the optional simple authentication and/or authorization related data of the client.
      * @since 1.1
@@ -61,11 +63,13 @@ public interface Mqtt5ClientConfig extends MqttClientConfig {
     /**
      * Returns the optional enhanced authentication and/or authorization mechanism of the client.
      * <p>
-     * It is used as default if {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getEnhancedAuthMechanism()
+     * It is used as default if
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getEnhancedAuthMechanism()
      * Mqtt5Connect.enhancedAuthMechanism} is not set during connect.
      * <p>
      * Keep in mind that the mechanism is stored with the client in memory. If you use a different mechanism for each
-     * connection please set {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getEnhancedAuthMechanism()
+     * connection please set
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getEnhancedAuthMechanism()
      * Mqtt5Connect.enhancedAuthMechanism} instead.
      *
      * @return the optional enhanced authentication and/or authorization mechanism of the client.
@@ -76,12 +80,14 @@ public interface Mqtt5ClientConfig extends MqttClientConfig {
     /**
      * Returns the optional Will Publish of the client.
      * <p>
-     * It is used as default if {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getWillPublish()
-     * Mqtt5Connect.willPublish} is not set during connect.
+     * It is used as default if
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getWillPublish() Mqtt5Connect.willPublish} is
+     * not set during connect.
      * <p>
      * Keep in mind that the Will Publish is stored with the client in memory. If you use a different Will Publish for
-     * each connection please set {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getWillPublish()
-     * Mqtt5Connect.willPublish} instead.
+     * each connection please set
+     * {@link com.hivemq.client2.mqtt.mqtt5.message.connect.Mqtt5Connect#getWillPublish() Mqtt5Connect.willPublish}
+     * instead.
      *
      * @return the optional Will Publish of the client.
      * @since 1.1
