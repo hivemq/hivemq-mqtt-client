@@ -129,18 +129,18 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      */
     static int validateWildcards(final byte @NotNull [] binary, final int start) {
         int wildcardFlags = 0;
-
         int state = WILDCARD_CHECK_STATE_BEFORE;
-
         for (int i = start; i < binary.length; i++) {
             final byte b = binary[i];
             switch (state) {
                 case WILDCARD_CHECK_STATE_NOT_BEFORE:
-                    if ((b == SINGLE_LEVEL_WILDCARD) || (b == MULTI_LEVEL_WILDCARD)) {
-                        return WILDCARD_CHECK_FAILURE;
-                    }
-                    if (b == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
-                        state = WILDCARD_CHECK_STATE_BEFORE;
+                    switch (b) {
+                        case MULTI_LEVEL_WILDCARD:
+                        case SINGLE_LEVEL_WILDCARD:
+                            return WILDCARD_CHECK_FAILURE;
+                        case MqttTopicImpl.TOPIC_LEVEL_SEPARATOR:
+                            state = WILDCARD_CHECK_STATE_BEFORE;
+                            break;
                     }
                     break;
                 case WILDCARD_CHECK_STATE_BEFORE:
@@ -154,7 +154,6 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
                             state = WILDCARD_CHECK_STATE_SINGLE_LEVEL;
                             break;
                         case MqttTopicImpl.TOPIC_LEVEL_SEPARATOR:
-                            state = WILDCARD_CHECK_STATE_BEFORE;
                             break;
                         default:
                             state = WILDCARD_CHECK_STATE_NOT_BEFORE;
@@ -170,7 +169,6 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
                     break;
             }
         }
-
         return wildcardFlags;
     }
 
@@ -185,20 +183,20 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      */
     static int validateWildcards(final @NotNull String string, final int start) {
         int wildcardFlags = 0;
-
         int state = WILDCARD_CHECK_STATE_BEFORE;
-
         for (int i = start; i < string.length(); i++) {
             final char c = string.charAt(i);
             switch (state) {
                 case WILDCARD_CHECK_STATE_NOT_BEFORE:
-                    if ((c == SINGLE_LEVEL_WILDCARD) || (c == MULTI_LEVEL_WILDCARD)) {
-                        throw new IllegalArgumentException("Topic filter [" + string.substring(start) +
-                                "] contains misplaced wildcard characters. Wildcard (" + c + ") at index " +
-                                (i - start) + " must follow a topic level separator.");
-                    }
-                    if (c == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
-                        state = WILDCARD_CHECK_STATE_BEFORE;
+                    switch (c) {
+                        case MULTI_LEVEL_WILDCARD:
+                        case SINGLE_LEVEL_WILDCARD:
+                            throw new IllegalArgumentException("Topic filter [" + string.substring(start) +
+                                    "] contains misplaced wildcard characters. Wildcard (" + c + ") at index " +
+                                    (i - start) + " must follow a topic level separator.");
+                        case MqttTopicImpl.TOPIC_LEVEL_SEPARATOR:
+                            state = WILDCARD_CHECK_STATE_BEFORE;
+                            break;
                     }
                     break;
                 case WILDCARD_CHECK_STATE_BEFORE:
@@ -212,7 +210,6 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
                             state = WILDCARD_CHECK_STATE_SINGLE_LEVEL;
                             break;
                         case MqttTopicImpl.TOPIC_LEVEL_SEPARATOR:
-                            state = WILDCARD_CHECK_STATE_BEFORE;
                             break;
                         default:
                             state = WILDCARD_CHECK_STATE_NOT_BEFORE;
@@ -233,7 +230,6 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
                     break;
             }
         }
-
         return wildcardFlags;
     }
 
