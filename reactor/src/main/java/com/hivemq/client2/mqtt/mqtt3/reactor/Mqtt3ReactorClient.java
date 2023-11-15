@@ -16,7 +16,7 @@
 
 package com.hivemq.client2.mqtt.mqtt3.reactor;
 
-import com.hivemq.client2.internal.mqtt.mqtt3.reactor.Mqtt3ReactorClientView;
+import com.hivemq.client2.internal.mqtt.reactor.mqtt3.Mqtt3ReactorClientView;
 import com.hivemq.client2.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client2.mqtt.mqtt3.Mqtt3Client;
 import com.hivemq.client2.mqtt.mqtt3.message.connect.Mqtt3ConnAck;

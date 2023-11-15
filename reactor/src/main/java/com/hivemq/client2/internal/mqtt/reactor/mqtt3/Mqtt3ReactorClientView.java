@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.client2.internal.mqtt.mqtt3.reactor;
+package com.hivemq.client2.internal.mqtt.reactor.mqtt3;
 
 import com.hivemq.client2.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client2.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
