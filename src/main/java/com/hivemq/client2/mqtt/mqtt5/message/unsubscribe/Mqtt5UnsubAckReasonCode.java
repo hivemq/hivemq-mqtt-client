@@ -76,7 +76,7 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
      *
      * @param code the byte code.
      * @return the UnsubAck Reason Code belonging to the given byte code or <code>null</code> if the byte code is not a
-     *         valid UnsubAck Reason Code code.
+     *         valid UnsubAck Reason Code.
      */
     public static @Nullable Mqtt5UnsubAckReasonCode fromCode(final int code) {
         for (final Mqtt5UnsubAckReasonCode reasonCode : VALUES) {

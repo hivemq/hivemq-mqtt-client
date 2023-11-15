@@ -43,7 +43,7 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
     private @Nullable ScheduledFuture<?> timeoutFuture;
 
     /**
-     * Schedules a timeout if the given future succeeded. Otherwise the channel is closed.
+     * Schedules a timeout if the given future succeeded. Otherwise, the channel is closed.
      *
      * @param future the future of the operation that triggers a timeout.
      */

@@ -175,7 +175,7 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
                 requestState.set(STATE_NO_NEW_REQUESTS);
                 final long newRequested = this.newRequested.getAndSet(0);
                 // If request was called concurrently we may have included the newRequested amount already but
-                // requestState is afterwards set to STATE_NEW_REQUESTS although newRequested is reset to 0.
+                // requestState is afterward set to STATE_NEW_REQUESTS although newRequested is reset to 0.
                 // If request is not called until the next invocation of this method, newRequested may be 0.
                 if (newRequested > 0) {
                     return requested = BackpressureHelper.addCap(requested, newRequested);

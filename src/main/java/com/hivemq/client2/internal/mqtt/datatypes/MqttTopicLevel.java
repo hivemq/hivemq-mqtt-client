@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 
 /**
- * Single topic or topic filter level. May be the single level wildcard but must not be the multi level wildcard (the
+ * Single topic or topic filter level. It may be the single level wildcard but must not be the multi level wildcard (the
  * multi level wildcard does not represent a topic level).
  *
  * @author Silvio Giebl

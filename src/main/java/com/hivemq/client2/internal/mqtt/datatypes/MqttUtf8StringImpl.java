@@ -45,7 +45,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
             new MqttUtf8StringImpl("MQTT".getBytes(StandardCharsets.UTF_8));
 
     /**
-     * Validates and creates an UTF-8 encoded string of the given UTF-16 encoded Java string.
+     * Validates and creates a UTF-8 encoded string of the given UTF-16 encoded Java string.
      * <p>
      * The given string
      * <ul>
@@ -109,8 +109,8 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
      * returns.
      * <p>
-     * Note: the first two bytes are interpreted as the length of the binary data to read. Thus the length is limited to
-     * {@value MqttBinaryData#MAX_LENGTH}.
+     * Note: the first two bytes are interpreted as the length of the binary data to read. Thus, the length is limited
+     * to {@value MqttBinaryData#MAX_LENGTH}.
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
      * @return the created UTF-8 encoded string or <code>null</code> if the byte buffer does not contain a valid UTF-8

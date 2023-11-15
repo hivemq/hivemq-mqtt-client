@@ -94,7 +94,7 @@ class MqttTlsAdapterHandler extends ChannelInboundHandlerAdapter {
             onError.accept(ctx.channel(), cause);
         }
         // the exception is not fired in the else branch to avoid that
-        // "An exceptionCaught() event was fired, and it reached at the tail of the pipeline" is logged although it was
+        // "An exceptionCaught() event was fired, and it reached at the tail of the pipeline" is logged, although it was
         // already handled via the SslHandshakeCompletionEvent
     }
 

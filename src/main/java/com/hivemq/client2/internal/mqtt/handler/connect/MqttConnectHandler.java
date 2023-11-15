@@ -147,7 +147,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * <p>
      * If it contains an Error Code, the channel is closed.
      * <p>
-     * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link MqttPingHandler} is
+     * Otherwise, it is validated. Then this handler is removed from the pipeline and the {@link MqttPingHandler} is
      * added to the pipeline.
      *
      * @param connAck the CONNACK message.

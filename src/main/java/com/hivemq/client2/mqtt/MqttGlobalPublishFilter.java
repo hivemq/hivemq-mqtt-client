@@ -56,7 +56,7 @@ public enum MqttGlobalPublishFilter {
      *   <li>both {@link #SUBSCRIBED} and {@link #UNSOLICITED} filters are used.
      * </ul>
      * <p>
-     * Example (pseudo-code):
+     * Example (pseudocode):
      * <ul>
      *   <li><code>stream1 = client.subscribePublishes("a/#")</code>
      *   <li><code>client.subscribe("b/#")</code>

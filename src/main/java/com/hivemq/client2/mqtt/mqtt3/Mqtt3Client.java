@@ -54,11 +54,11 @@ public interface Mqtt3Client extends MqttClient {
     @NotNull Mqtt3RxClient toRx();
 
     /**
-     * Turns the API of this client into a asynchronous API based on futures and callbacks.
+     * Turns the API of this client into an asynchronous API based on futures and callbacks.
      * <p>
      * The asynchronous API can be used simultaneously with the other APIs.
      *
-     * @return a asynchronous API for this client.
+     * @return an asynchronous API for this client.
      */
     @CheckReturnValue
     @NotNull Mqtt3AsyncClient toAsync();

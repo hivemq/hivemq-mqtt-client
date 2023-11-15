@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Unmodifiable;
 public class MqttUserPropertyImpl implements Mqtt5UserProperty {
 
     /**
-     * Creates an User Property of the given name and value.
+     * Creates a User Property of the given name and value.
      *
      * @param name  the name of the User Property.
      * @param value the value of the User Property.
@@ -45,7 +45,7 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
     }
 
     /**
-     * Creates an User Property of the given name and value.
+     * Creates a User Property of the given name and value.
      *
      * @param name  the name of the User Property.
      * @param value the value of the User Property.

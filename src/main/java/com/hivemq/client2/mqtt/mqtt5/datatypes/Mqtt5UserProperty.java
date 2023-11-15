@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Mqtt5UserProperty extends Comparable<Mqtt5UserProperty> {
 
     /**
-     * Creates an User Property of the given name and value.
+     * Creates a User Property of the given name and value.
      *
      * @param name  the name of the User Property.
      * @param value the value of the User Property.
@@ -45,7 +45,7 @@ public interface Mqtt5UserProperty extends Comparable<Mqtt5UserProperty> {
     }
 
     /**
-     * Creates an User Property of the given name and value.
+     * Creates a User Property of the given name and value.
      *
      * @param name  the name of the User Property.
      * @param value the value of the User Property.

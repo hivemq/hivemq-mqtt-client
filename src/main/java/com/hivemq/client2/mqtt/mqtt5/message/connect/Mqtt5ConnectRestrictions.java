@@ -57,12 +57,12 @@ public interface Mqtt5ConnectRestrictions {
      */
     int DEFAULT_SEND_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     /**
-     * The default maximum packet size the client accepts from the server. By default the packet size is not limited
+     * The default maximum packet size the client accepts from the server. By default, the packet size is not limited
      * beyond the restrictions of the encoding.
      */
     int DEFAULT_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
     /**
-     * The default maximum packet size the client sends to the server. By default the packet size is not limited beyond
+     * The default maximum packet size the client sends to the server. By default, the packet size is not limited beyond
      * the restrictions of the encoding.
      */
     int DEFAULT_SEND_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
