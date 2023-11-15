@@ -44,7 +44,7 @@ class Mqtt5UnsubAckExceptionTest {
         final Mqtt5UnsubAckException exception = new Mqtt5UnsubAckException(unsubAck, "message");
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt5UnsubAckException thrownException =
-                assertThrows(Mqtt5UnsubAckException.class, () -> { throw exception; });
+                assertThrows(Mqtt5UnsubAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

@@ -74,7 +74,7 @@ class Mqtt3UnsubAckExceptionTest {
                 new Mqtt3UnsubAckException(Mqtt3UnsubAckView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt3UnsubAckException thrownException =
-                assertThrows(Mqtt3UnsubAckException.class, () -> { throw exception; });
+                assertThrows(Mqtt3UnsubAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

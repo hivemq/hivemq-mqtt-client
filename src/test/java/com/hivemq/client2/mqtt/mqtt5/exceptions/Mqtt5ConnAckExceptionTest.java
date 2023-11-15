@@ -44,7 +44,7 @@ class Mqtt5ConnAckExceptionTest {
         final Mqtt5ConnAckException exception = new Mqtt5ConnAckException(connAck, "message");
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt5ConnAckException thrownException =
-                assertThrows(Mqtt5ConnAckException.class, () -> { throw exception; });
+                assertThrows(Mqtt5ConnAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

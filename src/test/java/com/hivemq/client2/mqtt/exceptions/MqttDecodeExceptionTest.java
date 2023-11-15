@@ -38,7 +38,7 @@ class MqttDecodeExceptionTest {
     void noStackTrace() {
         final MqttDecodeException exception = new MqttDecodeException("message");
         assertEquals(0, exception.getStackTrace().length);
-        final MqttDecodeException thrownException = assertThrows(MqttDecodeException.class, () -> { throw exception; });
+        final MqttDecodeException thrownException = assertThrows(MqttDecodeException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

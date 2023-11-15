@@ -55,7 +55,7 @@ class Mqtt5DisconnectExceptionTest {
         final Mqtt5DisconnectException exception = new Mqtt5DisconnectException(disconnect, "message");
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt5DisconnectException thrownException =
-                assertThrows(Mqtt5DisconnectException.class, () -> { throw exception; });
+                assertThrows(Mqtt5DisconnectException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

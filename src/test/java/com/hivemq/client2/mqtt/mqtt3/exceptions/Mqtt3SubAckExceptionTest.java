@@ -76,8 +76,7 @@ class Mqtt3SubAckExceptionTest {
         final RuntimeException cause = new RuntimeException("cause");
         final Mqtt3SubAckException exception = new Mqtt3SubAckException(subAck, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
-        final Mqtt3SubAckException thrownException =
-                assertThrows(Mqtt3SubAckException.class, () -> { throw exception; });
+        final Mqtt3SubAckException thrownException = assertThrows(Mqtt3SubAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

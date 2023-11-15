@@ -70,8 +70,7 @@ class Mqtt3PubRecExceptionTest {
         final RuntimeException cause = new RuntimeException("cause");
         final Mqtt3PubRecException exception = new Mqtt3PubRecException(Mqtt3PubRecView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
-        final Mqtt3PubRecException thrownException =
-                assertThrows(Mqtt3PubRecException.class, () -> { throw exception; });
+        final Mqtt3PubRecException thrownException = assertThrows(Mqtt3PubRecException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

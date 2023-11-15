@@ -139,13 +139,13 @@ class FluxWithSingleTest {
 
         final AtomicInteger count = new AtomicInteger();
         StepVerifier.create(
-                fluxWithSingle.publishBothOn(Schedulers.fromExecutor(executorService), 16).doOnSingle(stringBuilder -> {
-                    assertEquals("single", stringBuilder.toString());
-                    assertEquals("test_thread", Thread.currentThread().getName());
-                }).doOnNext(string -> {
-                    assertEquals("next" + count.getAndIncrement(), string);
-                    assertEquals("test_thread", Thread.currentThread().getName());
-                }), 1)
+                        fluxWithSingle.publishBothOn(Schedulers.fromExecutor(executorService), 16).doOnSingle(stringBuilder -> {
+                            assertEquals("single", stringBuilder.toString());
+                            assertEquals("test_thread", Thread.currentThread().getName());
+                        }).doOnNext(string -> {
+                            assertEquals("next" + count.getAndIncrement(), string);
+                            assertEquals("test_thread", Thread.currentThread().getName());
+                        }), 1)
                 .expectNext("next0")
                 .thenRequest(1)
                 .expectNext("next1")
@@ -160,8 +160,8 @@ class FluxWithSingleTest {
 
     @Test
     void publishBothOn_delayError_prefetch() {
-        final Flux<? extends CharSequence> flux = Flux.<CharSequence>just(new StringBuilder("single")).concatWith(
-                Flux.range(0, 1024).zipWith(Flux.just("next").repeat(1024), (i, s) -> s + i))
+        final Flux<? extends CharSequence> flux = Flux.<CharSequence>just(new StringBuilder("single"))
+                .concatWith(Flux.range(0, 1024).zipWith(Flux.just("next").repeat(1024), (i, s) -> s + i))
                 .concatWith(Flux.error(new IllegalArgumentException("test")))
                 .hide();
         final FluxWithSingle<String, StringBuilder> fluxWithSingle =
@@ -172,14 +172,14 @@ class FluxWithSingleTest {
 
         final AtomicInteger count = new AtomicInteger();
         StepVerifier.create(fluxWithSingle.publishBothOn(Schedulers.fromExecutor(executorService), true, 1024)
-                .doOnSingle(stringBuilder -> {
-                    assertEquals("single", stringBuilder.toString());
-                    assertEquals("test_thread", Thread.currentThread().getName());
-                })
-                .doOnNext(string -> {
-                    assertEquals("next" + count.getAndIncrement(), string);
-                    assertEquals("test_thread", Thread.currentThread().getName());
-                }), 1)
+                        .doOnSingle(stringBuilder -> {
+                            assertEquals("single", stringBuilder.toString());
+                            assertEquals("test_thread", Thread.currentThread().getName());
+                        })
+                        .doOnNext(string -> {
+                            assertEquals("next" + count.getAndIncrement(), string);
+                            assertEquals("test_thread", Thread.currentThread().getName());
+                        }), 1)
                 .expectNext("next0")
                 .thenRequest(1022)
                 .expectNextCount(1022)

@@ -48,7 +48,7 @@ class ConnectionClosedExceptionTest {
         final ConnectionClosedException exception = new ConnectionClosedException("message");
         assertEquals(0, exception.getStackTrace().length);
         final ConnectionClosedException thrownException =
-                assertThrows(ConnectionClosedException.class, () -> { throw exception; });
+                assertThrows(ConnectionClosedException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

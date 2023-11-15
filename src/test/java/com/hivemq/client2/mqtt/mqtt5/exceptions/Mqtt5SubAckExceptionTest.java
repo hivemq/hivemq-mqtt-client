@@ -43,8 +43,7 @@ class Mqtt5SubAckExceptionTest {
         final Mqtt5SubAck subAck = mock(Mqtt5SubAck.class);
         final Mqtt5SubAckException exception = new Mqtt5SubAckException(subAck, "message");
         assertEquals(0, exception.getStackTrace().length);
-        final Mqtt5SubAckException thrownException =
-                assertThrows(Mqtt5SubAckException.class, () -> { throw exception; });
+        final Mqtt5SubAckException thrownException = assertThrows(Mqtt5SubAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

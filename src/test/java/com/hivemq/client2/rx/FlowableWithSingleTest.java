@@ -164,11 +164,10 @@ class FlowableWithSingleTest {
 
     @Test
     void observeBothOn_delayError_bufferSize() throws InterruptedException {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.<CharSequence>just(new StringBuilder("single")).concatWith(
-                        Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
-                        .concatWith(Flowable.error(new IllegalArgumentException("test")))
-                        .hide();
+        final Flowable<? extends CharSequence> flowable = Flowable.<CharSequence>just(new StringBuilder("single"))
+                .concatWith(Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
+                .concatWith(Flowable.error(new IllegalArgumentException("test")))
+                .hide();
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
                 new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
@@ -203,11 +202,10 @@ class FlowableWithSingleTest {
 
     @Test
     void observeBothOn_delayError_bufferSize_2() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.<CharSequence>just(new StringBuilder("single")).concatWith(
-                        Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
-                        .concatWith(Flowable.error(new IllegalArgumentException("test")))
-                        .hide();
+        final Flowable<? extends CharSequence> flowable = Flowable.<CharSequence>just(new StringBuilder("single"))
+                .concatWith(Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
+                .concatWith(Flowable.error(new IllegalArgumentException("test")))
+                .hide();
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
                 new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
@@ -285,9 +283,9 @@ class FlowableWithSingleTest {
                     assertEquals(1, counter.incrementAndGet());
                     assertNotEquals("test_thread", Thread.currentThread().getName());
                 }).doOnSingle(stringBuilder -> {
-            assertEquals(2, counter.incrementAndGet());
-            assertNotEquals("test_thread", Thread.currentThread().getName());
-        }).observeBothOn(Schedulers.from(executorService))
+                    assertEquals(2, counter.incrementAndGet());
+                    assertNotEquals("test_thread", Thread.currentThread().getName());
+                }).observeBothOn(Schedulers.from(executorService))
                 .doOnSingle(stringBuilder -> {
                     assertEquals(3, counter.incrementAndGet());
                     assertEquals("test_thread", Thread.currentThread().getName());

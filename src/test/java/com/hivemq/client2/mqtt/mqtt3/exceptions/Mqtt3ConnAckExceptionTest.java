@@ -77,7 +77,7 @@ class Mqtt3ConnAckExceptionTest {
         final Mqtt3ConnAckException exception = new Mqtt3ConnAckException(connAck, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt3ConnAckException thrownException =
-                assertThrows(Mqtt3ConnAckException.class, () -> { throw exception; });
+                assertThrows(Mqtt3ConnAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

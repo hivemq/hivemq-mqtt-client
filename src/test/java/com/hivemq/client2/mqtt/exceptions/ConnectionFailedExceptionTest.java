@@ -48,7 +48,7 @@ class ConnectionFailedExceptionTest {
         final ConnectionFailedException exception = new ConnectionFailedException("message");
         assertEquals(0, exception.getStackTrace().length);
         final ConnectionFailedException thrownException =
-                assertThrows(ConnectionFailedException.class, () -> { throw exception; });
+                assertThrows(ConnectionFailedException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

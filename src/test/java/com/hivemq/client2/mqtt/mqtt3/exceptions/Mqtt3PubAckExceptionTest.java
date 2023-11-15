@@ -70,8 +70,7 @@ class Mqtt3PubAckExceptionTest {
         final RuntimeException cause = new RuntimeException("cause");
         final Mqtt3PubAckException exception = new Mqtt3PubAckException(Mqtt3PubAckView.INSTANCE, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
-        final Mqtt3PubAckException thrownException =
-                assertThrows(Mqtt3PubAckException.class, () -> { throw exception; });
+        final Mqtt3PubAckException thrownException = assertThrows(Mqtt3PubAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

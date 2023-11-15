@@ -750,7 +750,7 @@ abstract class MqttSubscribedPublishFlowsTest {
 
     @Test
     void getSubscriptions() {
-        final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
+        final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of( //
                 new MqttSubscriptionBuilder.Default().topicFilter("abc").build(),
                 new MqttSubscriptionBuilder.Default().topicFilter("$share/group/abc").build(),
                 new MqttSubscriptionBuilder.Default().topicFilter("#").build(),
@@ -777,7 +777,7 @@ abstract class MqttSubscribedPublishFlowsTest {
 
     @Test
     void getSubscriptions_sameSubscriptionIdentifiers() {
-        final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
+        final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of( //
                 new MqttSubscriptionBuilder.Default().topicFilter("abc").build(),
                 new MqttSubscriptionBuilder.Default().topicFilter("$share/group/abc").build(),
                 new MqttSubscriptionBuilder.Default().topicFilter("#").build(),

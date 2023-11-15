@@ -59,7 +59,7 @@ class AsyncRuntimeExceptionTest {
         final TestAsyncRuntimeException exception = new TestAsyncRuntimeException("message");
         assertEquals(0, exception.getStackTrace().length);
         final TestAsyncRuntimeException thrownException =
-                assertThrows(TestAsyncRuntimeException.class, () -> { throw exception; });
+                assertThrows(TestAsyncRuntimeException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

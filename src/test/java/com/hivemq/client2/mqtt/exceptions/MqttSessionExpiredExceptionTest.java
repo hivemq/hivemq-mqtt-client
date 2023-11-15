@@ -42,7 +42,7 @@ class MqttSessionExpiredExceptionTest {
                 new MqttSessionExpiredException("message", new RuntimeException("cause"));
         assertEquals(0, exception.getStackTrace().length);
         final MqttSessionExpiredException thrownException =
-                assertThrows(MqttSessionExpiredException.class, () -> { throw exception; });
+                assertThrows(MqttSessionExpiredException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 
