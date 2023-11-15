@@ -363,7 +363,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
         expected.release();
     }
 
-    private void encode(final @NotNull byte[] expected, final @NotNull MqttDisconnect disconnect) {
+    private void encode(final byte @NotNull [] expected, final @NotNull MqttDisconnect disconnect) {
         encode(disconnect, expected);
     }
 

@@ -448,13 +448,13 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttSubAck decodeOk(final @NotNull byte[] encoded) {
+    private MqttSubAck decodeOk(final byte @NotNull [] encoded) {
         final MqttSubAck subAck = decode(encoded);
         assertNotNull(subAck);
         return subAck;
     }
 
-    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final byte @NotNull [] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttSubAck subAck = decode(encoded);
         assertNull(subAck);
 
@@ -466,7 +466,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttSubAck decode(final @NotNull byte[] encoded) {
+    private MqttSubAck decode(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

@@ -167,7 +167,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeUnsubscribe(
-            final @NotNull byte[] expected,
+            final byte @NotNull [] expected,
             final @NotNull MqttUserPropertiesImpl userProperties,
             final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, userProperties);
@@ -178,12 +178,12 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeInternal(
-            final @NotNull byte[] expected, final @NotNull MqttStatefulUnsubscribe unsubscribeInternal) {
+            final byte @NotNull [] expected, final @NotNull MqttStatefulUnsubscribe unsubscribeInternal) {
         encode(unsubscribeInternal, expected);
     }
 
     @SuppressWarnings("NullabilityAnnotations")
-    private class MaximumPacketBuilder {
+    private static class MaximumPacketBuilder {
 
         private static final String TOPIC = "topic";
         private StringBuilder reasonStringBuilder;

@@ -235,7 +235,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
     }
 
-    private void encode(final @NotNull byte[] expected, final @NotNull MqttAuth auth) {
+    private void encode(final byte @NotNull [] expected, final @NotNull MqttAuth auth) {
         encode(auth, expected);
     }
 
@@ -249,7 +249,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @SuppressWarnings("NullabilityAnnotations")
-    private class MaximumPacketBuilder {
+    private static class MaximumPacketBuilder {
 
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
         final MqttUserPropertyImpl userProperty =

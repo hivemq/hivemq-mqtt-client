@@ -371,14 +371,14 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
                         "SUBSCRIBE exceeded maximum packet size, minimal possible encoded length: 268435461, maximum: 268435460"));
     }
 
-    private void encode(final @NotNull byte[] expected, final MqttSubscribe subscribe, final int packetIdentifier) {
+    private void encode(final byte @NotNull [] expected, final MqttSubscribe subscribe, final int packetIdentifier) {
         final MqttStatefulSubscribe subscribeInternal =
                 subscribe.createStateful(packetIdentifier, MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
         encodeInternal(expected, subscribeInternal);
     }
 
     private void encodeInternal(
-            final @NotNull byte[] expected, final @NotNull MqttStatefulSubscribe subscribeInternal) {
+            final byte @NotNull [] expected, final @NotNull MqttStatefulSubscribe subscribeInternal) {
 
         encode(subscribeInternal, expected);
     }

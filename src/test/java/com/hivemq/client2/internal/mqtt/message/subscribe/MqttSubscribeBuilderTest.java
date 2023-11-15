@@ -389,7 +389,8 @@ class MqttSubscribeBuilderTest {
     }
 
     void compareSubscriptions(
-            final @NotNull Mqtt5Subscription[] expected, final @NotNull List<? extends Mqtt5Subscription> actual) {
+            final @NotNull Mqtt5Subscription @NotNull [] expected,
+            final @NotNull List<? extends Mqtt5Subscription> actual) {
 
         assertEquals(expected.length, actual.size());
 
@@ -399,7 +400,7 @@ class MqttSubscribeBuilderTest {
     }
 
     void compareSubscriptions(
-            final @NotNull Collection<Mqtt5Subscription> expected,
+            final @NotNull Collection<@NotNull Mqtt5Subscription> expected,
             final @NotNull List<? extends Mqtt5Subscription> actual) {
 
         assertEquals(expected.size(), actual.size());

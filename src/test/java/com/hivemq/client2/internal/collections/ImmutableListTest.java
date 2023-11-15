@@ -290,7 +290,6 @@ class ImmutableListTest {
 
     @ParameterizedTest
     @MethodSource("numberedList")
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     void get(final @NotNull ImmutableList<String> list) {
         assertThrows(IndexOutOfBoundsException.class, () -> list.get(-1));
         for (int i = 0; i < list.size(); i++) {
@@ -388,10 +387,10 @@ class ImmutableListTest {
     @SuppressWarnings("CollectionAddedToSelf")
     void containsAll(final @NotNull ImmutableList<String> list) {
         assertTrue(list.containsAll(list));
-        assertTrue(list.containsAll(ImmutableList.of()));
-        assertTrue(list.containsAll(ImmutableList.builder().addAll(list).build()));
+        assertTrue(list.containsAll(ImmutableList.<String>of()));
+        assertTrue(list.containsAll(ImmutableList.<String>builder().addAll(list).build()));
         assertFalse(list.containsAll(ImmutableList.of("x")));
-        assertFalse(list.containsAll(ImmutableList.builder().addAll(list).add("x").build()));
+        assertFalse(list.containsAll(ImmutableList.<String>builder().addAll(list).add("x").build()));
     }
 
     @ParameterizedTest

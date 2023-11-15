@@ -373,7 +373,8 @@ class Mqtt3SubscribeViewBuilderTest {
     }
 
     void compareSubscriptions(
-            final @NotNull Mqtt3Subscription[] expected, final @NotNull List<? extends Mqtt3Subscription> actual) {
+            final @NotNull Mqtt3Subscription @NotNull [] expected,
+            final @NotNull List<? extends Mqtt3Subscription> actual) {
 
         assertEquals(expected.length, actual.size());
 
@@ -383,7 +384,7 @@ class Mqtt3SubscribeViewBuilderTest {
     }
 
     void compareSubscriptions(
-            final @NotNull Collection<Mqtt3Subscription> expected,
+            final @NotNull Collection<@NotNull Mqtt3Subscription> expected,
             final @NotNull List<? extends Mqtt3Subscription> actual) {
 
         assertEquals(expected.size(), actual.size());

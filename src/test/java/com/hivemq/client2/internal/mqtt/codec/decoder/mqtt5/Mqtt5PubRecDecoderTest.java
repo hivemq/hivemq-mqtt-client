@@ -401,13 +401,13 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
         decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    private @NotNull MqttPubRec decodeOk(final @NotNull byte[] encoded) {
+    private @NotNull MqttPubRec decodeOk(final byte @NotNull [] encoded) {
         final MqttPubRec pubRec = decode(encoded);
         assertNotNull(pubRec);
         return pubRec;
     }
 
-    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final byte @NotNull [] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttPubRec pubRec = decode(encoded);
         assertNull(pubRec);
 
@@ -418,7 +418,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
         createChannel();
     }
 
-    private @Nullable MqttPubRec decode(final @NotNull byte[] encoded) {
+    private @Nullable MqttPubRec decode(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

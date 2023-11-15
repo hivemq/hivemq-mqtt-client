@@ -1874,7 +1874,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private static final byte PROPERTIES_VALID_LENGTH = 119;
-    private static final @NotNull byte[] PROPERTIES_VALID = {
+    private static final byte @NotNull [] PROPERTIES_VALID = {
             //     session expiry interval
             0x11, 0, 0, 0, 10,
             //     receive maximum

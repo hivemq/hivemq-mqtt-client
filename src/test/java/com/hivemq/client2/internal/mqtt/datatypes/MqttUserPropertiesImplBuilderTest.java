@@ -69,7 +69,7 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_empty_array_allowed() {
-        final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(new Mqtt5UserProperty[0]).build();
+        final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll().build();
         assertTrue(properties.asList().isEmpty());
     }
 
@@ -191,7 +191,8 @@ class MqttUserPropertiesImplBuilderTest {
     }
 
     void compareProperties(
-            final @NotNull Mqtt5UserProperty[] expected, final @NotNull List<? extends Mqtt5UserProperty> actual) {
+            final @NotNull Mqtt5UserProperty @NotNull [] expected,
+            final @NotNull List<? extends Mqtt5UserProperty> actual) {
 
         assertEquals(expected.length, actual.size());
 
@@ -204,7 +205,7 @@ class MqttUserPropertiesImplBuilderTest {
     }
 
     void compareProperties(
-            final @NotNull Collection<Mqtt5UserProperty> expected,
+            final @NotNull Collection<@NotNull Mqtt5UserProperty> expected,
             final @NotNull List<? extends Mqtt5UserProperty> actual) {
         compareProperties(expected.toArray(new Mqtt5UserProperty[0]), actual);
     }

@@ -514,7 +514,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         encodeNok(connectWrapper, EncoderException.class, "variable byte integer size exceeded for property length");
     }
 
-    private void encode(final @NotNull byte[] expected, final @NotNull MqttStatefulConnect connectWrapper) {
+    private void encode(final byte @NotNull [] expected, final @NotNull MqttStatefulConnect connectWrapper) {
         encode(connectWrapper, expected);
     }
 
@@ -528,7 +528,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @SuppressWarnings("NullabilityAnnotations")
-    private class MaximumPacketBuilder {
+    private static class MaximumPacketBuilder {
 
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
         final @NotNull MqttUserPropertyImpl userProperty =
