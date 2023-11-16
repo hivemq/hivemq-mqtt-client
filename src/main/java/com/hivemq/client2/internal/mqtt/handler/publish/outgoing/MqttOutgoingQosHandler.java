@@ -173,7 +173,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             this.shrinkRequests = 0;
             subscription.request(n - shrinkRequests);
         } else {
-            this.shrinkRequests -= n;
+            this.shrinkRequests = shrinkRequests - (int) n;
         }
     }
 

@@ -270,7 +270,7 @@ public class MqttRxClient implements Mqtt5RxClient {
         return new MqttBlockingClient(this);
     }
 
-    private class MqttSubscribePublishesBuilder
+    public class MqttSubscribePublishesBuilder
             extends MqttSubscribeBuilder.Publishes<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
 
         @Override

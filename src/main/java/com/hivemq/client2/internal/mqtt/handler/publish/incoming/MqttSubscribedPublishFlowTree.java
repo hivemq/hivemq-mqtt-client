@@ -36,7 +36,7 @@ import java.util.*;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows {
+class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows {
 
     private @Nullable TopicTreeNode rootNode;
 

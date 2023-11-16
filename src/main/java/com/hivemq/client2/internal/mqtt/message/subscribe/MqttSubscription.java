@@ -116,14 +116,14 @@ public class MqttSubscription implements Mqtt5Subscription {
 
     public byte encodeSubscriptionOptions() {
         byte subscriptionOptions = 0;
-        subscriptionOptions |= retainHandling.getCode() << 4;
+        subscriptionOptions |= (byte) (retainHandling.getCode() << 4);
         if (retainAsPublished) {
             subscriptionOptions |= 0b0000_1000;
         }
         if (noLocal) {
             subscriptionOptions |= 0b0000_0100;
         }
-        subscriptionOptions |= maxQos.getCode();
+        subscriptionOptions |= (byte) maxQos.getCode();
         return subscriptionOptions;
     }
 

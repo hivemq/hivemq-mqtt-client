@@ -130,7 +130,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         });
     }
 
-    public void unsubscribe(
+    void unsubscribe(
             final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> flow) {
 
         flow.getEventLoop().execute(() -> {

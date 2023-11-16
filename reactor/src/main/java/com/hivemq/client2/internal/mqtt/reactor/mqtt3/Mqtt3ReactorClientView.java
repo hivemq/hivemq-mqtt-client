@@ -149,7 +149,7 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
         return delegate.toBlocking();
     }
 
-    private class Mqtt3SubscribeViewPublishesBuilder
+    public class Mqtt3SubscribeViewPublishesBuilder
             extends Mqtt3SubscribeViewBuilder.Publishes<FluxWithSingle<Mqtt3Publish, Mqtt3SubAck>> {
 
         @Override

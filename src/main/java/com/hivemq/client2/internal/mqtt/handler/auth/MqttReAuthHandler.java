@@ -44,7 +44,7 @@ import static com.hivemq.client2.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REA
  * @author Silvio Giebl
  */
 @ConnectionScope
-public class MqttReAuthHandler extends AbstractMqttAuthHandler {
+class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
     private @Nullable CompletableFlow flow;
 

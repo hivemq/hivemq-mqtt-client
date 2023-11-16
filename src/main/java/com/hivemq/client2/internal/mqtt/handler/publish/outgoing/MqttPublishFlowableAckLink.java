@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author Silvio Giebl
  */
-public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
+class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
     private final @NotNull Flowable<MqttPublish> source;
     private final @NotNull MqttAckFlowableFlow ackFlow;

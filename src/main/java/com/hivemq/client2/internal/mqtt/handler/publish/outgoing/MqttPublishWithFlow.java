@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-class MqttPublishWithFlow extends MqttPubOrRelWithFlow {
+public class MqttPublishWithFlow extends MqttPubOrRelWithFlow {
 
     private final @NotNull MqttPublish publish;
 

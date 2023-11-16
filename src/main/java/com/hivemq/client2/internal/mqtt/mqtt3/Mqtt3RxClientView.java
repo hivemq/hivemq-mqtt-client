@@ -207,7 +207,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
         return new Mqtt3BlockingClientView(delegate.toBlocking());
     }
 
-    private class Mqtt3SubscribeViewPublishesBuilder
+    public class Mqtt3SubscribeViewPublishesBuilder
             extends Mqtt3SubscribeViewBuilder.Publishes<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> {
 
         @Override

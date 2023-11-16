@@ -216,7 +216,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         return delegate.toAsync();
     }
 
-    private static class Publishes implements Mqtt5BlockingClient.Publishes, FlowableSubscriber<Mqtt5Publish> {
+    public static class Publishes implements Mqtt5BlockingClient.Publishes, FlowableSubscriber<Mqtt5Publish> {
 
         private final @NotNull AtomicReference<@Nullable Subscription> subscription = new AtomicReference<>();
         private final @NotNull NodeList<Entry> entries = new NodeList<>();

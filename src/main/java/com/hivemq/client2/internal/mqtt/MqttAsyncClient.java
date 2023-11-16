@@ -310,7 +310,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         public void onError(final @NotNull Throwable t) {}
     }
 
-    private class SubscribeBuilder extends MqttSubscribeBuilder<SubscribeBuilder>
+    public class SubscribeBuilder extends MqttSubscribeBuilder<SubscribeBuilder>
             implements Mqtt5AsyncClient.SubscribeBuilder.Start.Complete,
             Mqtt5AsyncClient.SubscribeBuilder.AfterCallback {
 

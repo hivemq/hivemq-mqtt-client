@@ -167,7 +167,7 @@ public class MqttReactorClient implements Mqtt5ReactorClient {
         return delegate.toBlocking();
     }
 
-    private class MqttSubscribePublishesBuilder
+    public class MqttSubscribePublishesBuilder
             extends MqttSubscribeBuilder.Publishes<FluxWithSingle<Mqtt5Publish, Mqtt5SubAck>> {
 
         @Override

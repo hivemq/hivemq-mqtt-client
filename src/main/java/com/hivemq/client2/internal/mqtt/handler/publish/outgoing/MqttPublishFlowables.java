@@ -30,7 +30,7 @@ import org.reactivestreams.Subscription;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>> implements Subscription {
+class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>> implements Subscription {
 
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttPublishFlowables.class);
 

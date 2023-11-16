@@ -173,7 +173,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         return new Mqtt3AsyncClientView(delegate.toAsync());
     }
 
-    private static class PublishesView implements Publishes {
+    public static class PublishesView implements Publishes {
 
         private final @NotNull Mqtt5BlockingClient.Publishes delegate;
 
