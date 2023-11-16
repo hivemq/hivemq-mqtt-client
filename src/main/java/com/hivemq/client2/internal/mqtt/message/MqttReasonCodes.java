@@ -41,7 +41,7 @@ public class MqttReasonCodes {
     public static final int IMPLEMENTATION_SPECIFIC_ERROR = 0x83;
     public static final int UNSUPPORTED_PROTOCOL_VERSION = 0x84;
     public static final int CLIENT_IDENTIFIER_NOT_VALID = 0x85;
-    public static final int BAD_USER_NAME_OR_PASSWORD = 0x86;
+    public static final int BAD_USERNAME_OR_PASSWORD = 0x86;
     public static final int NOT_AUTHORIZED = 0x87;
     public static final int SERVER_UNAVAILABLE = 0x88;
     public static final int SERVER_BUSY = 0x89;

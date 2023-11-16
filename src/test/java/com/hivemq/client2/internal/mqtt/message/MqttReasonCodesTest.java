@@ -97,7 +97,7 @@ class MqttReasonCodesTest {
 
     @Test
     void test_getCode_badUsernameOrPassword() {
-        assertEquals(0x86, MqttReasonCodes.BAD_USER_NAME_OR_PASSWORD);
+        assertEquals(0x86, MqttReasonCodes.BAD_USERNAME_OR_PASSWORD);
     }
 
     @Test

@@ -58,7 +58,7 @@ public abstract class MqttSimpleAuthBuilder<B extends MqttSimpleAuthBuilder<B>> 
     }
 
     public @NotNull MqttSimpleAuth build() {
-        Checks.state((username != null) || (password != null), "Either user name or password must be given.");
+        Checks.state((username != null) || (password != null), "Either username or password must be given.");
         return new MqttSimpleAuth(username, password);
     }
 

@@ -157,8 +157,8 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
             assertNull(connAck);
         } else {
             assertNotNull(connAck);
-            assertEquals(Mqtt5ConnAckReasonCode.BAD_USER_NAME_OR_PASSWORD, connAck.getReasonCode());
-            // Mqtt3ConnAckReturnCode.BAD_USER_NAME_OR_PASSWORD
+            assertEquals(Mqtt5ConnAckReasonCode.BAD_USERNAME_OR_PASSWORD, connAck.getReasonCode());
+            // Mqtt3ConnAckReturnCode.BAD_USERNAME_OR_PASSWORD
             assertFalse(connAck.isSessionPresent());
         }
     }

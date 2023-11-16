@@ -50,7 +50,7 @@ class Mqtt3ConnAckReturnCodeTest {
 
     @Test
     void getCode_badUserNameOrPassword() {
-        assertEquals(0x04, Mqtt3ConnAckReturnCode.BAD_USER_NAME_OR_PASSWORD.getCode());
+        assertEquals(0x04, Mqtt3ConnAckReturnCode.BAD_USERNAME_OR_PASSWORD.getCode());
     }
 
     @Test
@@ -79,7 +79,7 @@ class Mqtt3ConnAckReturnCodeTest {
 
     @ParameterizedTest
     @EnumSource(value = Mqtt3ConnAckReturnCode.class, names = {
-            "UNSUPPORTED_PROTOCOL_VERSION", "IDENTIFIER_REJECTED", "SERVER_UNAVAILABLE", "BAD_USER_NAME_OR_PASSWORD",
+            "UNSUPPORTED_PROTOCOL_VERSION", "IDENTIFIER_REJECTED", "SERVER_UNAVAILABLE", "BAD_USERNAME_OR_PASSWORD",
             "NOT_AUTHORIZED"
     })
     void isError_true(final @NotNull Mqtt3ConnAckReturnCode returnCode) {

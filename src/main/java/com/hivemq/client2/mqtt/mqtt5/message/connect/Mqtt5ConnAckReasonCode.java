@@ -58,9 +58,9 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
      */
     CLIENT_IDENTIFIER_NOT_VALID(MqttReasonCodes.CLIENT_IDENTIFIER_NOT_VALID),
     /**
-     * The server does not accept the user name or password specified by the client.
+     * The server does not accept the username or password specified by the client.
      */
-    BAD_USER_NAME_OR_PASSWORD(MqttReasonCodes.BAD_USER_NAME_OR_PASSWORD),
+    BAD_USERNAME_OR_PASSWORD(MqttReasonCodes.BAD_USERNAME_OR_PASSWORD),
     /**
      * The client is not authorized to connect.
      */

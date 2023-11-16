@@ -58,8 +58,8 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
                 return Mqtt5ConnAckReasonCode.CLIENT_IDENTIFIER_NOT_VALID;
             case SERVER_UNAVAILABLE:
                 return Mqtt5ConnAckReasonCode.SERVER_UNAVAILABLE;
-            case BAD_USER_NAME_OR_PASSWORD:
-                return Mqtt5ConnAckReasonCode.BAD_USER_NAME_OR_PASSWORD;
+            case BAD_USERNAME_OR_PASSWORD:
+                return Mqtt5ConnAckReasonCode.BAD_USERNAME_OR_PASSWORD;
             case NOT_AUTHORIZED:
                 return Mqtt5ConnAckReasonCode.NOT_AUTHORIZED;
             default:
@@ -77,8 +77,8 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
                 return IDENTIFIER_REJECTED;
             case SERVER_UNAVAILABLE:
                 return SERVER_UNAVAILABLE;
-            case BAD_USER_NAME_OR_PASSWORD:
-                return BAD_USER_NAME_OR_PASSWORD;
+            case BAD_USERNAME_OR_PASSWORD:
+                return BAD_USERNAME_OR_PASSWORD;
             case NOT_AUTHORIZED:
                 return NOT_AUTHORIZED;
             default:
