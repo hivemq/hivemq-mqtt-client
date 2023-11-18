@@ -26,8 +26,8 @@ import org.jetbrains.annotations.Range;
 /**
  * Restrictions for the client set by the server in an {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  * <p>
- * These restrictions are used in conjunction with the
- * {@link com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnectRestrictions Mqtt5ConnectRestrictions} to form the
+ * These restrictions are used in conjunction with the {@link Mqtt5ConnectRestrictions Mqtt5ConnectRestrictions} to form
+ * the
  * {@link com.hivemq.mqtt.client2.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient
  * Mqtt5ClientConnectionConfig.RestrictionsForClient}.
  *
