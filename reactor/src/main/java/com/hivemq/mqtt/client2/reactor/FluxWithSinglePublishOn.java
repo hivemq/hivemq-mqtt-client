@@ -14,32 +14,41 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.reactor.internal.operators;
+package com.hivemq.mqtt.client2.reactor;
 
-import com.hivemq.mqtt.client2.reactivestreams.PublisherWithSingle;
-import com.hivemq.mqtt.client2.reactor.CoreWithSingleSubscriber;
-import com.hivemq.mqtt.client2.reactor.FluxWithSingle;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.CoreSubscriber;
+import reactor.core.scheduler.Scheduler;
 
 /**
  * @author Silvio Giebl
  */
-public class FluxWithSingleFrom<F, S> extends FluxWithSingle<F, S> {
+class FluxWithSinglePublishOn<F, S> extends FluxWithSingleOperator<F, S, F, S> {
 
-    private final @NotNull PublisherWithSingle<? extends F, ? extends S> source;
+    private final @NotNull Scheduler scheduler;
+    private final boolean delayError;
+    private final int prefetch;
 
-    public FluxWithSingleFrom(final @NotNull PublisherWithSingle<? extends F, ? extends S> source) {
-        this.source = source;
+    FluxWithSinglePublishOn(
+            final @NotNull FluxWithSingle<F, S> source,
+            final @NotNull Scheduler scheduler,
+            final boolean delayError,
+            final int prefetch) {
+
+        super(source);
+        this.scheduler = scheduler;
+        this.delayError = delayError;
+        this.prefetch = prefetch;
     }
 
     @Override
     public void subscribe(final @NotNull CoreSubscriber<? super F> subscriber) {
-        source.subscribe(subscriber);
+        source.publishOn(scheduler, delayError, prefetch).subscribe(subscriber);
     }
 
     @Override
     public void subscribeBoth(final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber) {
-        source.subscribeBoth(subscriber);
+        FluxWithSingleCombine.split(
+                new FluxWithSingleCombine<>(source).publishOn(scheduler, delayError, prefetch), subscriber);
     }
 }

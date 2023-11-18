@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.reactor.internal;
+package com.hivemq.mqtt.client2.reactor;
 
-import com.hivemq.mqtt.client2.reactor.CoreWithSingleSubscriber;
-import reactor.core.Fuseable;
+import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
+import com.hivemq.mqtt.client2.rx.internal.WithSingleStrictSubscriber;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public interface CoreWithSingleConditionalSubscriber<F, S>
-        extends CoreWithSingleSubscriber<F, S>, Fuseable.ConditionalSubscriber<F> {}
+class CoreWithSingleStrictSubscriber<F, S> extends WithSingleStrictSubscriber<F, S>
+        implements CoreWithSingleSubscriber<F, S> {
+
+    public CoreWithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<F, S> subscriber) {
+        super(subscriber);
+    }
+}

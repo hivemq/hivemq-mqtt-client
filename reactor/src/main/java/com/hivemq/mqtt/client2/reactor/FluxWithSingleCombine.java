@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.reactor.internal.operators;
+package com.hivemq.mqtt.client2.reactor;
 
-import com.hivemq.mqtt.client2.reactor.CoreWithSingleSubscriber;
-import com.hivemq.mqtt.client2.reactor.FluxWithSingle;
-import com.hivemq.mqtt.client2.reactor.internal.CoreWithSingleConditionalSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscription;

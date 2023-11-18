@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.reactor.internal;
+package com.hivemq.mqtt.client2.reactor;
 
-import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.reactor.CoreWithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.internal.WithSingleStrictSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public class CoreWithSingleStrictSubscriber<F, S> extends WithSingleStrictSubscriber<F, S>
-        implements CoreWithSingleSubscriber<F, S> {
+abstract class FluxWithSingleOperator<FU, SU, F, S> extends FluxWithSingle<F, S> {
 
-    public CoreWithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<F, S> subscriber) {
-        super(subscriber);
+    final @NotNull FluxWithSingle<FU, SU> source;
+
+    FluxWithSingleOperator(final @NotNull FluxWithSingle<FU, SU> source) {
+        this.source = source;
     }
 }

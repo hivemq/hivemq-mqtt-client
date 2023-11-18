@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.reactor.internal.operators;
+package com.hivemq.mqtt.client2.reactor;
 
 import com.hivemq.mqtt.client2.internal.util.Checks;
-import com.hivemq.mqtt.client2.reactor.CoreWithSingleSubscriber;
-import com.hivemq.mqtt.client2.reactor.FluxWithSingle;
-import com.hivemq.mqtt.client2.reactor.internal.CoreWithSingleConditionalSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscription;
@@ -33,9 +30,9 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, SM> {
+class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, SM> {
 
-    public static <F, S, FM, SM> @NotNull FluxWithSingleMap<F, S, FM, SM> mapBoth(
+    static <F, S, FM, SM> @NotNull FluxWithSingleMap<F, S, FM, SM> mapBoth(
             final @NotNull FluxWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
@@ -43,7 +40,7 @@ public class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S
         return new FluxWithSingleMap<>(source, fluxMapper, singleMapper);
     }
 
-    public static <F, S, SM> @NotNull FluxWithSingleMap<F, S, F, SM> mapSingle(
+    static <F, S, SM> @NotNull FluxWithSingleMap<F, S, F, SM> mapSingle(
             final @NotNull FluxWithSingle<F, S> source, final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         return new FluxWithSingleMap<>(source, null, singleMapper);

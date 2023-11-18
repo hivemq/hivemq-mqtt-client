@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.reactor.internal.operators;
+package com.hivemq.mqtt.client2.reactor;
 
-import com.hivemq.mqtt.client2.reactor.FluxWithSingle;
+import com.hivemq.mqtt.client2.reactivestreams.PublisherWithSingle;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.CoreSubscriber;
 
 /**
  * @author Silvio Giebl
  */
-abstract class FluxWithSingleOperator<FU, SU, F, S> extends FluxWithSingle<F, S> {
+class FluxWithSingleFrom<F, S> extends FluxWithSingle<F, S> {
 
-    final @NotNull FluxWithSingle<FU, SU> source;
+    private final @NotNull PublisherWithSingle<? extends F, ? extends S> source;
 
-    FluxWithSingleOperator(final @NotNull FluxWithSingle<FU, SU> source) {
+    FluxWithSingleFrom(final @NotNull PublisherWithSingle<? extends F, ? extends S> source) {
         this.source = source;
+    }
+
+    @Override
+    public void subscribe(final @NotNull CoreSubscriber<? super F> subscriber) {
+        source.subscribe(subscriber);
+    }
+
+    @Override
+    public void subscribeBoth(final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber) {
+        source.subscribeBoth(subscriber);
     }
 }
