@@ -17,16 +17,140 @@
 package com.hivemq.mqtt.client2.reactor;
 
 import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.internal.WithSingleStrictSubscriber;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.reactivestreams.Subscription;
+import reactor.core.Exceptions;
+import reactor.core.publisher.Operators;
+import reactor.util.context.Context;
+
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 /**
  * @author Silvio Giebl
  */
-class CoreWithSingleStrictSubscriber<F, S> extends WithSingleStrictSubscriber<F, S>
-        implements CoreWithSingleSubscriber<F, S> {
+class CoreWithSingleStrictSubscriber<F, S> implements CoreWithSingleSubscriber<F, S>, Subscription {
 
-    public CoreWithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<F, S> subscriber) {
-        super(subscriber);
+    private final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber;
+
+    private volatile @Nullable Subscription subscription;
+    @SuppressWarnings("rawtypes")
+    private static final @NotNull AtomicReferenceFieldUpdater<CoreWithSingleStrictSubscriber, Subscription>
+            SUBSCRIPTION =
+            AtomicReferenceFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, Subscription.class,
+                    "subscription");
+
+    private volatile long requested;
+    @SuppressWarnings("rawtypes")
+    private static final @NotNull AtomicLongFieldUpdater<CoreWithSingleStrictSubscriber> REQUESTED =
+            AtomicLongFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, "requested");
+
+    private volatile int wip;
+    @SuppressWarnings("rawtypes")
+    private static final @NotNull AtomicIntegerFieldUpdater<CoreWithSingleStrictSubscriber> WIP =
+            AtomicIntegerFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, "wip");
+
+    private volatile @Nullable Throwable error;
+    @SuppressWarnings("rawtypes")
+    private static final @NotNull AtomicReferenceFieldUpdater<CoreWithSingleStrictSubscriber, Throwable> ERROR =
+            AtomicReferenceFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, Throwable.class, "error");
+
+    private volatile boolean done;
+
+    public CoreWithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
+        this.subscriber = subscriber;
+    }
+
+    @Override
+    public void onSubscribe(final @NotNull Subscription subscription) {
+        if (Operators.validate(this.subscription, subscription)) {
+
+            subscriber.onSubscribe(this);
+
+            if (Operators.setOnce(SUBSCRIPTION, this, subscription)) {
+                final long requested = REQUESTED.getAndSet(this, 0L);
+                if (requested != 0L) {
+                    subscription.request(requested);
+                }
+            }
+        } else {
+            onError(new IllegalStateException("§2.12 violated: onSubscribe must be called at most once"));
+        }
+    }
+
+    @Override
+    public void onSingle(final @NotNull S s) {
+        subscriber.onSingle(s);
+    }
+
+    @Override
+    public void onNext(final @NotNull F f) {
+        if (WIP.get(this) == 0 && WIP.compareAndSet(this, 0, 1)) {
+            subscriber.onNext(f);
+            if (WIP.decrementAndGet(this) != 0) {
+                final Throwable error = Exceptions.terminate(ERROR, this);
+                if (error != null) {
+                    subscriber.onError(error);
+                } else {
+                    subscriber.onComplete();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onError(final @NotNull Throwable error) {
+        done = true;
+        if (Exceptions.addThrowable(ERROR, this, error)) {
+            if (WIP.getAndIncrement(this) == 0) {
+                subscriber.onError(Exceptions.terminate(ERROR, this));
+            }
+        } else {
+            Operators.onErrorDropped(error, Context.empty());
+        }
+    }
+
+    @Override
+    public void onComplete() {
+        done = true;
+        if (WIP.getAndIncrement(this) == 0) {
+            final Throwable error = Exceptions.terminate(ERROR, this);
+            if (error != null) {
+                subscriber.onError(error);
+            } else {
+                subscriber.onComplete();
+            }
+        }
+    }
+
+    @Override
+    public void request(final long n) {
+        if (n <= 0) {
+            cancel();
+            onError(new IllegalArgumentException("§3.9 violated: positive request amount required but it was " + n));
+            return;
+        }
+        Subscription subscription = this.subscription;
+        if (subscription != null) {
+            subscription.request(n);
+        } else {
+            Operators.addCap(REQUESTED, this, n);
+            subscription = this.subscription;
+            if (subscription != null) {
+                final long requested = REQUESTED.getAndSet(this, 0L);
+                if (requested != 0L) {
+                    subscription.request(requested);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void cancel() {
+        if (!done) {
+            Operators.terminate(SUBSCRIPTION, this);
+        }
     }
 }
