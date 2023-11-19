@@ -16,6 +16,7 @@
 
 package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
+import com.hivemq.mqtt.client2.ext.rx.FlowableWithSingleSubscriber;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.collections.HandleList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttTopicFilterImpl;
@@ -23,7 +24,6 @@ import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionFlow;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAck;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingleSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 

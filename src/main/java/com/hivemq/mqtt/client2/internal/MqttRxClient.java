@@ -17,6 +17,7 @@
 package com.hivemq.mqtt.client2.internal;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
+import com.hivemq.mqtt.client2.ext.rx.FlowableWithSingle;
 import com.hivemq.mqtt.client2.internal.handler.auth.MqttReAuthCompletable;
 import com.hivemq.mqtt.client2.internal.handler.connect.MqttConnAckSingle;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectCompletable;
@@ -48,7 +49,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5Subscribe;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingle;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Scheduler;

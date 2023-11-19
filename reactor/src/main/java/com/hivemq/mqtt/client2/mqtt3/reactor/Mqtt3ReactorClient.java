@@ -17,6 +17,7 @@
 package com.hivemq.mqtt.client2.mqtt3.reactor;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
+import com.hivemq.mqtt.client2.ext.reactor.FluxWithSingle;
 import com.hivemq.mqtt.client2.internal.reactor.mqtt3.Mqtt3ReactorClientView;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3Client;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnAck;
@@ -30,7 +31,6 @@ import com.hivemq.mqtt.client2.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import com.hivemq.mqtt.client2.reactor.FluxWithSingle;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;

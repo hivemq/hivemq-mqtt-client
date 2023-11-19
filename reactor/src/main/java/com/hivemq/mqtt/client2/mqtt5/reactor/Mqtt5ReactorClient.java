@@ -17,6 +17,7 @@
 package com.hivemq.mqtt.client2.mqtt5.reactor;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
+import com.hivemq.mqtt.client2.ext.reactor.FluxWithSingle;
 import com.hivemq.mqtt.client2.internal.reactor.MqttReactorClient;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5Client;
 import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAck;
@@ -32,7 +33,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
-import com.hivemq.mqtt.client2.reactor.FluxWithSingle;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;

@@ -17,6 +17,7 @@
 package com.hivemq.mqtt.client2.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
+import com.hivemq.mqtt.client2.ext.rx.FlowableWithSingle;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnectBuilder;
@@ -28,7 +29,6 @@ import com.hivemq.mqtt.client2.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingle;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
