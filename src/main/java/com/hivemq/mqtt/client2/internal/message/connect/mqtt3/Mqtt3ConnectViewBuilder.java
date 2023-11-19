@@ -20,6 +20,8 @@ import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
 import com.hivemq.mqtt.client2.internal.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.mqtt.client2.internal.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
+import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictions;
+import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictionsBuilder;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PublishViewBuilder;
@@ -27,6 +29,7 @@ import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.internal.util.UnsignedDataTypes;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnectBuilder;
+import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnectRestrictions;
 import com.hivemq.mqtt.client2.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +45,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     private @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAliveSeconds =
             Mqtt3ConnectView.DEFAULT_KEEP_ALIVE;
     private boolean cleanSession = Mqtt3ConnectView.DEFAULT_CLEAN_SESSION;
+    private @NotNull MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable MqttWillPublish willPublish;
 
@@ -51,6 +55,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
         final MqttConnect delegate = connect.getDelegate();
         keepAliveSeconds = delegate.getKeepAlive();
         cleanSession = delegate.isCleanStart();
+        restrictions = delegate.getRestrictions();
         simpleAuth = delegate.getRawSimpleAuth();
         willPublish = delegate.getRawWillPublish();
     }
@@ -70,6 +75,15 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     public @NotNull B cleanSession(final boolean cleanSession) {
         this.cleanSession = cleanSession;
         return self();
+    }
+
+    public @NotNull B restrictions(final @Nullable Mqtt3ConnectRestrictions restrictions) {
+        this.restrictions = Checks.notImplemented(restrictions, MqttConnectRestrictions.class, "Connect restrictions");
+        return self();
+    }
+
+    public MqttConnectRestrictionsBuilder.@NotNull Nested<B> restrictionsWith() {
+        return new MqttConnectRestrictionsBuilder.Nested<>(restrictions, this::restrictions);
     }
 
     public @NotNull B simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth) {
@@ -93,7 +107,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     }
 
     public @NotNull Mqtt3ConnectView build() {
-        return Mqtt3ConnectView.of(keepAliveSeconds, cleanSession, simpleAuth, willPublish);
+        return Mqtt3ConnectView.of(keepAliveSeconds, cleanSession, restrictions, simpleAuth, willPublish);
     }
 
     public static class Default extends Mqtt3ConnectViewBuilder<Default> implements Mqtt3ConnectBuilder {

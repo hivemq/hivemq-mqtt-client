@@ -20,6 +20,7 @@ import com.hivemq.mqtt.client2.internal.datatypes.MqttVariableByteInteger;
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.internal.util.MqttChecks;
 import com.hivemq.mqtt.client2.internal.util.UnsignedDataTypes;
+import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnectRestrictionsBuilder;
 import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -107,7 +108,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>
-            implements Mqtt5ConnectRestrictionsBuilder {
+            implements Mqtt5ConnectRestrictionsBuilder, Mqtt3ConnectRestrictionsBuilder {
 
         public Default() {}
 
@@ -122,9 +123,9 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public static class Nested<P> extends MqttConnectRestrictionsBuilder<Nested<P>>
-            implements Mqtt5ConnectRestrictionsBuilder.Nested<P> {
+            implements Mqtt5ConnectRestrictionsBuilder.Nested<P>, Mqtt3ConnectRestrictionsBuilder.Nested<P> {
 
-        Nested(
+        public Nested(
                 final @NotNull MqttConnectRestrictions restrictions,
                 final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer) {
 

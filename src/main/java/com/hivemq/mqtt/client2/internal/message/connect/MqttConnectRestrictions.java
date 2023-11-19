@@ -18,6 +18,7 @@ package com.hivemq.mqtt.client2.internal.message.connect;
 
 import com.hivemq.mqtt.client2.internal.datatypes.MqttVariableByteInteger;
 import com.hivemq.mqtt.client2.internal.util.UnsignedDataTypes;
+import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnectRestrictions;
 import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @author Silvio Giebl
  */
 @Unmodifiable
-public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
+public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt3ConnectRestrictions {
 
     public static final @NotNull MqttConnectRestrictions DEFAULT =
             new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_SEND_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE,

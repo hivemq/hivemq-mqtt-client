@@ -62,6 +62,29 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
     @NotNull B cleanSession(boolean cleanSession);
 
     /**
+     * Sets the {@link Mqtt3Connect#getRestrictions() restrictions} from the client.
+     *
+     * @param restrictions the restrictions from the client.
+     * @return the builder.
+     * @since 1.3
+     */
+    @CheckReturnValue
+    @NotNull B restrictions(@NotNull Mqtt3ConnectRestrictions restrictions);
+
+    /**
+     * Fluent counterpart of {@link #restrictions(Mqtt3ConnectRestrictions)}.
+     * <p>
+     * Calling {@link Mqtt3ConnectRestrictionsBuilder.Nested#applyRestrictions()} on the returned builder has the effect
+     * of {@link Mqtt3ConnectRestrictions#extend() extending} the current restrictions.
+     *
+     * @return the fluent builder for the restrictions.
+     * @see #restrictions(Mqtt3ConnectRestrictions)
+     * @since 1.3
+     */
+    @CheckReturnValue
+    Mqtt3ConnectRestrictionsBuilder.@NotNull Nested<? extends B> restrictionsWith();
+
+    /**
      * Sets the optional {@link Mqtt3Connect#getSimpleAuth() simple authentication and/or authorization related data}.
      *
      * @param simpleAuth the simple auth related data or <code>null</code> to remove any previously set simple auth
