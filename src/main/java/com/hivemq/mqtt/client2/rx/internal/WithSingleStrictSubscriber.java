@@ -33,13 +33,14 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class WithSingleStrictSubscriber<F, S> implements FlowableWithSingleSubscriber<F, S>, Subscription {
 
-    private final @NotNull WithSingleSubscriber<F, S> subscriber;
+    private final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber;
     private final @NotNull AtomicReference<@Nullable Subscription> subscription = new AtomicReference<>();
     private final @NotNull AtomicLong requested = new AtomicLong();
     private final @NotNull AtomicInteger wip = new AtomicInteger();
     private @Nullable Throwable error;
+    private volatile boolean done;
 
-    public WithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<F, S> subscriber) {
+    public WithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
         this.subscriber = subscriber;
     }
 
@@ -83,16 +84,18 @@ public class WithSingleStrictSubscriber<F, S> implements FlowableWithSingleSubsc
     }
 
     @Override
-    public void onError(final @NotNull Throwable throwable) {
-        error = throwable;
+    public void onError(final @NotNull Throwable error) {
+        done = true;
+        this.error = error;
         if (wip.getAndIncrement() == 0) {
-            subscriber.onError(throwable);
-            error = null;
+            subscriber.onError(error);
+            this.error = null;
         }
     }
 
     @Override
     public void onComplete() {
+        done = true;
         if (wip.getAndIncrement() == 0) {
             subscriber.onComplete();
         }
@@ -122,6 +125,9 @@ public class WithSingleStrictSubscriber<F, S> implements FlowableWithSingleSubsc
 
     @Override
     public void cancel() {
+        if (done) {
+            return;
+        }
         final Subscription subscription = this.subscription.getAndSet(SubscriptionHelper.CANCELLED);
         if ((subscription != null) && (subscription != this) && (subscription != SubscriptionHelper.CANCELLED)) {
             subscription.cancel();
