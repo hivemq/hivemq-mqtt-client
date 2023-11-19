@@ -31,35 +31,34 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 /**
  * @author Silvio Giebl
  */
-class CoreWithSingleStrictSubscriber<F, S> implements CoreWithSingleSubscriber<F, S>, Subscription {
+class WithSingleStrictSubscriber<F, S> implements CoreWithSingleSubscriber<F, S>, Subscription {
 
     private final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber;
 
     private volatile @Nullable Subscription subscription;
     @SuppressWarnings("rawtypes")
-    private static final @NotNull AtomicReferenceFieldUpdater<CoreWithSingleStrictSubscriber, Subscription>
-            SUBSCRIPTION =
-            AtomicReferenceFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, Subscription.class,
+    private static final @NotNull AtomicReferenceFieldUpdater<WithSingleStrictSubscriber, Subscription> SUBSCRIPTION =
+            AtomicReferenceFieldUpdater.newUpdater(WithSingleStrictSubscriber.class, Subscription.class,
                     "subscription");
 
     private volatile long requested;
     @SuppressWarnings("rawtypes")
-    private static final @NotNull AtomicLongFieldUpdater<CoreWithSingleStrictSubscriber> REQUESTED =
-            AtomicLongFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, "requested");
+    private static final @NotNull AtomicLongFieldUpdater<WithSingleStrictSubscriber> REQUESTED =
+            AtomicLongFieldUpdater.newUpdater(WithSingleStrictSubscriber.class, "requested");
 
     private volatile int wip;
     @SuppressWarnings("rawtypes")
-    private static final @NotNull AtomicIntegerFieldUpdater<CoreWithSingleStrictSubscriber> WIP =
-            AtomicIntegerFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, "wip");
+    private static final @NotNull AtomicIntegerFieldUpdater<WithSingleStrictSubscriber> WIP =
+            AtomicIntegerFieldUpdater.newUpdater(WithSingleStrictSubscriber.class, "wip");
 
     private volatile @Nullable Throwable error;
     @SuppressWarnings("rawtypes")
-    private static final @NotNull AtomicReferenceFieldUpdater<CoreWithSingleStrictSubscriber, Throwable> ERROR =
-            AtomicReferenceFieldUpdater.newUpdater(CoreWithSingleStrictSubscriber.class, Throwable.class, "error");
+    private static final @NotNull AtomicReferenceFieldUpdater<WithSingleStrictSubscriber, Throwable> ERROR =
+            AtomicReferenceFieldUpdater.newUpdater(WithSingleStrictSubscriber.class, Throwable.class, "error");
 
     private volatile boolean done;
 
-    public CoreWithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
+    public WithSingleStrictSubscriber(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
         this.subscriber = subscriber;
     }
 

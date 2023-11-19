@@ -154,7 +154,7 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
             subscribeBoth((CoreWithSingleSubscriber<? super F, ? super S>) subscriber);
         } else {
             Checks.notNull(subscriber, "Subscriber");
-            subscribeBoth(new CoreWithSingleStrictSubscriber<>(subscriber));
+            subscribeBoth(new WithSingleStrictSubscriber<>(subscriber));
         }
     }
 

@@ -72,9 +72,9 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
 
     @Override
     public void subscribeBoth(final @NotNull CoreWithSingleSubscriber<? super FM, ? super SM> subscriber) {
-        if (subscriber instanceof CoreWithSingleConditionalSubscriber) {
-            final CoreWithSingleConditionalSubscriber<? super FM, ? super SM> conditional =
-                    (CoreWithSingleConditionalSubscriber<? super FM, ? super SM>) subscriber;
+        if (subscriber instanceof WithSingleConditionalSubscriber) {
+            final WithSingleConditionalSubscriber<? super FM, ? super SM> conditional =
+                    (WithSingleConditionalSubscriber<? super FM, ? super SM>) subscriber;
             source.subscribeBoth(new WithSingleMapSubscriber.Conditional<>(conditional, fluxMapper, singleMapper));
         } else {
             source.subscribeBoth(new WithSingleMapSubscriber<>(subscriber, fluxMapper, singleMapper));
@@ -172,7 +172,7 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
 
         private static class Conditional<F, S, FM, SM, T extends Fuseable.ConditionalSubscriber<? super FM>>
                 extends FluxWithSingleMap.MapSubscriber<F, S, FM, SM, T>
-                implements CoreWithSingleConditionalSubscriber<F, S> {
+                implements WithSingleConditionalSubscriber<F, S> {
 
             Conditional(
                     final @NotNull T subscriber,
@@ -218,10 +218,10 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
         }
 
         private static class Conditional<F, S, FM, SM> extends
-                MapSubscriber.Conditional<F, S, FM, SM, CoreWithSingleConditionalSubscriber<? super FM, ? super SM>> {
+                MapSubscriber.Conditional<F, S, FM, SM, WithSingleConditionalSubscriber<? super FM, ? super SM>> {
 
             Conditional(
-                    final @NotNull CoreWithSingleConditionalSubscriber<? super FM, ? super SM> subscriber,
+                    final @NotNull WithSingleConditionalSubscriber<? super FM, ? super SM> subscriber,
                     final @Nullable Function<? super F, ? extends FM> fluxMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
 

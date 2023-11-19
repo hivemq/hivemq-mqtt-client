@@ -21,5 +21,5 @@ import reactor.core.Fuseable;
 /**
  * @author Silvio Giebl
  */
-interface CoreWithSingleConditionalSubscriber<F, S>
+interface WithSingleConditionalSubscriber<F, S>
         extends CoreWithSingleSubscriber<F, S>, Fuseable.ConditionalSubscriber<F> {}
