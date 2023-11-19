@@ -20,7 +20,7 @@ import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.MqttClientConnectionConfig;
 import com.hivemq.mqtt.client2.internal.exceptions.MqttClientStateExceptions;
 import com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect;
-import com.hivemq.mqtt.client2.rx.internal.CompletableFlow;
+import com.hivemq.mqtt.client2.internal.rx.CompletableFlow;
 import io.netty.channel.Channel;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.CompletableObserver;

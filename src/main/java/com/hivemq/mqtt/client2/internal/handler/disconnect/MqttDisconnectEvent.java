@@ -17,10 +17,10 @@
 package com.hivemq.mqtt.client2.internal.handler.disconnect;
 
 import com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect;
+import com.hivemq.mqtt.client2.internal.rx.CompletableFlow;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
 import com.hivemq.mqtt.client2.mqtt5.exceptions.Mqtt5DisconnectException;
 import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5Disconnect;
-import com.hivemq.mqtt.client2.rx.internal.CompletableFlow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

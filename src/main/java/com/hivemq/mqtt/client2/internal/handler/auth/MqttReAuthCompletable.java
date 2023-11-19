@@ -19,7 +19,7 @@ package com.hivemq.mqtt.client2.internal.handler.auth;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.MqttClientConnectionConfig;
 import com.hivemq.mqtt.client2.internal.exceptions.MqttClientStateExceptions;
-import com.hivemq.mqtt.client2.rx.internal.CompletableFlow;
+import com.hivemq.mqtt.client2.internal.rx.CompletableFlow;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.reactivex.rxjava3.core.Completable;
