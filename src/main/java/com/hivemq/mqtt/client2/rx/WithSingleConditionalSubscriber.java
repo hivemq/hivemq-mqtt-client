@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.rx.internal.operators;
+package com.hivemq.mqtt.client2.rx;
 
-import com.hivemq.mqtt.client2.rx.FlowableWithSingle;
-import org.jetbrains.annotations.NotNull;
+import io.reactivex.rxjava3.operators.ConditionalSubscriber;
 
 /**
  * @author Silvio Giebl
  */
-abstract class FlowableWithSingleOperator<FU, SU, F, S> extends FlowableWithSingle<F, S> {
-
-    final @NotNull FlowableWithSingle<FU, SU> source;
-
-    FlowableWithSingleOperator(final @NotNull FlowableWithSingle<FU, SU> source) {
-        this.source = source;
-    }
-}
+public interface WithSingleConditionalSubscriber<F, S>
+        extends FlowableWithSingleSubscriber<F, S>, ConditionalSubscriber<F> {}

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.rx.internal.operators;
+package com.hivemq.mqtt.client2.rx;
 
 import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingle;
 import io.reactivex.rxjava3.core.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
@@ -25,13 +24,13 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperator<F, S, F, S> {
+class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperator<F, S, F, S> {
 
     private final @NotNull Scheduler scheduler;
     private final boolean delayError;
     private final int bufferSize;
 
-    public FlowableWithSingleObserveOn(
+    FlowableWithSingleObserveOn(
             final @NotNull FlowableWithSingle<F, S> source,
             final @NotNull Scheduler scheduler,
             final boolean delayError,

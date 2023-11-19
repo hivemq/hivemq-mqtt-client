@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.rx.internal.operators;
+package com.hivemq.mqtt.client2.rx;
 
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingle;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.internal.WithSingleConditionalSubscriber;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.exceptions.CompositeException;
 import io.reactivex.rxjava3.exceptions.Exceptions;
@@ -34,11 +31,11 @@ import org.reactivestreams.Subscription;
 /**
  * @author Silvio Giebl
  */
-public class FlowableWithSingleMapError<F, S> extends FlowableWithSingleOperator<F, S, F, S> {
+class FlowableWithSingleMapError<F, S> extends FlowableWithSingleOperator<F, S, F, S> {
 
     private final @NotNull Function<? super Throwable, ? extends Throwable> errorMapper;
 
-    public FlowableWithSingleMapError(
+    FlowableWithSingleMapError(
             final @NotNull FlowableWithSingle<F, S> source,
             final @NotNull Function<? super Throwable, ? extends Throwable> errorMapper) {
 

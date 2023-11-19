@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.rx.internal.operators;
+package com.hivemq.mqtt.client2.rx;
 
 import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingle;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.internal.WithSingleConditionalSubscriber;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.internal.util.BackpressureHelper;
 import io.reactivex.rxjava3.operators.ConditionalSubscriber;

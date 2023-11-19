@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.rx.internal.operators;
+package com.hivemq.mqtt.client2.rx;
 
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingle;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.internal.WithSingleConditionalSubscriber;
 import io.reactivex.rxjava3.exceptions.Exceptions;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.operators.ConditionalSubscriber;
@@ -32,9 +29,9 @@ import org.reactivestreams.Subscription;
 /**
  * @author Silvio Giebl
  */
-public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, S, FM, SM> {
+class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, S, FM, SM> {
 
-    public static <F, S, FM, SM> @NotNull FlowableWithSingleMap<F, S, FM, SM> mapBoth(
+    static <F, S, FM, SM> @NotNull FlowableWithSingleMap<F, S, FM, SM> mapBoth(
             final @NotNull FlowableWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
@@ -42,7 +39,7 @@ public class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOpera
         return new FlowableWithSingleMap<>(source, flowableMapper, singleMapper);
     }
 
-    public static <F, S, SM> @NotNull FlowableWithSingleMap<F, S, F, SM> mapSingle(
+    static <F, S, SM> @NotNull FlowableWithSingleMap<F, S, F, SM> mapSingle(
             final @NotNull FlowableWithSingle<F, S> source,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 

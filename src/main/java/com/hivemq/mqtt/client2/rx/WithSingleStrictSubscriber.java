@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.rx.internal;
+package com.hivemq.mqtt.client2.rx;
 
 import com.hivemq.mqtt.client2.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.rx.FlowableWithSingleSubscriber;
 import io.reactivex.rxjava3.internal.subscriptions.SubscriptionHelper;
 import io.reactivex.rxjava3.internal.util.BackpressureHelper;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Silvio Giebl
  */
-public class WithSingleStrictSubscriber<F, S> implements FlowableWithSingleSubscriber<F, S>, Subscription {
+class WithSingleStrictSubscriber<F, S> implements FlowableWithSingleSubscriber<F, S>, Subscription {
 
     private final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber;
     private final @NotNull AtomicReference<@Nullable Subscription> subscription = new AtomicReference<>();
