@@ -73,18 +73,18 @@ public class MqttWebSocketInitializer {
             return;
         }
 
-        final Map<String, String> httpHeaders = webSocketConfig.getHttpHeaders();
-        final DefaultHttpHeaders headers;
-        if (httpHeaders.isEmpty()) {
-            headers = null;
+        final Map<String, String> headers = webSocketConfig.getHeaders();
+        final DefaultHttpHeaders httpHeaders;
+        if (headers.isEmpty()) {
+            httpHeaders = null;
         } else {
-            headers = new DefaultHttpHeaders();
-            httpHeaders.forEach(headers::set);
+            httpHeaders = new DefaultHttpHeaders();
+            headers.forEach(httpHeaders::set);
         }
 
         final WebSocketClientHandshaker handshaker =
                 WebSocketClientHandshakerFactory.newHandshaker(uri, WebSocketVersion.V13,
-                        webSocketConfig.getSubprotocol(), true, headers,
+                        webSocketConfig.getSubprotocol(), true, httpHeaders,
                         MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, true, false);
 
         channel.pipeline()

@@ -39,8 +39,8 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_SUBPROTOCOL;
     private @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs =
             MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
-    private @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> httpHeaders =
-            MqttWebSocketConfigImpl.DEFAULT_HTTP_HEADERS;
+    private @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> headers =
+            MqttWebSocketConfigImpl.DEFAULT_HEADERS;
 
     MqttWebSocketConfigImplBuilder() {}
 
@@ -78,15 +78,15 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
         return self();
     }
 
-    public @NotNull B httpHeaders(final @Nullable Map<@Nullable String, @Nullable String> httpHeaders) {
-        Checks.notNull(httpHeaders, "Http headers");
+    public @NotNull B headers(final @Nullable Map<@Nullable String, @Nullable String> headers) {
+        Checks.notNull(headers, "Headers");
         // TODO check nullability of elements
-        this.httpHeaders = Collections.unmodifiableMap(new LinkedHashMap<>(httpHeaders));
+        this.headers = Collections.unmodifiableMap(new LinkedHashMap<>(headers));
         return self();
     }
 
     public @NotNull MqttWebSocketConfigImpl build() {
-        return new MqttWebSocketConfigImpl(path, query, subprotocol, handshakeTimeoutMs, httpHeaders);
+        return new MqttWebSocketConfigImpl(path, query, subprotocol, handshakeTimeoutMs, headers);
     }
 
     public static class Default extends MqttWebSocketConfigImplBuilder<Default> implements MqttWebSocketConfigBuilder {

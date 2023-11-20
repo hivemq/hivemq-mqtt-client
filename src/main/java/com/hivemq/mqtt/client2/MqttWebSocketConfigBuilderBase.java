@@ -74,11 +74,11 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 
     /**
-     * Sets the {@link MqttWebSocketConfig#getHttpHeaders() headers}.
+     * Sets the {@link MqttWebSocketConfig#getHeaders() headers}.
      *
-     * @param httpHeaders http headers.
+     * @param headers http headers.
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B httpHeaders(@NotNull Map<@NotNull String, @NotNull String> httpHeaders);
+    @NotNull B headers(@NotNull Map<@NotNull String, @NotNull String> headers);
 }
