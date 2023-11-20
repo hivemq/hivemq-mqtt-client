@@ -29,11 +29,11 @@ class ClassUtilTest {
     @Test
     void isAvailable_true() {
         assertTrue(ClassUtil.isAvailable("java.lang.String"));
-        assertTrue(ClassUtil.isAvailable("com.hivemq.client2.internal.util.ClassUtilTest"));
+        assertTrue(ClassUtil.isAvailable("com.hivemq.mqtt.client2.internal.util.ClassUtilTest"));
     }
 
     @Test
     void isAvailable_unknownClass() {
-        assertFalse(ClassUtil.isAvailable("com.hivemq.client2.UnknownClass"));
+        assertFalse(ClassUtil.isAvailable("com.hivemq.mqtt.client2.UnknownClass"));
     }
 }

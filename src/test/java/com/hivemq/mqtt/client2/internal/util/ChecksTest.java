@@ -75,7 +75,7 @@ class ChecksTest {
         final IllegalArgumentException exception =
                 assertThrows(IllegalArgumentException.class, () -> Checks.notImplemented(o, Impl.class, "test-name"));
         assertEquals(
-                "test-name must not be implemented by the user, but was implemented by com.hivemq.client2.internal.util.ChecksTest$OtherImpl.",
+                "test-name must not be implemented by the user, but was implemented by com.hivemq.mqtt.client2.internal.util.ChecksTest$OtherImpl.",
                 exception.getMessage());
     }
 
@@ -99,7 +99,7 @@ class ChecksTest {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> Checks.notImplementedOrNull(o, Impl.class, "test-name"));
         assertEquals(
-                "test-name must not be implemented by the user, but was implemented by com.hivemq.client2.internal.util.ChecksTest$OtherImpl.",
+                "test-name must not be implemented by the user, but was implemented by com.hivemq.mqtt.client2.internal.util.ChecksTest$OtherImpl.",
                 exception.getMessage());
     }
 
@@ -155,7 +155,7 @@ class ChecksTest {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> Checks.elementsNotImplemented(o, Impl.class, "test-name"));
         assertEquals(
-                "test-name must not be implemented by the user, but was implemented by com.hivemq.client2.internal.util.ChecksTest$OtherImpl.",
+                "test-name must not be implemented by the user, but was implemented by com.hivemq.mqtt.client2.internal.util.ChecksTest$OtherImpl.",
                 exception.getMessage());
     }
 
