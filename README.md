@@ -732,8 +732,8 @@ API but return `Completable`.
 
 [Semantic Versioning](https://semver.org/) is used.
 
-All code inside `com.hivemq.client2.internal` packages must not be used directly. It can change at any time and is not
-part of the public API.
+All code inside `internal` packages must not be used directly. It can change at any time and is not part of the public
+API.
 
 Interfaces annotated with `DoNotImplement` must not be implemented. The implementation is provided by the library.
 This allows the library to later add methods to the interface without breaking backwards compatibility with implementing
