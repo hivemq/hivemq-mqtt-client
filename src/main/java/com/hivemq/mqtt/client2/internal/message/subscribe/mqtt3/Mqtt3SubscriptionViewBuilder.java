@@ -36,7 +36,7 @@ import java.util.function.Function;
 public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionViewBuilder<B>> {
 
     private @Nullable MqttTopicFilterImpl topicFilter;
-    private @NotNull MqttQos maxQos = Mqtt3SubscriptionView.DEFAULT_QOS;
+    private @NotNull MqttQos maxQos = Mqtt3SubscriptionView.DEFAULT_MAX_QOS;
 
     Mqtt3SubscriptionViewBuilder() {}
 

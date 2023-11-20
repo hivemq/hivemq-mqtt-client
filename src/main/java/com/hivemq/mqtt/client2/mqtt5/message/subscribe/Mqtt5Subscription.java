@@ -35,7 +35,7 @@ public interface Mqtt5Subscription {
      * Default {@link MqttQos QoS} level of a Subscription. It is chosen as {@link MqttQos#EXACTLY_ONCE} as this leeds
      * to subscribed Publish messages being delivered with its initial {@link MqttQos QoS} level.
      */
-    @NotNull MqttQos DEFAULT_QOS = MqttQos.EXACTLY_ONCE;
+    @NotNull MqttQos DEFAULT_MAX_QOS = MqttQos.EXACTLY_ONCE;
     /**
      * The default for whether the client must not receive messages published by itself.
      */
