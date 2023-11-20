@@ -21,7 +21,11 @@ import com.hivemq.mqtt.client2.internal.util.Checks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -35,6 +39,8 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_SUBPROTOCOL;
     private @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs =
             MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
+    private @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> httpHeaders =
+            MqttWebSocketConfigImpl.DEFAULT_HTTP_HEADERS;
 
     MqttWebSocketConfigImplBuilder() {}
 
@@ -72,8 +78,15 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
         return self();
     }
 
+    public @NotNull B httpHeaders(final @Nullable Map<@Nullable String, @Nullable String> httpHeaders) {
+        Checks.notNull(httpHeaders, "Http headers");
+        // TODO check nullability of elements
+        this.httpHeaders = Collections.unmodifiableMap(new LinkedHashMap<>(httpHeaders));
+        return self();
+    }
+
     public @NotNull MqttWebSocketConfigImpl build() {
-        return new MqttWebSocketConfigImpl(path, query, subprotocol, handshakeTimeoutMs);
+        return new MqttWebSocketConfigImpl(path, query, subprotocol, handshakeTimeoutMs, httpHeaders);
     }
 
     public static class Default extends MqttWebSocketConfigImplBuilder<Default> implements MqttWebSocketConfigBuilder {

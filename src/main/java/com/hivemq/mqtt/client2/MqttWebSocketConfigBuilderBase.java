@@ -20,6 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,4 +72,13 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
      */
     @CheckReturnValue
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
+
+    /**
+     * Sets the {@link MqttWebSocketConfig#getHttpHeaders() headers}.
+     *
+     * @param httpHeaders http headers.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B httpHeaders(@NotNull Map<@NotNull String, @NotNull String> httpHeaders);
 }

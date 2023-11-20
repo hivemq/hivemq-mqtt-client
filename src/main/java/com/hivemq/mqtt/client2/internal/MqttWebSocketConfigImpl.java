@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
+
 /**
  * @author David Katz
  * @author Christian Hoff
@@ -30,23 +32,27 @@ import org.jetbrains.annotations.Unmodifiable;
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     static final @NotNull MqttWebSocketConfigImpl DEFAULT =
-            new MqttWebSocketConfigImpl(DEFAULT_PATH, DEFAULT_QUERY, DEFAULT_SUBPROTOCOL, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+            new MqttWebSocketConfigImpl(DEFAULT_PATH, DEFAULT_QUERY, DEFAULT_SUBPROTOCOL, DEFAULT_HANDSHAKE_TIMEOUT_MS,
+                    DEFAULT_HTTP_HEADERS);
 
     private final @NotNull String path;
     private final @NotNull String query;
     private final @NotNull String subprotocol;
     private final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs;
+    private final @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> httpHeaders;
 
     MqttWebSocketConfigImpl(
             final @NotNull String path,
             final @NotNull String query,
             final @NotNull String subprotocol,
-            final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs) {
+            final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs,
+            final @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> httpHeaders) {
 
         this.path = path;
         this.query = query;
         this.subprotocol = subprotocol;
         this.handshakeTimeoutMs = handshakeTimeoutMs;
+        this.httpHeaders = httpHeaders;
     }
 
     @Override
@@ -70,6 +76,11 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     }
 
     @Override
+    public @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> getHttpHeaders() {
+        return httpHeaders;
+    }
+
+    @Override
     public MqttWebSocketConfigImplBuilder.@NotNull Default extend() {
         return new MqttWebSocketConfigImplBuilder.Default(this);
     }
@@ -85,7 +96,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
 
         return path.equals(that.path) && query.equals(that.query) && subprotocol.equals(that.subprotocol) &&
-                (handshakeTimeoutMs == that.handshakeTimeoutMs);
+                (handshakeTimeoutMs == that.handshakeTimeoutMs) && httpHeaders.equals(that.httpHeaders);
     }
 
     @Override
@@ -94,6 +105,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         result = 31 * result + query.hashCode();
         result = 31 * result + subprotocol.hashCode();
         result = 31 * result + Integer.hashCode(handshakeTimeoutMs);
+        result = 31 * result + httpHeaders.hashCode();
         return result;
     }
 }
