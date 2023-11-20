@@ -151,11 +151,7 @@ allprojects {
 
 tasks.jar {
     configure<aQute.bnd.gradle.BundleTaskExtension> {
-        bnd("Export-Package: " +
-                "com.hivemq.client2.annotations.*," +
-                "com.hivemq.client2.mqtt.*," +
-                "com.hivemq.client2.rx.*," +
-                "com.hivemq.client2.util.*")
+        bnd("-exportcontents: !*.internal.*, com.hivemq.mqtt.client2.*")
     }
 }
 
