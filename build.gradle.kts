@@ -23,7 +23,7 @@ allprojects {
     plugins.apply("io.github.sgtsilvio.gradle.metadata")
 
     metadata {
-        moduleName.set("com.hivemq.client2.mqtt")
+        moduleName.set("com.hivemq.mqtt.client2")
         readableName.set("HiveMQ MQTT Client")
         organization {
             name.set("HiveMQ and the HiveMQ Community")

@@ -8,7 +8,7 @@ plugins {
 description = "Adds dependencies for the HiveMQ MQTT Client websocket module"
 
 metadata {
-    moduleName.set("com.hivemq.client2.mqtt.websocket")
+    moduleName.set("com.hivemq.mqtt.client2.websocket")
     readableName.set("HiveMQ MQTT Client websocket module")
 }
 
