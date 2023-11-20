@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.internal.rx;
+package com.hivemq.mqtt.client2.internal.handler.util;
 
 import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
