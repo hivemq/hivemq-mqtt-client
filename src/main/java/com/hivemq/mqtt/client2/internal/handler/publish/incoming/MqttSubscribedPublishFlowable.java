@@ -16,12 +16,12 @@
 
 package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
-import com.hivemq.mqtt.client2.ext.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.ext.rxjava3.FlowableWithSingle;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
 import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubscribe;
+import com.hivemq.mqtt.client2.libs.reactivestreams.WithSingleSubscriber;
+import com.hivemq.mqtt.client2.libs.rxjava3.FlowableWithSingle;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAck;
 import org.jetbrains.annotations.NotNull;

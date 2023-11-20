@@ -17,8 +17,8 @@
 package com.hivemq.mqtt.client2.mqtt5.reactor;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
-import com.hivemq.mqtt.client2.ext.reactor.FluxWithSingle;
 import com.hivemq.mqtt.client2.internal.reactor.MqttReactorClient;
+import com.hivemq.mqtt.client2.libs.reactor.FluxWithSingle;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5Client;
 import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAck;
 import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5Connect;

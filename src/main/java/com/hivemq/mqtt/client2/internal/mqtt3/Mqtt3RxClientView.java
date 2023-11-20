@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
-import com.hivemq.mqtt.client2.ext.rxjava3.FlowableWithSingle;
 import com.hivemq.mqtt.client2.internal.MqttRxClient;
 import com.hivemq.mqtt.client2.internal.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
@@ -36,6 +35,7 @@ import com.hivemq.mqtt.client2.internal.message.unsubscribe.mqtt3.Mqtt3UnsubAckV
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.internal.util.MqttChecks;
+import com.hivemq.mqtt.client2.libs.rxjava3.FlowableWithSingle;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3RxClient;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnAck;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3Connect;

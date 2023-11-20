@@ -17,13 +17,13 @@
 package com.hivemq.mqtt.client2.internal.reactor;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
-import com.hivemq.mqtt.client2.ext.reactor.FluxWithSingle;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectBuilder;
 import com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect;
 import com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnectBuilder;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubscribeBuilder;
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.MqttUnsubscribeBuilder;
+import com.hivemq.mqtt.client2.libs.reactor.FluxWithSingle;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5AsyncClient;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5ClientConfig;
