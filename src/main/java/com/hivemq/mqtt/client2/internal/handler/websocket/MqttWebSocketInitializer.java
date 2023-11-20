@@ -22,6 +22,7 @@ import com.hivemq.mqtt.client2.internal.MqttWebSocketConfigImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttVariableByteInteger;
 import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import io.netty.channel.Channel;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
@@ -33,6 +34,7 @@ import javax.inject.Inject;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -71,17 +73,23 @@ public class MqttWebSocketInitializer {
             return;
         }
 
+        final Map<String, String> httpHeaders = webSocketConfig.getHttpHeaders();
+        final DefaultHttpHeaders headers;
+        if (httpHeaders.isEmpty()) {
+            headers = null;
+        } else {
+            headers = new DefaultHttpHeaders();
+            httpHeaders.forEach(headers::set);
+        }
+
         final WebSocketClientHandshaker handshaker =
                 WebSocketClientHandshakerFactory.newHandshaker(uri, WebSocketVersion.V13,
-                        webSocketConfig.getSubprotocol(), true, null, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT,
-                        true, false);
+                        webSocketConfig.getSubprotocol(), true, headers,
+                        MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, true, false);
 
         channel.pipeline()
                 .addLast(HTTP_CODEC_NAME, new HttpClientCodec())
                 .addLast(HTTP_AGGREGATOR_NAME, new HttpObjectAggregator(65_535))
-                .addLast(
-                        MqttWebSocketHttpHeaders.HTTP_HEADERS,
-                        new MqttWebSocketHttpHeaders(webSocketConfig.getHttpHeaders()))
                 .addLast(MqttWebsocketHandshakeHandler.NAME,
                         new MqttWebsocketHandshakeHandler(handshaker, webSocketConfig.getHandshakeTimeoutMs(),
                                 onSuccess, onError))
