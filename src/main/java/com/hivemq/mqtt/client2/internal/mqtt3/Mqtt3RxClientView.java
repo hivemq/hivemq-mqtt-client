@@ -17,7 +17,7 @@
 package com.hivemq.mqtt.client2.internal.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
-import com.hivemq.mqtt.client2.ext.rx.FlowableWithSingle;
+import com.hivemq.mqtt.client2.ext.rxjava3.FlowableWithSingle;
 import com.hivemq.mqtt.client2.internal.MqttRxClient;
 import com.hivemq.mqtt.client2.internal.exceptions.mqtt3.Mqtt3ExceptionFactory;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;

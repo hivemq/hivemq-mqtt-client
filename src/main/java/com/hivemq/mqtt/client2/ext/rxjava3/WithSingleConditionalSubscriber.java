@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.ext.rx;
+package com.hivemq.mqtt.client2.ext.rxjava3;
 
 import io.reactivex.rxjava3.operators.ConditionalSubscriber;
 

@@ -17,7 +17,7 @@
 package com.hivemq.mqtt.client2.internal;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
-import com.hivemq.mqtt.client2.ext.rx.FlowableWithSingle;
+import com.hivemq.mqtt.client2.ext.rxjava3.FlowableWithSingle;
 import com.hivemq.mqtt.client2.internal.handler.auth.MqttReAuthCompletable;
 import com.hivemq.mqtt.client2.internal.handler.connect.MqttConnAckSingle;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectCompletable;

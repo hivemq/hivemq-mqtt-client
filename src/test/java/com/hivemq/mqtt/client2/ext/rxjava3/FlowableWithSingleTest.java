@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.ext.rx;
+package com.hivemq.mqtt.client2.ext.rxjava3;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.hivemq.mqtt.client2.ext.reactivestreams.WithSingleSubscriber;

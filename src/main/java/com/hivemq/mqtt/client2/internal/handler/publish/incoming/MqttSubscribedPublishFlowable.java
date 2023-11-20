@@ -17,7 +17,7 @@
 package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
 import com.hivemq.mqtt.client2.ext.reactivestreams.WithSingleSubscriber;
-import com.hivemq.mqtt.client2.ext.rx.FlowableWithSingle;
+import com.hivemq.mqtt.client2.ext.rxjava3.FlowableWithSingle;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
 import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;

@@ -18,7 +18,7 @@ package com.hivemq.mqtt.client2.internal.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
-import com.hivemq.mqtt.client2.ext.rx.FlowableWithSingleSplit;
+import com.hivemq.mqtt.client2.ext.rxjava3.FlowableWithSingleSplit;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.MqttRxClient;
 import com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect;
