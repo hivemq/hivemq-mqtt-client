@@ -19,6 +19,7 @@ package com.hivemq.mqtt.client2.internal.message.publish;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUtf8StringImpl;
 import com.hivemq.mqtt.client2.internal.message.MqttMessageWithUserProperties;
+import com.hivemq.mqtt.client2.internal.util.StringUtil;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubComp;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubCompReasonCode;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ public class MqttPubComp extends MqttMessageWithUserProperties.WithReason.WithCo
 
     @Override
     public @NotNull String toString() {
-        return "MqttPubComp{" + toAttributeString() + "}";
+        return "MqttPubComp{reasonCode=" + getReasonCode() + StringUtil.prepend(", ", super.toAttributeString()) + "}";
     }
 
     @Override

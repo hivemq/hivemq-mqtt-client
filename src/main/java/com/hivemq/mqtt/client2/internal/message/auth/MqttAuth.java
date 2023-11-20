@@ -69,7 +69,7 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
 
     @Override
     protected @NotNull String toAttributeString() {
-        return "reasonCode= " + getReasonCode() + ", method=" + method +
+        return "reasonCode=" + getReasonCode() + ", method=" + method +
                 ((data == null) ? "" : ", data=" + data.remaining() + "byte") +
                 StringUtil.prepend(", ", super.toAttributeString());
     }
