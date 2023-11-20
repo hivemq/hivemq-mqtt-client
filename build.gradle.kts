@@ -166,7 +166,7 @@ tasks.shadowJar {
         }
     })
 
-    val shadePrefix = "com.hivemq.client2.internal.shaded."
+    val shadePrefix = "com.hivemq.mqtt.client2.internal.shaded."
     val shadeFilePrefix = shadePrefix.replace(".", "_")
     relocate("io.netty", "${shadePrefix}io.netty")
     relocate("META-INF/native/libnetty", "META-INF/native/lib${shadeFilePrefix}netty")
