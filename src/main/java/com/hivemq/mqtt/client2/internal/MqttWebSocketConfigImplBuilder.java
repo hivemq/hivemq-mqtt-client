@@ -80,8 +80,16 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
 
     public @NotNull B headers(final @Nullable Map<@Nullable String, @Nullable String> headers) {
         Checks.notNull(headers, "Headers");
-        // TODO check nullability of elements
-        this.headers = Collections.unmodifiableMap(new LinkedHashMap<>(headers));
+        if (headers.isEmpty()) {
+            this.headers = Collections.emptyMap();
+        } else {
+            final LinkedHashMap<String, String> headersCopy = new LinkedHashMap<>();
+            for (final Map.Entry<String, String> entry : headers.entrySet()) {
+                headersCopy.put(
+                        Checks.notNull(entry.getKey(), "Header key"), Checks.notNull(entry.getValue(), "Header value"));
+            }
+            this.headers = Collections.unmodifiableMap(headersCopy);
+        }
         return self();
     }
 
