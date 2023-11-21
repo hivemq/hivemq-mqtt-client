@@ -56,8 +56,11 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     abstract @NotNull B self();
 
     public @NotNull B path(final @Nullable String path) {
-        // remove any leading slashes
-        this.path = Checks.notNull(path, "Server path").replaceAll("^/+", "");
+        Checks.notNull(path, "Path");
+        if (!(path.isEmpty() || path.startsWith("/"))) {
+            throw new IllegalArgumentException("Path must be empty or start with a '/'");
+        }
+        this.path = path;
         return self();
     }
 

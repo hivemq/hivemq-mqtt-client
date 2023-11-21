@@ -35,6 +35,8 @@ public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBui
 
     /**
      * Sets the {@link MqttWebSocketConfig#getPath() path}.
+     * <p>
+     * The path must be empty or start with a <code>/</code>.
      *
      * @param path the path.
      * @return the builder.
