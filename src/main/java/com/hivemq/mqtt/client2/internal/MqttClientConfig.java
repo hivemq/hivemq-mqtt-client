@@ -25,6 +25,7 @@ import com.hivemq.mqtt.client2.internal.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
 import com.hivemq.mqtt.client2.internal.ioc.SingletonComponent;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttDisconnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.netty.NettyEventLoopProvider;
@@ -57,7 +58,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @NotNull MqttAdvancedConfig advancedConfig;
     private final @NotNull ConnectDefaults connectDefaults;
     private final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners;
-    private final @NotNull ImmutableList<MqttDisconnectedListener> disconnectedListeners;
+    private final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>>
+            disconnectedListeners;
 
     private final @NotNull ClientComponent clientComponent;
 
@@ -80,7 +82,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull MqttAdvancedConfig advancedConfig,
             final @NotNull ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners,
-            final @NotNull ImmutableList<MqttDisconnectedListener> disconnectedListeners) {
+            final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> disconnectedListeners) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -152,7 +154,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     @Override
     public @NotNull Optional<MqttAutoReconnect> getAutomaticReconnect() {
-        for (final MqttDisconnectedListener disconnectedListener : disconnectedListeners) {
+        for (final MqttDisconnectedListener<? super MqttDisconnectedContextImpl> disconnectedListener : disconnectedListeners) {
             if (disconnectedListener instanceof MqttAutoReconnect) {
                 return Optional.of((MqttAutoReconnect) disconnectedListener);
             }
@@ -164,8 +166,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return connectedListeners;
     }
 
-    @Override
-    public @NotNull ImmutableList<MqttDisconnectedListener> getDisconnectedListeners() {
+    public @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> getDisconnectedListeners() {
         return disconnectedListeners;
     }
 

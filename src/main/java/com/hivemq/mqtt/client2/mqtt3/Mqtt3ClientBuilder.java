@@ -18,7 +18,9 @@ package com.hivemq.mqtt.client2.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttClientBuilderBase;
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
+import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt3.lifecycle.Mqtt3ConnectedContext;
+import com.hivemq.mqtt.client2.mqtt3.lifecycle.Mqtt3DisconnectedContext;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.mqtt.client2.mqtt3.message.publish.Mqtt3Publish;
@@ -49,6 +51,20 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
     @CheckReturnValue
     @NotNull Mqtt3ClientBuilder addConnectedListener(
             @NotNull MqttConnectedListener<? super Mqtt3ConnectedContext> connectedListener);
+
+    /**
+     * Adds a listener which is notified when the client is disconnected (with or without a Disconnect message) or the
+     * connection fails.
+     * <p>
+     * The listeners are called in the same order in which they are added.
+     *
+     * @param disconnectedListener the listener to add.
+     * @return the builder.
+     * @since 1.1
+     */
+    @CheckReturnValue
+    @NotNull Mqtt3ClientBuilder addDisconnectedListener(
+            @NotNull MqttDisconnectedListener<? super Mqtt3DisconnectedContext> disconnectedListener);
 
     /**
      * Sets the optional

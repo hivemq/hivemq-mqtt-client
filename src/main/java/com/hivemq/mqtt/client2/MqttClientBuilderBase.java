@@ -19,7 +19,6 @@ package com.hivemq.mqtt.client2;
 import com.hivemq.mqtt.client2.datatypes.MqttClientIdentifier;
 import com.hivemq.mqtt.client2.lifecycle.MqttAutoReconnect;
 import com.hivemq.mqtt.client2.lifecycle.MqttAutoReconnectBuilder;
-import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -129,17 +128,4 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> exten
      */
     @CheckReturnValue
     MqttAutoReconnectBuilder.@NotNull Nested<? extends B> automaticReconnectWith();
-
-    /**
-     * Adds a listener which is notified when the client is disconnected (with or without a Disconnect message) or the
-     * connection fails.
-     * <p>
-     * The listeners are called in the same order in which they are added.
-     *
-     * @param disconnectedListener the listener to add.
-     * @return the builder.
-     * @since 1.1
-     */
-    @CheckReturnValue
-    @NotNull B addDisconnectedListener(@NotNull MqttDisconnectedListener disconnectedListener);
 }

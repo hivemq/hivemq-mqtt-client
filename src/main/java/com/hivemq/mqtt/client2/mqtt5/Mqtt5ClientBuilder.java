@@ -18,10 +18,12 @@ package com.hivemq.mqtt.client2.mqtt5;
 
 import com.hivemq.mqtt.client2.MqttClientBuilderBase;
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
+import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.mqtt.client2.mqtt5.advanced.Mqtt5AdvancedConfigBuilder;
 import com.hivemq.mqtt.client2.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5ConnectedContext;
+import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5DisconnectedContext;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
@@ -52,6 +54,20 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
     @CheckReturnValue
     @NotNull Mqtt5ClientBuilder addConnectedListener(
             @NotNull MqttConnectedListener<? super Mqtt5ConnectedContext> connectedListener);
+
+    /**
+     * Adds a listener which is notified when the client is disconnected (with or without a Disconnect message) or the
+     * connection fails.
+     * <p>
+     * The listeners are called in the same order in which they are added.
+     *
+     * @param disconnectedListener the listener to add.
+     * @return the builder.
+     * @since 1.1
+     */
+    @CheckReturnValue
+    @NotNull Mqtt5ClientBuilder addDisconnectedListener(
+            @NotNull MqttDisconnectedListener<? super Mqtt5DisconnectedContext> disconnectedListener);
 
     /**
      * Sets the {@link Mqtt5ClientConfig#getAdvancedConfig() advanced configuration}.

@@ -16,12 +16,10 @@
 
 package com.hivemq.mqtt.client2.internal.lifecycle.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.exceptions.mqtt3.Mqtt3ExceptionFactory;
-import com.hivemq.mqtt.client2.internal.lifecycle.MqttReconnector;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttDisconnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.mqtt3.Mqtt3ClientConfigView;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
-import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedContext;
 import com.hivemq.mqtt.client2.mqtt3.lifecycle.Mqtt3DisconnectedContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,50 +28,29 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Mqtt3DisconnectedContextView implements Mqtt3DisconnectedContext {
 
-    public static @NotNull MqttDisconnectedContext of(
-            final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause,
-            final @NotNull MqttReconnector reconnector) {
+    private final @NotNull MqttDisconnectedContextImpl delegate;
 
-        return new Mqtt3DisconnectedContextView(new Mqtt3ClientConfigView(clientConfig), source,
-                Mqtt3ExceptionFactory.map(cause), new Mqtt3ReconnectorView(reconnector));
-    }
-
-    private final @NotNull Mqtt3ClientConfigView clientConfig;
-    private final @NotNull MqttDisconnectSource source;
-    private final @NotNull Throwable cause;
-    private final @NotNull Mqtt3ReconnectorView reconnector;
-
-    private Mqtt3DisconnectedContextView(
-            final @NotNull Mqtt3ClientConfigView clientConfig,
-            final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause,
-            final @NotNull Mqtt3ReconnectorView reconnector) {
-
-        this.clientConfig = clientConfig;
-        this.source = source;
-        this.cause = cause;
-        this.reconnector = reconnector;
+    public Mqtt3DisconnectedContextView(final @NotNull MqttDisconnectedContextImpl delegate) {
+        this.delegate = delegate;
     }
 
     @Override
     public @NotNull Mqtt3ClientConfigView getClientConfig() {
-        return clientConfig;
+        return new Mqtt3ClientConfigView(delegate.getClientConfig());
     }
 
     @Override
     public @NotNull MqttDisconnectSource getSource() {
-        return source;
+        return delegate.getSource();
     }
 
     @Override
     public @NotNull Throwable getCause() {
-        return cause;
+        return Mqtt3ExceptionFactory.map(delegate.getCause());
     }
 
     @Override
     public @NotNull Mqtt3ReconnectorView getReconnector() {
-        return reconnector;
+        return new Mqtt3ReconnectorView(delegate.getReconnector());
     }
 }

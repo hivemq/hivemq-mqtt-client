@@ -16,11 +16,8 @@
 
 package com.hivemq.mqtt.client2.internal.lifecycle;
 
-import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
-import com.hivemq.mqtt.client2.internal.lifecycle.mqtt3.Mqtt3DisconnectedContextView;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
-import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedContext;
 import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5DisconnectedContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,24 +26,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MqttDisconnectedContextImpl implements Mqtt5DisconnectedContext {
 
-    public static @NotNull MqttDisconnectedContext of(
-            final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttDisconnectSource source,
-            final @NotNull Throwable cause,
-            final @NotNull MqttReconnector reconnector) {
-
-        if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
-            return Mqtt3DisconnectedContextView.of(clientConfig, source, cause, reconnector);
-        }
-        return new MqttDisconnectedContextImpl(clientConfig, source, cause, reconnector);
-    }
-
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttDisconnectSource source;
     private final @NotNull Throwable cause;
     private final @NotNull MqttReconnector reconnector;
 
-    private MqttDisconnectedContextImpl(
+    public MqttDisconnectedContextImpl(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause,

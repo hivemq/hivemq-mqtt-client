@@ -22,13 +22,11 @@ import com.hivemq.mqtt.client2.MqttTransportConfig;
 import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.datatypes.MqttClientIdentifier;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
-import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
 import com.hivemq.mqtt.client2.internal.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.mqtt.client2.lifecycle.MqttAutoReconnect;
-import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3ClientConfig;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3ClientConnectionConfig;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuth;
@@ -92,11 +90,6 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     private @Nullable Mqtt3Publish getRawWillPublish() {
         final MqttWillPublish willPublish = delegate.getConnectDefaults().getWillPublish();
         return (willPublish == null) ? null : Mqtt3PublishView.of(willPublish);
-    }
-
-    @Override
-    public @NotNull ImmutableList<MqttDisconnectedListener> getDisconnectedListeners() {
-        return delegate.getDisconnectedListeners();
     }
 
     @Override

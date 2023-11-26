@@ -18,12 +18,9 @@ package com.hivemq.mqtt.client2;
 
 import com.hivemq.mqtt.client2.datatypes.MqttClientIdentifier;
 import com.hivemq.mqtt.client2.lifecycle.MqttAutoReconnect;
-import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -64,13 +61,6 @@ public interface MqttClientConfig {
      * @since 1.1
      */
     @NotNull Optional<MqttAutoReconnect> getAutomaticReconnect();
-
-    /**
-     * @return the listeners which are notified (in the order of the list) when this client is disconnected (with or
-     *         without a Disconnect message) or the connection fails.
-     * @since 1.1
-     */
-    @Unmodifiable @NotNull List<@NotNull MqttDisconnectedListener> getDisconnectedListeners();
 
     /**
      * @return the state of the client.

@@ -21,6 +21,7 @@ import com.hivemq.mqtt.client2.internal.advanced.MqttAdvancedConfig;
 import com.hivemq.mqtt.client2.internal.advanced.MqttAdvancedConfigBuilder;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttDisconnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuthBuilder;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPublish;
@@ -29,10 +30,13 @@ import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
+import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedContext;
+import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5ClientBuilder;
 import com.hivemq.mqtt.client2.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.mqtt.client2.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5ConnectedContext;
+import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5DisconnectedContext;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +49,8 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     private ImmutableList.@Nullable Builder<MqttConnectedListener<? super MqttConnectedContextImpl>>
             connectedListenersBuilder;
+    private ImmutableList.@Nullable Builder<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>>
+            disconnectedListenersBuilder;
     private @NotNull MqttAdvancedConfig advancedConfig = MqttAdvancedConfig.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
@@ -54,11 +60,16 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     MqttRxClientBuilder(
             final @NotNull MqttRxClientBuilderBase<?> clientBuilder,
-            final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContext>> connectedListeners) {
+            final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContext>> connectedListeners,
+            final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContext>> disconnectedListeners) {
         super(clientBuilder);
         if (!connectedListeners.isEmpty()) {
             connectedListenersBuilder = ImmutableList.builder(connectedListeners.size());
             connectedListenersBuilder.addAll(connectedListeners);
+        }
+        if (!disconnectedListeners.isEmpty()) {
+            disconnectedListenersBuilder = ImmutableList.builder(disconnectedListeners.size());
+            disconnectedListenersBuilder.addAll(disconnectedListeners);
         }
     }
 
@@ -75,6 +86,17 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
             connectedListenersBuilder = ImmutableList.builder();
         }
         connectedListenersBuilder.add(connectedListener);
+        return this;
+    }
+
+    @Override
+    public @NotNull MqttRxClientBuilder addDisconnectedListener(
+            final @Nullable MqttDisconnectedListener<? super Mqtt5DisconnectedContext> disconnectedListener) {
+        Checks.notNull(disconnectedListener, "Disconnected listener");
+        if (disconnectedListenersBuilder == null) {
+            disconnectedListenersBuilder = ImmutableList.builder();
+        }
+        disconnectedListenersBuilder.add(disconnectedListener);
         return this;
     }
 
@@ -142,9 +164,26 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
         return (connectedListenersBuilder == null) ? ImmutableList.of() : connectedListenersBuilder.build();
     }
 
+    private @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> buildDisconnectedListeners() {
+        if (disconnectedListenersBuilder == null) {
+            if (autoReconnect == null) {
+                return ImmutableList.of();
+            }
+            return ImmutableList.of(autoReconnect);
+        }
+        if (autoReconnect == null) {
+            return disconnectedListenersBuilder.build();
+        }
+        return ImmutableList.<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>>builder(
+                        disconnectedListenersBuilder.getSize() + 1)
+                .add(autoReconnect)
+                .addAll(disconnectedListenersBuilder.build())
+                .build();
+    }
+
     private @NotNull MqttClientConfig buildClientConfig() {
         return buildClientConfig(MqttVersion.MQTT_5_0, advancedConfig,
                 MqttClientConfig.ConnectDefaults.of(simpleAuth, enhancedAuthMechanism, willPublish),
-                buildConnectedListeners());
+                buildConnectedListeners(), buildDisconnectedListeners());
     }
 }

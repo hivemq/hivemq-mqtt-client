@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.OverrideOnly
 @FunctionalInterface
-public interface MqttDisconnectedListener {
+public interface MqttDisconnectedListener<C extends MqttDisconnectedContext> {
 
     /**
      * Listener method which is notified in the following cases:
@@ -56,5 +56,5 @@ public interface MqttDisconnectedListener {
      * @param context provides context about the client that is now disconnected, the cause for disconnection and allows
      *                reconnecting.
      */
-    void onDisconnected(@NotNull MqttDisconnectedContext context);
+    void onDisconnected(@NotNull C context);
 }

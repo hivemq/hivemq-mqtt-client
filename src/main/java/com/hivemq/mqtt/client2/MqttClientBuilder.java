@@ -18,6 +18,8 @@ package com.hivemq.mqtt.client2;
 
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
+import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedContext;
+import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3ClientBuilder;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5ClientBuilder;
 import org.jetbrains.annotations.ApiStatus;
@@ -45,6 +47,20 @@ public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuild
     @CheckReturnValue
     @NotNull MqttClientBuilder addConnectedListener(
             @NotNull MqttConnectedListener<? super MqttConnectedContext> connectedListener);
+
+    /**
+     * Adds a listener which is notified when the client is disconnected (with or without a Disconnect message) or the
+     * connection fails.
+     * <p>
+     * The listeners are called in the same order in which they are added.
+     *
+     * @param disconnectedListener the listener to add.
+     * @return the builder.
+     * @since 1.1
+     */
+    @CheckReturnValue
+    @NotNull MqttClientBuilder addDisconnectedListener(
+            @NotNull MqttDisconnectedListener<? super MqttDisconnectedContext> disconnectedListener);
 
     /**
      * Uses {@link MqttVersion#MQTT_3_1_1 MQTT version 3}.

@@ -26,7 +26,6 @@ import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
-import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedContext;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAck;
 import io.netty.bootstrap.Bootstrap;
@@ -140,10 +139,10 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
         final MqttReconnector reconnector =
                 new MqttReconnector(eventLoop, attempts, connect, clientConfig.getCurrentTransportConfig());
-        final MqttDisconnectedContext context =
-                MqttDisconnectedContextImpl.of(clientConfig, source, cause, reconnector);
+        final MqttDisconnectedContextImpl context =
+                new MqttDisconnectedContextImpl(clientConfig, source, cause, reconnector);
 
-        for (final MqttDisconnectedListener disconnectedListener : clientConfig.getDisconnectedListeners()) {
+        for (final MqttDisconnectedListener<? super MqttDisconnectedContextImpl> disconnectedListener : clientConfig.getDisconnectedListeners()) {
             try {
                 disconnectedListener.onDisconnected(context);
             } catch (final Throwable t) {
