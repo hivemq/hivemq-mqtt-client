@@ -28,7 +28,6 @@ import com.hivemq.mqtt.client2.internal.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.mqtt.client2.lifecycle.MqttAutoReconnect;
-import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3ClientConfig;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3ClientConnectionConfig;
@@ -93,11 +92,6 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     private @Nullable Mqtt3Publish getRawWillPublish() {
         final MqttWillPublish willPublish = delegate.getConnectDefaults().getWillPublish();
         return (willPublish == null) ? null : Mqtt3PublishView.of(willPublish);
-    }
-
-    @Override
-    public @NotNull ImmutableList<MqttConnectedListener> getConnectedListeners() {
-        return delegate.getConnectedListeners();
     }
 
     @Override

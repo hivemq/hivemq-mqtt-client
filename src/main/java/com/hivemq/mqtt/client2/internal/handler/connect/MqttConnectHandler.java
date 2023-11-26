@@ -38,7 +38,6 @@ import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAck;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAckRestrictions;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictions;
-import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
 import com.hivemq.mqtt.client2.mqtt5.exceptions.Mqtt5ConnAckException;
@@ -176,10 +175,11 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
             clientConfig.getRawState().set(MqttClientState.CONNECTED);
 
-            final ImmutableList<MqttConnectedListener> connectedListeners = clientConfig.getConnectedListeners();
+            final ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners =
+                    clientConfig.getConnectedListeners();
             if (!connectedListeners.isEmpty()) {
-                final MqttConnectedContext context = MqttConnectedContextImpl.of(clientConfig, connect, connAck);
-                for (final MqttConnectedListener connectedListener : connectedListeners) {
+                final MqttConnectedContextImpl context = new MqttConnectedContextImpl(clientConfig, connect, connAck);
+                for (final MqttConnectedListener<? super MqttConnectedContextImpl> connectedListener : connectedListeners) {
                     try {
                         connectedListener.onConnected(context);
                     } catch (final Throwable t) {

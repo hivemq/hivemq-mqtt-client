@@ -16,6 +16,8 @@
 
 package com.hivemq.mqtt.client2;
 
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3ClientBuilder;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5ClientBuilder;
 import org.jetbrains.annotations.ApiStatus;
@@ -30,6 +32,19 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.NonExtendable
 public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuilder> {
+
+    /**
+     * Adds a listener which is notified when the client is connected (a successful ConnAck message is received).
+     * <p>
+     * The listeners are called in the same order in which they are added.
+     *
+     * @param connectedListener the listener to add.
+     * @return the builder.
+     * @since 1.1
+     */
+    @CheckReturnValue
+    @NotNull MqttClientBuilder addConnectedListener(
+            @NotNull MqttConnectedListener<? super MqttConnectedContext> connectedListener);
 
     /**
      * Uses {@link MqttVersion#MQTT_3_1_1 MQTT version 3}.

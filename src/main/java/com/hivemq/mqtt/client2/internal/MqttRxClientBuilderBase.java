@@ -23,10 +23,12 @@ import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttAutoReconnectImpl;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttAutoReconnectImplBuilder;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.mqtt3.Mqtt3RxClientViewBuilder;
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.internal.util.MqttChecks;
 import com.hivemq.mqtt.client2.lifecycle.MqttAutoReconnect;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
 import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +49,6 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     private @Nullable MqttTransportConfigImpl transportConfig = MqttTransportConfigImpl.DEFAULT;
     private @NotNull MqttExecutorConfigImpl executorConfig = MqttExecutorConfigImpl.DEFAULT;
     private @Nullable MqttAutoReconnectImpl autoReconnect;
-    private ImmutableList.@Nullable Builder<MqttConnectedListener> connectedListenersBuilder;
     private ImmutableList.@Nullable Builder<MqttDisconnectedListener> disconnectedListenersBuilder;
 
     protected MqttRxClientBuilderBase() {}
@@ -58,7 +59,6 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         transportConfig = clientBuilder.transportConfig;
         executorConfig = clientBuilder.executorConfig;
         autoReconnect = clientBuilder.autoReconnect;
-        connectedListenersBuilder = clientBuilder.connectedListenersBuilder;
         disconnectedListenersBuilder = clientBuilder.disconnectedListenersBuilder;
     }
 
@@ -197,15 +197,6 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return new MqttAutoReconnectImplBuilder.Nested<>(autoReconnect, this::automaticReconnect);
     }
 
-    public @NotNull B addConnectedListener(final @Nullable MqttConnectedListener connectedListener) {
-        Checks.notNull(connectedListener, "Connected listener");
-        if (connectedListenersBuilder == null) {
-            connectedListenersBuilder = ImmutableList.builder();
-        }
-        connectedListenersBuilder.add(connectedListener);
-        return self();
-    }
-
     public @NotNull B addDisconnectedListener(final @Nullable MqttDisconnectedListener disconnectedListener) {
         Checks.notNull(disconnectedListener, "Disconnected listener");
         if (disconnectedListenersBuilder == null) {
@@ -221,13 +212,6 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
             return super.buildTransportConfig();
         }
         return transportConfig;
-    }
-
-    private @NotNull ImmutableList<MqttConnectedListener> buildConnectedListeners() {
-        if (connectedListenersBuilder == null) {
-            return ImmutableList.of();
-        }
-        return connectedListenersBuilder.build();
     }
 
     private @NotNull ImmutableList<MqttDisconnectedListener> buildDisconnectedListeners() {
@@ -249,13 +233,17 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     protected @NotNull MqttClientConfig buildClientConfig(
             final @NotNull MqttVersion mqttVersion,
             final @NotNull MqttAdvancedConfig advancedConfig,
-            final @NotNull MqttClientConfig.ConnectDefaults connectDefaults) {
+            final @NotNull MqttClientConfig.ConnectDefaults connectDefaults,
+            final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners) {
 
         return new MqttClientConfig(mqttVersion, identifier, buildTransportConfig(), executorConfig, advancedConfig,
-                connectDefaults, buildConnectedListeners(), buildDisconnectedListeners());
+                connectDefaults, connectedListeners, buildDisconnectedListeners());
     }
 
     public static class Choose extends MqttRxClientBuilderBase<Choose> implements MqttClientBuilder {
+
+        private ImmutableList.@Nullable Builder<MqttConnectedListener<? super MqttConnectedContext>>
+                connectedListenersBuilder;
 
         @Override
         protected @NotNull Choose self() {
@@ -263,13 +251,28 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         }
 
         @Override
+        public @NotNull MqttClientBuilder addConnectedListener(
+                final @Nullable MqttConnectedListener<? super MqttConnectedContext> connectedListener) {
+            Checks.notNull(connectedListener, "Connected listener");
+            if (connectedListenersBuilder == null) {
+                connectedListenersBuilder = ImmutableList.builder();
+            }
+            connectedListenersBuilder.add(connectedListener);
+            return this;
+        }
+
+        private @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContext>> buildConnectedListeners() {
+            return (connectedListenersBuilder == null) ? ImmutableList.of() : connectedListenersBuilder.build();
+        }
+
+        @Override
         public @NotNull Mqtt3RxClientViewBuilder useMqttVersion3() {
-            return new Mqtt3RxClientViewBuilder(this);
+            return new Mqtt3RxClientViewBuilder(this, buildConnectedListeners());
         }
 
         @Override
         public @NotNull MqttRxClientBuilder useMqttVersion5() {
-            return new MqttRxClientBuilder(this);
+            return new MqttRxClientBuilder(this, buildConnectedListeners());
         }
     }
 }

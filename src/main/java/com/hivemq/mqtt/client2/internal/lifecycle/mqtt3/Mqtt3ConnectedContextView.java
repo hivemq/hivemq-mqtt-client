@@ -16,13 +16,10 @@
 
 package com.hivemq.mqtt.client2.internal.lifecycle.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.MqttClientConfig;
-import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAck;
-import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.message.connect.mqtt3.Mqtt3ConnAckView;
 import com.hivemq.mqtt.client2.internal.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.mqtt.client2.internal.mqtt3.Mqtt3ClientConfigView;
-import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
 import com.hivemq.mqtt.client2.mqtt3.lifecycle.Mqtt3ConnectedContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,41 +28,24 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Mqtt3ConnectedContextView implements Mqtt3ConnectedContext {
 
-    public static @NotNull MqttConnectedContext of(
-            final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttConnect connect,
-            final @NotNull MqttConnAck connAck) {
+    private final @NotNull MqttConnectedContextImpl delegate;
 
-        return new Mqtt3ConnectedContextView(
-                new Mqtt3ClientConfigView(clientConfig), Mqtt3ConnectView.of(connect), Mqtt3ConnAckView.of(connAck));
-    }
-
-    private final @NotNull Mqtt3ClientConfigView clientConfig;
-    private final @NotNull Mqtt3ConnectView connect;
-    private final @NotNull Mqtt3ConnAckView connAck;
-
-    private Mqtt3ConnectedContextView(
-            final @NotNull Mqtt3ClientConfigView clientConfig,
-            final @NotNull Mqtt3ConnectView connect,
-            final @NotNull Mqtt3ConnAckView connAck) {
-
-        this.clientConfig = clientConfig;
-        this.connect = connect;
-        this.connAck = connAck;
+    public Mqtt3ConnectedContextView(final @NotNull MqttConnectedContextImpl delegate) {
+        this.delegate = delegate;
     }
 
     @Override
     public @NotNull Mqtt3ClientConfigView getClientConfig() {
-        return clientConfig;
+        return new Mqtt3ClientConfigView(delegate.getClientConfig());
     }
 
     @Override
     public @NotNull Mqtt3ConnectView getConnect() {
-        return connect;
+        return Mqtt3ConnectView.of(delegate.getConnect());
     }
 
     @Override
     public @NotNull Mqtt3ConnAckView getConnAck() {
-        return connAck;
+        return Mqtt3ConnAckView.of(delegate.getConnAck());
     }
 }

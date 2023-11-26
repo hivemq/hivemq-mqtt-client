@@ -19,15 +19,20 @@ package com.hivemq.mqtt.client2.internal;
 import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.advanced.MqttAdvancedConfig;
 import com.hivemq.mqtt.client2.internal.advanced.MqttAdvancedConfigBuilder;
+import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuthBuilder;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPublish;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPublishBuilder;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.util.Checks;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5ClientBuilder;
 import com.hivemq.mqtt.client2.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.mqtt.client2.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
+import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5ConnectedContext;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +43,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBuilder> implements Mqtt5ClientBuilder {
 
+    private ImmutableList.@Nullable Builder<MqttConnectedListener<? super MqttConnectedContextImpl>>
+            connectedListenersBuilder;
     private @NotNull MqttAdvancedConfig advancedConfig = MqttAdvancedConfig.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
@@ -45,12 +52,29 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     public MqttRxClientBuilder() {}
 
-    MqttRxClientBuilder(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
+    MqttRxClientBuilder(
+            final @NotNull MqttRxClientBuilderBase<?> clientBuilder,
+            final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContext>> connectedListeners) {
         super(clientBuilder);
+        if (!connectedListeners.isEmpty()) {
+            connectedListenersBuilder = ImmutableList.builder(connectedListeners.size());
+            connectedListenersBuilder.addAll(connectedListeners);
+        }
     }
 
     @Override
     protected @NotNull MqttRxClientBuilder self() {
+        return this;
+    }
+
+    @Override
+    public @NotNull MqttRxClientBuilder addConnectedListener(
+            final @Nullable MqttConnectedListener<? super Mqtt5ConnectedContext> connectedListener) {
+        Checks.notNull(connectedListener, "Connected listener");
+        if (connectedListenersBuilder == null) {
+            connectedListenersBuilder = ImmutableList.builder();
+        }
+        connectedListenersBuilder.add(connectedListener);
         return this;
     }
 
@@ -114,8 +138,13 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
         return buildRx().toBlocking();
     }
 
+    private @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> buildConnectedListeners() {
+        return (connectedListenersBuilder == null) ? ImmutableList.of() : connectedListenersBuilder.build();
+    }
+
     private @NotNull MqttClientConfig buildClientConfig() {
         return buildClientConfig(MqttVersion.MQTT_5_0, advancedConfig,
-                MqttClientConfig.ConnectDefaults.of(simpleAuth, enhancedAuthMechanism, willPublish));
+                MqttClientConfig.ConnectDefaults.of(simpleAuth, enhancedAuthMechanism, willPublish),
+                buildConnectedListeners());
     }
 }

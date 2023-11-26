@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.OverrideOnly
 @FunctionalInterface
-public interface MqttConnectedListener {
+public interface MqttConnectedListener<C extends MqttConnectedContext> {
 
     /**
      * Listener method which is notified when a client is connected (a successful ConnAck message is received).
@@ -36,5 +36,5 @@ public interface MqttConnectedListener {
      *
      * @param context provides context about the client that is now connected.
      */
-    void onConnected(@NotNull MqttConnectedContext context);
+    void onConnected(@NotNull C context);
 }

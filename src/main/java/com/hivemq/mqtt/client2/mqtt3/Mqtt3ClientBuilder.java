@@ -17,6 +17,8 @@
 package com.hivemq.mqtt.client2.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttClientBuilderBase;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
+import com.hivemq.mqtt.client2.mqtt3.lifecycle.Mqtt3ConnectedContext;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.mqtt.client2.mqtt3.message.publish.Mqtt3Publish;
@@ -34,6 +36,19 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBuilder> {
+
+    /**
+     * Adds a listener which is notified when the client is connected (a successful ConnAck message is received).
+     * <p>
+     * The listeners are called in the same order in which they are added.
+     *
+     * @param connectedListener the listener to add.
+     * @return the builder.
+     * @since 1.1
+     */
+    @CheckReturnValue
+    @NotNull Mqtt3ClientBuilder addConnectedListener(
+            @NotNull MqttConnectedListener<? super Mqtt3ConnectedContext> connectedListener);
 
     /**
      * Sets the optional

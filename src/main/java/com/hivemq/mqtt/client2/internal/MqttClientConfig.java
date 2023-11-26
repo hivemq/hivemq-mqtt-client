@@ -24,6 +24,7 @@ import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
 import com.hivemq.mqtt.client2.internal.ioc.SingletonComponent;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.netty.NettyEventLoopProvider;
@@ -55,7 +56,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @NotNull MqttExecutorConfigImpl executorConfig;
     private final @NotNull MqttAdvancedConfig advancedConfig;
     private final @NotNull ConnectDefaults connectDefaults;
-    private final @NotNull ImmutableList<MqttConnectedListener> connectedListeners;
+    private final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners;
     private final @NotNull ImmutableList<MqttDisconnectedListener> disconnectedListeners;
 
     private final @NotNull ClientComponent clientComponent;
@@ -78,7 +79,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull MqttExecutorConfigImpl executorConfig,
             final @NotNull MqttAdvancedConfig advancedConfig,
             final @NotNull ConnectDefaults connectDefaults,
-            final @NotNull ImmutableList<MqttConnectedListener> connectedListeners,
+            final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners,
             final @NotNull ImmutableList<MqttDisconnectedListener> disconnectedListeners) {
 
         this.mqttVersion = mqttVersion;
@@ -159,8 +160,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return Optional.empty();
     }
 
-    @Override
-    public @NotNull ImmutableList<MqttConnectedListener> getConnectedListeners() {
+    public @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> getConnectedListeners() {
         return connectedListeners;
     }
 

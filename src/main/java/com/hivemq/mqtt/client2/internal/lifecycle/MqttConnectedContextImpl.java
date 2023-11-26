@@ -16,12 +16,9 @@
 
 package com.hivemq.mqtt.client2.internal.lifecycle;
 
-import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
-import com.hivemq.mqtt.client2.internal.lifecycle.mqtt3.Mqtt3ConnectedContextView;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAck;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
-import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
 import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5ConnectedContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,22 +27,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MqttConnectedContextImpl implements Mqtt5ConnectedContext {
 
-    public static @NotNull MqttConnectedContext of(
-            final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttConnect connect,
-            final @NotNull MqttConnAck connAck) {
-
-        if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
-            return Mqtt3ConnectedContextView.of(clientConfig, connect, connAck);
-        }
-        return new MqttConnectedContextImpl(clientConfig, connect, connAck);
-    }
-
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttConnect connect;
     private final @NotNull MqttConnAck connAck;
 
-    private MqttConnectedContextImpl(
+    public MqttConnectedContextImpl(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {

@@ -19,6 +19,9 @@ package com.hivemq.mqtt.client2.internal.mqtt3;
 import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.*;
 import com.hivemq.mqtt.client2.internal.advanced.MqttAdvancedConfig;
+import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
+import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
+import com.hivemq.mqtt.client2.internal.lifecycle.mqtt3.Mqtt3ConnectedContextView;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
 import com.hivemq.mqtt.client2.internal.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.mqtt.client2.internal.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
@@ -26,7 +29,10 @@ import com.hivemq.mqtt.client2.internal.message.publish.MqttWillPublish;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import com.hivemq.mqtt.client2.internal.util.Checks;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedContext;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3ClientBuilder;
+import com.hivemq.mqtt.client2.mqtt3.lifecycle.Mqtt3ConnectedContext;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
@@ -38,13 +44,39 @@ import org.jetbrains.annotations.Nullable;
 public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxClientViewBuilder>
         implements Mqtt3ClientBuilder {
 
+    private ImmutableList.@Nullable Builder<MqttConnectedListener<? super MqttConnectedContextImpl>>
+            connectedListenersBuilder;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable MqttWillPublish willPublish;
 
     public Mqtt3RxClientViewBuilder() {}
 
-    public Mqtt3RxClientViewBuilder(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
+    public Mqtt3RxClientViewBuilder(
+            final @NotNull MqttRxClientBuilderBase<?> clientBuilder,
+            final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContext>> connectedListeners) {
         super(clientBuilder);
+        if (!connectedListeners.isEmpty()) {
+            connectedListenersBuilder = ImmutableList.builder(connectedListeners.size());
+            for (final MqttConnectedListener<? super MqttConnectedContext> connectedListener : connectedListeners) {
+                connectedListenersBuilder.add(wrapConnectedListener(connectedListener));
+            }
+        }
+    }
+
+    private @NotNull MqttConnectedListener<MqttConnectedContextImpl> wrapConnectedListener(
+            final @NotNull MqttConnectedListener<? super Mqtt3ConnectedContextView> delegate) {
+        return context -> delegate.onConnected(new Mqtt3ConnectedContextView(context));
+    }
+
+    @Override
+    public @NotNull Mqtt3RxClientViewBuilder addConnectedListener(
+            final @Nullable MqttConnectedListener<? super Mqtt3ConnectedContext> connectedListener) {
+        Checks.notNull(connectedListener, "Connected listener");
+        if (connectedListenersBuilder == null) {
+            connectedListenersBuilder = ImmutableList.builder();
+        }
+        connectedListenersBuilder.add(wrapConnectedListener(connectedListener));
+        return this;
     }
 
     @Override
@@ -108,8 +140,12 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
         return buildRxDelegate().toBlocking();
     }
 
+    private @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> buildConnectedListeners() {
+        return connectedListenersBuilder == null ? ImmutableList.of() : connectedListenersBuilder.build();
+    }
+
     private @NotNull MqttClientConfig buildClientConfig() {
         return buildClientConfig(MqttVersion.MQTT_3_1_1, MqttAdvancedConfig.DEFAULT,
-                MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish));
+                MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish), buildConnectedListeners());
     }
 }

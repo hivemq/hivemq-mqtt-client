@@ -17,9 +17,11 @@
 package com.hivemq.mqtt.client2.mqtt5;
 
 import com.hivemq.mqtt.client2.MqttClientBuilderBase;
+import com.hivemq.mqtt.client2.lifecycle.MqttConnectedListener;
 import com.hivemq.mqtt.client2.mqtt5.advanced.Mqtt5AdvancedConfig;
 import com.hivemq.mqtt.client2.mqtt5.advanced.Mqtt5AdvancedConfigBuilder;
 import com.hivemq.mqtt.client2.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
+import com.hivemq.mqtt.client2.mqtt5.lifecycle.Mqtt5ConnectedContext;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5SimpleAuth;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
@@ -37,6 +39,19 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBuilder> {
+
+    /**
+     * Adds a listener which is notified when the client is connected (a successful ConnAck message is received).
+     * <p>
+     * The listeners are called in the same order in which they are added.
+     *
+     * @param connectedListener the listener to add.
+     * @return the builder.
+     * @since 1.1
+     */
+    @CheckReturnValue
+    @NotNull Mqtt5ClientBuilder addConnectedListener(
+            @NotNull MqttConnectedListener<? super Mqtt5ConnectedContext> connectedListener);
 
     /**
      * Sets the {@link Mqtt5ClientConfig#getAdvancedConfig() advanced configuration}.
