@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import com.hivemq.mqtt.client2.internal.collections.HandleList;
 import com.hivemq.mqtt.client2.internal.collections.HandleList.Handle;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
@@ -40,7 +39,6 @@ import java.util.Map;
  * @author Silvio Giebl
  */
 @ClientScope
-@NotThreadSafe
 public class MqttIncomingPublishFlows {
 
     private final @NotNull MqttSubscribedPublishFlows subscribedFlows;

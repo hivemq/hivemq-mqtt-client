@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.collections;
 
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import com.hivemq.mqtt.client2.internal.util.Pow2Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +27,6 @@ import java.util.function.ToIntFunction;
 /**
  * @author Silvio Giebl
  */
-@NotThreadSafe
 public class IntIndex<E> {
 
     private static final int MAX_CAPACITY = 1 << 30;

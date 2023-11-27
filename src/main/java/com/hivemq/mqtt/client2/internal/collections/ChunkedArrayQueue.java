@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.collections;
 
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +24,6 @@ import java.util.NoSuchElementException;
 /**
  * @author Silvio Giebl
  */
-@NotThreadSafe
 public class ChunkedArrayQueue<E> implements Iterable<E> {
 
     private final int chunkSize;

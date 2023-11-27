@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import com.hivemq.mqtt.client2.internal.collections.HandleList.Handle;
 import com.hivemq.mqtt.client2.internal.collections.Index;
 import com.hivemq.mqtt.client2.internal.collections.NodeList;
@@ -35,7 +34,6 @@ import java.util.*;
 /**
  * @author Silvio Giebl
  */
-@NotThreadSafe
 class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows {
 
     private @Nullable TopicTreeNode rootNode;

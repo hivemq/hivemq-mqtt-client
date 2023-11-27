@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttTopicFilterImpl;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubscription;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,6 @@ import java.util.Map;
 /**
  * @author Silvio Giebl
  */
-@NotThreadSafe
 interface MqttSubscribedPublishFlows {
 
     void subscribe(

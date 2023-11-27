@@ -16,14 +16,12 @@
 
 package com.hivemq.mqtt.client2.internal.util;
 
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
  */
-@NotThreadSafe
 public class Ranges {
 
     private @NotNull Range rootRange;

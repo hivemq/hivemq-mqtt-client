@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import com.hivemq.mqtt.client2.internal.collections.HandleList;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttStatefulPublish;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-@NotThreadSafe
 class MqttStatefulPublishWithFlows extends HandleList<MqttIncomingPublishFlow> {
 
     final @NotNull MqttStatefulPublish publish;

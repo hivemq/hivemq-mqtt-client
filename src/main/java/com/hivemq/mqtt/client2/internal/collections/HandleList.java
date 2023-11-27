@@ -16,13 +16,11 @@
 
 package com.hivemq.mqtt.client2.internal.collections;
 
-import com.hivemq.mqtt.client2.internal.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-@NotThreadSafe
 public class HandleList<E> extends NodeList<HandleList.Handle<E>> {
 
     public static class Handle<E> extends NodeList.Node<Handle<E>> {

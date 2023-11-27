@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.netty;
 
 import com.hivemq.mqtt.client2.internal.MqttExecutorConfigImpl;
-import com.hivemq.mqtt.client2.internal.annotations.ThreadSafe;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.util.ClassUtil;
@@ -43,7 +42,6 @@ import java.util.function.BiFunction;
 /**
  * @author Silvio Giebl
  */
-@ThreadSafe
 public class NettyEventLoopProvider {
 
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(NettyEventLoopProvider.class);
