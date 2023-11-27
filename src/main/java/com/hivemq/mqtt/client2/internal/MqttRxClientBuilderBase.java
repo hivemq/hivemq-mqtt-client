@@ -46,7 +46,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
             MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
     private @Nullable MqttTransportConfigImpl transportConfig = MqttTransportConfigImpl.DEFAULT;
     private @NotNull MqttExecutorConfigImpl executorConfig = MqttExecutorConfigImpl.DEFAULT;
-    protected @Nullable MqttAutoReconnectImpl autoReconnect;
+    private @Nullable MqttAutoReconnectImpl autoReconnect;
 
     protected MqttRxClientBuilderBase() {}
 
@@ -201,6 +201,18 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return transportConfig;
     }
 
+    private @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> addAutoReconnect(
+            final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> disconnectedListeners) {
+        if (autoReconnect == null) {
+            return disconnectedListeners;
+        }
+        if (disconnectedListeners.isEmpty()) {
+            return ImmutableList.of(autoReconnect);
+        }
+        return ImmutableList.<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>>builder(
+                disconnectedListeners.size() + 1).add(autoReconnect).addAll(disconnectedListeners).build();
+    }
+
     protected @NotNull MqttClientConfig buildClientConfig(
             final @NotNull MqttVersion mqttVersion,
             final @NotNull MqttAdvancedConfig advancedConfig,
@@ -209,7 +221,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
             final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> disconnectedListeners) {
 
         return new MqttClientConfig(mqttVersion, identifier, buildTransportConfig(), executorConfig, advancedConfig,
-                connectDefaults, connectedListeners, disconnectedListeners);
+                connectDefaults, connectedListeners, addAutoReconnect(disconnectedListeners));
     }
 
     public static class Choose extends MqttRxClientBuilderBase<Choose> implements MqttClientBuilder {

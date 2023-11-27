@@ -170,30 +170,10 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
         return buildRxDelegate().toBlocking();
     }
 
-    private @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> buildConnectedListeners() {
-        return connectedListenersBuilder == null ? ImmutableList.of() : connectedListenersBuilder.build();
-    }
-
-    private @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> buildDisconnectedListeners() {
-        if (disconnectedListenersBuilder == null) {
-            if (autoReconnect == null) {
-                return ImmutableList.of();
-            }
-            return ImmutableList.of(autoReconnect);
-        }
-        if (autoReconnect == null) {
-            return disconnectedListenersBuilder.build();
-        }
-        return ImmutableList.<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>>builder(
-                        disconnectedListenersBuilder.getSize() + 1)
-                .add(autoReconnect)
-                .addAll(disconnectedListenersBuilder.build())
-                .build();
-    }
-
     private @NotNull MqttClientConfig buildClientConfig() {
         return buildClientConfig(MqttVersion.MQTT_3_1_1, MqttAdvancedConfig.DEFAULT,
-                MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish), buildConnectedListeners(),
-                buildDisconnectedListeners());
+                MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish),
+                (connectedListenersBuilder == null) ? ImmutableList.of() : connectedListenersBuilder.build(),
+                (disconnectedListenersBuilder == null) ? ImmutableList.of() : disconnectedListenersBuilder.build());
     }
 }
