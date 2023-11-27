@@ -368,5 +368,21 @@ public interface ImmutableList<E> extends List<E>, RandomAccess {
         static <E> @NotNull E first(final @NotNull Collection<@NotNull E> elements) {
             return (elements instanceof List) ? ((List<E>) elements).get(0) : elements.iterator().next();
         }
+
+        public static <E> @NotNull Builder<E> add(final @Nullable Builder<E> builder, final @NotNull E e) {
+            return ((builder == null) ? ImmutableList.<E>builder() : builder).add(e);
+        }
+
+        public static <E> @Nullable Builder<E> addAll(
+                final @Nullable Builder<E> builder, final @NotNull Collection<? extends @NotNull E> elements) {
+            if (elements.isEmpty()) {
+                return builder;
+            }
+            return ((builder == null) ? ImmutableList.<E>builder(elements.size()) : builder).addAll(elements);
+        }
+
+        public static <E> @NotNull ImmutableList<E> build(final @Nullable Builder<E> builder) {
+            return (builder == null) ? ImmutableList.of() : builder.build();
+        }
     }
 }

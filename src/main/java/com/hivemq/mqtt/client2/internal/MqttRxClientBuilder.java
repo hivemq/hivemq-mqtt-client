@@ -63,14 +63,9 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
             final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContext>> connectedListeners,
             final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContext>> disconnectedListeners) {
         super(clientBuilder);
-        if (!connectedListeners.isEmpty()) {
-            connectedListenersBuilder = ImmutableList.builder(connectedListeners.size());
-            connectedListenersBuilder.addAll(connectedListeners);
-        }
-        if (!disconnectedListeners.isEmpty()) {
-            disconnectedListenersBuilder = ImmutableList.builder(disconnectedListeners.size());
-            disconnectedListenersBuilder.addAll(disconnectedListeners);
-        }
+        connectedListenersBuilder = ImmutableList.Builder.addAll(connectedListenersBuilder, connectedListeners);
+        disconnectedListenersBuilder =
+                ImmutableList.Builder.addAll(disconnectedListenersBuilder, disconnectedListeners);
     }
 
     @Override
@@ -82,10 +77,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     public @NotNull MqttRxClientBuilder addConnectedListener(
             final @Nullable MqttConnectedListener<? super Mqtt5ConnectedContext> connectedListener) {
         Checks.notNull(connectedListener, "Connected listener");
-        if (connectedListenersBuilder == null) {
-            connectedListenersBuilder = ImmutableList.builder();
-        }
-        connectedListenersBuilder.add(connectedListener);
+        connectedListenersBuilder = ImmutableList.Builder.add(connectedListenersBuilder, connectedListener);
         return this;
     }
 
@@ -93,10 +85,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     public @NotNull MqttRxClientBuilder addDisconnectedListener(
             final @Nullable MqttDisconnectedListener<? super Mqtt5DisconnectedContext> disconnectedListener) {
         Checks.notNull(disconnectedListener, "Disconnected listener");
-        if (disconnectedListenersBuilder == null) {
-            disconnectedListenersBuilder = ImmutableList.builder();
-        }
-        disconnectedListenersBuilder.add(disconnectedListener);
+        disconnectedListenersBuilder = ImmutableList.Builder.add(disconnectedListenersBuilder, disconnectedListener);
         return this;
     }
 
@@ -163,7 +152,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     private @NotNull MqttClientConfig buildClientConfig() {
         return buildClientConfig(MqttVersion.MQTT_5_0, advancedConfig,
                 MqttClientConfig.ConnectDefaults.of(simpleAuth, enhancedAuthMechanism, willPublish),
-                (connectedListenersBuilder == null) ? ImmutableList.of() : connectedListenersBuilder.build(),
-                (disconnectedListenersBuilder == null) ? ImmutableList.of() : disconnectedListenersBuilder.build());
+                ImmutableList.Builder.build(connectedListenersBuilder),
+                ImmutableList.Builder.build(disconnectedListenersBuilder));
     }
 }

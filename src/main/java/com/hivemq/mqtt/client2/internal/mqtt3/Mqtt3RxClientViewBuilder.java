@@ -86,10 +86,8 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     public @NotNull Mqtt3RxClientViewBuilder addConnectedListener(
             final @Nullable MqttConnectedListener<? super Mqtt3ConnectedContext> connectedListener) {
         Checks.notNull(connectedListener, "Connected listener");
-        if (connectedListenersBuilder == null) {
-            connectedListenersBuilder = ImmutableList.builder();
-        }
-        connectedListenersBuilder.add(wrapConnectedListener(connectedListener));
+        connectedListenersBuilder =
+                ImmutableList.Builder.add(connectedListenersBuilder, wrapConnectedListener(connectedListener));
         return this;
     }
 
@@ -102,10 +100,8 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     public @NotNull Mqtt3RxClientViewBuilder addDisconnectedListener(
             final @Nullable MqttDisconnectedListener<? super Mqtt3DisconnectedContext> disconnectedListener) {
         Checks.notNull(disconnectedListener, "Disconnected listener");
-        if (disconnectedListenersBuilder == null) {
-            disconnectedListenersBuilder = ImmutableList.builder();
-        }
-        disconnectedListenersBuilder.add(wrapDisconnectedListener(disconnectedListener));
+        disconnectedListenersBuilder =
+                ImmutableList.Builder.add(disconnectedListenersBuilder, wrapDisconnectedListener(disconnectedListener));
         return this;
     }
 
@@ -173,7 +169,7 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     private @NotNull MqttClientConfig buildClientConfig() {
         return buildClientConfig(MqttVersion.MQTT_3_1_1, MqttAdvancedConfig.DEFAULT,
                 MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish),
-                (connectedListenersBuilder == null) ? ImmutableList.of() : connectedListenersBuilder.build(),
-                (disconnectedListenersBuilder == null) ? ImmutableList.of() : disconnectedListenersBuilder.build());
+                ImmutableList.Builder.build(connectedListenersBuilder),
+                ImmutableList.Builder.build(disconnectedListenersBuilder));
     }
 }

@@ -240,10 +240,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         public @NotNull Choose addConnectedListener(
                 final @Nullable MqttConnectedListener<? super MqttConnectedContext> connectedListener) {
             Checks.notNull(connectedListener, "Connected listener");
-            if (connectedListenersBuilder == null) {
-                connectedListenersBuilder = ImmutableList.builder();
-            }
-            connectedListenersBuilder.add(connectedListener);
+            connectedListenersBuilder = ImmutableList.Builder.add(connectedListenersBuilder, connectedListener);
             return this;
         }
 
@@ -251,29 +248,21 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         public @NotNull Choose addDisconnectedListener(
                 final @Nullable MqttDisconnectedListener<? super MqttDisconnectedContext> disconnectedListener) {
             Checks.notNull(disconnectedListener, "Disconnected listener");
-            if (disconnectedListenersBuilder == null) {
-                disconnectedListenersBuilder = ImmutableList.builder();
-            }
-            disconnectedListenersBuilder.add(disconnectedListener);
+            disconnectedListenersBuilder =
+                    ImmutableList.Builder.add(disconnectedListenersBuilder, disconnectedListener);
             return this;
-        }
-
-        private @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContext>> buildConnectedListeners() {
-            return (connectedListenersBuilder == null) ? ImmutableList.of() : connectedListenersBuilder.build();
-        }
-
-        private @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContext>> buildDisconnectedListeners() {
-            return (disconnectedListenersBuilder == null) ? ImmutableList.of() : disconnectedListenersBuilder.build();
         }
 
         @Override
         public @NotNull Mqtt3RxClientViewBuilder useMqttVersion3() {
-            return new Mqtt3RxClientViewBuilder(this, buildConnectedListeners(), buildDisconnectedListeners());
+            return new Mqtt3RxClientViewBuilder(this, ImmutableList.Builder.build(connectedListenersBuilder),
+                    ImmutableList.Builder.build(disconnectedListenersBuilder));
         }
 
         @Override
         public @NotNull MqttRxClientBuilder useMqttVersion5() {
-            return new MqttRxClientBuilder(this, buildConnectedListeners(), buildDisconnectedListeners());
+            return new MqttRxClientBuilder(this, ImmutableList.Builder.build(connectedListenersBuilder),
+                    ImmutableList.Builder.build(disconnectedListenersBuilder));
         }
     }
 }
