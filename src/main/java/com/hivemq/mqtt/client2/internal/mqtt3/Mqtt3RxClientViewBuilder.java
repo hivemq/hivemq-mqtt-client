@@ -77,6 +77,11 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
         }
     }
 
+    @Override
+    protected @NotNull Mqtt3RxClientViewBuilder self() {
+        return this;
+    }
+
     private @NotNull MqttConnectedListener<MqttConnectedContextImpl> wrapConnectedListener(
             final @NotNull MqttConnectedListener<? super Mqtt3ConnectedContextView> delegate) {
         return context -> delegate.onConnected(new Mqtt3ConnectedContextView(context));
@@ -127,11 +132,6 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     @Override
     public Mqtt3PublishViewBuilder.@NotNull WillNested<Mqtt3RxClientViewBuilder> willPublishWith() {
         return new Mqtt3PublishViewBuilder.WillNested<>(this::willPublish);
-    }
-
-    @Override
-    protected @NotNull Mqtt3RxClientViewBuilder self() {
-        return this;
     }
 
     @Override

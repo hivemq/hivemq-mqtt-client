@@ -125,6 +125,8 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     public static class Nested<P> extends MqttConnectRestrictionsBuilder<Nested<P>>
             implements Mqtt5ConnectRestrictionsBuilder.Nested<P>, Mqtt3ConnectRestrictionsBuilder.Nested<P> {
 
+        private final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer;
+
         public Nested(
                 final @NotNull MqttConnectRestrictions restrictions,
                 final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer) {
@@ -132,8 +134,6 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
             super(restrictions);
             this.parentConsumer = parentConsumer;
         }
-
-        private final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer;
 
         @Override
         @NotNull Nested<P> self() {
