@@ -177,5 +177,3 @@ If you use the HiveMQ MQTT Client in a project that is not listed here, feel fre
 {% endfor %}
 </div>
 
-
-{% include news.md %}
