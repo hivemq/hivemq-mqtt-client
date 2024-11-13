@@ -14,8 +14,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4
         with:
-          distribution: 'adopt'
-          java-version: '8'
+          distribution: temurin
+          java-version: 8
       - name: Publish to Maven Central
         env:
           ORG_GRADLE_PROJECT_signKey: ${{ secrets.SIGN_KEY }}
