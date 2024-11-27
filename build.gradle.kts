@@ -126,6 +126,10 @@ dependencies {
     testImplementation("org.bouncycastle:bcpkix-jdk15on:${property("bouncycastle.version")}")
     testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:${property("paho.version")}")
     testRuntimeOnly("org.slf4j:slf4j-simple:${property("slf4j.version")}")
+
+    // TODO: Workaround for PMD, see https://github.com/gradle/gradle/issues/24502. Can be removed after Gradle update.
+    pmd("net.sourceforge.pmd:pmd-ant:7.7.0")
+    pmd("net.sourceforge.pmd:pmd-java:7.7.0")
 }
 
 /* ******************** integration Tests ******************** */
