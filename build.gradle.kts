@@ -328,7 +328,7 @@ allprojects {
         plugins.apply("pmd")
 
         pmd {
-            toolVersion = "5.8.1"
+            toolVersion = "7.7.0"
             incrementalAnalysis.set(false)
         }
     }
