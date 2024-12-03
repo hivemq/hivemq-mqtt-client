@@ -223,6 +223,7 @@ tasks.shadowJar {
     relocate("org.jctools", "${shadePrefix}org.jctools")
     relocate("org.jetbrains", "${shadePrefix}org.jetbrains")
     relocate("dagger", "${shadePrefix}dagger")
+    exclude("META-INF/com.google.dagger_dagger.version")
     relocate("javax.inject", "${shadePrefix}javax.inject")
 
     minimize()
