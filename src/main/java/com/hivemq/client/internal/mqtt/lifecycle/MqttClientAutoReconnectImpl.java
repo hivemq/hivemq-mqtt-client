@@ -16,43 +16,53 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle;
 
-import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
+import com.hivemq.client.mqtt.lifecycle.*;
 import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
-import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Silvio Giebl
+ * @author laokou
  */
-public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
+public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect, MqttClientConnectedListener {
 
     static final long DEFAULT_START_DELAY_NANOS =
             TimeUnit.SECONDS.toNanos(MqttClientAutoReconnect.DEFAULT_START_DELAY_S);
     static final long DEFAULT_MAX_DELAY_NANOS = TimeUnit.SECONDS.toNanos(MqttClientAutoReconnect.DEFAULT_MAX_DELAY_S);
+    static final int DEFAULT_MAX_RETRY_NUM = MqttClientAutoReconnect.DEFAULT_MAX_RETRY_NUM;
     public static final @NotNull MqttClientAutoReconnectImpl DEFAULT =
-            new MqttClientAutoReconnectImpl(DEFAULT_START_DELAY_NANOS, DEFAULT_MAX_DELAY_NANOS);
+            new MqttClientAutoReconnectImpl(DEFAULT_START_DELAY_NANOS, DEFAULT_MAX_DELAY_NANOS, DEFAULT_MAX_RETRY_NUM);
 
     private final long initialDelayNanos;
     private final long maxDelayNanos;
+    private final int maxRetryNum;
+    private final AtomicInteger attempts = new AtomicInteger(0);
 
-    MqttClientAutoReconnectImpl(final long initialDelayNanos, final long maxDelayNanos) {
+    MqttClientAutoReconnectImpl(final long initialDelayNanos, final long maxDelayNanos, final int maxRetryNum) {
         this.initialDelayNanos = initialDelayNanos;
         this.maxDelayNanos = maxDelayNanos;
+        this.maxRetryNum = maxRetryNum;
     }
 
     @Override
     public void onDisconnected(final @NotNull MqttClientDisconnectedContext context) {
-        if (context.getSource() != MqttDisconnectSource.USER) {
+        final int num = attempts.incrementAndGet();
+        if (context.getSource() != MqttDisconnectSource.USER && num <= maxRetryNum) {
             final MqttClientReconnector reconnector = context.getReconnector();
             final long delay =
                     (long) Math.min(initialDelayNanos * Math.pow(2, reconnector.getAttempts()), maxDelayNanos);
             final long randomDelay = (long) (delay / 4d / Integer.MAX_VALUE * ThreadLocalRandom.current().nextInt());
             reconnector.reconnect(true).delay(delay + randomDelay, TimeUnit.NANOSECONDS);
         }
+    }
+
+    @Override
+    public void onConnected(@NotNull final MqttClientConnectedContext context) {
+        attempts.compareAndSet(attempts.get(), 0);
     }
 
     @Override
@@ -66,7 +76,13 @@ public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
     }
 
     @Override
+    public int getMaxRetryNum() {
+        return maxRetryNum;
+    }
+
+    @Override
     public MqttClientAutoReconnectImplBuilder.@NotNull Default extend() {
         return new MqttClientAutoReconnectImplBuilder.Default(this);
     }
+
 }

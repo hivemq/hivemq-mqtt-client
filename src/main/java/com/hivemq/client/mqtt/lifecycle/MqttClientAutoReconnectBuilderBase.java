@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <B> the type of the builder.
  * @author Silvio Giebl
+ * @author laokou
  * @since 1.1
  */
 @DoNotImplement
@@ -55,4 +56,16 @@ public interface MqttClientAutoReconnectBuilderBase<B extends MqttClientAutoReco
      */
     @CheckReturnValue
     @NotNull B maxDelay(final long maxDelay, @NotNull TimeUnit timeUnit);
+
+    /**
+     * Sets the maximum number of reconnect attempts.
+     * <p>
+     * It must be positive.
+     *
+     * @param maxRetryNum the maximum number of reconnect attempts.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B maxRetryNum(final int maxRetryNum);
+
 }
