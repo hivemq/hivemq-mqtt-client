@@ -62,7 +62,10 @@ public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect, Mqt
 
     @Override
     public void onConnected(@NotNull final MqttClientConnectedContext context) {
-        attempts.compareAndSet(attempts.get(), 0);
+        final int num = attempts.get();
+        if (num > 0) {
+            attempts.compareAndSet(num, 0);
+        }
     }
 
     @Override
