@@ -22,9 +22,9 @@ import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.rx.CompletableFlow;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
-import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
-import io.reactivex.internal.disposables.EmptyDisposable;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 
 /**

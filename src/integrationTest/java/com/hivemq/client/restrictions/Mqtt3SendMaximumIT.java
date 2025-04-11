@@ -33,24 +33,29 @@ import com.hivemq.extension.sdk.api.parameter.ExtensionStopInput;
 import com.hivemq.extension.sdk.api.parameter.ExtensionStopOutput;
 import com.hivemq.extension.sdk.api.services.Services;
 import com.hivemq.extension.sdk.api.services.intializer.ClientInitializer;
-import com.hivemq.testcontainer.core.HiveMQExtension;
-import com.hivemq.testcontainer.junit5.HiveMQTestContainerExtension;
+
 import org.jetbrains.annotations.NotNull;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.testcontainers.hivemq.HiveMQContainer;
+import org.testcontainers.hivemq.HiveMQExtension;
+import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Yannick Weber
  */
-public class Mqtt3SendMaximumIT {
+
+class Mqtt3SendMaximumIT {
 
     public static final int RECEIVE_MAXIMUM = 10;
     public static final @NotNull HiveMQExtension NO_PUBACK_EXTENSION = HiveMQExtension.builder()
@@ -61,14 +66,53 @@ public class Mqtt3SendMaximumIT {
             .mainClass(NoPubackExtension.class)
             .build();
 
-    @RegisterExtension
-    public final @NotNull HiveMQTestContainerExtension hivemq =
-            new HiveMQTestContainerExtension().withExtension(NO_PUBACK_EXTENSION)
-                    .withHiveMQConfig(MountableFile.forClasspathResource("/config.xml"));
+    @Rule
+    public HiveMQContainer hivemq = new HiveMQContainer(DockerImageName.parse("hivemq/hivemq-ce")
+            .withTag("2021.3"))
+            .withExposedPorts(1883)
+            .withExtension(NO_PUBACK_EXTENSION)
+            .withHiveMQConfig(MountableFile.forClasspathResource("/config.xml"));
+
+
+    public void StartContainer(){
+        hivemq.start();
+        hivemq.setExposedPorts(Collections.singletonList(hivemq.getMqttPort()));
+    }
+
+    @Test
+    public void test_mqtt() throws Exception {
+        StartContainer();
+        var publisher = Mqtt5Client.builder()
+                .serverPort(hivemq.getMqttPort()) // 3
+                .serverHost(hivemq.getHost())
+                .identifier("publisher")
+                .buildBlocking();
+
+        publisher.connect();
+
+        var subscriber = Mqtt5Client.builder()
+                .serverPort(hivemq.getMqttPort()) // 3
+                .serverHost(hivemq.getHost())
+                .identifier("subscriber")
+                .buildBlocking();
+
+        var publishes = subscriber.publishes(MqttGlobalPublishFilter.ALL);
+        subscriber.connect();
+        subscriber.subscribeWith().topicFilter("topic/test").send();
+
+        publisher.publishWith()
+                .topic("topic/test")
+                .payload("Hello World!".getBytes()).send();
+
+        var receive = publishes.receive();
+
+        assertNotNull(receive); // 4
+        assertEquals("Hello World!", new String(receive.getPayloadAsBytes())); // 4
+    }
 
     @Test
     void mqtt3_sendMaximum_applied() throws InterruptedException {
-
+        StartContainer();
         final Mqtt3Client publisher = Mqtt3Client.builder().serverPort(hivemq.getMqttPort()).build();
         publisher.toBlocking().connectWith().restrictions().sendMaximum(RECEIVE_MAXIMUM).applyRestrictions().send();
 

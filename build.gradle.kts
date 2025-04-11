@@ -1,11 +1,13 @@
+import java.net.URI
+
 plugins {
     id("java-library")
-    id("com.github.johnrengelman.shadow")
-    id("biz.aQute.bnd.builder")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("biz.aQute.bnd.builder") version "6.4.0"
     id("maven-publish")
     id("io.github.gradle-nexus.publish-plugin")
     id("signing")
-    id("com.github.hierynomus.license")
+    id("com.github.hierynomus.license") version "0.16.1"
     id("pmd")
     id("com.github.sgtsilvio.gradle.utf8")
     id("com.github.sgtsilvio.gradle.metadata")
@@ -54,8 +56,8 @@ allprojects {
 allprojects {
     plugins.withId("java") {
         java {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
 
         plugins.apply("com.github.sgtsilvio.gradle.utf8")
@@ -66,7 +68,7 @@ allprojects {
 /* ******************** dependencies ******************** */
 
 dependencies {
-    api("io.reactivex.rxjava2:rxjava:${property("rxjava.version")}")
+    api("io.reactivex.rxjava3:rxjava:${property("rxjava.version")}")
     api("org.reactivestreams:reactive-streams:${property("reactive-streams.version")}")
 
     implementation("io.netty:netty-buffer:${property("netty.version")}")
@@ -77,6 +79,7 @@ dependencies {
     implementation("org.jctools:jctools-core:${property("jctools.version")}")
     implementation("org.jetbrains:annotations:${property("annotations.version")}")
     implementation("com.google.dagger:dagger:${property("dagger.version")}")
+    implementation("io.projectreactor:reactor-core:${property("reactor-core.version")}")//3.5.7
 
     compileOnly("org.slf4j:slf4j-api:${property("slf4j.version")}")
 
@@ -122,8 +125,8 @@ dependencies {
     testImplementation("nl.jqno.equalsverifier:equalsverifier:${property("equalsverifier.version")}")
     testImplementation("org.mockito:mockito-core:${property("mockito.version")}")
     testImplementation("com.google.guava:guava:${property("guava.version")}")
-    testImplementation("org.bouncycastle:bcprov-jdk15on:${property("bouncycastle.version")}")
-    testImplementation("org.bouncycastle:bcpkix-jdk15on:${property("bouncycastle.version")}")
+    testImplementation("org.bouncycastle:bcprov-jdk18on:${property("bouncycastle.version")}")
+    testImplementation("org.bouncycastle:bcpkix-jdk18on:${property("bouncycastle.version")}")
     testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:${property("paho.version")}")
     testRuntimeOnly("org.slf4j:slf4j-simple:${property("slf4j.version")}")
 }
@@ -143,7 +146,9 @@ val integrationTestRuntimeOnly: Configuration by configurations.getting {
 }
 
 dependencies {
-    integrationTestImplementation("com.hivemq:hivemq-testcontainer-junit5:${property("hivemq-testcontainer.version")}")
+    integrationTestImplementation("org.testcontainers:testcontainers:${property("hivemq-testcontainer.version")}")
+    integrationTestImplementation("org.testcontainers:hivemq:${property("hivemq-testcontainer.version")}")
+
     integrationTestImplementation("com.hivemq:hivemq-extension-sdk:${property("hivemq-extension-sdk.version")}")
     integrationTestImplementation("org.awaitility:awaitility:${property("awaitility.version")}")
 }
@@ -324,7 +329,8 @@ allprojects {
     license {
         header = rootDir.resolve("HEADER")
         mapping("java", "SLASHSTAR_STYLE")
-    }
+        headerURI = URI("https://raw.githubusercontent.com/hivemq/hivemq-mqtt-client/refs/heads/master/HEADER")
+            }
 }
 
 allprojects {
@@ -339,7 +345,7 @@ allprojects {
     }
 }
 
-apply("$rootDir/gradle/japicc.gradle.kts")
+
 
 
 /* ******************** build cache ******************** */

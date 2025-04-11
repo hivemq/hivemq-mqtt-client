@@ -31,9 +31,10 @@ import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoop;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.internal.disposables.EmptyDisposable;
+
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
