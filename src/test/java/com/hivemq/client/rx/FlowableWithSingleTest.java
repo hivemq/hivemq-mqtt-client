@@ -157,8 +157,9 @@ class FlowableWithSingleTest {
                 .awaitCount(3)
                 .assertValueAt(2, "next2")
                 .await()
-                .assertError(IllegalArgumentException.class);
-                //.assertErrorMessage("test");
+                .assertError(IllegalArgumentException.class)
+                .assertError(throwable -> throwable.getMessage().equals("test"));
+
 
         executorService.shutdown();
     }
@@ -196,8 +197,9 @@ class FlowableWithSingleTest {
                 .awaitCount(1024)
                 .assertValueCount(1024)
                 .await()
-                .assertError(IllegalArgumentException.class);
-                //.assertErrorMessage("test");
+                .assertError(IllegalArgumentException.class)
+                .assertError(throwable -> throwable.getMessage().equals("test"));
+
 
         executorService.shutdown();
     }
