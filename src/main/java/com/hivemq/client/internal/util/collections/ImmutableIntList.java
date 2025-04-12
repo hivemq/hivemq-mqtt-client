@@ -47,8 +47,8 @@ public interface ImmutableIntList {
         Checks.notNull(others, "Int array");
         final int[] array = new int[3 + others.length];
         array[0] = i1;
-        array[0] = i2;
-        array[0] = i3;
+        array[1] = i2;
+        array[2] = i3;
         System.arraycopy(others, 0, array, 3, others.length);
         return new ImmutableIntArray(array);
     }
