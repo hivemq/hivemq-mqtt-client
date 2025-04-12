@@ -16,8 +16,10 @@
 
 package com.hivemq.client.internal.rx;
 
-import io.reactivex.*;
-import io.reactivex.disposables.Disposable;
+
+
+import io.reactivex.rxjava3.core.*;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
