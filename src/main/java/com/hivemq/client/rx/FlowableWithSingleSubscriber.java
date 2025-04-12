@@ -17,7 +17,7 @@
 package com.hivemq.client.rx;
 
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
-import io.reactivex.FlowableSubscriber;
+import io.reactivex.rxjava3.core.FlowableSubscriber;
 
 /**
  * Represents a Reactive-Streams inspired {@link WithSingleSubscriber} that is RxJava 2 only and weakens rules for
