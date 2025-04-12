@@ -171,7 +171,9 @@ val integrationTest by tasks.registering(Test::class) {
     })
 }
 
-tasks.check { dependsOn(integrationTest) }
+tasks.check {
+
+    dependsOn(integrationTest) }
 
 /* ******************** jars ******************** */
 
@@ -346,7 +348,7 @@ allprojects {
 }
 
 
-
+apply("$rootDir/gradle/japicc.gradle.kts")
 
 /* ******************** build cache ******************** */
 
