@@ -81,6 +81,15 @@ class ImmutableIntListTest {
     }
 
     @Test
+    void of_four() {
+        final ImmutableIntList of4 = ImmutableIntList.of(1, 2, 3, 4);
+        assertEquals(1, of4.get(0));
+        assertEquals(2, of4.get(1));
+        assertEquals(3, of4.get(2));
+        assertEquals(4, of4.get(3));
+    }
+
+    @Test
     void of_multiple() {
         final ImmutableIntList of1 = ImmutableIntList.of(1, 2);
         final ImmutableIntList of2 = ImmutableIntList.of(1, 2);
