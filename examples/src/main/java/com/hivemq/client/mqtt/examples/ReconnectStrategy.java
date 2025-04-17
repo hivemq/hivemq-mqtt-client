@@ -53,6 +53,7 @@ public class ReconnectStrategy {
                 .automaticReconnect()
                     .initialDelay(3, TimeUnit.SECONDS)
                     .maxDelay(10, TimeUnit.SECONDS)
+                    .maxRetryNum(5)
                     .applyAutomaticReconnect()
                 .addConnectedListener(context -> System.out.println("connected " + LocalTime.now()))
                 .addDisconnectedListener(context -> System.out.println("disconnected " + LocalTime.now()))

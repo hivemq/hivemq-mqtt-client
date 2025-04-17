@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  * maximum delay. Additionally a random delay of +-25% will be added.
  *
  * @author Silvio Giebl
+ * @author laokou
  * @since 1.1
  */
 @DoNotImplement
@@ -43,6 +44,11 @@ public interface MqttClientAutoReconnect extends MqttClientDisconnectedListener 
      * The default maximum delay in seconds the client will wait before it tries to reconnect.
      */
     long DEFAULT_MAX_DELAY_S = 120;
+
+    /**
+     * The default maximum number of reconnect attempts.
+     */
+    int DEFAULT_MAX_RETRY_NUM = 5;
 
     /**
      * Creates a builder for an automatic reconnect strategy.
@@ -70,6 +76,13 @@ public interface MqttClientAutoReconnect extends MqttClientDisconnectedListener 
      * @return the maximum delay in the given time unit.
      */
     long getMaxDelay(@NotNull TimeUnit timeUnit);
+
+    /**
+     * Returns the maximum number of reconnect attempts.
+     *
+     * @return the maximum number of reconnect attempts.
+     */
+    int getMaxRetryNum();
 
     /**
      * Creates a builder for extending this automatic reconnect strategy.

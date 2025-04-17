@@ -26,11 +26,13 @@ import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
+ * @author laokou
  */
 public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAutoReconnectImplBuilder<B>> {
 
     private long initialDelayNanos = MqttClientAutoReconnectImpl.DEFAULT_START_DELAY_NANOS;
     private long maxDelayNanos = MqttClientAutoReconnectImpl.DEFAULT_MAX_DELAY_NANOS;
+    private int maxRetryNum = MqttClientAutoReconnectImpl.DEFAULT_MAX_RETRY_NUM;
 
     MqttClientAutoReconnectImplBuilder() {}
 
@@ -38,6 +40,7 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
         if (autoReconnect != null) {
             initialDelayNanos = autoReconnect.getInitialDelay(TimeUnit.NANOSECONDS);
             maxDelayNanos = autoReconnect.getMaxDelay(TimeUnit.NANOSECONDS);
+            maxRetryNum = autoReconnect.getMaxRetryNum();
         }
     }
 
@@ -61,8 +64,16 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
         return self();
     }
 
+    public @NotNull B maxRetryNum(final int maxRetryNum) {
+        if (maxRetryNum <= 0) {
+            throw new IllegalArgumentException("Maximum retry number must be greater than zero.");
+        }
+        this.maxRetryNum = maxRetryNum;
+        return self();
+    }
+
     public @NotNull MqttClientAutoReconnectImpl build() {
-        return new MqttClientAutoReconnectImpl(initialDelayNanos, maxDelayNanos);
+        return new MqttClientAutoReconnectImpl(initialDelayNanos, maxDelayNanos, maxRetryNum);
     }
 
     public static class Default extends MqttClientAutoReconnectImplBuilder<Default>
