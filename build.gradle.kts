@@ -3,7 +3,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("biz.aQute.bnd.builder")
     id("maven-publish")
-    id("io.github.gradle-nexus.publish-plugin")
+    id("io.github.sgtsilvio.gradle.maven-central-publishing")
     id("signing")
     id("com.github.hierynomus.license")
     id("pmd")
@@ -307,12 +307,6 @@ allprojects {
                 sign(this)
             }
         }
-    }
-}
-
-nexusPublishing {
-    repositories {
-        sonatype()
     }
 }
 
