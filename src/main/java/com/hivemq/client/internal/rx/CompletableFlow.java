@@ -16,8 +16,8 @@
 
 package com.hivemq.client.internal.rx;
 
-import io.reactivex.CompletableObserver;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 
 /**
