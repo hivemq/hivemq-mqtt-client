@@ -44,6 +44,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     private @Nullable CompletableFuture<?> future;
     private boolean resubscribeIfSessionExpired = DEFAULT_RESUBSCRIBE_IF_SESSION_EXPIRED;
     private boolean republishIfSessionExpired = DEFAULT_REPUBLISH_IF_SESSION_EXPIRED;
+    private boolean resubscribeIfSessionPresent = DEFAULT_RESUBSCRIBE_IF_SESSION_PRESENT;
     private long delayNanos = TimeUnit.MILLISECONDS.toNanos(DEFAULT_DELAY_MS);
     private @NotNull MqttClientTransportConfigImpl transportConfig;
     private @NotNull MqttConnect connect;
@@ -124,6 +125,19 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     public boolean isRepublishIfSessionExpired() {
         checkInEventLoop();
         return republishIfSessionExpired;
+    }
+
+    @Override
+    public boolean isResubscribeIfSessionPresent() {
+        checkInEventLoop();
+        return resubscribeIfSessionPresent;
+    }
+
+    @Override
+    public @NotNull MqttClientReconnector resubscribeIfSessionPresent(final boolean resubscribeIfSessionPresent) {
+        checkInOnDisconnected("resubscribeIfSessionPresent");
+        this.resubscribeIfSessionPresent = resubscribeIfSessionPresent;
+        return this;
     }
 
     @Override
