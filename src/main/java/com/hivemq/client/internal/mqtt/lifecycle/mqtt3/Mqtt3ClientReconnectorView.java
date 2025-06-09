@@ -86,6 +86,17 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
+    public @NotNull Mqtt3ClientReconnectorView resubscribeIfSessionPresent(final boolean resubscribeIfSessionPresent) {
+        delegate.resubscribeIfSessionPresent(resubscribeIfSessionPresent);
+        return this;
+    }
+
+    @Override
+    public boolean isResubscribeIfSessionPresent() {
+        return delegate.isResubscribeIfSessionPresent();
+    }
+
+    @Override
     public int getAttempts() {
         return delegate.getAttempts();
     }

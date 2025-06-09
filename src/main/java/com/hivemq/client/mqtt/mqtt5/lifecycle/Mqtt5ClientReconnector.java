@@ -54,6 +54,9 @@ public interface Mqtt5ClientReconnector extends MqttClientReconnector {
     @NotNull Mqtt5ClientReconnector republishIfSessionExpired(boolean republish);
 
     @Override
+    @NotNull Mqtt5ClientReconnector resubscribeIfSessionPresent(boolean resubscribeIfSessionPresent);
+
+    @Override
     @NotNull Mqtt5ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     @Override
