@@ -1,17 +1,16 @@
 plugins {
     id("java-library")
-    id("com.github.johnrengelman.shadow")
-    id("biz.aQute.bnd.builder")
     id("maven-publish")
-    id("io.github.sgtsilvio.gradle.maven-central-publishing")
     id("signing")
-    id("com.github.hierynomus.license")
     id("pmd")
-    id("com.github.sgtsilvio.gradle.utf8")
-    id("com.github.sgtsilvio.gradle.metadata")
-    id("com.github.sgtsilvio.gradle.javadoc-links")
+    alias(libs.plugins.bnd)
+    alias(libs.plugins.javadocLinks)
+    alias(libs.plugins.license)
+    alias(libs.plugins.mavenCentralPublishing)
+    alias(libs.plugins.metadata)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.utf8)
 }
-
 
 /* ******************** metadata ******************** */
 
@@ -20,8 +19,7 @@ allprojects {
     description = "HiveMQ MQTT Client is an MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance " +
             "Java client library with different API flavours and backpressure support"
 
-    plugins.apply("com.github.sgtsilvio.gradle.metadata")
-
+    plugins.apply("io.github.sgtsilvio.gradle.metadata")
     metadata {
         moduleName.set("com.hivemq.client.mqtt")
         readableName.set("HiveMQ MQTT Client")
@@ -33,9 +31,8 @@ allprojects {
             apache2()
         }
         developers {
-            developer {
-                id.set("SgtSilvio")
-                name.set("Silvio Giebl")
+            register("SgtSilvio") {
+                fullName.set("Silvio Giebl")
                 email.set("silvio.giebl@hivemq.com")
             }
         }
@@ -48,41 +45,49 @@ allprojects {
     }
 }
 
-
 /* ******************** java ******************** */
 
 allprojects {
     plugins.withId("java") {
         java {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(21)
+            }
         }
-
+        tasks.compileJava {
+            javaCompiler = javaToolchains.compilerFor {
+                languageVersion = JavaLanguageVersion.of(8)
+            }
+        }
         plugins.apply("com.github.sgtsilvio.gradle.utf8")
     }
 }
 
-
 /* ******************** dependencies ******************** */
 
-dependencies {
-    api("io.reactivex.rxjava2:rxjava:${property("rxjava.version")}")
-    api("org.reactivestreams:reactive-streams:${property("reactive-streams.version")}")
-
-    implementation("io.netty:netty-buffer:${property("netty.version")}")
-    implementation("io.netty:netty-codec:${property("netty.version")}")
-    implementation("io.netty:netty-common:${property("netty.version")}")
-    implementation("io.netty:netty-handler:${property("netty.version")}")
-    implementation("io.netty:netty-transport:${property("netty.version")}")
-    implementation("org.jctools:jctools-core:${property("jctools.version")}")
-    implementation("org.jetbrains:annotations:${property("annotations.version")}")
-    implementation("com.google.dagger:dagger:${property("dagger.version")}")
-
-    compileOnly("org.slf4j:slf4j-api:${property("slf4j.version")}")
-
-    annotationProcessor("com.google.dagger:dagger-compiler:${property("dagger.version")}")
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
 
+dependencies {
+    api(libs.rxjava)
+    api(libs.reactive.streams)
+
+    implementation(libs.netty.buffer)
+    implementation(libs.netty.codec)
+    implementation(libs.netty.common)
+    implementation(libs.netty.handler)
+    implementation(libs.netty.transport)
+    implementation(libs.jctools)
+    implementation(libs.jetbrains.annotations)
+    implementation(libs.dagger)
+
+    compileOnly(libs.slf4j.api)
+
+    annotationProcessor(libs.dagger.compiler)
+}
 
 /* ******************** optional dependencies ******************** */
 
@@ -93,20 +98,19 @@ for (feature in listOf("websocket", "proxy", "epoll")) {
 }
 
 dependencies {
-    "websocketImplementation"("io.netty:netty-codec-http:${property("netty.version")}")
-    "proxyImplementation"("io.netty:netty-handler-proxy:${property("netty.version")}")
-    "epollImplementation"("io.netty:netty-transport-native-epoll:${property("netty.version")}:linux-x86_64")
+    "websocketImplementation"(libs.netty.codec.http)
+    "proxyImplementation"(libs.netty.handler.proxy)
+    "epollImplementation"(variantOf(libs.netty.transport.native.epoll) { classifier("linux-x86_64") })
 }
-
 
 /* ******************** test ******************** */
 
 allprojects {
     plugins.withId("java") {
         dependencies {
-            testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit-jupiter.version")}")
-            testImplementation("org.junit.jupiter:junit-jupiter-params:${property("junit-jupiter.version")}")
-            testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit-jupiter.version")}")
+            testImplementation(libs.junit.jupiter.api)
+            testImplementation(libs.junit.jupiter.params)
+            testRuntimeOnly(libs.junit.jupiter.engine)
         }
 
         tasks.test {
@@ -119,13 +123,13 @@ allprojects {
 }
 
 dependencies {
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:${property("equalsverifier.version")}")
-    testImplementation("org.mockito:mockito-core:${property("mockito.version")}")
-    testImplementation("com.google.guava:guava:${property("guava.version")}")
-    testImplementation("org.bouncycastle:bcprov-jdk15on:${property("bouncycastle.version")}")
-    testImplementation("org.bouncycastle:bcpkix-jdk15on:${property("bouncycastle.version")}")
-    testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:${property("paho.version")}")
-    testRuntimeOnly("org.slf4j:slf4j-simple:${property("slf4j.version")}")
+    testImplementation(libs.equalsverifier)
+    testImplementation(libs.mockito)
+    testImplementation(libs.guava)
+    testImplementation(libs.bouncycastle.pkix)
+    testImplementation(libs.bouncycastle.prov)
+    testImplementation(libs.paho.client)
+    testRuntimeOnly(libs.slf4j.simple)
 }
 
 /* ******************** integration Tests ******************** */
@@ -143,15 +147,9 @@ val integrationTestRuntimeOnly: Configuration by configurations.getting {
 }
 
 dependencies {
-    integrationTestImplementation("com.hivemq:hivemq-testcontainer-junit5:${property("hivemq-testcontainer.version")}")
-    integrationTestImplementation("com.hivemq:hivemq-extension-sdk:${property("hivemq-extension-sdk.version")}")
-    integrationTestImplementation("org.awaitility:awaitility:${property("awaitility.version")}")
-}
-
-tasks.named<JavaCompile>("compileIntegrationTestJava") {
-    javaCompiler.set(javaToolchains.compilerFor {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    })
+    integrationTestImplementation(libs.hivemq.testcontainer.junit5)
+    integrationTestImplementation(libs.hivemq.extensionSdk)
+    integrationTestImplementation(libs.awaitility)
 }
 
 val integrationTest by tasks.registering(Test::class) {
@@ -161,9 +159,6 @@ val integrationTest by tasks.registering(Test::class) {
     testClassesDirs = sourceSets["integrationTest"].output.classesDirs
     classpath = sourceSets["integrationTest"].runtimeClasspath
     shouldRunAfter(tasks.test)
-    javaLauncher.set(javaToolchains.launcherFor {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    })
 }
 
 tasks.check { dependsOn(integrationTest) }
@@ -172,22 +167,17 @@ tasks.check { dependsOn(integrationTest) }
 
 allprojects {
     plugins.withId("java-library") {
-
         plugins.apply("biz.aQute.bnd.builder")
-
         tasks.jar {
-            withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
+            bundle {
                 bnd("-consumer-policy: \${range;[==,=+)}", "-removeheaders: Private-Package")
             }
         }
-
         java {
             withJavadocJar()
             withSourcesJar()
         }
-
-        plugins.apply("com.github.sgtsilvio.gradle.javadoc-links")
-
+        plugins.apply("io.github.sgtsilvio.gradle.javadoc-links")
         tasks.javadoc {
             exclude("**/internal/**")
         }
@@ -195,12 +185,14 @@ allprojects {
 }
 
 tasks.jar {
-    withConvention(aQute.bnd.gradle.BundleTaskConvention::class) {
-        bnd("Export-Package: " +
-                "com.hivemq.client.annotations.*," +
-                "com.hivemq.client.mqtt.*," +
-                "com.hivemq.client.rx.*," +
-                "com.hivemq.client.util.*")
+    bundle {
+        bnd(
+            "Export-Package: " +
+                    "com.hivemq.client.annotations.*," +
+                    "com.hivemq.client.mqtt.*," +
+                    "com.hivemq.client.rx.*," +
+                    "com.hivemq.client.util.*"
+        )
     }
 }
 
@@ -238,19 +230,14 @@ javaComponent.withVariantsFromConfiguration(configurations.shadowRuntimeElements
 
 allprojects {
     plugins.withId("java-library") {
-
         plugins.apply("maven-publish")
-
         publishing.publications.register<MavenPublication>("base") {
             from(components["java"])
             suppressAllPomMetadataWarnings()
         }
     }
-
     plugins.withId("java-platform") {
-
         plugins.apply("maven-publish")
-
         publishing.publications.register<MavenPublication>("base") {
             from(components["javaPlatform"])
             suppressAllPomMetadataWarnings()
@@ -296,9 +283,7 @@ allprojects {
 
 allprojects {
     plugins.withId("maven-publish") {
-
         plugins.apply("signing")
-
         signing {
             val signKey: String? by project
             val signKeyPass: String? by project
@@ -314,7 +299,6 @@ allprojects {
 
 allprojects {
     plugins.apply("com.github.hierynomus.license")
-
     license {
         header = rootDir.resolve("HEADER")
         mapping("java", "SLASHSTAR_STYLE")
@@ -323,18 +307,15 @@ allprojects {
 
 allprojects {
     plugins.withId("java") {
-
         plugins.apply("pmd")
-
         pmd {
-            toolVersion = "5.8.1"
+            toolVersion = libs.versions.pmd.get()
             incrementalAnalysis.set(false)
         }
     }
 }
 
 apply("$rootDir/gradle/japicc.gradle.kts")
-
 
 /* ******************** build cache ******************** */
 
