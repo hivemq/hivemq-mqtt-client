@@ -30,7 +30,6 @@ val japiccDownload = tasks.register("japiccDownload") {
 allprojects {
     plugins.withId("java-library") {
         plugins.withId("maven-publish") {
-
             val japicc = tasks.register("japicc") {
                 group = "verification"
                 description = "Runs all binary and source incompatibility checks"
@@ -130,7 +129,6 @@ allprojects {
             }
 
             fun addArtifact(publication: MavenPublication, artifact: MavenArtifact) {
-
                 val japiccDownloadArtifact = tasks.register("japiccDownload-${publication.artifactId}") {
                     group = "japicc"
                     description = "Downloads the previous version of ${publication.artifactId}"

@@ -97,7 +97,7 @@ Java 8 or higher is required.
 
 If you use Gradle, just include the following inside your `build.gradle(.kts)` file.
 
-```groovy
+```kotlin
 dependencies {
   implementation("com.hivemq:hivemq-mqtt-client:1.3.7")
 }
@@ -105,7 +105,7 @@ dependencies {
 
 For optional features you can choose to include additional modules:
 
-```groovy
+```kotlin
 dependencies {
   implementation(platform("com.hivemq:hivemq-mqtt-client-websocket:1.3.7"))
   implementation(platform("com.hivemq:hivemq-mqtt-client-proxy:1.3.7"))
@@ -194,7 +194,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 #### Gradle
 
-```groovy
+```kotlin
 dependencies {
   implementation("com.hivemq:hivemq-mqtt-client-shaded:1.3.7")
 }
@@ -222,7 +222,7 @@ Snapshots can be obtained using [JitPack](https://jitpack.io/#hivemq/hivemq-mqtt
 
 #### Gradle
 
-```groovy
+```kotlin
 repositories {
   ...
   maven { url 'https://jitpack.io' }
