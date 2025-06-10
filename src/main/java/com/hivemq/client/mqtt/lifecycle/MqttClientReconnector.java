@@ -49,6 +49,12 @@ public interface MqttClientReconnector {
      */
     boolean DEFAULT_RECONNECT = false;
     /**
+     * If resubscribe when the session is present when the client reconnected successfully is enabled by default.
+     *
+     * @since 1.3.7
+     */
+    boolean DEFAULT_RESUBSCRIBE_IF_SESSION_PRESENT = false;
+    /**
      * If resubscribe when the session expired before the client reconnected successfully is enabled by default.
      *
      * @since 1.2
@@ -60,12 +66,6 @@ public interface MqttClientReconnector {
      * @since 1.2
      */
     boolean DEFAULT_REPUBLISH_IF_SESSION_EXPIRED = false;
-    /**
-     * If resubscribe when the session is present when the client reconnected successfully is enabled by default.
-     *
-     * @since 1.3.7
-     */
-    boolean DEFAULT_RESUBSCRIBE_IF_SESSION_PRESENT = false;
     /**
      * Default delay in milliseconds the client will wait for before trying to reconnect.
      *
@@ -109,6 +109,32 @@ public interface MqttClientReconnector {
      * @return whether the client will reconnect.
      */
     boolean isReconnect();
+
+    /**
+     * Instructs the client to automatically restore its subscriptions when reconnected successfully and the
+     * session is still present.
+     * <p>
+     * When the client reconnected successfully and its session is still present, the server still knows its
+     * subscriptions, so resubscribing is optional.
+     * <p>
+     * This setting only has effect if the client will reconnect (at least one of the methods {@link
+     * #reconnect(boolean)} or {@link #reconnectWhen(CompletableFuture, BiConsumer)} is called).
+     * <p>
+     * This method must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}
+     * and not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
+     *
+     * @param resubscribeIfSessionPresent whether to resubscribe if the session is present when the client reconnected successfully.
+     * @return this reconnector.
+     * @throws UnsupportedOperationException if called outside of {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}.
+     * @since 1.3.7
+     */
+    @NotNull MqttClientReconnector resubscribeIfSessionPresent(boolean resubscribeIfSessionPresent);
+
+    /**
+     * @return whether the client will resubscribe if the session is present when it reconnects successfully.
+     * @since 1.3.7
+     */
+    boolean isResubscribeIfSessionPresent();
 
     /**
      * Instructs the client to automatically restore its subscriptions when the session expired before it reconnected
@@ -161,32 +187,6 @@ public interface MqttClientReconnector {
      * @since 1.2
      */
     boolean isRepublishIfSessionExpired();
-
-    /**
-     * Instructs the client to automatically restore its subscriptions when reconnected successfully and the
-     * session is still present.
-     * <p>
-     * When the client reconnected successfully and its session is still present, the server still knows its
-     * subscriptions, so resubscribing is optional.
-     * <p>
-     * This setting only has effect if the client will reconnect (at least one of the methods {@link
-     * #reconnect(boolean)} or {@link #reconnectWhen(CompletableFuture, BiConsumer)} is called).
-     * <p>
-     * This method must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}
-     * and not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
-     *
-     * @param resubscribeIfSessionPresent whether to resubscribe if the session is present when the client reconnected successfully.
-     * @return this reconnector.
-     * @throws UnsupportedOperationException if called outside of {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}.
-     * @since 1.3.7
-     */
-    @NotNull MqttClientReconnector resubscribeIfSessionPresent(boolean resubscribeIfSessionPresent);
-
-    /**
-     * @return whether the client will resubscribe if the session is present when it reconnects successfully.
-     * @since 1.3.7
-     */
-    boolean isResubscribeIfSessionPresent();
 
     /**
      * Sets a delay the client will wait for before trying to reconnect.

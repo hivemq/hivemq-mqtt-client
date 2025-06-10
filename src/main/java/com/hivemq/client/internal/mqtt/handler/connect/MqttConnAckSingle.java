@@ -173,9 +173,9 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                     }
                 });
             }, reconnector.getDelay(TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS);
+            clientConfig.setResubscribeIfSessionPresent(reconnector.isResubscribeIfSessionPresent());
             clientConfig.setResubscribeIfSessionExpired(reconnector.isResubscribeIfSessionExpired());
             clientConfig.setRepublishIfSessionExpired(reconnector.isRepublishIfSessionExpired());
-            clientConfig.setResubscribeIfSessionPresent(reconnector.isResubscribeIfSessionPresent());
             reconnector.afterOnDisconnected();
         } else {
             clientConfig.getRawState().set(DISCONNECTED);
