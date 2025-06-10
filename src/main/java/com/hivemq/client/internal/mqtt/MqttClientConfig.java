@@ -68,9 +68,9 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private volatile @Nullable MqttClientConnectionConfig connectionConfig;
     private @NotNull MqttClientTransportConfigImpl currentTransportConfig;
     private @Nullable SslContext currentSslContext;
+    private boolean resubscribeIfSessionPresent;
     private boolean resubscribeIfSessionExpired;
     private boolean republishIfSessionExpired;
-    private boolean resubscribeIfSessionPresent;
 
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion,
@@ -256,20 +256,20 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.currentSslContext = currentSslContext;
     }
 
-    public boolean isResubscribeIfSessionExpired() {
-        return resubscribeIfSessionExpired;
-    }
-
-    public void setResubscribeIfSessionExpired(final boolean resubscribeIfSessionExpired) {
-        this.resubscribeIfSessionExpired = resubscribeIfSessionExpired;
-    }
-
     public boolean isResubscribeIfSessionPresent() {
         return resubscribeIfSessionPresent;
     }
 
     public void setResubscribeIfSessionPresent(final boolean resubscribeIfSessionPresent) {
         this.resubscribeIfSessionPresent = resubscribeIfSessionPresent;
+    }
+
+    public boolean isResubscribeIfSessionExpired() {
+        return resubscribeIfSessionExpired;
+    }
+
+    public void setResubscribeIfSessionExpired(final boolean resubscribeIfSessionExpired) {
+        this.resubscribeIfSessionExpired = resubscribeIfSessionExpired;
     }
 
     public boolean isRepublishIfSessionExpired() {
