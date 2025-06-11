@@ -1,5 +1,6 @@
 plugins {
     id("java-platform")
+    id("io.github.sgtsilvio.gradle.maven-central-publishing")
 }
 
 
