@@ -1,0 +1,26 @@
+name: Publish to Maven Central (optional modules only)
+
+on:
+  push:
+    tags:
+      - v1.3.7-publish-optional-modules
+
+jobs:
+  publish:
+    environment: mavenCentralPublish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Setup Java
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
+        with:
+          distribution: temurin
+          java-version: 8
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_signKey: ${{ secrets.SIGN_KEY }}
+          ORG_GRADLE_PROJECT_signKeyPass: ${{ secrets.SIGN_KEY_PASS }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: ./gradlew :hivemq-mqtt-client-epoll:publishToMavenCentral :hivemq-mqtt-client-proxy:publishToMavenCentral :hivemq-mqtt-client-reactor:publishToMavenCentral :hivemq-mqtt-client-websocket:publishToMavenCentral
