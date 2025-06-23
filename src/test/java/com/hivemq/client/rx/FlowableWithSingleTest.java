@@ -18,9 +18,9 @@ package com.hivemq.client.rx;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.hivemq.client.rx.reactivestreams.WithSingleSubscriber;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
@@ -157,7 +157,7 @@ class FlowableWithSingleTest {
                 .assertValueAt(2, "next2")
                 .await()
                 .assertError(IllegalArgumentException.class)
-                .assertErrorMessage("test");
+                .assertError(ex -> ex.getMessage().equals("test"));
 
         executorService.shutdown();
     }
@@ -196,7 +196,7 @@ class FlowableWithSingleTest {
                 .assertValueCount(1024)
                 .await()
                 .assertError(IllegalArgumentException.class)
-                .assertErrorMessage("test");
+                .assertError(ex -> ex.getMessage().equals("test"));
 
         executorService.shutdown();
     }
