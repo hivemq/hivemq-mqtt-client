@@ -38,7 +38,7 @@ import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.reactor.Mqtt5ReactorClient;
 import com.hivemq.client.rx.reactor.FluxWithSingle;
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 import reactor.adapter.rxjava.RxJava2Adapter;
