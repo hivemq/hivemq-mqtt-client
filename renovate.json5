@@ -9,4 +9,7 @@
     ],
     useBaseBranchConfig: 'merge',
     branchPrefix: 'renovate/hivemq-mqtt-client/',
+    addLabels: [
+        'engineering-platform-team',
+    ],
 }
