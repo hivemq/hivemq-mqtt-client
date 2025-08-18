@@ -10,16 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
         with:
-          distribution: 'adopt'
-          java-version: '8'
+          distribution: temurin
+          java-version: |
+            8
+            21
       - name: Publish to Maven Central
         env:
-          ORG_GRADLE_PROJECT_signKey: ${{ secrets.SIGN_KEY }}
-          ORG_GRADLE_PROJECT_signKeyPass: ${{ secrets.SIGN_KEY_PASS }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
         run: ./gradlew publishToMavenCentral
