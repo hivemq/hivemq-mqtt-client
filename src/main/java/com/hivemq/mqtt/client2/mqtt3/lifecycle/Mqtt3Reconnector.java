@@ -47,6 +47,9 @@ public interface Mqtt3Reconnector extends MqttReconnector {
             @NotNull CompletableFuture<T> future, @Nullable BiConsumer<? super T, ? super Throwable> callback);
 
     @Override
+    @NotNull Mqtt3Reconnector resubscribeIfSessionPresent(boolean resubscribeIfSessionPresent);
+
+    @Override
     @NotNull Mqtt3Reconnector resubscribeIfSessionExpired(boolean resubscribe);
 
     @Override

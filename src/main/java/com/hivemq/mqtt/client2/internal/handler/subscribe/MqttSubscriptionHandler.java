@@ -100,7 +100,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
         subscriptionIdentifiersAvailable = connectionConfig.areSubscriptionIdentifiersAvailable();
 
-        if (!hasSession) {
+        if (!hasSession || clientConfig.isResubscribeIfSessionPresent()) {
             incomingPublishFlows.getSubscriptions().forEach((subscriptionIdentifier, subscriptions) -> {
                 final MqttSubscribe subscribe = new MqttSubscribe(ImmutableList.copyOf(subscriptions),
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);

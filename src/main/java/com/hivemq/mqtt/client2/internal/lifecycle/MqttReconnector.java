@@ -43,6 +43,7 @@ public class MqttReconnector implements Mqtt5Reconnector {
     private final @Range(from = 0, to = Integer.MAX_VALUE) int attempts;
     private boolean reconnect = DEFAULT_RECONNECT;
     private @Nullable CompletableFuture<?> future;
+    private boolean resubscribeIfSessionPresent = DEFAULT_RESUBSCRIBE_IF_SESSION_PRESENT;
     private boolean resubscribeIfSessionExpired = DEFAULT_RESUBSCRIBE_IF_SESSION_EXPIRED;
     private boolean republishIfSessionExpired = DEFAULT_REPUBLISH_IF_SESSION_EXPIRED;
     private long delayNanos = TimeUnit.MILLISECONDS.toNanos(DEFAULT_DELAY_MS);
@@ -99,6 +100,19 @@ public class MqttReconnector implements Mqtt5Reconnector {
     public @NotNull CompletableFuture<?> getFuture() {
         checkInEventLoop();
         return (future == null) ? CompletableFuture.completedFuture(null) : future;
+    }
+
+    @Override
+    public @NotNull MqttReconnector resubscribeIfSessionPresent(final boolean resubscribeIfSessionPresent) {
+        checkInOnDisconnected("resubscribeIfSessionPresent");
+        this.resubscribeIfSessionPresent = resubscribeIfSessionPresent;
+        return this;
+    }
+
+    @Override
+    public boolean isResubscribeIfSessionPresent() {
+        checkInEventLoop();
+        return resubscribeIfSessionPresent;
     }
 
     @Override

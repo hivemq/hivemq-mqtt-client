@@ -46,6 +46,12 @@ public interface MqttReconnector {
      */
     boolean DEFAULT_RECONNECT = false;
     /**
+     * If resubscribe when the session is present when the client reconnected successfully is enabled by default.
+     *
+     * @since 1.3.7
+     */
+    boolean DEFAULT_RESUBSCRIBE_IF_SESSION_PRESENT = false;
+    /**
      * If resubscribe when the session expired before the client reconnected successfully is enabled by default.
      *
      * @since 1.2
@@ -101,6 +107,34 @@ public interface MqttReconnector {
      * @return whether the client will reconnect.
      */
     boolean isReconnect();
+
+    /**
+     * Instructs the client to automatically restore its subscriptions when reconnected successfully and the session is
+     * still present.
+     * <p>
+     * When the client reconnected successfully and its session is still present, the server still knows its
+     * subscriptions, so resubscribing is optional.
+     * <p>
+     * This setting only has effect if the client will reconnect (at least one of the methods
+     * {@link #reconnect(boolean)} or {@link #reconnectWhen(CompletableFuture, BiConsumer)} is called).
+     * <p>
+     * This method must only be called in {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)} and
+     * not in the callback supplied to {@link #reconnectWhen(CompletableFuture, BiConsumer)}.
+     *
+     * @param resubscribeIfSessionPresent whether to resubscribe if the session is present when the client reconnected
+     *                                    successfully.
+     * @return this reconnector.
+     * @throws UnsupportedOperationException if called outside of
+     *                                       {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)}.
+     * @since 1.3.7
+     */
+    @NotNull MqttReconnector resubscribeIfSessionPresent(boolean resubscribeIfSessionPresent);
+
+    /**
+     * @return whether the client will resubscribe if the session is present when it reconnects successfully.
+     * @since 1.3.7
+     */
+    boolean isResubscribeIfSessionPresent();
 
     /**
      * Instructs the client to automatically restore its subscriptions when the session expired before it reconnected
