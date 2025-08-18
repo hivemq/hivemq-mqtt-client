@@ -115,7 +115,7 @@ allprojects {
 
 dependencies {
     testImplementation(libs.mockito)
-    testImplementation(libs.equalsVerifier)
+    testImplementation(libs.equalsverifier)
     testImplementation(libs.jetbrains.annotations)
     testImplementation(libs.guava)
     testImplementation(libs.paho.mqttClient)

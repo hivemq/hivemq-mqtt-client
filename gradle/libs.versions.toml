@@ -17,7 +17,7 @@ slf4j = "1.7.36"
 [libraries]
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
-equalsVerifier = { module = "nl.jqno.equalsverifier:equalsverifier", version.ref = "equalsverifier" }
+equalsverifier = { module = "nl.jqno.equalsverifier:equalsverifier", version.ref = "equalsverifier" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 jctools = { module = "org.jctools:jctools-core", version.ref = "jctools" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
