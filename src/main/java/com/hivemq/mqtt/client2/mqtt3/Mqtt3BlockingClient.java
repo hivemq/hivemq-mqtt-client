@@ -107,7 +107,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @return a {@link Publishes} instance that can be used to receive the Publish messages on the calling thread.
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
-    @NotNull Publishes publishes(final @NotNull MqttGlobalPublishFilter filter);
+    @NotNull Publishes publishes(@NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Globally consumes all incoming Publish messages matching the given filter.
@@ -208,8 +208,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
          * @throws InterruptedException if the calling thread is interrupted while waiting for a Publish message to be
          *                              received.
          */
-        @NotNull Optional<Mqtt3Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
-                throws InterruptedException;
+        @NotNull Optional<Mqtt3Publish> receive(long timeout, @NotNull TimeUnit timeUnit) throws InterruptedException;
 
         /**
          * Receives the next incoming Publish message if it is already queued in this {@link Publishes} instance.

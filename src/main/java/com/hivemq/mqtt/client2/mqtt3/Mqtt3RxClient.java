@@ -217,7 +217,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
     @CheckReturnValue
-    @NotNull Flowable<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter);
+    @NotNull Flowable<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.

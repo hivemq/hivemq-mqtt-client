@@ -219,7 +219,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @see #publishes(MqttGlobalPublishFilter, boolean)
      */
     @CheckReturnValue
-    @NotNull Flowable<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter);
+    @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Creates a {@link Flowable} for globally consuming all incoming Publish messages matching the given filter.

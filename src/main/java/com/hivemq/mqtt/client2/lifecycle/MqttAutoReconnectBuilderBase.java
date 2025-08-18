@@ -43,7 +43,7 @@ public interface MqttAutoReconnectBuilderBase<B extends MqttAutoReconnectBuilder
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B initialDelay(final @Range(from = 1, to = Long.MAX_VALUE) long initialDelay, @NotNull TimeUnit timeUnit);
+    @NotNull B initialDelay(@Range(from = 1, to = Long.MAX_VALUE) long initialDelay, @NotNull TimeUnit timeUnit);
 
     /**
      * Sets the maximum delay the client will wait before it tries to reconnect.
@@ -55,5 +55,5 @@ public interface MqttAutoReconnectBuilderBase<B extends MqttAutoReconnectBuilder
      * @return the builder.
      */
     @CheckReturnValue
-    @NotNull B maxDelay(final @Range(from = 0, to = Long.MAX_VALUE) long maxDelay, @NotNull TimeUnit timeUnit);
+    @NotNull B maxDelay(@Range(from = 0, to = Long.MAX_VALUE) long maxDelay, @NotNull TimeUnit timeUnit);
 }

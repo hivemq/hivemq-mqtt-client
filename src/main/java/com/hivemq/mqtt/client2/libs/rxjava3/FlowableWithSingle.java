@@ -202,7 +202,7 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
         subscribeBothActual(subscriber);
     }
 
-    protected abstract void subscribeBothActual(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber);
+    protected abstract void subscribeBothActual(@NotNull WithSingleSubscriber<? super F, ? super S> subscriber);
 
     /**
      * {@link #subscribe() Subscribes} to this Flowable and returns a future for the single item.
