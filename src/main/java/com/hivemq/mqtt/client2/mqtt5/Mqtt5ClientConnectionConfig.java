@@ -217,11 +217,11 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
          * <p>
          * The value is determined by
          * {@link
-         * com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#areSubscriptionIdentifiersAvailable()
-         * MqttConnAckRestrictions#areSubscriptionIdentifiersAvailable()}.
+         * com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isSubscriptionIdentifierAvailable()
+         * MqttConnAckRestrictions#isSubscriptionIdentifierAvailable()}.
          *
          * @return whether the server accepts subscription identifiers from the client.
          */
-        boolean areSubscriptionIdentifiersAvailable();
+        boolean isSubscriptionIdentifierAvailable();
     }
 }

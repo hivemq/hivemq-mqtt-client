@@ -281,7 +281,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 connAckRestrictions.isRetainAvailable(),
                 connAckRestrictions.isWildcardSubscriptionAvailable(),
                 connAckRestrictions.isSharedSubscriptionAvailable(),
-                connAckRestrictions.areSubscriptionIdentifiersAvailable(),
+                connAckRestrictions.isSubscriptionIdentifierAvailable(),
                 channel);
         // @formatter:on
 

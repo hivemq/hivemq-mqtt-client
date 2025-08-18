@@ -35,7 +35,7 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
             new MqttConnAckRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
                     DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE,
                     DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE,
-                    DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE);
+                    DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE);
 
     private final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum;
     private final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize;
@@ -44,7 +44,7 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     private final boolean retainAvailable;
     private final boolean wildcardSubscriptionAvailable;
     private final boolean sharedSubscriptionAvailable;
-    private final boolean subscriptionIdentifiersAvailable;
+    private final boolean subscriptionIdentifierAvailable;
 
     public MqttConnAckRestrictions(
             final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum,
@@ -53,8 +53,7 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
             final @NotNull MqttQos maximumQos,
             final boolean retainAvailable,
             final boolean wildcardSubscriptionAvailable,
-            final boolean sharedSubscriptionAvailable,
-            final boolean subscriptionIdentifiersAvailable) {
+            final boolean sharedSubscriptionAvailable, final boolean subscriptionIdentifierAvailable) {
 
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
@@ -63,7 +62,7 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
         this.retainAvailable = retainAvailable;
         this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
         this.sharedSubscriptionAvailable = sharedSubscriptionAvailable;
-        this.subscriptionIdentifiersAvailable = subscriptionIdentifiersAvailable;
+        this.subscriptionIdentifierAvailable = subscriptionIdentifierAvailable;
     }
 
     @Override
@@ -102,16 +101,16 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     }
 
     @Override
-    public boolean areSubscriptionIdentifiersAvailable() {
-        return subscriptionIdentifiersAvailable;
+    public boolean isSubscriptionIdentifierAvailable() {
+        return subscriptionIdentifierAvailable;
     }
 
     private @NotNull String toAttributeString() {
         return "receiveMaximum=" + receiveMaximum + ", maximumPacketSize=" + maximumPacketSize +
                 ", topicAliasMaximum=" + topicAliasMaximum + ", maximumQos=" + maximumQos + ", retainAvailable=" +
                 retainAvailable + ", wildcardSubscriptionAvailable=" + wildcardSubscriptionAvailable +
-                ", sharedSubscriptionAvailable=" + sharedSubscriptionAvailable + ", subscriptionIdentifiersAvailable=" +
-                subscriptionIdentifiersAvailable;
+                ", sharedSubscriptionAvailable=" + sharedSubscriptionAvailable + ", subscriptionIdentifierAvailable=" +
+                subscriptionIdentifierAvailable;
     }
 
     @Override
@@ -134,7 +133,7 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
                 (retainAvailable == that.retainAvailable) &&
                 (wildcardSubscriptionAvailable == that.wildcardSubscriptionAvailable) &&
                 (sharedSubscriptionAvailable == that.sharedSubscriptionAvailable) &&
-                (subscriptionIdentifiersAvailable == that.subscriptionIdentifiersAvailable);
+                (subscriptionIdentifierAvailable == that.subscriptionIdentifierAvailable);
     }
 
     @Override
@@ -146,7 +145,7 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
         result = 31 * result + Boolean.hashCode(retainAvailable);
         result = 31 * result + Boolean.hashCode(wildcardSubscriptionAvailable);
         result = 31 * result + Boolean.hashCode(sharedSubscriptionAvailable);
-        result = 31 * result + Boolean.hashCode(subscriptionIdentifiersAvailable);
+        result = 31 * result + Boolean.hashCode(subscriptionIdentifierAvailable);
         return result;
     }
 }

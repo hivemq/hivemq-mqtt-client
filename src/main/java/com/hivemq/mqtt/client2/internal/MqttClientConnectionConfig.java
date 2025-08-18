@@ -84,8 +84,7 @@ public class MqttClientConnectionConfig
             final @NotNull MqttQos maximumQos,
             final boolean retainAvailable,
             final boolean wildcardSubscriptionAvailable,
-            final boolean sharedSubscriptionAvailable,
-            final boolean subscriptionIdentifiersAvailable,
+            final boolean sharedSubscriptionAvailable, final boolean subscriptionIdentifierAvailable,
             final @NotNull Channel channel) {
 
         this.transportConfig = transportConfig;
@@ -124,7 +123,7 @@ public class MqttClientConnectionConfig
         if (sharedSubscriptionAvailable) {
             flags |= FLAG_SHARED_SUBSCRIPTION_AVAILABLE;
         }
-        if (subscriptionIdentifiersAvailable) {
+        if (subscriptionIdentifierAvailable) {
             flags |= FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
         }
         if (cleanStart) {
@@ -259,7 +258,7 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public boolean areSubscriptionIdentifiersAvailable() {
+    public boolean isSubscriptionIdentifierAvailable() {
         return (flags & FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE) != 0;
     }
 

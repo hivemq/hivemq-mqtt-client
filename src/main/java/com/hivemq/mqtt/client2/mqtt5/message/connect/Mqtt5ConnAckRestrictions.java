@@ -69,7 +69,7 @@ public interface Mqtt5ConnAckRestrictions {
     /**
      * The default for whether the server accepts subscription identifiers.
      */
-    boolean DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE = true;
+    boolean DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE = true;
 
     /**
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the server accepts concurrently. The
@@ -113,7 +113,7 @@ public interface Mqtt5ConnAckRestrictions {
 
     /**
      * @return whether the server accepts subscription identifiers. The default is
-     *         {@link #DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE}.
+     *         {@link #DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE}.
      */
-    boolean areSubscriptionIdentifiersAvailable();
+    boolean isSubscriptionIdentifierAvailable();
 }

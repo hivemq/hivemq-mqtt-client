@@ -141,7 +141,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(100, restrictions.getMaximumPacketSize());
         assertEquals(5, restrictions.getTopicAliasMaximum());
         assertEquals(false, restrictions.isWildcardSubscriptionAvailable());
-        assertEquals(true, restrictions.areSubscriptionIdentifiersAvailable());
+        assertEquals(true, restrictions.isSubscriptionIdentifierAvailable());
         assertEquals(false, restrictions.isSharedSubscriptionAvailable());
 
         assertTrue(connAck.getEnhancedAuth().isPresent());
@@ -1859,7 +1859,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(MqttQos.EXACTLY_ONCE, connAck.getRestrictions().getMaximumQos());
         assertEquals(true, connAck.getRestrictions().isRetainAvailable());
         assertEquals(true, connAck.getRestrictions().isWildcardSubscriptionAvailable());
-        assertEquals(true, connAck.getRestrictions().areSubscriptionIdentifiersAvailable());
+        assertEquals(true, connAck.getRestrictions().isSubscriptionIdentifierAvailable());
         assertEquals(true, connAck.getRestrictions().isSharedSubscriptionAvailable());
     }
 

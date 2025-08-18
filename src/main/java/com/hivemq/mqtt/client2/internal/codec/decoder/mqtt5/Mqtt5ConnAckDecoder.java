@@ -101,8 +101,8 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         boolean maximumPacketSizePresent = false;
         boolean wildCardSubscriptionAvailable = DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
         boolean wildCardSubscriptionAvailablePresent = false;
-        boolean subscriptionIdentifiersAvailable = DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
-        boolean subscriptionIdentifiersAvailablePresent = false;
+        boolean subscriptionIdentifierAvailable = DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE;
+        boolean subscriptionIdentifierAvailablePresent = false;
         boolean sharedSubscriptionAvailable = DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
         boolean sharedSubscriptionAvailablePresent = false;
 
@@ -200,11 +200,11 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case SUBSCRIPTION_IDENTIFIERS_AVAILABLE:
-                    subscriptionIdentifiersAvailable = booleanOnlyOnce(subscriptionIdentifiersAvailablePresent,
+                    subscriptionIdentifierAvailable = booleanOnlyOnce(
+                            subscriptionIdentifierAvailablePresent,
                             "subscription identifier available", in);
-                    subscriptionIdentifiersAvailablePresent = true;
-                    restrictionsPresent |=
-                            subscriptionIdentifiersAvailable != DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
+                    subscriptionIdentifierAvailablePresent = true;
+                    restrictionsPresent |= subscriptionIdentifierAvailable != DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE;
                     break;
 
                 case SHARED_SUBSCRIPTION_AVAILABLE:
@@ -252,7 +252,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         if (restrictionsPresent) {
             restrictions = new MqttConnAckRestrictions(receiveMaximum, maximumPacketSize, topicAliasMaximum, maximumQos,
                     retainAvailable, wildCardSubscriptionAvailable, sharedSubscriptionAvailable,
-                    subscriptionIdentifiersAvailable);
+                    subscriptionIdentifierAvailable);
         }
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
