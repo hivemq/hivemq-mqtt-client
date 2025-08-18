@@ -16,7 +16,7 @@ metadata {
 
 dependencies {
     api(rootProject)
-    api(libs.reactor.core)
+    api(libs.reactor)
 
     implementation(libs.reactor.adapter)
     implementation(libs.jetbrains.annotations)
