@@ -46,7 +46,8 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
 
     private static @NotNull MqttConnect delegate(
             final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive,
-            final boolean cleanSession, final @NotNull MqttConnectRestrictions restrictions,
+            final boolean cleanSession,
+            final @NotNull MqttConnectRestrictions restrictions,
             final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
 
@@ -56,7 +57,8 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
 
     static @NotNull Mqtt3ConnectView of(
             final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int keepAlive,
-            final boolean cleanSession, final @NotNull MqttConnectRestrictions restrictions,
+            final boolean cleanSession,
+            final @NotNull MqttConnectRestrictions restrictions,
             final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
 

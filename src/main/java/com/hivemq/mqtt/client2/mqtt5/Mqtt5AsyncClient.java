@@ -180,7 +180,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             @NotNull Mqtt5Subscribe subscribe,
             @NotNull Consumer<@NotNull Mqtt5Publish> callback,
-            @NotNull Executor executor, boolean manualAcknowledgement);
+            @NotNull Executor executor,
+            boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer, boolean)}

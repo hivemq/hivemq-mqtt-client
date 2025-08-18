@@ -53,7 +53,8 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
             final @NotNull MqttQos maximumQos,
             final boolean retainAvailable,
             final boolean wildcardSubscriptionAvailable,
-            final boolean sharedSubscriptionAvailable, final boolean subscriptionIdentifierAvailable) {
+            final boolean sharedSubscriptionAvailable,
+            final boolean subscriptionIdentifierAvailable) {
 
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;

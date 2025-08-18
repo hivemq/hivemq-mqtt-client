@@ -84,7 +84,8 @@ public class MqttClientConnectionConfig
             final @NotNull MqttQos maximumQos,
             final boolean retainAvailable,
             final boolean wildcardSubscriptionAvailable,
-            final boolean sharedSubscriptionAvailable, final boolean subscriptionIdentifierAvailable,
+            final boolean sharedSubscriptionAvailable,
+            final boolean subscriptionIdentifierAvailable,
             final @NotNull Channel channel) {
 
         this.transportConfig = transportConfig;
