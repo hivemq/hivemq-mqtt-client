@@ -73,7 +73,7 @@ allprojects {
 
 dependencies {
     api(libs.rxjava)
-    api(libs.reactive.streams)
+    api(libs.reactiveStreams)
 
     implementation(libs.netty.buffer)
     implementation(libs.netty.codec)
