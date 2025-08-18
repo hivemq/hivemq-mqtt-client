@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.bnd)
     `maven-publish`
     signing
-    alias(libs.plugins.nexusPublish)
+    alias(libs.plugins.mavenCentralPublishing)
     alias(libs.plugins.defaults)
     alias(libs.plugins.metadata)
     alias(libs.plugins.javadocLinks)
@@ -258,12 +258,6 @@ allprojects {
                 sign(this)
             }
         }
-    }
-}
-
-nexusPublishing {
-    this.repositories {
-        sonatype()
     }
 }
 

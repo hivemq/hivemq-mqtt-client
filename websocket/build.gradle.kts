@@ -1,5 +1,6 @@
 plugins {
     `java-platform`
+    alias(libs.plugins.mavenCentralPublishing)
 }
 
 
