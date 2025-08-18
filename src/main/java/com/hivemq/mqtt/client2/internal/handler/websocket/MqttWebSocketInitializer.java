@@ -20,7 +20,6 @@ import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.MqttTransportConfigImpl;
 import com.hivemq.mqtt.client2.internal.MqttWebSocketConfigImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttVariableByteInteger;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
@@ -31,6 +30,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,7 +41,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@ConnectionScope
+@Singleton
 public class MqttWebSocketInitializer {
 
     private static final @NotNull String HTTP_CODEC_NAME = "http.codec";
