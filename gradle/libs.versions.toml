@@ -45,7 +45,7 @@ netty-transport = { module = "io.netty:netty-transport", version.ref = "netty" }
 netty-transport-native-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty" }
 paho-client = { module = "org.eclipse.paho:org.eclipse.paho.client.mqttv3", version.ref = "paho" }
 reactiveStreams = { module = "org.reactivestreams:reactive-streams", version.ref = "reactiveStreams" }
-reactor = { module = "io.projectreactor:reactor", version.ref = "reactor" }
+reactor = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
 reactor-adapter = { module = "io.projectreactor.addons:reactor-adapter", version.ref = "reactor-adapter" }
 reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "reactor" }
 rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
