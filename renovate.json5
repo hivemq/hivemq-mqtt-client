@@ -14,7 +14,7 @@
     ],
     packageRules: [
       {
-        reason: 'Google Dagger 2.42 is the last version that supports Java 8',
+        description: 'Google Dagger 2.42 is the last version that supports Java 8',
         matchPackageNames: [
           "com.google.dagger:*",
         ],
