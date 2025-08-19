@@ -86,7 +86,7 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
     }
 
     public @NotNull MqttUserPropertiesImpl build() {
-        return MqttUserPropertiesImpl.build(listBuilder);
+        return MqttUserPropertiesImpl.of(listBuilder.build());
     }
 
     public static class Default extends MqttUserPropertiesImplBuilder<Default> implements Mqtt5UserPropertiesBuilder {
