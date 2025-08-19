@@ -31,9 +31,9 @@ hivemq-extensionSdk = { module = "com.hivemq:hivemq-extension-sdk", version.ref 
 hivemq-testcontainer-junit5 = { module = "com.hivemq:hivemq-testcontainer-junit5", version.ref = "hivemq-testcontainer-junit5" }
 jctools = { module = "org.jctools:jctools-core", version.ref = "jctools" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-jupiter" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
 netty-codec = { module = "io.netty:netty-codec", version.ref = "netty" }
