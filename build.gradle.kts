@@ -258,6 +258,13 @@ allprojects {
     }
 }
 
+tasks.named("publishBasePublicationToMavenCentralStagingRepository") {
+    mustRunAfter(tasks.named("signShadedPublication"))
+}
+tasks.named("publishShadedPublicationToMavenCentralStagingRepository") {
+    mustRunAfter(tasks.named("signBasePublication"))
+}
+
 /* ******************** checks ******************** */
 
 allprojects {
