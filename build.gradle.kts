@@ -1,8 +1,8 @@
 plugins {
-    id("java-library")
-    id("maven-publish")
-    id("signing")
-    id("pmd")
+    `java-library`
+    `maven-publish`
+    signing
+    pmd
     alias(libs.plugins.bnd)
     alias(libs.plugins.javadocLinks)
     alias(libs.plugins.license)
@@ -285,9 +285,9 @@ allprojects {
     plugins.withId("maven-publish") {
         plugins.apply("signing")
         signing {
-            val signKey: String? by project
-            val signKeyPass: String? by project
-            useInMemoryPgpKeys(signKey, signKeyPass)
+            val signingKey: String? by project
+            val signingPassword: String? by project
+            useInMemoryPgpKeys(signingKey, signingPassword)
             publishing.publications.configureEach {
                 sign(this)
             }
