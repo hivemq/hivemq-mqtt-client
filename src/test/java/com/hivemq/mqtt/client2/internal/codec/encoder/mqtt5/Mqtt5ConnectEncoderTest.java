@@ -64,7 +64,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5ConnectEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.CONNECT.getCode()] = new Mqtt5ConnectEncoder(new Mqtt5PublishEncoder());
+            encoders[Mqtt5MessageType.CONNECT.getCode()] = Mqtt5ConnectEncoder.INSTANCE;
         }}, false);
     }
 

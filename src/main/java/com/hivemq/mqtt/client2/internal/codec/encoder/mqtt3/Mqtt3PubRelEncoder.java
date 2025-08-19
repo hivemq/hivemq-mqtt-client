@@ -19,21 +19,19 @@ package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3;
 import com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3.Mqtt3MessageEncoder.Mqtt3MessageWithIdEncoder;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPubRel;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3PubRelEncoder extends Mqtt3MessageWithIdEncoder<MqttPubRel> {
+
+    public static final @NotNull Mqtt3PubRelEncoder INSTANCE = new Mqtt3PubRelEncoder();
 
     private static final int FIXED_HEADER = (Mqtt3MessageType.PUBREL.getCode() << 4) | 0b0010;
 
-    @Inject
-    Mqtt3PubRelEncoder() {}
+    private Mqtt3PubRelEncoder() {}
 
     @Override
     int getFixedHeader() {

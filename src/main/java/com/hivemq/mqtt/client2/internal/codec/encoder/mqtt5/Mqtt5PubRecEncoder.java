@@ -21,22 +21,19 @@ import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubRecReasonCode;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.message.publish.MqttPubRec.DEFAULT_REASON_CODE;
 
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5PubRecEncoder extends
         Mqtt5MessageWithUserPropertiesEncoder.WithReason.WithOmissibleCode.WithId<MqttPubRec, Mqtt5PubRecReasonCode> {
 
+    public static final @NotNull Mqtt5PubRecEncoder INSTANCE = new Mqtt5PubRecEncoder();
+
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBREC.getCode() << 4;
 
-    @Inject
-    Mqtt5PubRecEncoder() {}
+    private Mqtt5PubRecEncoder() {}
 
     @Override
     int getFixedHeader() {

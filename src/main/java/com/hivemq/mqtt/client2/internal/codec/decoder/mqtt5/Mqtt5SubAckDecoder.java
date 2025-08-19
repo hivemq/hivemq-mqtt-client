@@ -28,9 +28,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
@@ -40,14 +37,14 @@ import static com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubAckPrope
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt5SubAckDecoder INSTANCE = new Mqtt5SubAckDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 3;
 
-    @Inject
-    Mqtt5SubAckDecoder() {}
+    private Mqtt5SubAckDecoder() {}
 
     @Override
     public @NotNull MqttSubAck decode(

@@ -24,7 +24,6 @@ import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3.Mqtt3ClientMessageEncoders;
 import com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5ClientMessageEncoders;
 import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import org.jetbrains.annotations.NotNull;
@@ -37,16 +36,12 @@ public abstract class MqttCodecModule {
 
     @Provides
     @ConnectionScope
-    static @NotNull MqttMessageDecoders provideMessageDecoders(
-            final @NotNull MqttClientConfig clientConfig,
-            final @NotNull Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
-            final @NotNull Lazy<Mqtt3ClientMessageDecoders> mqtt3ClientMessageDecoders) {
-
+    static @NotNull MqttMessageDecoders provideMessageDecoders(final @NotNull MqttClientConfig clientConfig) {
         switch (clientConfig.getMqttVersion()) {
             case MQTT_5_0:
-                return mqtt5ClientMessageDecoders.get();
+                return Mqtt5ClientMessageDecoders.INSTANCE;
             case MQTT_3_1_1:
-                return mqtt3ClientMessageDecoders.get();
+                return Mqtt3ClientMessageDecoders.INSTANCE;
             default:
                 throw new IllegalStateException();
         }
@@ -54,16 +49,12 @@ public abstract class MqttCodecModule {
 
     @Provides
     @ConnectionScope
-    static @NotNull MqttMessageEncoders provideMessageEncoders(
-            final @NotNull MqttClientConfig clientConfig,
-            final @NotNull Lazy<Mqtt5ClientMessageEncoders> mqtt5ClientMessageEncoders,
-            final @NotNull Lazy<Mqtt3ClientMessageEncoders> mqtt3ClientMessageEncoders) {
-
+    static @NotNull MqttMessageEncoders provideMessageEncoders(final @NotNull MqttClientConfig clientConfig) {
         switch (clientConfig.getMqttVersion()) {
             case MQTT_5_0:
-                return mqtt5ClientMessageEncoders.get();
+                return Mqtt5ClientMessageEncoders.INSTANCE;
             case MQTT_3_1_1:
-                return mqtt3ClientMessageEncoders.get();
+                return Mqtt3ClientMessageEncoders.INSTANCE;
             default:
                 throw new IllegalStateException();
         }

@@ -47,7 +47,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
     Mqtt5PublishEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBLISH.getCode()] = new Mqtt5PublishEncoder();
+            encoders[Mqtt5MessageType.PUBLISH.getCode()] = Mqtt5PublishEncoder.INSTANCE;
         }}, true);
     }
 

@@ -31,8 +31,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5DisconnectReasonCod
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.*;
@@ -45,14 +43,14 @@ import static com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrict
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt5ConnAckDecoder INSTANCE = new Mqtt5ConnAckDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 3;
 
-    @Inject
-    Mqtt5ConnAckDecoder() {}
+    private Mqtt5ConnAckDecoder() {}
 
     @Override
     public @NotNull MqttConnAck decode(

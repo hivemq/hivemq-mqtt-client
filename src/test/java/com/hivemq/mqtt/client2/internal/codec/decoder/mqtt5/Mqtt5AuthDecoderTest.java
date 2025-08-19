@@ -40,7 +40,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5AuthDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.AUTH.getCode()] = new Mqtt5AuthDecoder();
+            decoders[Mqtt5MessageType.AUTH.getCode()] = Mqtt5AuthDecoder.INSTANCE;
         }});
     }
 

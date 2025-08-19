@@ -21,41 +21,26 @@ import com.hivemq.mqtt.client2.internal.codec.decoder.MqttPingRespDecoder;
 import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * Collection of decoders for MQTT 5 messages a client can receive.
  *
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5ClientMessageDecoders extends MqttMessageDecoders {
 
-    @Inject
-    Mqtt5ClientMessageDecoders(
-            final @NotNull Mqtt5ConnAckDecoder connAckDecoder,
-            final @NotNull Mqtt5PublishDecoder publishDecoder,
-            final @NotNull Mqtt5PubAckDecoder pubAckDecoder,
-            final @NotNull Mqtt5PubRecDecoder pubRecDecoder,
-            final @NotNull Mqtt5PubRelDecoder pubRelDecoder,
-            final @NotNull Mqtt5PubCompDecoder pubCompDecoder,
-            final @NotNull Mqtt5SubAckDecoder subAckDecoder,
-            final @NotNull Mqtt5UnsubAckDecoder unsubAckDecoder,
-            final @NotNull MqttPingRespDecoder pingRespDecoder,
-            final @NotNull Mqtt5DisconnectDecoder disconnectDecoder,
-            final @NotNull Mqtt5AuthDecoder authDecoder) {
+    public static final @NotNull Mqtt5ClientMessageDecoders INSTANCE = new Mqtt5ClientMessageDecoders();
 
-        decoders[Mqtt5MessageType.CONNACK.getCode()] = connAckDecoder;
-        decoders[Mqtt5MessageType.PUBLISH.getCode()] = publishDecoder;
-        decoders[Mqtt5MessageType.PUBACK.getCode()] = pubAckDecoder;
-        decoders[Mqtt5MessageType.PUBREC.getCode()] = pubRecDecoder;
-        decoders[Mqtt5MessageType.PUBREL.getCode()] = pubRelDecoder;
-        decoders[Mqtt5MessageType.PUBCOMP.getCode()] = pubCompDecoder;
-        decoders[Mqtt5MessageType.SUBACK.getCode()] = subAckDecoder;
-        decoders[Mqtt5MessageType.UNSUBACK.getCode()] = unsubAckDecoder;
-        decoders[Mqtt5MessageType.PINGRESP.getCode()] = pingRespDecoder;
-        decoders[Mqtt5MessageType.DISCONNECT.getCode()] = disconnectDecoder;
-        decoders[Mqtt5MessageType.AUTH.getCode()] = authDecoder;
+    private Mqtt5ClientMessageDecoders() {
+        decoders[Mqtt5MessageType.CONNACK.getCode()] = Mqtt5ConnAckDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.PUBLISH.getCode()] = Mqtt5PublishDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.PUBACK.getCode()] = Mqtt5PubAckDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.PUBREC.getCode()] = Mqtt5PubRecDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.PUBREL.getCode()] = Mqtt5PubRelDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.PUBCOMP.getCode()] = Mqtt5PubCompDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.SUBACK.getCode()] = Mqtt5SubAckDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.UNSUBACK.getCode()] = Mqtt5UnsubAckDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.PINGRESP.getCode()] = MqttPingRespDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.DISCONNECT.getCode()] = Mqtt5DisconnectDecoder.INSTANCE;
+        decoders[Mqtt5MessageType.AUTH.getCode()] = Mqtt5AuthDecoder.INSTANCE;
     }
 }

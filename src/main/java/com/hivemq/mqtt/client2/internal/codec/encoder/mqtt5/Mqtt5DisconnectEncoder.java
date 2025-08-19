@@ -22,9 +22,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5DisconnectReasonCod
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
 import static com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
@@ -34,14 +31,14 @@ import static com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5DisconnectEncoder extends
         Mqtt5MessageWithUserPropertiesEncoder.WithReason.WithOmissibleCode<MqttDisconnect, Mqtt5DisconnectReasonCode> {
 
+    public static final @NotNull Mqtt5DisconnectEncoder INSTANCE = new Mqtt5DisconnectEncoder();
+
     private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
 
-    @Inject
-    Mqtt5DisconnectEncoder() {}
+    private Mqtt5DisconnectEncoder() {}
 
     @Override
     int getFixedHeader() {

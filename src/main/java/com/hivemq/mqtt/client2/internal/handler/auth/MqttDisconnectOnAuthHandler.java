@@ -27,9 +27,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * Sends a DISCONNECT message if an AUTH message or a CONNACK message with enhanced auth data is received. This handler
  * is added if enhanced auth is not used at connection.
@@ -37,11 +34,11 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @ChannelHandler.Sharable
-@Singleton
 public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter implements MqttAuthHandler {
 
-    @Inject
-    MqttDisconnectOnAuthHandler() {}
+    public static final @NotNull MqttDisconnectOnAuthHandler INSTANCE = new MqttDisconnectOnAuthHandler();
+
+    private MqttDisconnectOnAuthHandler() {}
 
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {

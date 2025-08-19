@@ -64,7 +64,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
 
     Mqtt3ConnAckDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.CONNACK.getCode()] = new Mqtt3ConnAckDecoder();
+            decoders[Mqtt3MessageType.CONNACK.getCode()] = Mqtt3ConnAckDecoder.INSTANCE;
         }});
     }
 

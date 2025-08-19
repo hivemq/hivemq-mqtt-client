@@ -29,8 +29,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5DisconnectReasonCod
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
@@ -41,14 +39,14 @@ import static com.hivemq.mqtt.client2.internal.message.auth.MqttAuthProperty.*;
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5AuthDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt5AuthDecoder INSTANCE = new Mqtt5AuthDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 2; // reason code (1) + property length (min 1)
 
-    @Inject
-    Mqtt5AuthDecoder() {}
+    private Mqtt5AuthDecoder() {}
 
     @Override
     public @NotNull MqttAuth decode(

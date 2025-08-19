@@ -26,20 +26,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish> {
+
+    public static final @NotNull Mqtt3PublishEncoder INSTANCE = new Mqtt3PublishEncoder();
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBLISH.getCode() << 4;
 
-    @Inject
-    Mqtt3PublishEncoder() {}
+    private Mqtt3PublishEncoder() {}
 
     @Override
     int remainingLength(final @NotNull MqttStatefulPublish message) {

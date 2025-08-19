@@ -22,9 +22,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static com.hivemq.mqtt.client2.internal.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
 import static com.hivemq.mqtt.client2.internal.message.auth.MqttAuthProperty.AUTHENTICATION_METHOD;
@@ -32,14 +29,14 @@ import static com.hivemq.mqtt.client2.internal.message.auth.MqttAuthProperty.AUT
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5AuthEncoder extends Mqtt5MessageWithUserPropertiesEncoder.WithReason<MqttAuth> {
+
+    public static final @NotNull Mqtt5AuthEncoder INSTANCE = new Mqtt5AuthEncoder();
 
     private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code
 
-    @Inject
-    Mqtt5AuthEncoder() {}
+    private Mqtt5AuthEncoder() {}
 
     @Override
     int remainingLengthWithoutProperties(final @NotNull MqttAuth message) {

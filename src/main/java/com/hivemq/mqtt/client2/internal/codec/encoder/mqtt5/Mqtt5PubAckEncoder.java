@@ -21,22 +21,19 @@ import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.message.publish.MqttPubAck.DEFAULT_REASON_CODE;
 
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5PubAckEncoder extends
         Mqtt5MessageWithUserPropertiesEncoder.WithReason.WithOmissibleCode.WithId<MqttPubAck, Mqtt5PubAckReasonCode> {
 
+    public static final @NotNull Mqtt5PubAckEncoder INSTANCE = new Mqtt5PubAckEncoder();
+
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBACK.getCode() << 4;
 
-    @Inject
-    Mqtt5PubAckEncoder() {}
+    private Mqtt5PubAckEncoder() {}
 
     @Override
     int getFixedHeader() {

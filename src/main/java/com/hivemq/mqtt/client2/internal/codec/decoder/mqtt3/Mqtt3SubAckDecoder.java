@@ -26,9 +26,6 @@ import com.hivemq.mqtt.client2.mqtt3.message.subscribe.Mqtt3SubAckReturnCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3.Mqtt3MessageDecoderUtil.wrongReturnCode;
@@ -37,14 +34,14 @@ import static com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3.Mqtt3MessageD
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt3SubAckDecoder INSTANCE = new Mqtt3SubAckDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 3; // 2 for the packetId + 1 for at least one Subscription
 
-    @Inject
-    Mqtt3SubAckDecoder() {}
+    private Mqtt3SubAckDecoder() {}
 
     @Override
     public @NotNull MqttSubAck decode(

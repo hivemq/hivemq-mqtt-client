@@ -24,20 +24,17 @@ import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulSubscribe> {
+
+    public static final @NotNull Mqtt3SubscribeEncoder INSTANCE = new Mqtt3SubscribeEncoder();
 
     private static final int FIXED_HEADER = (Mqtt3MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
-    @Inject
-    Mqtt3SubscribeEncoder() {}
+    private Mqtt3SubscribeEncoder() {}
 
     @Override
     int remainingLength(final @NotNull MqttStatefulSubscribe message) {

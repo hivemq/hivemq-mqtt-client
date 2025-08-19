@@ -46,7 +46,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5ConnAckDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.CONNACK.getCode()] = new Mqtt5ConnAckDecoder();
+            decoders[Mqtt5MessageType.CONNACK.getCode()] = Mqtt5ConnAckDecoder.INSTANCE;
         }});
     }
 

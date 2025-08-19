@@ -25,9 +25,6 @@ import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnAckReturnCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3.Mqtt3MessageDecoderUtil.wrongReturnCode;
@@ -36,14 +33,14 @@ import static com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3.Mqtt3MessageD
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3ConnAckDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt3ConnAckDecoder INSTANCE = new Mqtt3ConnAckDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int REMAINING_LENGTH = 2;
 
-    @Inject
-    Mqtt3ConnAckDecoder() {}
+    private Mqtt3ConnAckDecoder() {}
 
     @Override
     public @NotNull MqttConnAck decode(

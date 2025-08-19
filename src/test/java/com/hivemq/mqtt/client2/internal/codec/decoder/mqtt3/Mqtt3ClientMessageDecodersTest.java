@@ -27,19 +27,17 @@ class Mqtt3ClientMessageDecodersTest {
 
     @Test
     void test() {
-        final Mqtt3ConnAckDecoder connAckDecoder = new Mqtt3ConnAckDecoder();
-        final Mqtt3PublishDecoder publishDecoder = new Mqtt3PublishDecoder();
-        final Mqtt3PubAckDecoder pubAckDecoder = new Mqtt3PubAckDecoder();
-        final Mqtt3PubRecDecoder pubRecDecoder = new Mqtt3PubRecDecoder();
-        final Mqtt3PubRelDecoder pubRelDecoder = new Mqtt3PubRelDecoder();
-        final Mqtt3PubCompDecoder pubCompDecoder = new Mqtt3PubCompDecoder();
-        final Mqtt3SubAckDecoder subAckDecoder = new Mqtt3SubAckDecoder();
-        final Mqtt3UnsubAckDecoder unsubAckDecoder = new Mqtt3UnsubAckDecoder();
+        final Mqtt3ConnAckDecoder connAckDecoder = Mqtt3ConnAckDecoder.INSTANCE;
+        final Mqtt3PublishDecoder publishDecoder = Mqtt3PublishDecoder.INSTANCE;
+        final Mqtt3PubAckDecoder pubAckDecoder = Mqtt3PubAckDecoder.INSTANCE;
+        final Mqtt3PubRecDecoder pubRecDecoder = Mqtt3PubRecDecoder.INSTANCE;
+        final Mqtt3PubRelDecoder pubRelDecoder = Mqtt3PubRelDecoder.INSTANCE;
+        final Mqtt3PubCompDecoder pubCompDecoder = Mqtt3PubCompDecoder.INSTANCE;
+        final Mqtt3SubAckDecoder subAckDecoder = Mqtt3SubAckDecoder.INSTANCE;
+        final Mqtt3UnsubAckDecoder unsubAckDecoder = Mqtt3UnsubAckDecoder.INSTANCE;
         final MqttPingRespDecoder pingRespDecoder = AbstractMqttDecoderTest.createPingRespDecoder();
 
-        final Mqtt3ClientMessageDecoders clientMessageDecoders =
-                new Mqtt3ClientMessageDecoders(connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder,
-                        pubRelDecoder, pubCompDecoder, subAckDecoder, unsubAckDecoder, pingRespDecoder);
+        final Mqtt3ClientMessageDecoders clientMessageDecoders = Mqtt3ClientMessageDecoders.INSTANCE;
 
         assertNull(clientMessageDecoders.get(-1));
         assertNull(clientMessageDecoders.get(0));

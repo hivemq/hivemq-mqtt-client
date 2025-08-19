@@ -27,7 +27,7 @@ class Mqtt3PubAckEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubAckEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PUBACK.getCode()] = new Mqtt3PubAckEncoder();
+            encoders[Mqtt3MessageType.PUBACK.getCode()] = Mqtt3PubAckEncoder.INSTANCE;
         }}, true);
     }
 

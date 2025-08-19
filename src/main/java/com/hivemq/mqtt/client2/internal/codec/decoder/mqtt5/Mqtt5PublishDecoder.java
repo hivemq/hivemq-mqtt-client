@@ -32,8 +32,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PayloadFormatIndicator
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.*;
@@ -45,13 +43,13 @@ import static com.hivemq.mqtt.client2.internal.message.publish.MqttStatefulPubli
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5PublishDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt5PublishDecoder INSTANCE = new Mqtt5PublishDecoder();
 
     private static final int MIN_REMAINING_LENGTH = 3; // topic name (min 2) + property length (min 1)
 
-    @Inject
-    Mqtt5PublishDecoder() {}
+    private Mqtt5PublishDecoder() {}
 
     @Override
     public @NotNull MqttStatefulPublish decode(

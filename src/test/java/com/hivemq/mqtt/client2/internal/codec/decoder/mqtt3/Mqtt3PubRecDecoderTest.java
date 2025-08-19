@@ -54,7 +54,7 @@ class Mqtt3PubRecDecoderTest extends AbstractMqtt3DecoderTest {
 
     Mqtt3PubRecDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.PUBREC.getCode()] = new Mqtt3PubRecDecoder();
+            decoders[Mqtt3MessageType.PUBREC.getCode()] = Mqtt3PubRecDecoder.INSTANCE;
         }});
     }
 

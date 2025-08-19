@@ -55,7 +55,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
 
     Mqtt5SubscribeEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.SUBSCRIBE.getCode()] = new Mqtt5SubscribeEncoder();
+            encoders[Mqtt5MessageType.SUBSCRIBE.getCode()] = Mqtt5SubscribeEncoder.INSTANCE;
         }}, true);
     }
 

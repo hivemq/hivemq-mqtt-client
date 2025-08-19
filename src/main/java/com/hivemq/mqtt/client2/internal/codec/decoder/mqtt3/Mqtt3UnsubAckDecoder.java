@@ -24,9 +24,6 @@ import com.hivemq.mqtt.client2.internal.message.unsubscribe.mqtt3.Mqtt3UnsubAckV
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
 
@@ -34,14 +31,14 @@ import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderU
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3UnsubAckDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt3UnsubAckDecoder INSTANCE = new Mqtt3UnsubAckDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int REMAINING_LENGTH = 2; // 2 for the packetId
 
-    @Inject
-    Mqtt3UnsubAckDecoder() {}
+    private Mqtt3UnsubAckDecoder() {}
 
     @Override
     public @NotNull MqttUnsubAck decode(

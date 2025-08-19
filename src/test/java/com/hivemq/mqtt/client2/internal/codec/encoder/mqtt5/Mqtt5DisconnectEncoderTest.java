@@ -45,7 +45,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
 
     Mqtt5DisconnectEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.DISCONNECT.getCode()] = new Mqtt5DisconnectEncoder();
+            encoders[Mqtt5MessageType.DISCONNECT.getCode()] = Mqtt5DisconnectEncoder.INSTANCE;
         }}, true);
     }
 

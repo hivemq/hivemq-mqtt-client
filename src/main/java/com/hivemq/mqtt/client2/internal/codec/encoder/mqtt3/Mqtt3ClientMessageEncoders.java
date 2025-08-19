@@ -21,39 +21,25 @@ import com.hivemq.mqtt.client2.internal.codec.encoder.MqttPingReqEncoder;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * Collection of encoders for MQTT 3 messages a client can send.
  *
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3ClientMessageEncoders extends MqttMessageEncoders {
 
-    @Inject
-    Mqtt3ClientMessageEncoders(
-            final @NotNull Mqtt3ConnectEncoder connectEncoder,
-            final @NotNull Mqtt3PublishEncoder publishEncoder,
-            final @NotNull Mqtt3PubAckEncoder pubAckEncoder,
-            final @NotNull Mqtt3PubRecEncoder pubRecEncoder,
-            final @NotNull Mqtt3PubRelEncoder pubRelEncoder,
-            final @NotNull Mqtt3PubCompEncoder pubCompEncoder,
-            final @NotNull Mqtt3SubscribeEncoder subscribeEncoder,
-            final @NotNull Mqtt3UnsubscribeEncoder unsubscribeEncoder,
-            final @NotNull MqttPingReqEncoder pingReqEncoder,
-            final @NotNull Mqtt3DisconnectEncoder disconnectEncoder) {
+    public static final @NotNull Mqtt3ClientMessageEncoders INSTANCE = new Mqtt3ClientMessageEncoders();
 
-        encoders[Mqtt3MessageType.CONNECT.getCode()] = connectEncoder;
-        encoders[Mqtt3MessageType.PUBLISH.getCode()] = publishEncoder;
-        encoders[Mqtt3MessageType.PUBACK.getCode()] = pubAckEncoder;
-        encoders[Mqtt3MessageType.PUBREC.getCode()] = pubRecEncoder;
-        encoders[Mqtt3MessageType.PUBREL.getCode()] = pubRelEncoder;
-        encoders[Mqtt3MessageType.PUBCOMP.getCode()] = pubCompEncoder;
-        encoders[Mqtt3MessageType.SUBSCRIBE.getCode()] = subscribeEncoder;
-        encoders[Mqtt3MessageType.UNSUBSCRIBE.getCode()] = unsubscribeEncoder;
-        encoders[Mqtt3MessageType.PINGREQ.getCode()] = pingReqEncoder;
-        encoders[Mqtt3MessageType.DISCONNECT.getCode()] = disconnectEncoder;
+    private Mqtt3ClientMessageEncoders() {
+        encoders[Mqtt3MessageType.CONNECT.getCode()] = Mqtt3ConnectEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.PUBLISH.getCode()] = Mqtt3PublishEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.PUBACK.getCode()] = Mqtt3PubAckEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.PUBREC.getCode()] = Mqtt3PubRecEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.PUBREL.getCode()] = Mqtt3PubRelEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.PUBCOMP.getCode()] = Mqtt3PubCompEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.SUBSCRIBE.getCode()] = Mqtt3SubscribeEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.UNSUBSCRIBE.getCode()] = Mqtt3UnsubscribeEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.PINGREQ.getCode()] = MqttPingReqEncoder.INSTANCE;
+        encoders[Mqtt3MessageType.DISCONNECT.getCode()] = Mqtt3DisconnectEncoder.INSTANCE;
     }
 }

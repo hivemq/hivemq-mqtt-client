@@ -28,8 +28,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 import static com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
@@ -40,13 +38,13 @@ import static com.hivemq.mqtt.client2.internal.message.publish.MqttStatefulPubli
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<MqttStatefulPublish> {
+
+    public static final @NotNull Mqtt5PublishEncoder INSTANCE = new Mqtt5PublishEncoder();
 
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
 
-    @Inject
-    Mqtt5PublishEncoder() {}
+    private Mqtt5PublishEncoder() {}
 
     @Override
     int remainingLengthWithoutProperties(final @NotNull MqttStatefulPublish message) {

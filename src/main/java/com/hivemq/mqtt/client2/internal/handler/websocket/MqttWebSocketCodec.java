@@ -25,20 +25,17 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.websocketx.*;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * @author Silvio Giebl
  */
 @ChannelHandler.Sharable
-@Singleton
 public class MqttWebSocketCodec extends ChannelDuplexHandler {
+
+    public static final @NotNull MqttWebSocketCodec INSTANCE = new MqttWebSocketCodec();
 
     public static final @NotNull String NAME = "ws.mqtt";
 
-    @Inject
-    MqttWebSocketCodec() {}
+    private MqttWebSocketCodec() {}
 
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {

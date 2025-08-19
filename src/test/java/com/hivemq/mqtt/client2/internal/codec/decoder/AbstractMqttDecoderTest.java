@@ -122,6 +122,6 @@ public abstract class AbstractMqttDecoderTest {
     }
 
     public static @NotNull MqttPingRespDecoder createPingRespDecoder() {
-        return new MqttPingRespDecoder();
+        return MqttPingRespDecoder.INSTANCE;
     }
 }

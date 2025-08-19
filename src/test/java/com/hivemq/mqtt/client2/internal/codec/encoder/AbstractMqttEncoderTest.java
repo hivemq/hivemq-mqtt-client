@@ -86,6 +86,6 @@ public abstract class AbstractMqttEncoderTest {
     }
 
     protected static @NotNull MqttPingReqEncoder createPingReqEncoder() {
-        return new MqttPingReqEncoder();
+        return MqttPingReqEncoder.INSTANCE;
     }
 }

@@ -45,7 +45,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PublishDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.PUBLISH.getCode()] = new Mqtt5PublishDecoder();
+            decoders[Mqtt5MessageType.PUBLISH.getCode()] = Mqtt5PublishDecoder.INSTANCE;
         }});
     }
 

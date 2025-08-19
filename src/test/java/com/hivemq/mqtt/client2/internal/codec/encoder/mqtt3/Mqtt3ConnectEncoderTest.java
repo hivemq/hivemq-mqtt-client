@@ -40,7 +40,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3ConnectEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.CONNECT.getCode()] = new Mqtt3ConnectEncoder();
+            encoders[Mqtt3MessageType.CONNECT.getCode()] = Mqtt3ConnectEncoder.INSTANCE;
         }}, false);
     }
 

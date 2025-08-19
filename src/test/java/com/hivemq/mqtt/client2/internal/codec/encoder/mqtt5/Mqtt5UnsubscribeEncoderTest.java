@@ -36,7 +36,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5UnsubscribeEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = new Mqtt5UnsubscribeEncoder();
+            encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = Mqtt5UnsubscribeEncoder.INSTANCE;
         }}, true);
     }
 

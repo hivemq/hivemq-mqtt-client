@@ -27,25 +27,22 @@ import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoderUtil.encodeNullable;
 import static com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoderUtil.nullableEncodedLength;
 
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect> {
+
+    public static final @NotNull Mqtt3ConnectEncoder INSTANCE = new Mqtt3ConnectEncoder();
 
     private static final int FIXED_HEADER = Mqtt3MessageType.CONNECT.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH =
             6 /* protocol name */ + 1 /* protocol version */ + 1 /* connect flags */ + 2 /* keep alive */;
     private static final byte PROTOCOL_VERSION = 4;
 
-    @Inject
-    Mqtt3ConnectEncoder() {}
+    private Mqtt3ConnectEncoder() {}
 
     @Override
     int remainingLength(final @NotNull MqttStatefulConnect message) {

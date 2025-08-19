@@ -33,7 +33,6 @@ import com.hivemq.mqtt.client2.internal.handler.websocket.MqttWebSocketInitializ
 import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
-import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -66,8 +65,6 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     private final @NotNull MqttDisconnectHandler disconnectHandler;
     private final @NotNull MqttAuthHandler authHandler;
 
-    private final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer;
-
     @Inject
     MqttChannelInitializer(
             final @NotNull MqttClientConfig clientConfig,
@@ -76,9 +73,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
             final @NotNull MqttEncoder encoder,
             final @NotNull MqttConnectHandler connectHandler,
             final @NotNull MqttDisconnectHandler disconnectHandler,
-            final @NotNull MqttAuthHandler authHandler,
-            final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer) {
-
+            final @NotNull MqttAuthHandler authHandler) {
         this.clientConfig = clientConfig;
         this.connect = connect;
         this.connAckFlow = connAckFlow;
@@ -86,7 +81,6 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
         this.connectHandler = connectHandler;
         this.disconnectHandler = disconnectHandler;
         this.authHandler = authHandler;
-        this.webSocketInitializer = webSocketInitializer;
     }
 
     @Override
@@ -128,8 +122,7 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
         if (webSocketConfig == null) {
             initMqtt(channel);
         } else {
-            webSocketInitializer.get()
-                    .initChannel(channel, clientConfig, webSocketConfig, this::initMqtt, this::onError);
+            MqttWebSocketInitializer.initChannel(channel, clientConfig, webSocketConfig, this::initMqtt, this::onError);
         }
     }
 

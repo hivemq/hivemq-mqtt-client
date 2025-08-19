@@ -20,24 +20,20 @@ import com.hivemq.mqtt.client2.internal.message.ping.MqttPingResp;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
-import static com.hivemq.mqtt.client2.internal.message.ping.MqttPingResp.INSTANCE;
 
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class MqttPingRespDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull MqttPingRespDecoder INSTANCE = new MqttPingRespDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int REMAINING_LENGTH = 0;
 
-    @Inject
-    MqttPingRespDecoder() {}
+    private MqttPingRespDecoder() {}
 
     @Override
     public @NotNull MqttPingResp decode(
@@ -47,6 +43,6 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
         checkFixedHeaderFlags(FLAGS, flags);
         checkRemainingLength(REMAINING_LENGTH, in.readableBytes());
 
-        return INSTANCE;
+        return MqttPingResp.INSTANCE;
     }
 }

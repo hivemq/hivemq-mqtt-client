@@ -21,41 +21,26 @@ import com.hivemq.mqtt.client2.internal.codec.encoder.MqttPingReqEncoder;
 import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * Collection of encoders for MQTT 5 messages a client can send.
  *
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5ClientMessageEncoders extends MqttMessageEncoders {
 
-    @Inject
-    Mqtt5ClientMessageEncoders(
-            final @NotNull Mqtt5ConnectEncoder connectEncoder,
-            final @NotNull Mqtt5PublishEncoder publishEncoder,
-            final @NotNull Mqtt5PubAckEncoder pubAckEncoder,
-            final @NotNull Mqtt5PubRecEncoder pubRecEncoder,
-            final @NotNull Mqtt5PubRelEncoder pubRelEncoder,
-            final @NotNull Mqtt5PubCompEncoder pubCompEncoder,
-            final @NotNull Mqtt5SubscribeEncoder subscribeEncoder,
-            final @NotNull Mqtt5UnsubscribeEncoder unsubscribeEncoder,
-            final @NotNull MqttPingReqEncoder pingReqEncoder,
-            final @NotNull Mqtt5DisconnectEncoder disconnectEncoder,
-            final @NotNull Mqtt5AuthEncoder authEncoder) {
+    public static final @NotNull Mqtt5ClientMessageEncoders INSTANCE = new Mqtt5ClientMessageEncoders();
 
-        encoders[Mqtt5MessageType.CONNECT.getCode()] = connectEncoder;
-        encoders[Mqtt5MessageType.PUBLISH.getCode()] = publishEncoder;
-        encoders[Mqtt5MessageType.PUBACK.getCode()] = pubAckEncoder;
-        encoders[Mqtt5MessageType.PUBREC.getCode()] = pubRecEncoder;
-        encoders[Mqtt5MessageType.PUBREL.getCode()] = pubRelEncoder;
-        encoders[Mqtt5MessageType.PUBCOMP.getCode()] = pubCompEncoder;
-        encoders[Mqtt5MessageType.SUBSCRIBE.getCode()] = subscribeEncoder;
-        encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = unsubscribeEncoder;
-        encoders[Mqtt5MessageType.PINGREQ.getCode()] = pingReqEncoder;
-        encoders[Mqtt5MessageType.DISCONNECT.getCode()] = disconnectEncoder;
-        encoders[Mqtt5MessageType.AUTH.getCode()] = authEncoder;
+    private Mqtt5ClientMessageEncoders() {
+        encoders[Mqtt5MessageType.CONNECT.getCode()] = Mqtt5ConnectEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.PUBLISH.getCode()] = Mqtt5PublishEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.PUBACK.getCode()] = Mqtt5PubAckEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.PUBREC.getCode()] = Mqtt5PubRecEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.PUBREL.getCode()] = Mqtt5PubRelEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.PUBCOMP.getCode()] = Mqtt5PubCompEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.SUBSCRIBE.getCode()] = Mqtt5SubscribeEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = Mqtt5UnsubscribeEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.PINGREQ.getCode()] = MqttPingReqEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.DISCONNECT.getCode()] = Mqtt5DisconnectEncoder.INSTANCE;
+        encoders[Mqtt5MessageType.AUTH.getCode()] = Mqtt5AuthEncoder.INSTANCE;
     }
 }

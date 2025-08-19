@@ -27,7 +27,7 @@ class Mqtt3PubCompEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubCompEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PUBCOMP.getCode()] = new Mqtt3PubCompEncoder();
+            encoders[Mqtt3MessageType.PUBCOMP.getCode()] = Mqtt3PubCompEncoder.INSTANCE;
         }}, true);
     }
 

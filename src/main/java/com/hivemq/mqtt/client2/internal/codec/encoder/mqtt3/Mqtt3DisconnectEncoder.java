@@ -24,22 +24,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3DisconnectEncoder extends MqttMessageEncoder<MqttDisconnect> {
+
+    public static final @NotNull Mqtt3DisconnectEncoder INSTANCE = new Mqtt3DisconnectEncoder();
 
     private static final int ENCODED_LENGTH = 2;
     private static final @NotNull ByteBuf PACKET = UnpooledByteBufAllocator.DEFAULT.ioBuffer(ENCODED_LENGTH)
             .writeByte(Mqtt3MessageType.DISCONNECT.getCode() << 4)
             .writeByte(0);
 
-    @Inject
-    Mqtt3DisconnectEncoder() {}
+    private Mqtt3DisconnectEncoder() {}
 
     @Override
     protected @NotNull ByteBuf encode(

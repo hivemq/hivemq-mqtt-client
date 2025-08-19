@@ -24,9 +24,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
 import static com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.variableByteIntegerPropertyEncodedLength;
 import static com.hivemq.mqtt.client2.internal.message.subscribe.MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
@@ -35,14 +32,14 @@ import static com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubscribePr
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder<MqttStatefulSubscribe> {
+
+    public static final @NotNull Mqtt5SubscribeEncoder INSTANCE = new Mqtt5SubscribeEncoder();
 
     private static final int FIXED_HEADER = (Mqtt5MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
-    @Inject
-    Mqtt5SubscribeEncoder() {}
+    private Mqtt5SubscribeEncoder() {}
 
     @Override
     int remainingLengthWithoutProperties(final @NotNull MqttStatefulSubscribe message) {

@@ -24,20 +24,17 @@ import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder<MqttStatefulUnsubscribe> {
+
+    public static final @NotNull Mqtt5UnsubscribeEncoder INSTANCE = new Mqtt5UnsubscribeEncoder();
 
     private static final int FIXED_HEADER = (Mqtt5MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
-    @Inject
-    Mqtt5UnsubscribeEncoder() {}
+    private Mqtt5UnsubscribeEncoder() {}
 
     @Override
     int remainingLengthWithoutProperties(final @NotNull MqttStatefulUnsubscribe message) {

@@ -29,8 +29,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,20 +39,12 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class MqttWebSocketInitializer {
 
     private static final @NotNull String HTTP_CODEC_NAME = "http.codec";
     private static final @NotNull String HTTP_AGGREGATOR_NAME = "http.aggregator";
 
-    private final @NotNull MqttWebSocketCodec mqttWebSocketCodec;
-
-    @Inject
-    MqttWebSocketInitializer(final @NotNull MqttWebSocketCodec mqttWebSocketCodec) {
-        this.mqttWebSocketCodec = mqttWebSocketCodec;
-    }
-
-    public void initChannel(
+    public static void initChannel(
             final @NotNull Channel channel,
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttWebSocketConfigImpl webSocketConfig,
@@ -93,6 +83,8 @@ public class MqttWebSocketInitializer {
                 .addLast(MqttWebsocketHandshakeHandler.NAME,
                         new MqttWebsocketHandshakeHandler(handshaker, webSocketConfig.getHandshakeTimeoutMs(),
                                 onSuccess, onError))
-                .addLast(MqttWebSocketCodec.NAME, mqttWebSocketCodec);
+                .addLast(MqttWebSocketCodec.NAME, MqttWebSocketCodec.INSTANCE);
     }
+
+    private MqttWebSocketInitializer() {}
 }

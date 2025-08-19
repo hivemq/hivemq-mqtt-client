@@ -60,7 +60,7 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
     Mqtt3SubAckDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.SUBACK.getCode()] = new Mqtt3SubAckDecoder();
+            decoders[Mqtt3MessageType.SUBACK.getCode()] = Mqtt3SubAckDecoder.INSTANCE;
         }});
     }
 

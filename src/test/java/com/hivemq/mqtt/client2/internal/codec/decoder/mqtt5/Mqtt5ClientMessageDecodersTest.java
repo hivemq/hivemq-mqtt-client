@@ -30,22 +30,19 @@ class Mqtt5ClientMessageDecodersTest {
 
     @Test
     void test() {
-        final Mqtt5ConnAckDecoder connAckDecoder = new Mqtt5ConnAckDecoder();
-        final Mqtt5PublishDecoder publishDecoder = new Mqtt5PublishDecoder();
-        final Mqtt5PubAckDecoder pubAckDecoder = new Mqtt5PubAckDecoder();
-        final Mqtt5PubRecDecoder pubRecDecoder = new Mqtt5PubRecDecoder();
-        final Mqtt5PubRelDecoder pubRelDecoder = new Mqtt5PubRelDecoder();
-        final Mqtt5PubCompDecoder pubCompDecoder = new Mqtt5PubCompDecoder();
-        final Mqtt5SubAckDecoder subAckDecoder = new Mqtt5SubAckDecoder();
-        final Mqtt5UnsubAckDecoder unsubAckDecoder = new Mqtt5UnsubAckDecoder();
+        final Mqtt5ConnAckDecoder connAckDecoder = Mqtt5ConnAckDecoder.INSTANCE;
+        final Mqtt5PublishDecoder publishDecoder = Mqtt5PublishDecoder.INSTANCE;
+        final Mqtt5PubAckDecoder pubAckDecoder = Mqtt5PubAckDecoder.INSTANCE;
+        final Mqtt5PubRecDecoder pubRecDecoder = Mqtt5PubRecDecoder.INSTANCE;
+        final Mqtt5PubRelDecoder pubRelDecoder = Mqtt5PubRelDecoder.INSTANCE;
+        final Mqtt5PubCompDecoder pubCompDecoder = Mqtt5PubCompDecoder.INSTANCE;
+        final Mqtt5SubAckDecoder subAckDecoder = Mqtt5SubAckDecoder.INSTANCE;
+        final Mqtt5UnsubAckDecoder unsubAckDecoder = Mqtt5UnsubAckDecoder.INSTANCE;
         final MqttPingRespDecoder pingRespDecoder = AbstractMqttDecoderTest.createPingRespDecoder();
-        final Mqtt5DisconnectDecoder disconnectDecoder = new Mqtt5DisconnectDecoder();
-        final Mqtt5AuthDecoder authDecoder = new Mqtt5AuthDecoder();
+        final Mqtt5DisconnectDecoder disconnectDecoder = Mqtt5DisconnectDecoder.INSTANCE;
+        final Mqtt5AuthDecoder authDecoder = Mqtt5AuthDecoder.INSTANCE;
 
-        final Mqtt5ClientMessageDecoders clientMessageDecoders =
-                new Mqtt5ClientMessageDecoders(connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder,
-                        pubRelDecoder, pubCompDecoder, subAckDecoder, unsubAckDecoder, pingRespDecoder,
-                        disconnectDecoder, authDecoder);
+        final Mqtt5ClientMessageDecoders clientMessageDecoders = Mqtt5ClientMessageDecoders.INSTANCE;
 
         assertNull(clientMessageDecoders.get(-1));
         assertNull(clientMessageDecoders.get(0));

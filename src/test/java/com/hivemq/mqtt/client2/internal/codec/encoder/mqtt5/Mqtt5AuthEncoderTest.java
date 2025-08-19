@@ -51,7 +51,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5AuthEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.AUTH.getCode()] = new Mqtt5AuthEncoder();
+            encoders[Mqtt5MessageType.AUTH.getCode()] = Mqtt5AuthEncoder.INSTANCE;
         }}, true);
     }
 

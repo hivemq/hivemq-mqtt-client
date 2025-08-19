@@ -40,7 +40,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
     Mqtt5PubRecEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBREC.getCode()] = new Mqtt5PubRecEncoder();
+            encoders[Mqtt5MessageType.PUBREC.getCode()] = Mqtt5PubRecEncoder.INSTANCE;
         }}, true);
     }
 

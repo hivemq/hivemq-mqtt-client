@@ -33,9 +33,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoderUtil.*;
 import static com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static com.hivemq.mqtt.client2.internal.message.connect.MqttConnect.DEFAULT_SESSION_EXPIRY_INTERVAL;
@@ -44,20 +41,16 @@ import static com.hivemq.mqtt.client2.internal.message.connect.MqttConnectProper
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect> {
+
+    public static final @NotNull Mqtt5ConnectEncoder INSTANCE = new Mqtt5ConnectEncoder();
 
     private static final int FIXED_HEADER = Mqtt5MessageType.CONNECT.getCode() << 4;
     private static final byte PROTOCOL_VERSION = 5;
     private static final int VARIABLE_HEADER_FIXED_LENGTH =
             6 /* protocol name */ + 1 /* protocol version */ + 1 /* connect flags */ + 2 /* keep alive */;
 
-    private final @NotNull Mqtt5PublishEncoder publishEncoder;
-
-    @Inject
-    Mqtt5ConnectEncoder(final @NotNull Mqtt5PublishEncoder publishEncoder) {
-        this.publishEncoder = publishEncoder;
-    }
+    private Mqtt5ConnectEncoder() {}
 
     @Override
     protected @NotNull ByteBuf encode(
@@ -177,7 +170,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             return -1;
         }
 
-        int willPropertyLength = publishEncoder.fixedPropertyLength(willPublish);
+        int willPropertyLength = Mqtt5PublishEncoder.INSTANCE.fixedPropertyLength(willPublish);
         willPropertyLength += willPublish.getUserProperties().encodedLength();
         willPropertyLength +=
                 intPropertyEncodedLength(willPublish.getDelayInterval(), MqttWillPublish.DEFAULT_DELAY_INTERVAL);
@@ -311,7 +304,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         if (willPublish != null) {
             MqttVariableByteInteger.encode(willPropertyLength, out);
 
-            publishEncoder.encodeFixedProperties(willPublish, out);
+            Mqtt5PublishEncoder.INSTANCE.encodeFixedProperties(willPublish, out);
             willPublish.getUserProperties().encode(out);
             encodeIntProperty(MqttWillPublishProperty.WILL_DELAY_INTERVAL, willPublish.getDelayInterval(),
                     MqttWillPublish.DEFAULT_DELAY_INTERVAL, out);

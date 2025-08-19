@@ -37,7 +37,7 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubCompDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.PUBCOMP.getCode()] = new Mqtt5PubCompDecoder();
+            decoders[Mqtt5MessageType.PUBCOMP.getCode()] = Mqtt5PubCompDecoder.INSTANCE;
         }});
     }
 

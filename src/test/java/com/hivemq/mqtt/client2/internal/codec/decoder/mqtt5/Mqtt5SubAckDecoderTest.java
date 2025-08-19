@@ -42,7 +42,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5SubAckDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.SUBACK.getCode()] = new Mqtt5SubAckDecoder();
+            decoders[Mqtt5MessageType.SUBACK.getCode()] = Mqtt5SubAckDecoder.INSTANCE;
         }});
     }
 

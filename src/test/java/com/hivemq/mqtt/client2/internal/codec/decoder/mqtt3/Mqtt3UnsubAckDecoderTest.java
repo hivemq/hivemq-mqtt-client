@@ -55,7 +55,7 @@ class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
     Mqtt3UnsubAckDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.UNSUBACK.getCode()] = new Mqtt3UnsubAckDecoder();
+            decoders[Mqtt3MessageType.UNSUBACK.getCode()] = Mqtt3UnsubAckDecoder.INSTANCE;
         }});
     }
 

@@ -43,7 +43,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
     Mqtt5PubAckEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBACK.getCode()] = new Mqtt5PubAckEncoder();
+            encoders[Mqtt5MessageType.PUBACK.getCode()] = Mqtt5PubAckEncoder.INSTANCE;
         }}, true);
     }
 

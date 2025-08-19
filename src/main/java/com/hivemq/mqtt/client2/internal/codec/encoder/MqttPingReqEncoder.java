@@ -22,22 +22,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class MqttPingReqEncoder extends MqttMessageEncoder<MqttPingReq> {
+
+    public static final @NotNull MqttPingReqEncoder INSTANCE = new MqttPingReqEncoder();
 
     private static final int ENCODED_LENGTH = 2;
     private static final @NotNull ByteBuf PACKET = UnpooledByteBufAllocator.DEFAULT.ioBuffer(ENCODED_LENGTH)
             .writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4)
             .writeByte(0);
 
-    @Inject
-    MqttPingReqEncoder() {}
+    private MqttPingReqEncoder() {}
 
     @Override
     protected @NotNull ByteBuf encode(final @NotNull MqttPingReq message, final @NotNull MqttEncoderContext context) {

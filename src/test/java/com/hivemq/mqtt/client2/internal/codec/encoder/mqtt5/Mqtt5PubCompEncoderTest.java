@@ -45,7 +45,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
     Mqtt5PubCompEncoderTest() {
         super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBCOMP.getCode()] = new Mqtt5PubCompEncoder();
+            encoders[Mqtt5MessageType.PUBCOMP.getCode()] = Mqtt5PubCompEncoder.INSTANCE;
         }}, true);
     }
 

@@ -36,7 +36,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5DisconnectDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.DISCONNECT.getCode()] = new Mqtt5DisconnectDecoder();
+            decoders[Mqtt5MessageType.DISCONNECT.getCode()] = Mqtt5DisconnectDecoder.INSTANCE;
         }});
     }
 

@@ -28,9 +28,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubCompReasonCode;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
@@ -41,14 +38,14 @@ import static com.hivemq.mqtt.client2.internal.message.publish.MqttPubCompProper
 /**
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5PubCompDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt5PubCompDecoder INSTANCE = new Mqtt5PubCompDecoder();
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 2;
 
-    @Inject
-    Mqtt5PubCompDecoder() {}
+    private Mqtt5PubCompDecoder() {}
 
     @Override
     public @NotNull MqttPubComp decode(

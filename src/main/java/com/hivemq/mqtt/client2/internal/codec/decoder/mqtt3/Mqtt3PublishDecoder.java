@@ -28,8 +28,6 @@ import com.hivemq.mqtt.client2.internal.util.ByteBufferUtil;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderUtil.*;
@@ -38,13 +36,13 @@ import static com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoderU
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt3PublishDecoder implements MqttMessageDecoder {
+
+    public static final @NotNull Mqtt3PublishDecoder INSTANCE = new Mqtt3PublishDecoder();
 
     private static final int MIN_REMAINING_LENGTH = 2; // 2 for the packetIdentifier
 
-    @Inject
-    Mqtt3PublishDecoder() {}
+    private Mqtt3PublishDecoder() {}
 
     @Override
     public @NotNull MqttStatefulPublish decode(

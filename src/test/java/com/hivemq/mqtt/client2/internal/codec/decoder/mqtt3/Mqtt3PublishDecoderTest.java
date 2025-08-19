@@ -35,7 +35,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     Mqtt3PublishDecoderTest() {
         super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.PUBLISH.getCode()] = new Mqtt3PublishDecoder();
+            decoders[Mqtt3MessageType.PUBLISH.getCode()] = Mqtt3PublishDecoder.INSTANCE;
         }});
     }
 
