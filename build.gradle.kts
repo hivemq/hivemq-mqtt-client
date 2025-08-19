@@ -108,9 +108,9 @@ dependencies {
 allprojects {
     plugins.withId("java") {
         dependencies {
-            testImplementation(libs.junit.jupiter.api)
-            testImplementation(libs.junit.jupiter.params)
-            testRuntimeOnly(libs.junit.jupiter.engine)
+            testImplementation(platform(libs.junit.bom))
+            testImplementation(libs.junit.jupiter)
+            testRuntimeOnly(libs.junit.platform.launcher)
         }
 
         tasks.test {
