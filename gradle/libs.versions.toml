@@ -2,7 +2,7 @@
 awaitility = "4.3.0"
 bouncycastle = "1.81"
 dagger = "2.42"
-equalsverifier = "3.19.4"
+equalsverifier = "4.0.7"
 guava = "24.1.1-jre"
 hivemq-extensionSdk = "4.7.2"
 hivemq-testcontainer-junit5 = "2.0.0"
