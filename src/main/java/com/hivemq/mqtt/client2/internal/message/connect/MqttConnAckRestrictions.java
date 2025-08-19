@@ -33,37 +33,37 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
 
     public static final @NotNull MqttConnAckRestrictions DEFAULT =
             new MqttConnAckRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
-                    DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE,
-                    DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE,
-                    DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE);
+                    DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_SUPPORTED,
+                    DEFAULT_WILDCARD_SUBSCRIPTION_SUPPORTED, DEFAULT_SHARED_SUBSCRIPTION_SUPPORTED,
+                    DEFAULT_SUBSCRIPTION_IDENTIFIER_SUPPORTED);
 
     private final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum;
     private final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize;
     private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum;
     private final @NotNull MqttQos maximumQos;
-    private final boolean retainAvailable;
-    private final boolean wildcardSubscriptionAvailable;
-    private final boolean sharedSubscriptionAvailable;
-    private final boolean subscriptionIdentifierAvailable;
+    private final boolean retainSupported;
+    private final boolean wildcardSubscriptionSupported;
+    private final boolean sharedSubscriptionSupported;
+    private final boolean subscriptionIdentifierSupported;
 
     public MqttConnAckRestrictions(
             final @Range(from = 1, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int receiveMaximum,
             final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int maximumPacketSize,
             final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int topicAliasMaximum,
             final @NotNull MqttQos maximumQos,
-            final boolean retainAvailable,
-            final boolean wildcardSubscriptionAvailable,
-            final boolean sharedSubscriptionAvailable,
-            final boolean subscriptionIdentifierAvailable) {
+            final boolean retainSupported,
+            final boolean wildcardSubscriptionSupported,
+            final boolean sharedSubscriptionSupported,
+            final boolean subscriptionIdentifierSupported) {
 
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
         this.topicAliasMaximum = topicAliasMaximum;
         this.maximumQos = maximumQos;
-        this.retainAvailable = retainAvailable;
-        this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
-        this.sharedSubscriptionAvailable = sharedSubscriptionAvailable;
-        this.subscriptionIdentifierAvailable = subscriptionIdentifierAvailable;
+        this.retainSupported = retainSupported;
+        this.wildcardSubscriptionSupported = wildcardSubscriptionSupported;
+        this.sharedSubscriptionSupported = sharedSubscriptionSupported;
+        this.subscriptionIdentifierSupported = subscriptionIdentifierSupported;
     }
 
     @Override
@@ -87,31 +87,31 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     }
 
     @Override
-    public boolean isRetainAvailable() {
-        return retainAvailable;
+    public boolean isRetainSupported() {
+        return retainSupported;
     }
 
     @Override
-    public boolean isWildcardSubscriptionAvailable() {
-        return wildcardSubscriptionAvailable;
+    public boolean isWildcardSubscriptionSupported() {
+        return wildcardSubscriptionSupported;
     }
 
     @Override
-    public boolean isSharedSubscriptionAvailable() {
-        return sharedSubscriptionAvailable;
+    public boolean isSharedSubscriptionSupported() {
+        return sharedSubscriptionSupported;
     }
 
     @Override
-    public boolean isSubscriptionIdentifierAvailable() {
-        return subscriptionIdentifierAvailable;
+    public boolean isSubscriptionIdentifierSupported() {
+        return subscriptionIdentifierSupported;
     }
 
     private @NotNull String toAttributeString() {
         return "receiveMaximum=" + receiveMaximum + ", maximumPacketSize=" + maximumPacketSize +
-                ", topicAliasMaximum=" + topicAliasMaximum + ", maximumQos=" + maximumQos + ", retainAvailable=" +
-                retainAvailable + ", wildcardSubscriptionAvailable=" + wildcardSubscriptionAvailable +
-                ", sharedSubscriptionAvailable=" + sharedSubscriptionAvailable + ", subscriptionIdentifierAvailable=" +
-                subscriptionIdentifierAvailable;
+                ", topicAliasMaximum=" + topicAliasMaximum + ", maximumQos=" + maximumQos + ", retainSupported=" +
+                retainSupported + ", wildcardSubscriptionSupported=" + wildcardSubscriptionSupported +
+                ", sharedSubscriptionSupported=" + sharedSubscriptionSupported + ", subscriptionIdentifierSupported=" +
+                subscriptionIdentifierSupported;
     }
 
     @Override
@@ -131,10 +131,10 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
 
         return (receiveMaximum == that.receiveMaximum) && (maximumPacketSize == that.maximumPacketSize) &&
                 (topicAliasMaximum == that.topicAliasMaximum) && (maximumQos == that.maximumQos) &&
-                (retainAvailable == that.retainAvailable) &&
-                (wildcardSubscriptionAvailable == that.wildcardSubscriptionAvailable) &&
-                (sharedSubscriptionAvailable == that.sharedSubscriptionAvailable) &&
-                (subscriptionIdentifierAvailable == that.subscriptionIdentifierAvailable);
+                (retainSupported == that.retainSupported) &&
+                (wildcardSubscriptionSupported == that.wildcardSubscriptionSupported) &&
+                (sharedSubscriptionSupported == that.sharedSubscriptionSupported) &&
+                (subscriptionIdentifierSupported == that.subscriptionIdentifierSupported);
     }
 
     @Override
@@ -143,10 +143,10 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
         result = 31 * result + maximumPacketSize;
         result = 31 * result + topicAliasMaximum;
         result = 31 * result + maximumQos.hashCode();
-        result = 31 * result + Boolean.hashCode(retainAvailable);
-        result = 31 * result + Boolean.hashCode(wildcardSubscriptionAvailable);
-        result = 31 * result + Boolean.hashCode(sharedSubscriptionAvailable);
-        result = 31 * result + Boolean.hashCode(subscriptionIdentifierAvailable);
+        result = 31 * result + Boolean.hashCode(retainSupported);
+        result = 31 * result + Boolean.hashCode(wildcardSubscriptionSupported);
+        result = 31 * result + Boolean.hashCode(sharedSubscriptionSupported);
+        result = 31 * result + Boolean.hashCode(subscriptionIdentifierSupported);
         return result;
     }
 }

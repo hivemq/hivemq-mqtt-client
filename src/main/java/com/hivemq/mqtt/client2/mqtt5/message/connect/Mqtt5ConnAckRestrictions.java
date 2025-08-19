@@ -57,19 +57,19 @@ public interface Mqtt5ConnAckRestrictions {
     /**
      * The default for whether the server accepts retained messages.
      */
-    boolean DEFAULT_RETAIN_AVAILABLE = true;
+    boolean DEFAULT_RETAIN_SUPPORTED = true;
     /**
      * The default for whether the server accepts wildcard subscriptions.
      */
-    boolean DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE = true;
+    boolean DEFAULT_WILDCARD_SUBSCRIPTION_SUPPORTED = true;
     /**
      * The default for whether the server accepts shared subscriptions.
      */
-    boolean DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE = true;
+    boolean DEFAULT_SHARED_SUBSCRIPTION_SUPPORTED = true;
     /**
      * The default for whether the server accepts subscription identifiers.
      */
-    boolean DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE = true;
+    boolean DEFAULT_SUBSCRIPTION_IDENTIFIER_SUPPORTED = true;
 
     /**
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the server accepts concurrently. The
@@ -95,25 +95,25 @@ public interface Mqtt5ConnAckRestrictions {
     @NotNull MqttQos getMaximumQos();
 
     /**
-     * @return whether the server accepts retained messages. The default is {@link #DEFAULT_RETAIN_AVAILABLE}.
+     * @return whether the server supports retained messages. The default is {@link #DEFAULT_RETAIN_SUPPORTED}.
      */
-    boolean isRetainAvailable();
+    boolean isRetainSupported();
 
     /**
-     * @return whether the server accepts wildcard subscriptions. The default is
-     *         {@link #DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE}.
+     * @return whether the server supports wildcard subscriptions. The default is
+     *         {@link #DEFAULT_WILDCARD_SUBSCRIPTION_SUPPORTED}.
      */
-    boolean isWildcardSubscriptionAvailable();
+    boolean isWildcardSubscriptionSupported();
 
     /**
-     * @return whether the server accepts shared subscriptions. The default is
-     *         {@link #DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE}.
+     * @return whether the server supports shared subscriptions. The default is
+     *         {@link #DEFAULT_SHARED_SUBSCRIPTION_SUPPORTED}.
      */
-    boolean isSharedSubscriptionAvailable();
+    boolean isSharedSubscriptionSupported();
 
     /**
-     * @return whether the server accepts subscription identifiers. The default is
-     *         {@link #DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE}.
+     * @return whether the server supports subscription identifiers. The default is
+     *         {@link #DEFAULT_SUBSCRIPTION_IDENTIFIER_SUPPORTED}.
      */
-    boolean isSubscriptionIdentifierAvailable();
+    boolean isSubscriptionIdentifierSupported();
 }

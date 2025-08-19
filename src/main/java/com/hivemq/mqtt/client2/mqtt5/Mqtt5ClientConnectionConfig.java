@@ -179,49 +179,49 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
         @NotNull MqttQos getMaximumQos();
 
         /**
-         * Returns whether the server accepts retained messages from the client.
+         * Returns whether the server supports retained messages.
          * <p>
          * The value is determined by
-         * {@link com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isRetainAvailable()
-         * MqttConnAckRestrictions#isRetainAvailable()}.
+         * {@link com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isRetainSupported()
+         * MqttConnAckRestrictions#isRetainSupported()}.
          *
-         * @return whether the server accepts retained messages from the client.
+         * @return whether the server supports retained messages.
          */
-        boolean isRetainAvailable();
+        boolean isRetainSupported();
 
         /**
-         * Returns whether the server accepts wildcard subscriptions from the client.
+         * Returns whether the server supports wildcard subscriptions.
          * <p>
          * The value is determined by
          * {@link
-         * com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isWildcardSubscriptionAvailable()
-         * MqttConnAckRestrictions#isWildcardSubscriptionAvailable()}.
+         * com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isWildcardSubscriptionSupported()
+         * MqttConnAckRestrictions#isWildcardSubscriptionSupported()}.
          *
-         * @return whether the server accepts wildcard subscriptions.
+         * @return whether the server supports wildcard subscriptions.
          */
-        boolean isWildcardSubscriptionAvailable();
+        boolean isWildcardSubscriptionSupported();
 
         /**
-         * Returns whether the server accepts shared subscriptions from the client.
+         * Returns whether the server supports shared subscriptions.
          * <p>
          * The value is determined by
-         * {@link com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isSharedSubscriptionAvailable()
-         * MqttConnAckRestrictions#isSharedSubscriptionAvailable()}.
+         * {@link com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isSharedSubscriptionSupported()
+         * MqttConnAckRestrictions#isSharedSubscriptionSupported()}.
          *
-         * @return whether the server accepts shared subscriptions from the client.
+         * @return whether the server supports shared subscriptions.
          */
-        boolean isSharedSubscriptionAvailable();
+        boolean isSharedSubscriptionSupported();
 
         /**
-         * Returns whether the server accepts subscription identifiers from the client.
+         * Returns whether the server supports subscription identifiers.
          * <p>
          * The value is determined by
          * {@link
-         * com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isSubscriptionIdentifierAvailable()
-         * MqttConnAckRestrictions#isSubscriptionIdentifierAvailable()}.
+         * com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckRestrictions#isSubscriptionIdentifierSupported()
+         * MqttConnAckRestrictions#isSubscriptionIdentifierSupported()}.
          *
-         * @return whether the server accepts subscription identifiers from the client.
+         * @return whether the server supports subscription identifiers.
          */
-        boolean isSubscriptionIdentifierAvailable();
+        boolean isSubscriptionIdentifierSupported();
     }
 }

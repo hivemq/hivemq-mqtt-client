@@ -95,16 +95,16 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         boolean topicAliasMaximumPresent = false;
         MqttQos maximumQos = DEFAULT_MAXIMUM_QOS;
         boolean maximumQosPresent = false;
-        boolean retainAvailable = DEFAULT_RETAIN_AVAILABLE;
-        boolean retainAvailablePresent = false;
+        boolean retainSupported = DEFAULT_RETAIN_SUPPORTED;
+        boolean retainSupportedPresent = false;
         int maximumPacketSize = DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
         boolean maximumPacketSizePresent = false;
-        boolean wildCardSubscriptionAvailable = DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
-        boolean wildCardSubscriptionAvailablePresent = false;
-        boolean subscriptionIdentifierAvailable = DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE;
-        boolean subscriptionIdentifierAvailablePresent = false;
-        boolean sharedSubscriptionAvailable = DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
-        boolean sharedSubscriptionAvailablePresent = false;
+        boolean wildcardSubscriptionSupported = DEFAULT_WILDCARD_SUBSCRIPTION_SUPPORTED;
+        boolean wildcardSubscriptionSupportedPresent = false;
+        boolean subscriptionIdentifierSupported = DEFAULT_SUBSCRIPTION_IDENTIFIER_SUPPORTED;
+        boolean subscriptionIdentifierSupportedPresent = false;
+        boolean sharedSubscriptionSupported = DEFAULT_SHARED_SUBSCRIPTION_SUPPORTED;
+        boolean sharedSubscriptionSupportedPresent = false;
 
         MqttUtf8StringImpl responseInformation = null;
         MqttUtf8StringImpl serverReference = null;
@@ -172,9 +172,9 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case RETAIN_AVAILABLE:
-                    retainAvailable = booleanOnlyOnce(retainAvailablePresent, "retain available", in);
-                    retainAvailablePresent = true;
-                    restrictionsPresent |= retainAvailable != DEFAULT_RETAIN_AVAILABLE;
+                    retainSupported = booleanOnlyOnce(retainSupportedPresent, "retain available", in);
+                    retainSupportedPresent = true;
+                    restrictionsPresent |= retainSupported != DEFAULT_RETAIN_SUPPORTED;
                     break;
 
                 case MAXIMUM_PACKET_SIZE:
@@ -192,26 +192,26 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case WILDCARD_SUBSCRIPTION_AVAILABLE:
-                    wildCardSubscriptionAvailable =
-                            booleanOnlyOnce(wildCardSubscriptionAvailablePresent, "wildcard subscription available",
+                    wildcardSubscriptionSupported =
+                            booleanOnlyOnce(wildcardSubscriptionSupportedPresent, "wildcard subscription available",
                                     in);
-                    wildCardSubscriptionAvailablePresent = true;
-                    restrictionsPresent |= wildCardSubscriptionAvailable != DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
+                    wildcardSubscriptionSupportedPresent = true;
+                    restrictionsPresent |= wildcardSubscriptionSupported != DEFAULT_WILDCARD_SUBSCRIPTION_SUPPORTED;
                     break;
 
                 case SUBSCRIPTION_IDENTIFIERS_AVAILABLE:
-                    subscriptionIdentifierAvailable = booleanOnlyOnce(
-                            subscriptionIdentifierAvailablePresent,
+                    subscriptionIdentifierSupported = booleanOnlyOnce(
+                            subscriptionIdentifierSupportedPresent,
                             "subscription identifier available", in);
-                    subscriptionIdentifierAvailablePresent = true;
-                    restrictionsPresent |= subscriptionIdentifierAvailable != DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE;
+                    subscriptionIdentifierSupportedPresent = true;
+                    restrictionsPresent |= subscriptionIdentifierSupported != DEFAULT_SUBSCRIPTION_IDENTIFIER_SUPPORTED;
                     break;
 
                 case SHARED_SUBSCRIPTION_AVAILABLE:
-                    sharedSubscriptionAvailable =
-                            booleanOnlyOnce(sharedSubscriptionAvailablePresent, "shared subscription available", in);
-                    sharedSubscriptionAvailablePresent = true;
-                    restrictionsPresent |= sharedSubscriptionAvailable != DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
+                    sharedSubscriptionSupported =
+                            booleanOnlyOnce(sharedSubscriptionSupportedPresent, "shared subscription available", in);
+                    sharedSubscriptionSupportedPresent = true;
+                    restrictionsPresent |= sharedSubscriptionSupported != DEFAULT_SHARED_SUBSCRIPTION_SUPPORTED;
                     break;
 
                 case RESPONSE_INFORMATION:
@@ -251,8 +251,8 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         MqttConnAckRestrictions restrictions = MqttConnAckRestrictions.DEFAULT;
         if (restrictionsPresent) {
             restrictions = new MqttConnAckRestrictions(receiveMaximum, maximumPacketSize, topicAliasMaximum, maximumQos,
-                    retainAvailable, wildCardSubscriptionAvailable, sharedSubscriptionAvailable,
-                    subscriptionIdentifierAvailable);
+                    retainSupported, wildcardSubscriptionSupported, sharedSubscriptionSupported,
+                    subscriptionIdentifierSupported);
         }
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);

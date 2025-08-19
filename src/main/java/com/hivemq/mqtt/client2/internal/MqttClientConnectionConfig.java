@@ -43,10 +43,10 @@ public class MqttClientConnectionConfig
     private static final int FLAG_HAS_WILL_PUBLISH = 1 << 1;
     private static final int FLAG_PROBLEM_INFORMATION_REQUESTED = 1 << 2;
     private static final int FLAG_RESPONSE_INFORMATION_REQUESTED = 1 << 3;
-    private static final int FLAG_RETAIN_AVAILABLE = 1 << 4;
-    private static final int FLAG_WILDCARD_SUBSCRIPTION_AVAILABLE = 1 << 5;
-    private static final int FLAG_SHARED_SUBSCRIPTION_AVAILABLE = 1 << 6;
-    private static final int FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE = 1 << 7;
+    private static final int FLAG_RETAIN_SUPPORTED = 1 << 4;
+    private static final int FLAG_WILDCARD_SUBSCRIPTION_SUPPORTED = 1 << 5;
+    private static final int FLAG_SHARED_SUBSCRIPTION_SUPPORTED = 1 << 6;
+    private static final int FLAG_SUBSCRIPTION_IDENTIFIER_SUPPORTED = 1 << 7;
     private static final int FLAG_CLEAN_START = 1 << 8;
     private static final int FLAG_CLEAN_STOP = 1 << 9;
 
@@ -82,10 +82,10 @@ public class MqttClientConnectionConfig
             final @Range(from = 1, to = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT) int sendMaximumPacketSize,
             final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendTopicAliasMaximum,
             final @NotNull MqttQos maximumQos,
-            final boolean retainAvailable,
-            final boolean wildcardSubscriptionAvailable,
-            final boolean sharedSubscriptionAvailable,
-            final boolean subscriptionIdentifierAvailable,
+            final boolean retainSupported,
+            final boolean wildcardSubscriptionSupported,
+            final boolean sharedSubscriptionSupported,
+            final boolean subscriptionIdentifierSupported,
             final @NotNull Channel channel) {
 
         this.transportConfig = transportConfig;
@@ -115,17 +115,17 @@ public class MqttClientConnectionConfig
         if (responseInformationRequested) {
             flags |= FLAG_RESPONSE_INFORMATION_REQUESTED;
         }
-        if (retainAvailable) {
-            flags |= FLAG_RETAIN_AVAILABLE;
+        if (retainSupported) {
+            flags |= FLAG_RETAIN_SUPPORTED;
         }
-        if (wildcardSubscriptionAvailable) {
-            flags |= FLAG_WILDCARD_SUBSCRIPTION_AVAILABLE;
+        if (wildcardSubscriptionSupported) {
+            flags |= FLAG_WILDCARD_SUBSCRIPTION_SUPPORTED;
         }
-        if (sharedSubscriptionAvailable) {
-            flags |= FLAG_SHARED_SUBSCRIPTION_AVAILABLE;
+        if (sharedSubscriptionSupported) {
+            flags |= FLAG_SHARED_SUBSCRIPTION_SUPPORTED;
         }
-        if (subscriptionIdentifierAvailable) {
-            flags |= FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
+        if (subscriptionIdentifierSupported) {
+            flags |= FLAG_SUBSCRIPTION_IDENTIFIER_SUPPORTED;
         }
         if (cleanStart) {
             flags |= FLAG_CLEAN_START;
@@ -244,23 +244,23 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public boolean isRetainAvailable() {
-        return (flags & FLAG_RETAIN_AVAILABLE) != 0;
+    public boolean isRetainSupported() {
+        return (flags & FLAG_RETAIN_SUPPORTED) != 0;
     }
 
     @Override
-    public boolean isWildcardSubscriptionAvailable() {
-        return (flags & FLAG_WILDCARD_SUBSCRIPTION_AVAILABLE) != 0;
+    public boolean isWildcardSubscriptionSupported() {
+        return (flags & FLAG_WILDCARD_SUBSCRIPTION_SUPPORTED) != 0;
     }
 
     @Override
-    public boolean isSharedSubscriptionAvailable() {
-        return (flags & FLAG_SHARED_SUBSCRIPTION_AVAILABLE) != 0;
+    public boolean isSharedSubscriptionSupported() {
+        return (flags & FLAG_SHARED_SUBSCRIPTION_SUPPORTED) != 0;
     }
 
     @Override
-    public boolean isSubscriptionIdentifierAvailable() {
-        return (flags & FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE) != 0;
+    public boolean isSubscriptionIdentifierSupported() {
+        return (flags & FLAG_SUBSCRIPTION_IDENTIFIER_SUPPORTED) != 0;
     }
 
     public @NotNull Channel getChannel() {

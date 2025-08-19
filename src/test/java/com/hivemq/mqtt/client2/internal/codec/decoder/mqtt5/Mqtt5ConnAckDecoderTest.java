@@ -137,12 +137,12 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         final Mqtt5ConnAckRestrictions restrictions = connAck.getRestrictions();
         assertEquals(100, restrictions.getReceiveMaximum());
         assertEquals(MqttQos.AT_LEAST_ONCE, restrictions.getMaximumQos());
-        assertEquals(false, restrictions.isRetainAvailable());
+        assertEquals(false, restrictions.isRetainSupported());
         assertEquals(100, restrictions.getMaximumPacketSize());
         assertEquals(5, restrictions.getTopicAliasMaximum());
-        assertEquals(false, restrictions.isWildcardSubscriptionAvailable());
-        assertEquals(true, restrictions.isSubscriptionIdentifierAvailable());
-        assertEquals(false, restrictions.isSharedSubscriptionAvailable());
+        assertEquals(false, restrictions.isWildcardSubscriptionSupported());
+        assertEquals(true, restrictions.isSubscriptionIdentifierSupported());
+        assertEquals(false, restrictions.isSharedSubscriptionSupported());
 
         assertTrue(connAck.getEnhancedAuth().isPresent());
         final Mqtt5EnhancedAuth auth = connAck.getEnhancedAuth().get();
@@ -1857,10 +1857,10 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(0, connAck.getRestrictions().getTopicAliasMaximum());
         assertEquals(65_535, connAck.getRestrictions().getReceiveMaximum());
         assertEquals(MqttQos.EXACTLY_ONCE, connAck.getRestrictions().getMaximumQos());
-        assertEquals(true, connAck.getRestrictions().isRetainAvailable());
-        assertEquals(true, connAck.getRestrictions().isWildcardSubscriptionAvailable());
-        assertEquals(true, connAck.getRestrictions().isSubscriptionIdentifierAvailable());
-        assertEquals(true, connAck.getRestrictions().isSharedSubscriptionAvailable());
+        assertEquals(true, connAck.getRestrictions().isRetainSupported());
+        assertEquals(true, connAck.getRestrictions().isWildcardSubscriptionSupported());
+        assertEquals(true, connAck.getRestrictions().isSubscriptionIdentifierSupported());
+        assertEquals(true, connAck.getRestrictions().isSharedSubscriptionSupported());
     }
 
     private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {

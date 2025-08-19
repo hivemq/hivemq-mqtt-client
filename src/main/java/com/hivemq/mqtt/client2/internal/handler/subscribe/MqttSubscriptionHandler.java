@@ -79,7 +79,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     // valid for connection
     private final @NotNull IntIndex<MqttSubOrUnsubWithFlow> pendingIndex = new IntIndex<>(INDEX_SPEC);
     private @Nullable MqttSubOrUnsubWithFlow sendPending, currentPending;
-    private boolean subscriptionIdentifierAvailable;
+    private boolean subscriptionIdentifierSupported;
 
     @Inject
     MqttSubscriptionHandler(
@@ -98,7 +98,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public void onSessionStartOrResume(
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
-        subscriptionIdentifierAvailable = connectionConfig.isSubscriptionIdentifierAvailable();
+        subscriptionIdentifierSupported = connectionConfig.isSubscriptionIdentifierSupported();
 
         if (!hasSession || clientConfig.isResubscribeIfSessionPresent()) {
             incomingPublishFlows.getSubscriptions().forEach((subscriptionIdentifier, subscriptions) -> {
@@ -193,7 +193,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     private void writeSubscribe(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
 
-        final int subscriptionIdentifier = subscriptionIdentifierAvailable ? subscribeWithFlow.subscriptionIdentifier :
+        final int subscriptionIdentifier = subscriptionIdentifierSupported ? subscribeWithFlow.subscriptionIdentifier :
                 MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
         final MqttStatefulSubscribe statefulSubscribe =
                 subscribeWithFlow.subscribe.createStateful(subscribeWithFlow.packetIdentifier, subscriptionIdentifier);
