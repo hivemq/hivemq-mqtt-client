@@ -20,7 +20,6 @@ import com.hivemq.mqtt.client2.datatypes.MqttUtf8String;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImplBuilder;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUtf8StringImpl;
-import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.internal.util.MqttChecks;
 import com.hivemq.mqtt.client2.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5AuthBuilder;
@@ -42,8 +41,6 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     public MqttAuthBuilder(final @NotNull Mqtt5AuthReasonCode reasonCode, final @NotNull MqttUtf8StringImpl method) {
-        Checks.notNull(reasonCode, "Reason code");
-        Checks.notNull(method, "Method");
         this.reasonCode = reasonCode;
         this.method = method;
     }

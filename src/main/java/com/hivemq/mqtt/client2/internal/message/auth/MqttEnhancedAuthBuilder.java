@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.message.auth;
 
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUtf8StringImpl;
-import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.internal.util.MqttChecks;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,6 @@ public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
     private @Nullable ByteBuffer data;
 
     public MqttEnhancedAuthBuilder(final @NotNull MqttUtf8StringImpl method) {
-        Checks.notNull(method, "Method");
         this.method = method;
     }
 
