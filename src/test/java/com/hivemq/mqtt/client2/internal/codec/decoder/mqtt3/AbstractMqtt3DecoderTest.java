@@ -19,7 +19,7 @@ package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3;
 import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.codec.decoder.AbstractMqttDecoderTest;
 import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
-import com.hivemq.mqtt.client2.internal.message.connect.mqtt3.Mqtt3ConnectView;
+import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,6 +28,6 @@ import org.jetbrains.annotations.NotNull;
 abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
 
     AbstractMqtt3DecoderTest(final @NotNull MqttMessageDecoders decoders) {
-        super(decoders, MqttVersion.MQTT_3_1_1, Mqtt3ConnectView.DEFAULT.getDelegate());
+        super(decoders, MqttVersion.MQTT_3_1_1, MqttConnectRestrictions.DEFAULT);
     }
 }

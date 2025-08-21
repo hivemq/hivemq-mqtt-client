@@ -30,7 +30,6 @@ import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectHandler
 import com.hivemq.mqtt.client2.internal.handler.proxy.MqttProxyInitializer;
 import com.hivemq.mqtt.client2.internal.handler.tls.MqttTlsInitializer;
 import com.hivemq.mqtt.client2.internal.handler.websocket.MqttWebSocketInitializer;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
 import io.netty.channel.Channel;
@@ -38,8 +37,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
 
 /**
  * Initializes:
@@ -53,34 +50,19 @@ import javax.inject.Inject;
  * @author Silvio Giebl
  * @author David Katz
  */
-@ConnectionScope
 public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttConnect connect;
     private final @NotNull MqttConnAckFlow connAckFlow;
 
-    private final @NotNull MqttEncoder encoder;
-    private final @NotNull MqttConnectHandler connectHandler;
-    private final @NotNull MqttDisconnectHandler disconnectHandler;
-    private final @NotNull MqttAuthHandler authHandler;
-
-    @Inject
-    MqttChannelInitializer(
+    public MqttChannelInitializer(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttConnect connect,
-            final @NotNull MqttConnAckFlow connAckFlow,
-            final @NotNull MqttEncoder encoder,
-            final @NotNull MqttConnectHandler connectHandler,
-            final @NotNull MqttDisconnectHandler disconnectHandler,
-            final @NotNull MqttAuthHandler authHandler) {
+            final @NotNull MqttConnAckFlow connAckFlow) {
         this.clientConfig = clientConfig;
         this.connect = connect;
         this.connAckFlow = connAckFlow;
-        this.encoder = encoder;
-        this.connectHandler = connectHandler;
-        this.disconnectHandler = disconnectHandler;
-        this.authHandler = authHandler;
     }
 
     @Override
@@ -128,10 +110,12 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     private void initMqtt(final @NotNull Channel channel) {
         channel.pipeline()
-                .addLast(MqttEncoder.NAME, encoder)
-                .addLast(MqttAuthHandler.NAME, authHandler)
-                .addLast(MqttConnectHandler.NAME, connectHandler)
-                .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
+                .addLast(MqttEncoder.NAME, MqttEncoder.create(clientConfig.getMqttVersion()))
+                .addLast(
+                        MqttAuthHandler.NAME,
+                        MqttAuthHandler.create(clientConfig, connect.getRawEnhancedAuthMechanism()))
+                .addLast(MqttConnectHandler.NAME, new MqttConnectHandler(connect, connAckFlow, clientConfig))
+                .addLast(MqttDisconnectHandler.NAME, new MqttDisconnectHandler(clientConfig));
     }
 
     private void onError(final @NotNull Channel channel, final @NotNull Throwable cause) {

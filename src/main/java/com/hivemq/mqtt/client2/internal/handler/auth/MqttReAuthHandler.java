@@ -20,7 +20,6 @@ import com.hivemq.mqtt.client2.internal.exceptions.MqttClientStateExceptions;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.mqtt.client2.internal.handler.util.CompletableFlow;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttAuth;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttAuthBuilder;
 import com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect;
@@ -43,7 +42,6 @@ import static com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5AuthReasonCode.REA
  *
  * @author Silvio Giebl
  */
-@ConnectionScope
 class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
     private @Nullable CompletableFlow flow;

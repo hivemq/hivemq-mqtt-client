@@ -18,10 +18,10 @@ package com.hivemq.mqtt.client2.internal.codec.decoder;
 
 import com.hivemq.mqtt.client2.exceptions.MqttDecodeException;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
+import com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3.Mqtt3ClientMessageDecoders;
+import com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5.Mqtt5ClientMessageDecoders;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttVariableByteInteger;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
-import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictions;
 import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -30,7 +30,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -39,25 +38,35 @@ import java.util.List;
  *
  * @author Silvio Giebl
  */
-@ConnectionScope
 public class MqttDecoder extends ByteToMessageDecoder {
 
     public static final @NotNull String NAME = "decoder";
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
+    public static @NotNull MqttDecoder create(
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnectRestrictions connectRestrictions) {
+        switch (clientConfig.getMqttVersion()) {
+            case MQTT_5_0:
+                return new MqttDecoder(Mqtt5ClientMessageDecoders.INSTANCE, clientConfig, connectRestrictions);
+            case MQTT_3_1_1:
+                return new MqttDecoder(Mqtt3ClientMessageDecoders.INSTANCE, clientConfig, connectRestrictions);
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
     private final @NotNull MqttMessageDecoders decoders;
     private final @NotNull MqttDecoderContext context;
 
-    @Inject
     MqttDecoder(
             final @NotNull MqttMessageDecoders decoders,
             final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttConnect connect) {
-
+            final @NotNull MqttConnectRestrictions connectRestrictions) {
         this.decoders = decoders;
-        final MqttConnectRestrictions restrictions = connect.getRestrictions();
-        context = new MqttDecoderContext(restrictions.getMaximumPacketSize(), restrictions.getTopicAliasMaximum(),
-                restrictions.isRequestProblemInformation(), restrictions.isRequestResponseInformation(),
+        context = new MqttDecoderContext(
+                connectRestrictions.getMaximumPacketSize(), connectRestrictions.getTopicAliasMaximum(),
+                connectRestrictions.isRequestProblemInformation(), connectRestrictions.isRequestResponseInformation(),
                 clientConfig.getAdvancedConfig().isValidatePayloadFormat(), false, false, false);
     }
 

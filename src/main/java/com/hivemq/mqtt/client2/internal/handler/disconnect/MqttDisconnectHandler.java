@@ -23,10 +23,8 @@ import com.hivemq.mqtt.client2.internal.MqttClientConnectionConfig;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.exceptions.MqttClientStateExceptions;
 import com.hivemq.mqtt.client2.internal.handler.MqttConnectionAwareHandler;
-import com.hivemq.mqtt.client2.internal.handler.MqttSession;
 import com.hivemq.mqtt.client2.internal.handler.connect.MqttConnAckSingle;
 import com.hivemq.mqtt.client2.internal.handler.util.CompletableFlow;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAck;
@@ -46,7 +44,6 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -61,7 +58,6 @@ import static com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnect
  *
  * @author Silvio Giebl
  */
-@ConnectionScope
 public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     public static final @NotNull String NAME = "disconnect";
@@ -70,13 +66,10 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     private static final int DISCONNECT_TIMEOUT = 10; // TODO configurable
 
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull MqttSession session;
     private @Nullable Object state = null;
 
-    @Inject
-    MqttDisconnectHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session) {
+    public MqttDisconnectHandler(final @NotNull MqttClientConfig clientConfig) {
         this.clientConfig = clientConfig;
-        this.session = session;
     }
 
     @Override
@@ -213,7 +206,9 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     private void disconnected(final @NotNull Channel channel, final @NotNull MqttDisconnectEvent disconnectEvent) {
         final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
         if (connectionConfig != null) {
-            session.expire(disconnectEvent.getCause(), connectionConfig, channel.eventLoop());
+            clientConfig.getClientComponent()
+                    .session()
+                    .expire(disconnectEvent.getCause(), connectionConfig, channel.eventLoop());
 
             reconnect(disconnectEvent, connectionConfig, channel.eventLoop());
 

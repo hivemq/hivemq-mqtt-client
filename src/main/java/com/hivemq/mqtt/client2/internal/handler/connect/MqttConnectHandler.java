@@ -24,12 +24,10 @@ import com.hivemq.mqtt.client2.internal.codec.decoder.MqttDecoder;
 import com.hivemq.mqtt.client2.internal.codec.encoder.MqttEncoder;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttClientIdentifierImpl;
-import com.hivemq.mqtt.client2.internal.handler.MqttSession;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.mqtt.client2.internal.handler.ping.MqttPingHandler;
 import com.hivemq.mqtt.client2.internal.handler.util.MqttTimeoutInboundHandler;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
@@ -46,8 +44,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-
 /**
  * Handles the connection to a MQTT Server.
  * <ul>
@@ -59,7 +55,6 @@ import javax.inject.Inject;
  *
  * @author Silvio Giebl
  */
-@ConnectionScope
 public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     public static final @NotNull String NAME = "connect";
@@ -68,25 +63,17 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     private final @NotNull MqttConnect connect;
     private final @NotNull MqttConnAckFlow connAckFlow;
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull MqttSession session;
-    private final @NotNull MqttDecoder decoder;
 
     private boolean connectWritten = false;
     private long connectFlushTime;
 
-    @Inject
-    MqttConnectHandler(
+    public MqttConnectHandler(
             final @NotNull MqttConnect connect,
             final @NotNull MqttConnAckFlow connAckFlow,
-            final @NotNull MqttClientConfig clientConfig,
-            final @NotNull MqttSession session,
-            final @NotNull MqttDecoder decoder) {
-
+            final @NotNull MqttClientConfig clientConfig) {
         this.connect = connect;
         this.connAckFlow = connAckFlow;
         this.clientConfig = clientConfig;
-        this.session = session;
-        this.decoder = decoder;
     }
 
     @Override
@@ -127,7 +114,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         if (connect.getRawEnhancedAuthMechanism() == null) {
             scheduleTimeout(ctx.channel());
         }
-        ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
+        final MqttDecoder mqttDecoder = MqttDecoder.create(clientConfig, connect.getRestrictions());
+        ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, mqttDecoder);
     }
 
     @Override
@@ -165,7 +153,9 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
             ((MqttEncoder) channel.pipeline().get(MqttEncoder.NAME)).onConnected(connectionConfig);
 
-            session.startOrResume(connAck, connectionConfig, channel.pipeline(), channel.eventLoop());
+            clientConfig.getClientComponent()
+                    .session()
+                    .startOrResume(connAck, connectionConfig, channel.pipeline(), channel.eventLoop());
 
             final int keepAlive = connectionConfig.getKeepAlive();
             if (keepAlive > 0) {

@@ -17,6 +17,7 @@
 package com.hivemq.mqtt.client2.internal.ioc;
 
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
+import com.hivemq.mqtt.client2.internal.handler.MqttSession;
 import com.hivemq.mqtt.client2.internal.handler.publish.incoming.MqttIncomingQosHandler;
 import com.hivemq.mqtt.client2.internal.handler.publish.outgoing.MqttOutgoingQosHandler;
 import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 @ClientScope
 public interface ClientComponent {
 
-    ConnectionComponent.@NotNull Builder connectionComponentBuilder();
+    @NotNull MqttSession session();
 
     @NotNull MqttSubscriptionHandler subscriptionHandler();
 

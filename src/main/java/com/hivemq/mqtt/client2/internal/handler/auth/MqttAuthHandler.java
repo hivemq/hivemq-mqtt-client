@@ -16,13 +16,23 @@
 
 package com.hivemq.mqtt.client2.internal.handler.auth;
 
+import com.hivemq.mqtt.client2.internal.MqttClientConfig;
+import com.hivemq.mqtt.client2.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import io.netty.channel.ChannelHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
  */
 public interface MqttAuthHandler extends ChannelHandler {
+
+    static @NotNull MqttAuthHandler create(
+            final @NotNull MqttClientConfig clientConfig,
+            final @Nullable Mqtt5EnhancedAuthMechanism authMechanism) {
+        return (authMechanism == null) ? MqttDisconnectOnAuthHandler.INSTANCE :
+                new MqttConnectAuthHandler(clientConfig, authMechanism);
+    }
 
     @NotNull String NAME = "auth";
 }

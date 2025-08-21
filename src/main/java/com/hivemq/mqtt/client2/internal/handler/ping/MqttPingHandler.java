@@ -19,7 +19,6 @@ package com.hivemq.mqtt.client2.internal.handler.ping;
 import com.hivemq.mqtt.client2.internal.handler.MqttConnectionAwareHandler;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import com.hivemq.mqtt.client2.internal.message.ping.MqttPingReq;
 import com.hivemq.mqtt.client2.internal.message.ping.MqttPingResp;
 import com.hivemq.mqtt.client2.internal.netty.DefaultChannelOutboundHandler;
@@ -41,7 +40,6 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Silvio Giebl
  */
-@ConnectionScope
 public class MqttPingHandler extends MqttConnectionAwareHandler
         implements DefaultChannelOutboundHandler, Runnable, ChannelFutureListener {
 

@@ -16,8 +16,10 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder;
 
+import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.MqttClientConnectionConfig;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
+import com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3.Mqtt3ClientMessageEncoders;
+import com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5.Mqtt5ClientMessageEncoders;
 import com.hivemq.mqtt.client2.internal.message.MqttMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -26,17 +28,25 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-
 /**
  * Main encoder for MQTT messages which delegates to the individual {@link MqttMessageEncoder}s.
  *
  * @author Silvio Giebl
  */
-@ConnectionScope
 public class MqttEncoder extends ChannelDuplexHandler {
 
     public static final @NotNull String NAME = "encoder";
+
+    public static @NotNull MqttEncoder create(final @NotNull MqttVersion mqttVersion) {
+        switch (mqttVersion) {
+            case MQTT_5_0:
+                return new MqttEncoder(Mqtt5ClientMessageEncoders.INSTANCE);
+            case MQTT_3_1_1:
+                return new MqttEncoder(Mqtt3ClientMessageEncoders.INSTANCE);
+            default:
+                throw new IllegalStateException();
+        }
+    }
 
     private final @NotNull MqttMessageEncoders encoders;
     private final @NotNull MqttEncoderContext context;
@@ -44,7 +54,6 @@ public class MqttEncoder extends ChannelDuplexHandler {
     private boolean inRead = false;
     private boolean pendingFlush = false;
 
-    @Inject
     MqttEncoder(final @NotNull MqttMessageEncoders encoders) {
         this.encoders = encoders;
         context = new MqttEncoderContext(ByteBufAllocator.DEFAULT);

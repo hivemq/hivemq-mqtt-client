@@ -20,14 +20,12 @@ import com.hivemq.mqtt.client2.exceptions.ConnectionFailedException;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
-import com.hivemq.mqtt.client2.internal.ioc.ConnectionScope;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttAuth;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttEnhancedAuthBuilder;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAck;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttStatefulConnect;
 import com.hivemq.mqtt.client2.internal.netty.DefaultChannelOutboundHandler;
-import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
 import com.hivemq.mqtt.client2.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.mqtt.client2.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
@@ -42,8 +40,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
-
 /**
  * Enhanced auth handling during connection according to the MQTT 5 specification.
  * <p>
@@ -51,12 +47,12 @@ import javax.inject.Inject;
  *
  * @author Silvio Giebl
  */
-@ConnectionScope
 public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements DefaultChannelOutboundHandler {
 
-    @Inject
-    MqttConnectAuthHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
-        super(clientConfig, Checks.stateNotNull(connect.getRawEnhancedAuthMechanism(), "Auth mechanism"));
+    MqttConnectAuthHandler(
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull Mqtt5EnhancedAuthMechanism authMechanism) {
+        super(clientConfig, authMechanism);
     }
 
     @Override

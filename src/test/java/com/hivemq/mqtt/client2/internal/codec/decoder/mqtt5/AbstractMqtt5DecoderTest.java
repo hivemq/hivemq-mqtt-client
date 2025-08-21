@@ -19,9 +19,8 @@ package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5;
 import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.codec.decoder.AbstractMqttDecoderTest;
 import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
-import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
-import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectBuilder;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictions;
+import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictionsBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -29,21 +28,19 @@ import org.jetbrains.annotations.NotNull;
  */
 abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
-    private static @NotNull MqttConnect createConnect(final int maximumPacketSize) {
-        return new MqttConnectBuilder.Default().restrictionsWith()
-                .maximumPacketSize(maximumPacketSize)
+    private static @NotNull MqttConnectRestrictions createConnectRestrictions(final int maximumPacketSize) {
+        return new MqttConnectRestrictionsBuilder.Default().maximumPacketSize(maximumPacketSize)
                 .topicAliasMaximum(3)
                 .requestResponseInformation(true)
-                .applyRestrictions()
                 .build();
     }
 
     AbstractMqtt5DecoderTest(final @NotNull MqttMessageDecoders decoders) {
-        super(decoders, MqttVersion.MQTT_5_0, createConnect(MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE));
+        super(decoders, MqttVersion.MQTT_5_0, createConnectRestrictions(MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE));
     }
 
     void setMaximumPacketSize(final int maximumPacketSize) {
-        connect = createConnect(maximumPacketSize);
+        connectRestrictions = createConnectRestrictions(maximumPacketSize);
         createChannel();
     }
 }

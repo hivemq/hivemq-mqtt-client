@@ -25,7 +25,7 @@ import com.hivemq.mqtt.client2.internal.advanced.MqttAdvancedConfigBuilder;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectEvent;
-import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
+import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictions;
 import com.hivemq.mqtt.client2.internal.message.disconnect.MqttDisconnect;
 import com.hivemq.mqtt.client2.mqtt5.exceptions.Mqtt5MessageException;
 import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5Message;
@@ -44,7 +44,7 @@ public abstract class AbstractMqttDecoderTest {
 
     private final @NotNull MqttMessageDecoders decoders;
     private final @NotNull MqttVersion mqttVersion;
-    protected @NotNull MqttConnect connect;
+    protected @NotNull MqttConnectRestrictions connectRestrictions;
 
     protected final @NotNull ChannelHandler disconnectHandler = new ChannelInboundHandlerAdapter() {
         @Override
@@ -84,11 +84,11 @@ public abstract class AbstractMqttDecoderTest {
     protected AbstractMqttDecoderTest(
             final @NotNull MqttMessageDecoders decoders,
             final @NotNull MqttVersion mqttVersion,
-            final @NotNull MqttConnect connect) {
+            final @NotNull MqttConnectRestrictions connectRestrictions) {
 
         this.decoders = decoders;
         this.mqttVersion = mqttVersion;
-        this.connect = connect;
+        this.connectRestrictions = connectRestrictions;
     }
 
     @BeforeEach
@@ -114,7 +114,9 @@ public abstract class AbstractMqttDecoderTest {
                         MqttClientConfig.ConnectDefaults.of(null, null, null), ImmutableList.of(), ImmutableList.of());
 
         channel = new EmbeddedChannel();
-        channel.pipeline().addLast(new MqttDecoder(decoders, clientConfig, connect)).addLast(disconnectHandler);
+        channel.pipeline()
+                .addLast(new MqttDecoder(decoders, clientConfig, connectRestrictions))
+                .addLast(disconnectHandler);
     }
 
     protected void validatePayloadFormat() {

@@ -20,11 +20,13 @@ import com.hivemq.mqtt.client2.exceptions.ConnectionFailedException;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.MqttTransportConfigImpl;
 import com.hivemq.mqtt.client2.internal.exceptions.MqttClientStateExceptions;
+import com.hivemq.mqtt.client2.internal.handler.MqttChannelInitializer;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttDisconnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttReconnector;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
+import com.hivemq.mqtt.client2.internal.netty.NettyEventLoopProvider;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectSource;
 import com.hivemq.mqtt.client2.lifecycle.MqttDisconnectedListener;
 import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAck;
@@ -78,16 +80,10 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             clientConfig.releaseEventLoop();
             clientConfig.getRawState().set(DISCONNECTED);
         } else {
-            final Bootstrap bootstrap = clientConfig.getClientComponent()
-                    .connectionComponentBuilder()
-                    .connect(connect)
-                    .connAckFlow(flow)
-                    .build()
-                    .bootstrap();
-
             final MqttTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();
-
-            bootstrap.group(eventLoop)
+            new Bootstrap().channelFactory(NettyEventLoopProvider.INSTANCE.getChannelFactory())
+                    .handler(new MqttChannelInitializer(clientConfig, connect, flow))
+                    .group(eventLoop)
                     .connect(transportConfig.getRemoteAddress(), transportConfig.getRawLocalAddress())
                     .addListener(future -> {
                         final Throwable cause = future.cause();
