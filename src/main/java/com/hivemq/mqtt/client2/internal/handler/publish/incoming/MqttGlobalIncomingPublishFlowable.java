@@ -19,7 +19,6 @@ package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
-import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
 import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
@@ -46,9 +45,8 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> subscriber) {
-        final ClientComponent clientComponent = clientConfig.getClientComponent();
-        final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
-        final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
+        final MqttIncomingQosHandler incomingQosHandler = clientConfig.getIncomingQosHandler();
+        final MqttSubscriptionHandler subscriptionHandler = clientConfig.getSubscriptionHandler();
 
         final MqttGlobalIncomingPublishFlow flow =
                 new MqttGlobalIncomingPublishFlow(subscriber, clientConfig, incomingQosHandler, filter,

@@ -31,7 +31,6 @@ import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.mqtt.client2.internal.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2CompleteWithFlow;
 import com.hivemq.mqtt.client2.internal.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2IntermediateWithFlow;
 import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
-import com.hivemq.mqtt.client2.internal.ioc.ClientScope;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.message.publish.*;
@@ -58,7 +57,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscription;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -67,7 +65,6 @@ import static com.hivemq.mqtt.client2.internal.message.publish.MqttStatefulPubli
 /**
  * @author Silvio Giebl
  */
-@ClientScope
 public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         implements FlowableSubscriber<MqttPublishWithFlow>, Runnable, ContextFuture.Listener<MqttPublishWithFlow> {
 
@@ -97,8 +94,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private @Nullable Subscription subscription;
     private int shrinkRequests;
 
-    @Inject
-    MqttOutgoingQosHandler(final @NotNull MqttClientConfig clientConfig) {
+    public MqttOutgoingQosHandler(final @NotNull MqttClientConfig clientConfig) {
         this.clientConfig = clientConfig;
         publishFlowables = new MqttPublishFlowables();
     }

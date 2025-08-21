@@ -21,7 +21,6 @@ import com.hivemq.mqtt.client2.internal.collections.HandleList;
 import com.hivemq.mqtt.client2.internal.collections.HandleList.Handle;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttTopicFilterImpl;
-import com.hivemq.mqtt.client2.internal.ioc.ClientScope;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubscribe;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubscription;
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.MqttUnsubscribe;
@@ -31,21 +30,18 @@ import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Silvio Giebl
  */
-@ClientScope
 public class MqttIncomingPublishFlows {
 
     private final @NotNull MqttSubscribedPublishFlows subscribedFlows;
     private final @Nullable HandleList<MqttGlobalIncomingPublishFlow> @NotNull [] globalFlows;
 
-    @Inject
-    MqttIncomingPublishFlows() {
+    public MqttIncomingPublishFlows() {
         subscribedFlows = new MqttSubscribedPublishFlowTree();
         //noinspection unchecked
         globalFlows = new HandleList[MqttGlobalPublishFilter.values().length];

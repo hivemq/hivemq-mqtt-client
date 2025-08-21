@@ -206,9 +206,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     private void disconnected(final @NotNull Channel channel, final @NotNull MqttDisconnectEvent disconnectEvent) {
         final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
         if (connectionConfig != null) {
-            clientConfig.getClientComponent()
-                    .session()
-                    .expire(disconnectEvent.getCause(), connectionConfig, channel.eventLoop());
+            clientConfig.getSession().expire(disconnectEvent.getCause(), connectionConfig, channel.eventLoop());
 
             reconnect(disconnectEvent, connectionConfig, channel.eventLoop());
 

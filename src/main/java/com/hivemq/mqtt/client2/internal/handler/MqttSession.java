@@ -23,7 +23,6 @@ import com.hivemq.mqtt.client2.internal.codec.decoder.MqttDecoder;
 import com.hivemq.mqtt.client2.internal.handler.publish.incoming.MqttIncomingQosHandler;
 import com.hivemq.mqtt.client2.internal.handler.publish.outgoing.MqttOutgoingQosHandler;
 import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
-import com.hivemq.mqtt.client2.internal.ioc.ClientScope;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAck;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.mqtt5.exceptions.Mqtt5ConnAckException;
@@ -33,13 +32,11 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Silvio Giebl
  */
-@ClientScope
 public class MqttSession {
 
     private final @NotNull MqttSubscriptionHandler subscriptionHandler;
@@ -48,12 +45,10 @@ public class MqttSession {
     private boolean hasSession;
     private @Nullable ScheduledFuture<?> expireFuture;
 
-    @Inject
-    MqttSession(
+    public MqttSession(
             final @NotNull MqttSubscriptionHandler subscriptionHandler,
             final @NotNull MqttIncomingQosHandler incomingQosHandler,
             final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
-
         this.subscriptionHandler = subscriptionHandler;
         this.incomingQosHandler = incomingQosHandler;
         this.outgoingQosHandler = outgoingQosHandler;

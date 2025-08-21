@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.handler.subscribe;
 
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
-import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.MqttUnsubAck;
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
@@ -42,8 +41,7 @@ public class MqttUnsubAckSingle extends Single<Mqtt5UnsubAck> {
 
     @Override
     protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5UnsubAck> observer) {
-        final ClientComponent clientComponent = clientConfig.getClientComponent();
-        final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
+        final MqttSubscriptionHandler subscriptionHandler = clientConfig.getSubscriptionHandler();
 
         final MqttSubOrUnsubAckFlow<MqttUnsubAck> flow = new MqttSubOrUnsubAckFlow<>(observer, clientConfig);
         observer.onSubscribe(flow);

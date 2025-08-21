@@ -22,8 +22,11 @@ import com.hivemq.mqtt.client2.datatypes.MqttClientIdentifier;
 import com.hivemq.mqtt.client2.internal.advanced.MqttAdvancedConfig;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttClientIdentifierImpl;
-import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
-import com.hivemq.mqtt.client2.internal.ioc.SingletonComponent;
+import com.hivemq.mqtt.client2.internal.handler.MqttSession;
+import com.hivemq.mqtt.client2.internal.handler.publish.incoming.MqttIncomingPublishFlows;
+import com.hivemq.mqtt.client2.internal.handler.publish.incoming.MqttIncomingQosHandler;
+import com.hivemq.mqtt.client2.internal.handler.publish.outgoing.MqttOutgoingQosHandler;
+import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttConnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.lifecycle.MqttDisconnectedContextImpl;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttSimpleAuth;
@@ -61,7 +64,10 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>>
             disconnectedListeners;
 
-    private final @NotNull ClientComponent clientComponent;
+    private final @NotNull MqttSubscriptionHandler subscriptionHandler;
+    private final @NotNull MqttIncomingQosHandler incomingQosHandler;
+    private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
+    private final @NotNull MqttSession session;
 
     private volatile @Nullable EventLoop eventLoop;
     private int eventLoopAcquires;
@@ -94,7 +100,11 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.connectedListeners = connectedListeners;
         this.disconnectedListeners = disconnectedListeners;
 
-        clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
+        final MqttIncomingPublishFlows incomingPublishFlows = new MqttIncomingPublishFlows();
+        subscriptionHandler = new MqttSubscriptionHandler(this, incomingPublishFlows);
+        incomingQosHandler = new MqttIncomingQosHandler(this, incomingPublishFlows);
+        outgoingQosHandler = new MqttOutgoingQosHandler(this);
+        session = new MqttSession(subscriptionHandler, incomingQosHandler, outgoingQosHandler);
 
         state = new AtomicReference<>(MqttClientState.DISCONNECTED);
         currentTransportConfig = transportConfig;
@@ -171,8 +181,20 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return disconnectedListeners;
     }
 
-    public @NotNull ClientComponent getClientComponent() {
-        return clientComponent;
+    public @NotNull MqttSubscriptionHandler getSubscriptionHandler() {
+        return subscriptionHandler;
+    }
+
+    public @NotNull MqttIncomingQosHandler getIncomingQosHandler() {
+        return incomingQosHandler;
+    }
+
+    public @NotNull MqttOutgoingQosHandler getOutgoingQosHandler() {
+        return outgoingQosHandler;
+    }
+
+    public @NotNull MqttSession getSession() {
+        return session;
     }
 
     public @NotNull EventLoop acquireEventLoop() {

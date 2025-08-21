@@ -29,7 +29,6 @@ import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.mqtt.client2.internal.handler.publish.incoming.MqttGlobalIncomingPublishFlow;
 import com.hivemq.mqtt.client2.internal.handler.publish.incoming.MqttIncomingPublishFlows;
 import com.hivemq.mqtt.client2.internal.handler.publish.incoming.MqttSubscribedPublishFlow;
-import com.hivemq.mqtt.client2.internal.ioc.ClientScope;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.message.MqttReasonCodes;
@@ -52,13 +51,11 @@ import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 /**
  * @author Silvio Giebl
  */
-@ClientScope
 public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements Runnable {
 
     public static final @NotNull String NAME = "subscription";
@@ -81,8 +78,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     private @Nullable MqttSubOrUnsubWithFlow sendPending, currentPending;
     private boolean subscriptionIdentifierSupported;
 
-    @Inject
-    MqttSubscriptionHandler(
+    public MqttSubscriptionHandler(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
 

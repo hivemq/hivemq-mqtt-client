@@ -18,7 +18,6 @@ package com.hivemq.mqtt.client2.internal.handler.publish.outgoing;
 
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.exceptions.MqttClientStateExceptions;
-import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPublish;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PublishResult;
 import io.reactivex.rxjava3.core.Flowable;
@@ -44,8 +43,7 @@ public class MqttAckFlowable extends Flowable<Mqtt5PublishResult> {
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber) {
         if (clientConfig.getState().isConnectedOrReconnect()) {
-            final ClientComponent clientComponent = clientConfig.getClientComponent();
-            final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
+            final MqttOutgoingQosHandler outgoingQosHandler = clientConfig.getOutgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
 
             final MqttAckFlowableFlow flow = new MqttAckFlowableFlow(subscriber, clientConfig, outgoingQosHandler);

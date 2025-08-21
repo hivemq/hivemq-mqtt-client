@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.handler.publish.outgoing;
 
-import com.hivemq.mqtt.client2.internal.ioc.ClientScope;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import io.reactivex.rxjava3.core.Flowable;
@@ -29,7 +28,6 @@ import org.reactivestreams.Subscription;
 /**
  * @author Silvio Giebl
  */
-@ClientScope
 class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>> implements Subscription {
 
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttPublishFlowables.class);

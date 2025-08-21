@@ -25,7 +25,6 @@ import com.hivemq.mqtt.client2.internal.annotations.CallByThread;
 import com.hivemq.mqtt.client2.internal.collections.IntIndex;
 import com.hivemq.mqtt.client2.internal.handler.MqttSessionAwareHandler;
 import com.hivemq.mqtt.client2.internal.handler.disconnect.MqttDisconnectUtil;
-import com.hivemq.mqtt.client2.internal.ioc.ClientScope;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.message.publish.*;
@@ -38,12 +37,9 @@ import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
-
 /**
  * @author Silvio Giebl
  */
-@ClientScope
 public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
 
     public static final @NotNull String NAME = "qos.incoming";
@@ -67,11 +63,9 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     private int receiveMaximum;
     private long connectionIndex;
 
-    @Inject
-    MqttIncomingQosHandler(
+    public MqttIncomingQosHandler(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
-
         this.clientConfig = clientConfig;
         incomingPublishService = new MqttIncomingPublishService(this, incomingPublishFlows);
     }

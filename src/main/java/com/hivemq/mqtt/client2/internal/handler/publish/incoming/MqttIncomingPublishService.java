@@ -21,7 +21,6 @@ import com.hivemq.mqtt.client2.internal.annotations.CallByThread;
 import com.hivemq.mqtt.client2.internal.checkpoint.Confirmable;
 import com.hivemq.mqtt.client2.internal.collections.ChunkedArrayQueue;
 import com.hivemq.mqtt.client2.internal.collections.HandleList.Handle;
-import com.hivemq.mqtt.client2.internal.ioc.ClientScope;
 import com.hivemq.mqtt.client2.internal.logging.InternalLogger;
 import com.hivemq.mqtt.client2.internal.logging.InternalLoggerFactory;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPublish;
@@ -30,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-@ClientScope
 class MqttIncomingPublishService {
 
     private static final @NotNull InternalLogger LOGGER =

@@ -18,7 +18,6 @@ package com.hivemq.mqtt.client2.internal.handler.publish.incoming;
 
 import com.hivemq.mqtt.client2.internal.MqttClientConfig;
 import com.hivemq.mqtt.client2.internal.handler.subscribe.MqttSubscriptionHandler;
-import com.hivemq.mqtt.client2.internal.ioc.ClientComponent;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubscribe;
 import com.hivemq.mqtt.client2.libs.reactivestreams.WithSingleSubscriber;
 import com.hivemq.mqtt.client2.libs.rxjava3.FlowableWithSingle;
@@ -48,9 +47,8 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> subscriber) {
-        final ClientComponent clientComponent = clientConfig.getClientComponent();
-        final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
-        final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
+        final MqttIncomingQosHandler incomingQosHandler = clientConfig.getIncomingQosHandler();
+        final MqttSubscriptionHandler subscriptionHandler = clientConfig.getSubscriptionHandler();
 
         final MqttSubscribedPublishFlow flow =
                 new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler, manualAcknowledgement);

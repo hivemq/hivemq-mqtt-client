@@ -75,8 +75,6 @@ dependencies {
     implementation(libs.netty.handler)
     implementation(libs.netty.transport)
     implementation(libs.jctools)
-    implementation(libs.dagger)
-    annotationProcessor(libs.dagger.compiler)
     compileOnly(libs.slf4j.api)
 }
 
@@ -173,7 +171,6 @@ tasks.shadowJar {
     exclude("META-INF/io.netty.versions.properties")
     relocate("org.jctools", "${shadePrefix}org.jctools")
     relocate("org.jetbrains", "${shadePrefix}org.jetbrains")
-    relocate("dagger", "${shadePrefix}dagger")
     relocate("javax.inject", "${shadePrefix}javax.inject")
 
     minimize()
