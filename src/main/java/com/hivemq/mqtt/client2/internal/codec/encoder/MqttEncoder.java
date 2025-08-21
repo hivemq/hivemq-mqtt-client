@@ -27,6 +27,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Main encoder for MQTT messages which delegates to the individual {@link MqttMessageEncoder}s.
@@ -48,13 +49,13 @@ public class MqttEncoder extends ChannelDuplexHandler {
         }
     }
 
-    private final @NotNull MqttMessageEncoders encoders;
+    private final @Nullable MqttMessageEncoder<?> @NotNull [] encoders;
     private final @NotNull MqttEncoderContext context;
 
     private boolean inRead = false;
     private boolean pendingFlush = false;
 
-    MqttEncoder(final @NotNull MqttMessageEncoders encoders) {
+    MqttEncoder(final @Nullable MqttMessageEncoder<?> @NotNull [] encoders) {
         this.encoders = encoders;
         context = new MqttEncoderContext(ByteBufAllocator.DEFAULT);
     }
@@ -71,11 +72,12 @@ public class MqttEncoder extends ChannelDuplexHandler {
 
         if (msg instanceof MqttMessage) {
             final MqttMessage message = (MqttMessage) msg;
-            final MqttMessageEncoder<?> messageEncoder = encoders.get(message.getType().getCode());
-            if (messageEncoder == null) {
+            final int messageType = message.getType().getCode();
+            final MqttMessageEncoder<?> encoder;
+            if ((messageType < 0) || (messageType >= encoders.length) || ((encoder = encoders[messageType]) == null)) {
                 throw new UnsupportedOperationException();
             }
-            final ByteBuf out = messageEncoder.castAndEncode(message, context);
+            final ByteBuf out = encoder.castAndEncode(message, context);
             ctx.write(out, promise);
         } else {
             ctx.write(msg, promise);

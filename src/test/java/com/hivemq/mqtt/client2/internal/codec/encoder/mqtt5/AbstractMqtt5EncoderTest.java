@@ -17,7 +17,8 @@
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
 import com.hivemq.mqtt.client2.internal.codec.encoder.AbstractMqttEncoderTest;
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
+import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoder;
+import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,7 +26,10 @@ import org.jetbrains.annotations.NotNull;
  */
 abstract class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
 
-    AbstractMqtt5EncoderTest(final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
-        super(messageEncoders, connected);
+    AbstractMqtt5EncoderTest(
+            final @NotNull Mqtt5MessageType messageType,
+            final @NotNull MqttMessageEncoder<?> encoder,
+            final boolean connected) {
+        super(messageType.getCode(), encoder, connected);
     }
 }

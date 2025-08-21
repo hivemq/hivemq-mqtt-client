@@ -18,7 +18,6 @@ package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
 import com.hivemq.mqtt.client2.exceptions.MqttEncodeException;
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableIntList;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.*;
@@ -46,9 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PublishEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBLISH.getCode()] = Mqtt5PublishEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt5MessageType.PUBLISH, Mqtt5PublishEncoder.INSTANCE, true);
     }
 
     @Test

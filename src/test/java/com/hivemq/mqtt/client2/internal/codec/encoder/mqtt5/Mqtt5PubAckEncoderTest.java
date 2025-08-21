@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertyImpl;
@@ -42,9 +41,7 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubAckEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBACK.getCode()] = Mqtt5PubAckEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt5MessageType.PUBACK, Mqtt5PubAckEncoder.INSTANCE, true);
     }
 
     @Test

@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
 import com.hivemq.mqtt.client2.exceptions.MqttEncodeException;
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.*;
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.MqttStatefulUnsubscribe;
@@ -35,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5UnsubscribeEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = Mqtt5UnsubscribeEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt5MessageType.UNSUBSCRIBE, Mqtt5UnsubscribeEncoder.INSTANCE, true);
     }
 
     @Test

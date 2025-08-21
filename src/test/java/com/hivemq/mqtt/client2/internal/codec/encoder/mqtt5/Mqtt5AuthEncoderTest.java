@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertyImpl;
@@ -50,9 +49,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
             (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
     Mqtt5AuthEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.AUTH.getCode()] = Mqtt5AuthEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt5MessageType.AUTH, Mqtt5AuthEncoder.INSTANCE, true);
     }
 
     @Test

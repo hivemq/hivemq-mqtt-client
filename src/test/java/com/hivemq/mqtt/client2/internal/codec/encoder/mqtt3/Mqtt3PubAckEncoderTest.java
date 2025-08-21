@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPubAck;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PubAckView;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
@@ -26,9 +25,7 @@ import org.junit.jupiter.api.Test;
 class Mqtt3PubAckEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubAckEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PUBACK.getCode()] = Mqtt3PubAckEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt3MessageType.PUBACK, Mqtt3PubAckEncoder.INSTANCE, true);
     }
 
     @Test

@@ -23,6 +23,7 @@ import com.hivemq.mqtt.client2.internal.datatypes.MqttVariableByteInteger;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public abstract class AbstractMqttEncoderTest {
 
-    private final @NotNull MqttMessageEncoders messageEncoders;
+    private final @Nullable MqttMessageEncoder<?> @NotNull [] encoders;
     private final boolean connected;
 
     @SuppressWarnings("NullabilityAnnotations")
@@ -41,8 +42,12 @@ public abstract class AbstractMqttEncoderTest {
     @SuppressWarnings("NullabilityAnnotations")
     protected MqttEncoder encoder;
 
-    protected AbstractMqttEncoderTest(final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
-        this.messageEncoders = messageEncoders;
+    protected AbstractMqttEncoderTest(
+            final int messageType,
+            final @NotNull MqttMessageEncoder<?> encoder,
+            final boolean connected) {
+        this.encoders = new MqttMessageEncoder[messageType + 1];
+        encoders[messageType] = encoder;
         this.connected = connected;
     }
 
@@ -57,7 +62,7 @@ public abstract class AbstractMqttEncoderTest {
     }
 
     private void createChannel() {
-        channel = new EmbeddedChannel(encoder = new MqttEncoder(messageEncoders));
+        channel = new EmbeddedChannel(encoder = new MqttEncoder(encoders));
         if (connected) {
             connected(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
         }
@@ -83,9 +88,5 @@ public abstract class AbstractMqttEncoderTest {
         } finally {
             actual.release();
         }
-    }
-
-    protected static @NotNull MqttPingReqEncoder createPingReqEncoder() {
-        return MqttPingReqEncoder.INSTANCE;
     }
 }

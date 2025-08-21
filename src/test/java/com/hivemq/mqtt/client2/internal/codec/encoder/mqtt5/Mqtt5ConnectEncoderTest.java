@@ -19,7 +19,6 @@ package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
 import com.hivemq.mqtt.client2.datatypes.MqttUtf8String;
 import com.hivemq.mqtt.client2.exceptions.MqttEncodeException;
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.*;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttEnhancedAuth;
@@ -63,9 +62,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
             (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
     Mqtt5ConnectEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.CONNECT.getCode()] = Mqtt5ConnectEncoder.INSTANCE;
-        }}, false);
+        super(Mqtt5MessageType.CONNECT, Mqtt5ConnectEncoder.INSTANCE, false);
     }
 
     @Test

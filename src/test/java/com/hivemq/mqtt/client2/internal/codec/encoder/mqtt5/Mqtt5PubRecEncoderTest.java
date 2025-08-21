@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUtf8StringImpl;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPubRec;
@@ -39,9 +38,7 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubRecEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBREC.getCode()] = Mqtt5PubRecEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt5MessageType.PUBREC, Mqtt5PubRecEncoder.INSTANCE, true);
     }
 
     @Test

@@ -18,7 +18,6 @@ package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
 import com.hivemq.mqtt.client2.exceptions.MqttEncodeException;
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttTopicFilterImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
@@ -54,9 +53,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
     private static final int UTF8_LENGTH_ENCODED = 2;
 
     Mqtt5SubscribeEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.SUBSCRIBE.getCode()] = Mqtt5SubscribeEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt5MessageType.SUBSCRIBE, Mqtt5SubscribeEncoder.INSTANCE, true);
     }
 
     @Test

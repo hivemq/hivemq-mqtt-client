@@ -16,11 +16,12 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
+import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoder;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertyImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUtf8StringImpl;
+import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -43,10 +44,11 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
 
     private final @NotNull MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
 
-    AbstractMqtt5EncoderWithUserPropertiesTest(
-            final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
-
-        super(messageEncoders, connected);
+    public AbstractMqtt5EncoderWithUserPropertiesTest(
+            final @NotNull Mqtt5MessageType messageType,
+            final @NotNull MqttMessageEncoder<?> encoder,
+            final boolean connected) {
+        super(messageType, encoder, connected);
     }
 
     @NotNull MqttUserPropertiesImpl getUserProperties(final int totalCount) {

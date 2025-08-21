@@ -16,7 +16,7 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
+import com.hivemq.mqtt.client2.internal.codec.encoder.MqttPingReqEncoder;
 import com.hivemq.mqtt.client2.internal.message.ping.MqttPingReq;
 import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import io.netty.buffer.ByteBuf;
@@ -30,9 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 class Mqtt5PingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5PingReqEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PINGREQ.getCode()] = createPingReqEncoder();
-        }}, true);
+        super(Mqtt5MessageType.PINGREQ, MqttPingReqEncoder.INSTANCE, true);
     }
 
     @Test

@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPubRec;
 import com.hivemq.mqtt.client2.internal.message.publish.mqtt3.Mqtt3PubRecView;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
@@ -28,9 +27,7 @@ import org.junit.jupiter.api.Test;
 class Mqtt3PubRecEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubRecEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PUBREC.getCode()] = Mqtt3PubRecEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt3MessageType.PUBREC, Mqtt3PubRecEncoder.INSTANCE, true);
     }
 
     @Test

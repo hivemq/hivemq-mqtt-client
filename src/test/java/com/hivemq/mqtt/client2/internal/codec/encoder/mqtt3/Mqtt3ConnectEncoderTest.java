@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3;
 
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttStatefulConnect;
@@ -39,9 +38,7 @@ import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3ConnectEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.CONNECT.getCode()] = Mqtt3ConnectEncoder.INSTANCE;
-        }}, false);
+        super(Mqtt3MessageType.CONNECT, Mqtt3ConnectEncoder.INSTANCE, false);
     }
 
     @CsvSource({

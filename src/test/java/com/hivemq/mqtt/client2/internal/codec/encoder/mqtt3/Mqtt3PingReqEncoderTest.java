@@ -16,7 +16,7 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
+import com.hivemq.mqtt.client2.internal.codec.encoder.MqttPingReqEncoder;
 import com.hivemq.mqtt.client2.internal.message.ping.MqttPingReq;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -25,9 +25,7 @@ import org.junit.jupiter.api.Test;
 class Mqtt3PingReqEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PingReqEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PINGREQ.getCode()] = createPingReqEncoder();
-        }}, true);
+        super(Mqtt3MessageType.PINGREQ, MqttPingReqEncoder.INSTANCE, true);
     }
 
     @Test

@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.encoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.encoder.MqttMessageEncoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertyImpl;
@@ -44,9 +43,7 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5DisconnectEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.DISCONNECT.getCode()] = Mqtt5DisconnectEncoder.INSTANCE;
-        }}, true);
+        super(Mqtt5MessageType.DISCONNECT, Mqtt5DisconnectEncoder.INSTANCE, true);
     }
 
     @Test
