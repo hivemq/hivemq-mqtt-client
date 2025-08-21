@@ -42,7 +42,7 @@ import org.junit.jupiter.api.BeforeEach;
  */
 public abstract class AbstractMqttDecoderTest {
 
-    private final @NotNull MqttMessageDecoders decoders;
+    private final @NotNull MqttMessageDecoder @NotNull [] decoders;
     private final @NotNull MqttVersion mqttVersion;
     protected @NotNull MqttConnectRestrictions connectRestrictions;
 
@@ -82,11 +82,12 @@ public abstract class AbstractMqttDecoderTest {
     protected EmbeddedChannel channel;
 
     protected AbstractMqttDecoderTest(
-            final @NotNull MqttMessageDecoders decoders,
+            final int messageType,
+            final @NotNull MqttMessageDecoder decoder,
             final @NotNull MqttVersion mqttVersion,
             final @NotNull MqttConnectRestrictions connectRestrictions) {
-
-        this.decoders = decoders;
+        this.decoders = new MqttMessageDecoder[messageType + 1];
+        decoders[messageType] = decoder;
         this.mqttVersion = mqttVersion;
         this.connectRestrictions = connectRestrictions;
     }
@@ -121,9 +122,5 @@ public abstract class AbstractMqttDecoderTest {
 
     protected void validatePayloadFormat() {
         createChannel(true);
-    }
-
-    public static @NotNull MqttPingRespDecoder createPingRespDecoder() {
-        return MqttPingRespDecoder.INSTANCE;
     }
 }

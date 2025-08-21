@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
@@ -53,9 +52,7 @@ class Mqtt3PubAckDecoderTest extends AbstractMqtt3DecoderTest {
     private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3PubAckDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.PUBACK.getCode()] = Mqtt3PubAckDecoder.INSTANCE;
-        }});
+        super(Mqtt3MessageType.PUBACK, Mqtt3PubAckDecoder.INSTANCE);
     }
 
     @ParameterizedTest

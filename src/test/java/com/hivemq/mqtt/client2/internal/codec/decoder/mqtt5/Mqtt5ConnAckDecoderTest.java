@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5;
 
 import com.hivemq.mqtt.client2.datatypes.MqttQos;
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertyImpl;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnAck;
@@ -45,9 +44,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5ConnAckDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.CONNACK.getCode()] = Mqtt5ConnAckDecoder.INSTANCE;
-        }});
+        super(Mqtt5MessageType.CONNACK, Mqtt5ConnAckDecoder.INSTANCE);
     }
 
     @Test

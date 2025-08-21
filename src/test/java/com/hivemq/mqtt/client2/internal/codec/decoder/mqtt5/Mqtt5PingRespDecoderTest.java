@@ -16,7 +16,7 @@
 
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
+import com.hivemq.mqtt.client2.internal.codec.decoder.MqttPingRespDecoder;
 import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5Disconnect;
 import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -33,9 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PingRespDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.PINGRESP.getCode()] = createPingRespDecoder();
-        }});
+        super(Mqtt5MessageType.PINGRESP, MqttPingRespDecoder.INSTANCE);
     }
 
     @Test

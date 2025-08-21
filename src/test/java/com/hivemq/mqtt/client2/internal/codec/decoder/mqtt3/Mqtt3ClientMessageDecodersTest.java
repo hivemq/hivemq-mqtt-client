@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.codec.decoder.AbstractMqttDecoderTest;
 import com.hivemq.mqtt.client2.internal.codec.decoder.MqttPingRespDecoder;
 import org.junit.jupiter.api.Test;
 
@@ -27,35 +26,19 @@ class Mqtt3ClientMessageDecodersTest {
 
     @Test
     void test() {
-        final Mqtt3ConnAckDecoder connAckDecoder = Mqtt3ConnAckDecoder.INSTANCE;
-        final Mqtt3PublishDecoder publishDecoder = Mqtt3PublishDecoder.INSTANCE;
-        final Mqtt3PubAckDecoder pubAckDecoder = Mqtt3PubAckDecoder.INSTANCE;
-        final Mqtt3PubRecDecoder pubRecDecoder = Mqtt3PubRecDecoder.INSTANCE;
-        final Mqtt3PubRelDecoder pubRelDecoder = Mqtt3PubRelDecoder.INSTANCE;
-        final Mqtt3PubCompDecoder pubCompDecoder = Mqtt3PubCompDecoder.INSTANCE;
-        final Mqtt3SubAckDecoder subAckDecoder = Mqtt3SubAckDecoder.INSTANCE;
-        final Mqtt3UnsubAckDecoder unsubAckDecoder = Mqtt3UnsubAckDecoder.INSTANCE;
-        final MqttPingRespDecoder pingRespDecoder = AbstractMqttDecoderTest.createPingRespDecoder();
-
-        final Mqtt3ClientMessageDecoders clientMessageDecoders = Mqtt3ClientMessageDecoders.INSTANCE;
-
-        assertNull(clientMessageDecoders.get(-1));
-        assertNull(clientMessageDecoders.get(0));
-        assertNull(clientMessageDecoders.get(1));
-        assertSame(connAckDecoder, clientMessageDecoders.get(2));
-        assertSame(publishDecoder, clientMessageDecoders.get(3));
-        assertSame(pubAckDecoder, clientMessageDecoders.get(4));
-        assertSame(pubRecDecoder, clientMessageDecoders.get(5));
-        assertSame(pubRelDecoder, clientMessageDecoders.get(6));
-        assertSame(pubCompDecoder, clientMessageDecoders.get(7));
-        assertNull(clientMessageDecoders.get(8));
-        assertSame(subAckDecoder, clientMessageDecoders.get(9));
-        assertNull(clientMessageDecoders.get(10));
-        assertSame(unsubAckDecoder, clientMessageDecoders.get(11));
-        assertNull(clientMessageDecoders.get(12));
-        assertSame(pingRespDecoder, clientMessageDecoders.get(13));
-        assertNull(clientMessageDecoders.get(14));
-        assertNull(clientMessageDecoders.get(15));
+        assertNull(Mqtt3ClientMessageDecoders.INSTANCE[0]);
+        assertNull(Mqtt3ClientMessageDecoders.INSTANCE[1]);
+        assertSame(Mqtt3ConnAckDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[2]);
+        assertSame(Mqtt3PublishDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[3]);
+        assertSame(Mqtt3PubAckDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[4]);
+        assertSame(Mqtt3PubRecDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[5]);
+        assertSame(Mqtt3PubRelDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[6]);
+        assertSame(Mqtt3PubCompDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[7]);
+        assertNull(Mqtt3ClientMessageDecoders.INSTANCE[8]);
+        assertSame(Mqtt3SubAckDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[9]);
+        assertNull(Mqtt3ClientMessageDecoders.INSTANCE[10]);
+        assertSame(Mqtt3UnsubAckDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[11]);
+        assertNull(Mqtt3ClientMessageDecoders.INSTANCE[12]);
+        assertSame(MqttPingRespDecoder.INSTANCE, Mqtt3ClientMessageDecoders.INSTANCE[13]);
     }
-
 }

@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttStatefulPublish;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
@@ -34,9 +33,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
     private static final byte RETAIN_BIT = 0b0000_001;
 
     Mqtt3PublishDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.PUBLISH.getCode()] = Mqtt3PublishDecoder.INSTANCE;
-        }});
+        super(Mqtt3MessageType.PUBLISH, Mqtt3PublishDecoder.INSTANCE);
     }
 
     private @NotNull ByteBuf createWellformedPublish(

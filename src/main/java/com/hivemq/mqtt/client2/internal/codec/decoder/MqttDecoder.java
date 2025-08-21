@@ -29,6 +29,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -56,11 +57,11 @@ public class MqttDecoder extends ByteToMessageDecoder {
         }
     }
 
-    private final @NotNull MqttMessageDecoders decoders;
+    private final @Nullable MqttMessageDecoder @NotNull [] decoders;
     private final @NotNull MqttDecoderContext context;
 
     MqttDecoder(
-            final @NotNull MqttMessageDecoders decoders,
+            final @Nullable MqttMessageDecoder @NotNull [] decoders,
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttConnectRestrictions connectRestrictions) {
         this.decoders = decoders;
@@ -108,8 +109,8 @@ public class MqttDecoder extends ByteToMessageDecoder {
                 return;
             }
 
-            final MqttMessageDecoder decoder = decoders.get(messageType);
-            if (decoder == null) {
+            final MqttMessageDecoder decoder;
+            if ((messageType < 0) || (messageType >= decoders.length) || ((decoder = decoders[messageType]) == null)) {
                 throw new MqttDecoderException(
                         Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must not receive this packet type");
             }

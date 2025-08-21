@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.MqttUnsubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
@@ -54,9 +53,7 @@ class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
     private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3UnsubAckDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.UNSUBACK.getCode()] = Mqtt3UnsubAckDecoder.INSTANCE;
-        }});
+        super(Mqtt3MessageType.UNSUBACK, Mqtt3UnsubAckDecoder.INSTANCE);
     }
 
     @ParameterizedTest

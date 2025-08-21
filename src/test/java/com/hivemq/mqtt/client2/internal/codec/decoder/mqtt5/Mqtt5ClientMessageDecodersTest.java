@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.decoder.AbstractMqttDecoderTest;
 import com.hivemq.mqtt.client2.internal.codec.decoder.MqttPingRespDecoder;
 import org.junit.jupiter.api.Test;
 
@@ -30,38 +29,21 @@ class Mqtt5ClientMessageDecodersTest {
 
     @Test
     void test() {
-        final Mqtt5ConnAckDecoder connAckDecoder = Mqtt5ConnAckDecoder.INSTANCE;
-        final Mqtt5PublishDecoder publishDecoder = Mqtt5PublishDecoder.INSTANCE;
-        final Mqtt5PubAckDecoder pubAckDecoder = Mqtt5PubAckDecoder.INSTANCE;
-        final Mqtt5PubRecDecoder pubRecDecoder = Mqtt5PubRecDecoder.INSTANCE;
-        final Mqtt5PubRelDecoder pubRelDecoder = Mqtt5PubRelDecoder.INSTANCE;
-        final Mqtt5PubCompDecoder pubCompDecoder = Mqtt5PubCompDecoder.INSTANCE;
-        final Mqtt5SubAckDecoder subAckDecoder = Mqtt5SubAckDecoder.INSTANCE;
-        final Mqtt5UnsubAckDecoder unsubAckDecoder = Mqtt5UnsubAckDecoder.INSTANCE;
-        final MqttPingRespDecoder pingRespDecoder = AbstractMqttDecoderTest.createPingRespDecoder();
-        final Mqtt5DisconnectDecoder disconnectDecoder = Mqtt5DisconnectDecoder.INSTANCE;
-        final Mqtt5AuthDecoder authDecoder = Mqtt5AuthDecoder.INSTANCE;
-
-        final Mqtt5ClientMessageDecoders clientMessageDecoders = Mqtt5ClientMessageDecoders.INSTANCE;
-
-        assertNull(clientMessageDecoders.get(-1));
-        assertNull(clientMessageDecoders.get(0));
-        assertNull(clientMessageDecoders.get(1));
-        assertSame(connAckDecoder, clientMessageDecoders.get(2));
-        assertSame(publishDecoder, clientMessageDecoders.get(3));
-        assertSame(pubAckDecoder, clientMessageDecoders.get(4));
-        assertSame(pubRecDecoder, clientMessageDecoders.get(5));
-        assertSame(pubRelDecoder, clientMessageDecoders.get(6));
-        assertSame(pubCompDecoder, clientMessageDecoders.get(7));
-        assertNull(clientMessageDecoders.get(8));
-        assertSame(subAckDecoder, clientMessageDecoders.get(9));
-        assertNull(clientMessageDecoders.get(10));
-        assertSame(unsubAckDecoder, clientMessageDecoders.get(11));
-        assertNull(clientMessageDecoders.get(12));
-        assertSame(pingRespDecoder, clientMessageDecoders.get(13));
-        assertSame(disconnectDecoder, clientMessageDecoders.get(14));
-        assertSame(authDecoder, clientMessageDecoders.get(15));
-        assertNull(clientMessageDecoders.get(16));
+        assertNull(Mqtt5ClientMessageDecoders.INSTANCE[0]);
+        assertNull(Mqtt5ClientMessageDecoders.INSTANCE[1]);
+        assertSame(Mqtt5ConnAckDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[2]);
+        assertSame(Mqtt5PublishDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[3]);
+        assertSame(Mqtt5PubAckDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[4]);
+        assertSame(Mqtt5PubRecDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[5]);
+        assertSame(Mqtt5PubRelDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[6]);
+        assertSame(Mqtt5PubCompDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[7]);
+        assertNull(Mqtt5ClientMessageDecoders.INSTANCE[8]);
+        assertSame(Mqtt5SubAckDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[9]);
+        assertNull(Mqtt5ClientMessageDecoders.INSTANCE[10]);
+        assertSame(Mqtt5UnsubAckDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[11]);
+        assertNull(Mqtt5ClientMessageDecoders.INSTANCE[12]);
+        assertSame(MqttPingRespDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[13]);
+        assertSame(Mqtt5DisconnectDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[14]);
+        assertSame(Mqtt5AuthDecoder.INSTANCE, Mqtt5ClientMessageDecoders.INSTANCE[15]);
     }
-
 }

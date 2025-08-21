@@ -18,9 +18,10 @@ package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5;
 
 import com.hivemq.mqtt.client2.MqttVersion;
 import com.hivemq.mqtt.client2.internal.codec.decoder.AbstractMqttDecoderTest;
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
+import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoder;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictions;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnectRestrictionsBuilder;
+import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,8 +36,8 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
                 .build();
     }
 
-    AbstractMqtt5DecoderTest(final @NotNull MqttMessageDecoders decoders) {
-        super(decoders, MqttVersion.MQTT_5_0, createConnectRestrictions(MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE));
+    AbstractMqtt5DecoderTest(final @NotNull Mqtt5MessageType messageType, final @NotNull MqttMessageDecoder decoder) {
+        super(messageType.getCode(), decoder, MqttVersion.MQTT_5_0, createConnectRestrictions(MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE));
     }
 
     void setMaximumPacketSize(final int maximumPacketSize) {

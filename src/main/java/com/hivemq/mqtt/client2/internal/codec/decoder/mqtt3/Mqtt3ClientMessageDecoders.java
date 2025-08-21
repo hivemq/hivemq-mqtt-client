@@ -16,29 +16,30 @@
 
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3;
 
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
+import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoder;
 import com.hivemq.mqtt.client2.internal.codec.decoder.MqttPingRespDecoder;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Collection of decoders for MQTT 3 messages a client can receive.
  *
  * @author Silvio Giebl
  */
-public class Mqtt3ClientMessageDecoders extends MqttMessageDecoders {
+public class Mqtt3ClientMessageDecoders {
 
-    public static final @NotNull Mqtt3ClientMessageDecoders INSTANCE = new Mqtt3ClientMessageDecoders();
+    public static final @Nullable MqttMessageDecoder @NotNull [] INSTANCE = new MqttMessageDecoder[14];
 
-    private Mqtt3ClientMessageDecoders() {
-        decoders[Mqtt3MessageType.CONNACK.getCode()] = Mqtt3ConnAckDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.PUBLISH.getCode()] = Mqtt3PublishDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.PUBACK.getCode()] = Mqtt3PubAckDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.PUBREC.getCode()] = Mqtt3PubRecDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.PUBREL.getCode()] = Mqtt3PubRelDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.PUBCOMP.getCode()] = Mqtt3PubCompDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.SUBACK.getCode()] = Mqtt3SubAckDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.UNSUBACK.getCode()] = Mqtt3UnsubAckDecoder.INSTANCE;
-        decoders[Mqtt3MessageType.PINGRESP.getCode()] = MqttPingRespDecoder.INSTANCE;
+    static {
+        INSTANCE[Mqtt3MessageType.CONNACK.getCode()] = Mqtt3ConnAckDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.PUBLISH.getCode()] = Mqtt3PublishDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.PUBACK.getCode()] = Mqtt3PubAckDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.PUBREC.getCode()] = Mqtt3PubRecDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.PUBREL.getCode()] = Mqtt3PubRelDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.PUBCOMP.getCode()] = Mqtt3PubCompDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.SUBACK.getCode()] = Mqtt3SubAckDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.UNSUBACK.getCode()] = Mqtt3UnsubAckDecoder.INSTANCE;
+        INSTANCE[Mqtt3MessageType.PINGRESP.getCode()] = MqttPingRespDecoder.INSTANCE;
     }
 }

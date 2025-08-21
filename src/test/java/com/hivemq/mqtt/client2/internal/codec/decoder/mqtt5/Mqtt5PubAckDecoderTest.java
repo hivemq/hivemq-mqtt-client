@@ -16,7 +16,6 @@
 
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5;
 
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
 import com.hivemq.mqtt.client2.internal.collections.ImmutableList;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertyImpl;
 import com.hivemq.mqtt.client2.internal.message.publish.MqttPubAck;
@@ -36,9 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubAckDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.PUBACK.getCode()] = Mqtt5PubAckDecoder.INSTANCE;
-        }});
+        super(Mqtt5MessageType.PUBACK, Mqtt5PubAckDecoder.INSTANCE);
     }
 
     @Test

@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
 import com.hivemq.mqtt.client2.internal.message.subscribe.MqttSubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
@@ -59,9 +58,7 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
     private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3SubAckDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt3MessageType.SUBACK.getCode()] = Mqtt3SubAckDecoder.INSTANCE;
-        }});
+        super(Mqtt3MessageType.SUBACK, Mqtt3SubAckDecoder.INSTANCE);
     }
 
     @ParameterizedTest

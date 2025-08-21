@@ -17,7 +17,6 @@
 package com.hivemq.mqtt.client2.internal.codec.decoder.mqtt5;
 
 import com.hivemq.mqtt.client2.datatypes.MqttUtf8String;
-import com.hivemq.mqtt.client2.internal.codec.decoder.MqttMessageDecoders;
 import com.hivemq.mqtt.client2.internal.datatypes.MqttUserPropertyImpl;
 import com.hivemq.mqtt.client2.internal.message.unsubscribe.MqttUnsubAck;
 import com.hivemq.mqtt.client2.mqtt5.datatypes.Mqtt5UserProperty;
@@ -47,9 +46,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5UnsubAckDecoderTest() {
-        super(new MqttMessageDecoders() {{
-            decoders[Mqtt5MessageType.UNSUBACK.getCode()] = Mqtt5UnsubAckDecoder.INSTANCE;
-        }});
+        super(Mqtt5MessageType.UNSUBACK, Mqtt5UnsubAckDecoder.INSTANCE);
     }
 
     @Test
