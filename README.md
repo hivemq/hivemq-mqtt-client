@@ -4,7 +4,7 @@
 
 # HiveMQ MQTT Client
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
+[![Maven Central](https://maven-badges.sml.io/sonatype-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.sml.io/sonatype-central/com.hivemq/hivemq-mqtt-client)
 [![javadoc](https://javadoc.io/badge2/com.hivemq/hivemq-mqtt-client/javadoc.svg)](https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/hivemq/hivemq-mqtt-client/.github/workflows/check.yml?branch=master)](https://github.com/hivemq/hivemq-mqtt-client/actions/workflows/check.yml?query=branch%3Amaster)
 
