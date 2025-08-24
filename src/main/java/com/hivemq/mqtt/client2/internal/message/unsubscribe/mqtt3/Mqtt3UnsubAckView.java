@@ -26,12 +26,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode
 import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3UnsubAckView implements Mqtt3UnsubAck {
 
     public static final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> REASON_CODES_ALL_SUCCESS = ImmutableList.of();

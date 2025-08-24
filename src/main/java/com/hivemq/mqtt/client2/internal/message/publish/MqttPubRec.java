@@ -24,12 +24,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubRec;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubRecReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttPubRec extends MqttMessageWithUserProperties.WithReason.WithCode.WithId<Mqtt5PubRecReasonCode>
         implements Mqtt5PubRec {
 

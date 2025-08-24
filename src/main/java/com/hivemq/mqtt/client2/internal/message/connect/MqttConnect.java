@@ -32,7 +32,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5WillPublish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -40,7 +39,6 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5Connect {
 
     public static final @NotNull MqttConnect DEFAULT =

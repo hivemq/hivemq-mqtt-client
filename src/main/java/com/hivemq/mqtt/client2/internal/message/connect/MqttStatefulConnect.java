@@ -21,12 +21,10 @@ import com.hivemq.mqtt.client2.internal.message.MqttStatefulMessage;
 import com.hivemq.mqtt.client2.internal.message.auth.MqttEnhancedAuth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
 
     private final @NotNull MqttClientIdentifierImpl clientIdentifier;

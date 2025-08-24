@@ -26,14 +26,12 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5WillPublish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
 
     private final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long delayInterval;

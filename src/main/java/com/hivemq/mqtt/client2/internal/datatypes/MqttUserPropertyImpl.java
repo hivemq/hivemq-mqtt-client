@@ -22,13 +22,11 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  * @see Mqtt5UserProperty
  */
-@Unmodifiable
 public class MqttUserPropertyImpl implements Mqtt5UserProperty {
 
     /**

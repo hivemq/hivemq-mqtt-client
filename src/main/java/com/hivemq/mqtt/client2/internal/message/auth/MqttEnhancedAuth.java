@@ -21,7 +21,6 @@ import com.hivemq.mqtt.client2.internal.util.ByteBufferUtil;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -30,7 +29,6 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttEnhancedAuth implements Mqtt5EnhancedAuth {
 
     private final @NotNull MqttUtf8StringImpl method;

@@ -22,12 +22,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttSubscription implements Mqtt5Subscription {
 
     private final @NotNull MqttTopicFilterImpl topicFilter;

@@ -25,7 +25,6 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Arrays;
 
@@ -34,7 +33,6 @@ import java.util.Arrays;
  * @see MqttTopicFilter
  * @see MqttUtf8StringImpl
  */
-@Unmodifiable
 public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopicFilter {
 
     static final int WILDCARD_CHECK_FAILURE = -1;

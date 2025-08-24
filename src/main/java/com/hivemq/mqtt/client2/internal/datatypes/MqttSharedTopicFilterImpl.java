@@ -22,14 +22,12 @@ import com.hivemq.mqtt.client2.internal.util.Checks;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  * @see MqttSharedTopicFilter
  * @see MqttUtf8StringImpl
  */
-@Unmodifiable
 public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements MqttSharedTopicFilter {
 
     private static final int SHARE_PREFIX_LENGTH = SHARE_PREFIX.length();

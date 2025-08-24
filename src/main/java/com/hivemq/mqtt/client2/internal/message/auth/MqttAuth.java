@@ -25,7 +25,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5Auth;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -34,7 +33,6 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<Mqtt5AuthReasonCode>
         implements Mqtt5Auth {
 

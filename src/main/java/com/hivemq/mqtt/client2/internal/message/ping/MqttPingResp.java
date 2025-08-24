@@ -21,12 +21,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.mqtt.client2.mqtt5.message.ping.Mqtt5PingResp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttPingResp implements MqttMessage, Mqtt5PingResp {
 
     public static final @NotNull MqttPingResp INSTANCE = new MqttPingResp();

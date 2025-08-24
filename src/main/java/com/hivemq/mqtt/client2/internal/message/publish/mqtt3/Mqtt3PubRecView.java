@@ -23,12 +23,10 @@ import com.hivemq.mqtt.client2.mqtt3.message.publish.Mqtt3PubRec;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubRecReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3PubRecView implements Mqtt3PubRec {
 
     public static final @NotNull Mqtt3PubRecView INSTANCE = new Mqtt3PubRecView();

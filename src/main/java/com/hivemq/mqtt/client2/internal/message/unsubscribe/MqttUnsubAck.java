@@ -25,12 +25,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttUnsubAck extends MqttMessageWithUserProperties.WithReason.WithCodesAndId<Mqtt5UnsubAckReasonCode>
         implements Mqtt5UnsubAck {
 

@@ -20,12 +20,10 @@ import com.hivemq.mqtt.client2.internal.collections.ImmutableIntList;
 import com.hivemq.mqtt.client2.internal.message.MqttStatefulMessage;
 import com.hivemq.mqtt.client2.internal.util.UnsignedDataTypes;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;

@@ -28,7 +28,6 @@ import java.util.Map;
  * @author David Katz
  * @author Christian Hoff
  */
-@Unmodifiable
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
     static final @NotNull MqttWebSocketConfigImpl DEFAULT =

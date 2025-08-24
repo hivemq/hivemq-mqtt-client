@@ -34,7 +34,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -47,7 +46,6 @@ import static com.hivemq.mqtt.client2.internal.message.publish.MqttStatefulPubli
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5Publish {
 
     public static final long NO_MESSAGE_EXPIRY = -1;

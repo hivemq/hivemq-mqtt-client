@@ -29,14 +29,12 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5WillPublish;
 import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3PublishView implements Mqtt3Publish {
 
     public static final @NotNull Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;

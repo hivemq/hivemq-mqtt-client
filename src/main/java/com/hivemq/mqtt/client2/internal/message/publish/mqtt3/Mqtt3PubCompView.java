@@ -23,12 +23,10 @@ import com.hivemq.mqtt.client2.mqtt3.message.publish.Mqtt3PubComp;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubCompReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3PubCompView implements Mqtt3PubComp {
 
     public static final @NotNull Mqtt3PubCompView INSTANCE = new Mqtt3PubCompView();

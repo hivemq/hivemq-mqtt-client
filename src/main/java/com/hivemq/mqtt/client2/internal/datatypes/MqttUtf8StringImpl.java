@@ -23,7 +23,6 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +34,6 @@ import java.util.Arrays;
  * @author Silvio Giebl
  * @see MqttUtf8String
  */
-@Unmodifiable
 public class MqttUtf8StringImpl implements MqttUtf8String {
 
     /**

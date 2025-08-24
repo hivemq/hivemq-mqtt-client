@@ -25,12 +25,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttSubAck extends MqttMessageWithUserProperties.WithReason.WithCodesAndId<Mqtt5SubAckReasonCode>
         implements Mqtt5SubAck {
 

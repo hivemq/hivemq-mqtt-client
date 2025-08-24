@@ -22,7 +22,6 @@ import com.hivemq.mqtt.client2.internal.util.ByteBufferUtil;
 import com.hivemq.mqtt.client2.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -31,7 +30,6 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttSimpleAuth implements Mqtt5SimpleAuth {
 
     private final @Nullable MqttUtf8StringImpl username;

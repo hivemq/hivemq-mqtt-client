@@ -24,7 +24,6 @@ import com.hivemq.mqtt.client2.internal.util.InetSocketAddressUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.net.InetSocketAddress;
 import java.util.Objects;
@@ -33,7 +32,6 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttTransportConfigImpl implements MqttTransportConfig {
 
     public static final @NotNull MqttTransportConfigImpl DEFAULT =

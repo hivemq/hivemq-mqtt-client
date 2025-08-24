@@ -20,12 +20,10 @@ import com.hivemq.mqtt.client2.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.mqtt.client2.mqtt3.message.ping.Mqtt3PingReq;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3PingReqView implements Mqtt3PingReq {
 
     public static final @NotNull Mqtt3PingReqView INSTANCE = new Mqtt3PingReqView();

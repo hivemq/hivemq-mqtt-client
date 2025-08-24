@@ -20,14 +20,12 @@ import com.hivemq.mqtt.client2.internal.advanced.interceptor.MqttClientIntercept
 import com.hivemq.mqtt.client2.mqtt5.advanced.Mqtt5AdvancedConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttAdvancedConfig implements Mqtt5AdvancedConfig {
 
     public static final @NotNull MqttAdvancedConfig DEFAULT = new MqttAdvancedConfig(false, null);

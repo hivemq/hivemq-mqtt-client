@@ -23,12 +23,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt3ConnectRestrictions {
 
     public static final @NotNull MqttConnectRestrictions DEFAULT =

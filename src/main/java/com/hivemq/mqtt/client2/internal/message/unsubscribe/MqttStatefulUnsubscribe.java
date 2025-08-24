@@ -18,12 +18,10 @@ package com.hivemq.mqtt.client2.internal.message.unsubscribe;
 
 import com.hivemq.mqtt.client2.internal.message.MqttStatefulMessage;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttStatefulUnsubscribe extends MqttStatefulMessage.WithId<MqttUnsubscribe> {
 
     MqttStatefulUnsubscribe(final @NotNull MqttUnsubscribe unsubscribe, final int packetIdentifier) {

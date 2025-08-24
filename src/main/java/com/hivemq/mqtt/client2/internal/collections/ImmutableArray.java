@@ -20,7 +20,6 @@ import com.hivemq.mqtt.client2.internal.util.Checks;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -29,7 +28,6 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 class ImmutableArray<E> implements ImmutableList<E> {
 
     @Contract("null -> fail")

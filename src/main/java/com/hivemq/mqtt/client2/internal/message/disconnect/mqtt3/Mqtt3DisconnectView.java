@@ -23,12 +23,10 @@ import com.hivemq.mqtt.client2.mqtt3.message.disconnect.Mqtt3Disconnect;
 import com.hivemq.mqtt.client2.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3DisconnectView implements Mqtt3Disconnect {
 
     public static final @NotNull MqttDisconnect DELEGATE =

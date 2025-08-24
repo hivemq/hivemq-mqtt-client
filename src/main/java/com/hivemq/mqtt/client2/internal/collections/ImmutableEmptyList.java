@@ -19,7 +19,6 @@ package com.hivemq.mqtt.client2.internal.collections;
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,7 +28,6 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 class ImmutableEmptyList implements ImmutableList<Object> {
 
     private static final @NotNull ImmutableEmptyList INSTANCE = new ImmutableEmptyList();

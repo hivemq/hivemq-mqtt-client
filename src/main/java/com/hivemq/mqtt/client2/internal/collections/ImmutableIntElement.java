@@ -19,12 +19,10 @@ package com.hivemq.mqtt.client2.internal.collections;
 import com.hivemq.mqtt.client2.internal.util.Checks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 class ImmutableIntElement implements ImmutableIntList {
 
     private final int element;

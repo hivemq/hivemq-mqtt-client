@@ -21,13 +21,11 @@ import com.hivemq.mqtt.client2.mqtt5.datatypes.Mqtt5UserProperties;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  * @see Mqtt5UserProperties
  */
-@Unmodifiable
 public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
 
     /**

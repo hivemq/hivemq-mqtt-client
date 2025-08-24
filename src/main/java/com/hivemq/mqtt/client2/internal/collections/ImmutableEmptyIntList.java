@@ -18,12 +18,10 @@ package com.hivemq.mqtt.client2.internal.collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 class ImmutableEmptyIntList implements ImmutableIntList {
 
     static final @NotNull ImmutableEmptyIntList INSTANCE = new ImmutableEmptyIntList();

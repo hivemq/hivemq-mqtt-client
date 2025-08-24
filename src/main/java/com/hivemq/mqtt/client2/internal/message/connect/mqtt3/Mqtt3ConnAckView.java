@@ -26,14 +26,12 @@ import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckReasonCode;
 import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import static com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnAckReturnCode.*;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
     public static final @NotNull Function<Mqtt5ConnAck, Mqtt3ConnAck> MAPPER = Mqtt3ConnAckView::of;

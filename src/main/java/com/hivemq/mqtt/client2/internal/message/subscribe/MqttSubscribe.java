@@ -23,12 +23,10 @@ import com.hivemq.mqtt.client2.internal.util.StringUtil;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt5Subscribe {
 
     private final @NotNull ImmutableList<MqttSubscription> subscriptions;

@@ -24,12 +24,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.publish.Mqtt5PubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttPubAck extends MqttMessageWithUserProperties.WithReason.WithCode.WithId<Mqtt5PubAckReasonCode>
         implements Mqtt5PubAck {
 

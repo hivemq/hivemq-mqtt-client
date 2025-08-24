@@ -26,12 +26,10 @@ import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAckReasonCode;
 import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3SubAckView implements Mqtt3SubAck {
 
     public static final @NotNull Function<Mqtt5SubAck, Mqtt3SubAck> MAPPER = Mqtt3SubAckView::of;

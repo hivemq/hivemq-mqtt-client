@@ -24,12 +24,10 @@ import com.hivemq.mqtt.client2.internal.util.StringUtil;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mqtt5Unsubscribe {
 
     private final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters;

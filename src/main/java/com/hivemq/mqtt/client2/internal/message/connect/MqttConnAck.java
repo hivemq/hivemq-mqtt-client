@@ -30,7 +30,6 @@ import com.hivemq.mqtt.client2.mqtt5.message.connect.Mqtt5ConnAckReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -40,7 +39,6 @@ import java.util.OptionalLong;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCode<Mqtt5ConnAckReasonCode>
         implements Mqtt5ConnAck {
 

@@ -23,7 +23,6 @@ import com.hivemq.mqtt.client2.internal.util.Checks;
 import com.hivemq.mqtt.client2.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -31,7 +30,6 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable
 public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
     private static @NotNull MqttSimpleAuth delegate(
