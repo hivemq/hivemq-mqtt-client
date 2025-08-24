@@ -84,7 +84,7 @@ public interface Mqtt5Publish extends Mqtt5Message {
     /**
      * @return the optional message expiry interval in seconds of this Publish message.
      */
-    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) @NotNull OptionalLong getMessageExpiryInterval();
+    @NotNull @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) OptionalLong getMessageExpiryInterval();
 
     /**
      * @return the optional payload format indicator of this Publish message.

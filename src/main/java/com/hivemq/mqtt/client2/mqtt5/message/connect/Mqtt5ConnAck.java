@@ -54,12 +54,12 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
      * @return the optional session expiry interval set from the server. If absent, the session expiry interval from the
      *         Connect message is used.
      */
-    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) @NotNull OptionalLong getSessionExpiryInterval();
+    @NotNull @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) OptionalLong getSessionExpiryInterval();
 
     /**
      * @return the optional keep alive set from the server. If absent, the keep alive from the Connect message is used.
      */
-    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) @NotNull OptionalInt getServerKeepAlive();
+    @NotNull @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) OptionalInt getServerKeepAlive();
 
     /**
      * @return the optional client identifier assigned by the server. If absent, the client identifier from the Connect

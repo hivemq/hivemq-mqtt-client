@@ -55,7 +55,7 @@ public interface MqttExecutorConfig {
     /**
      * @return the optional user defined amount of threads Netty (network communication framework) will use.
      */
-    @Range(from = 1, to = Integer.MAX_VALUE) @NotNull OptionalInt getNettyThreads();
+    @NotNull @Range(from = 1, to = Integer.MAX_VALUE) OptionalInt getNettyThreads();
 
     /**
      * @return the {@link Scheduler} used for executing application specific code, such as callbacks.

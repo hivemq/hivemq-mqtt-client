@@ -61,7 +61,7 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
      * @return the optional session expiry interval in seconds, the client disconnects from with this Disconnect
      *         message.
      */
-    @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) @NotNull OptionalLong getSessionExpiryInterval();
+    @NotNull @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) OptionalLong getSessionExpiryInterval();
 
     /**
      * @return the optional server reference, which can be used if the server sent this Disconnect message.
