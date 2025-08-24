@@ -61,7 +61,7 @@ public interface MqttWebSocketConfig {
      *
      * @since 1.2.3
      */
-    @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> DEFAULT_HEADERS = Collections.emptyMap();
+    @NotNull @Unmodifiable Map<@NotNull String, @NotNull String> DEFAULT_HEADERS = Collections.emptyMap();
 
     /**
      * Creates a builder for a WebSocket configuration.
@@ -97,7 +97,7 @@ public interface MqttWebSocketConfig {
      * @return map of already set headers.
      * @since 1.2.3
      */
-    @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> getHeaders();
+    @NotNull @Unmodifiable Map<@NotNull String, @NotNull String> getHeaders();
 
     /**
      * Creates a builder for extending this WebSocket configuration.

@@ -72,7 +72,7 @@ public interface MqttTopicFilter extends MqttUtf8String {
     /**
      * @return the levels of this Topic Filter.
      */
-    @Unmodifiable @NotNull List<@NotNull String> getLevels();
+    @NotNull @Unmodifiable List<@NotNull String> getLevels();
 
     /**
      * @return whether this Topic Filter contains wildcards.

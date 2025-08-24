@@ -48,7 +48,7 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
     /**
      * @return the Topic Filters of this Unsubscribe message. The list contains at least one Topic Filter.
      */
-    @Unmodifiable @NotNull List<? extends @NotNull MqttTopicFilter> getTopicFilters();
+    @NotNull @Unmodifiable List<? extends @NotNull MqttTopicFilter> getTopicFilters();
 
     @Override
     default @NotNull Mqtt3MessageType getType() {

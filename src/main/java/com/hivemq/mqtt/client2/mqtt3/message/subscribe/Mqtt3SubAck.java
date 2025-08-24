@@ -38,7 +38,7 @@ public interface Mqtt3SubAck extends Mqtt3Message {
      * @return the Return Codes of this SubAck message, each belonging to a {@link Mqtt3Subscription Subscription} in
      *         the corresponding {@link Mqtt3Subscribe Subscribe message} in the same order.
      */
-    @Unmodifiable @NotNull List<@NotNull Mqtt3SubAckReturnCode> getReturnCodes();
+    @NotNull @Unmodifiable List<@NotNull Mqtt3SubAckReturnCode> getReturnCodes();
 
     @Override
     default @NotNull Mqtt3MessageType getType() {

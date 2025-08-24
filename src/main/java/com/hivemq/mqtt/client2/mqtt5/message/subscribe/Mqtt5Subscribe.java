@@ -48,7 +48,7 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
      * @return the {@link Mqtt5Subscription Subscriptions} of this Subscribe message. The list contains at least one
      *         Subscription.
      */
-    @Unmodifiable @NotNull List<? extends @NotNull Mqtt5Subscription> getSubscriptions();
+    @NotNull @Unmodifiable List<? extends @NotNull Mqtt5Subscription> getSubscriptions();
 
     /**
      * @return the optional user properties of this Subscribe message.

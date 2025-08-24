@@ -39,14 +39,14 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     private final @NotNull String query;
     private final @NotNull String subprotocol;
     private final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs;
-    private final @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> headers;
+    private final @NotNull @Unmodifiable Map<@NotNull String, @NotNull String> headers;
 
     MqttWebSocketConfigImpl(
             final @NotNull String path,
             final @NotNull String query,
             final @NotNull String subprotocol,
             final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs,
-            final @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> headers) {
+            final @NotNull @Unmodifiable Map<@NotNull String, @NotNull String> headers) {
         this.path = path;
         this.query = query;
         this.subprotocol = subprotocol;
@@ -75,7 +75,7 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     }
 
     @Override
-    public @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> getHeaders() {
+    public @NotNull @Unmodifiable Map<@NotNull String, @NotNull String> getHeaders() {
         return headers;
     }
 

@@ -39,7 +39,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_SUBPROTOCOL;
     private @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs =
             MqttWebSocketConfigImpl.DEFAULT_HANDSHAKE_TIMEOUT_MS;
-    private @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> headers =
+    private @NotNull @Unmodifiable Map<@NotNull String, @NotNull String> headers =
             MqttWebSocketConfigImpl.DEFAULT_HEADERS;
 
     MqttWebSocketConfigImplBuilder() {}

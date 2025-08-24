@@ -40,7 +40,7 @@ public interface Mqtt5UnsubAck extends Mqtt5Message {
      * @return the Reason Codes of this UnsubAck message, each belonging to a Topic Filter in the corresponding
      *         {@link Mqtt5Unsubscribe Unsubscribe message} in the same order.
      */
-    @Unmodifiable @NotNull List<@NotNull Mqtt5UnsubAckReasonCode> getReasonCodes();
+    @NotNull @Unmodifiable List<@NotNull Mqtt5UnsubAckReasonCode> getReasonCodes();
 
     /**
      * @return the optional reason string of this UnsubAck message.

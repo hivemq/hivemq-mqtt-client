@@ -68,7 +68,7 @@ public interface MqttTopic extends MqttUtf8String {
     /**
      * @return the levels of this Topic Name.
      */
-    @Unmodifiable @NotNull List<@NotNull String> getLevels();
+    @NotNull @Unmodifiable List<@NotNull String> getLevels();
 
     /**
      * @return a Topic Filter matching only this Topic Name.

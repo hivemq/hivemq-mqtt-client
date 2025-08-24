@@ -40,7 +40,7 @@ public interface Mqtt5SubAck extends Mqtt5Message {
      * @return the Reason Codes of this SubAck message, each belonging to a {@link Mqtt5Subscription Subscription} in
      *         the corresponding {@link Mqtt5Subscribe Subscribe message} in the same order.
      */
-    @Unmodifiable @NotNull List<@NotNull Mqtt5SubAckReasonCode> getReasonCodes();
+    @NotNull @Unmodifiable List<@NotNull Mqtt5SubAckReasonCode> getReasonCodes();
 
     /**
      * @return the optional reason string of this SubAck message.
