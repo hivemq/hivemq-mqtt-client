@@ -183,7 +183,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      */
     @CheckReturnValue
     @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
-            @NotNull Mqtt3Subscribe subscribe, boolean manualAcknowledgement);
+            @NotNull Mqtt3Subscribe subscribe,
+            boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribePublishes(Mqtt3Subscribe, boolean)}.

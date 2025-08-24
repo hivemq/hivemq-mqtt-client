@@ -49,9 +49,9 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttPubAck decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
-            throws MqttDecoderException {
-
+            final int flags,
+            final @NotNull ByteBuf in,
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
         checkFixedHeaderFlags(FLAGS, flags);
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {

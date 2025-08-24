@@ -64,7 +64,6 @@ public class MqttTlsConfigImpl implements MqttTlsConfig {
             final @Nullable ImmutableList<String> protocols,
             final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs,
             final @Nullable HostnameVerifier hostnameVerifier) {
-
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
         this.cipherSuites = cipherSuites;
@@ -137,7 +136,6 @@ public class MqttTlsConfigImpl implements MqttTlsConfig {
             return false;
         }
         final MqttTlsConfigImpl that = (MqttTlsConfigImpl) o;
-
         return Objects.equals(keyManagerFactory, that.keyManagerFactory) &&
                 Objects.equals(trustManagerFactory, that.trustManagerFactory) &&
                 Objects.equals(cipherSuites, that.cipherSuites) && Objects.equals(protocols, that.protocols) &&

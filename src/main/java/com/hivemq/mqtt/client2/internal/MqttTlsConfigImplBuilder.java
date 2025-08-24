@@ -118,7 +118,6 @@ public abstract class MqttTlsConfigImplBuilder<B extends MqttTlsConfigImplBuilde
         Nested(
                 final @Nullable MqttTlsConfigImpl tlsConfig,
                 final @NotNull Function<? super MqttTlsConfigImpl, P> parentConsumer) {
-
             super(tlsConfig);
             this.parentConsumer = parentConsumer;
         }

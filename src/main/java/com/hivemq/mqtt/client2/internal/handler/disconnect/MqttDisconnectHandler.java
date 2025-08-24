@@ -144,12 +144,10 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     @Override
     protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttDisconnectEvent disconnectEvent) {
         state = STATE_CLOSED;
-
         final Channel channel = ctx.channel();
-
         if (disconnectEvent.getSource() == MqttDisconnectSource.SERVER) {
             disconnected(channel, disconnectEvent);
             channel.close();
@@ -158,7 +156,6 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
         MqttDisconnect disconnect = disconnectEvent.getDisconnect();
         if (disconnect != null) {
-
             final long sessionExpiryInterval = disconnect.getRawSessionExpiryInterval();
             if (sessionExpiryInterval != MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
                 final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
@@ -207,9 +204,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
         if (connectionConfig != null) {
             clientConfig.getSession().expire(disconnectEvent.getCause(), connectionConfig, channel.eventLoop());
-
             reconnect(disconnectEvent, connectionConfig, channel.eventLoop());
-
             clientConfig.setConnectionConfig(null);
         }
     }
@@ -218,7 +213,6 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             final @NotNull MqttDisconnectEvent disconnectEvent,
             final @NotNull MqttClientConnectionConfig connectionConfig,
             final @NotNull EventLoop eventLoop) {
-
         final MqttClientConfig.ConnectDefaults connectDefaults = clientConfig.getConnectDefaults();
         final Mqtt5EnhancedAuthMechanism enhancedAuthMechanism = connectionConfig.getRawEnhancedAuthMechanism();
         // @formatter:off

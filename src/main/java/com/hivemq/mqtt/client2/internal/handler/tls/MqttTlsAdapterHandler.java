@@ -49,7 +49,6 @@ class MqttTlsAdapterHandler extends ChannelInboundHandlerAdapter {
             final @Nullable HostnameVerifier hostnameVerifier,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
-
         this.sslHandler = sslHandler;
         this.host = host;
         this.hostnameVerifier = hostnameVerifier;
@@ -67,8 +66,8 @@ class MqttTlsAdapterHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handshakeComplete(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull SslHandshakeCompletionEvent evt) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull SslHandshakeCompletionEvent evt) {
         if (setHandshakeDone()) {
             if (evt.isSuccess()) {
                 ctx.pipeline().remove(this);

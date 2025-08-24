@@ -64,7 +64,6 @@ public final class MqttDisconnectUtil {
             final @NotNull Channel channel,
             final @NotNull Mqtt5DisconnectReasonCode reasonCode,
             final @NotNull String reasonString) {
-
         final MqttDisconnect disconnect =
                 new MqttDisconnectBuilder.Default().reasonCode(reasonCode).reasonString(reasonString).build();
         fireDisconnectEvent(
@@ -82,7 +81,6 @@ public final class MqttDisconnectUtil {
             final @NotNull Channel channel,
             final @NotNull Mqtt5DisconnectReasonCode reasonCode,
             final @NotNull Throwable cause) {
-
         final MqttDisconnect disconnect =
                 new MqttDisconnectBuilder.Default().reasonCode(reasonCode).reasonString(cause.getMessage()).build();
         fireDisconnectEvent(channel, new Mqtt5DisconnectException(disconnect, cause), MqttDisconnectSource.CLIENT);
@@ -92,13 +90,12 @@ public final class MqttDisconnectUtil {
             final @NotNull Channel channel,
             final @NotNull Throwable cause,
             final @NotNull MqttDisconnectSource source) {
-
         fireDisconnectEvent(channel, new MqttDisconnectEvent(cause, source));
     }
 
     static void fireDisconnectEvent(
-            final @NotNull Channel channel, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+            final @NotNull Channel channel,
+            final @NotNull MqttDisconnectEvent disconnectEvent) {
         channel.pipeline().fireUserEventTriggered(disconnectEvent);
     }
 

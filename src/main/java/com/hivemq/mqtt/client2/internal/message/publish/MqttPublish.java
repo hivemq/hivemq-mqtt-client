@@ -76,7 +76,6 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
             final @Nullable ByteBuffer correlationData,
             final @NotNull MqttUserPropertiesImpl userProperties,
             final @Nullable Confirmable confirmable) {
-
         super(userProperties);
         this.topic = topic;
         this.payload = payload;
@@ -192,13 +191,13 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
             final boolean dup,
             final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
-
         return new MqttStatefulPublish(this, packetIdentifier, dup, topicAlias, subscriptionIdentifiers);
     }
 
     public @NotNull MqttStatefulPublish createStateful(
-            final int packetIdentifier, final boolean dup, final @Nullable MqttTopicAliasMapping topicAliasMapping) {
-
+            final int packetIdentifier,
+            final boolean dup,
+            final @Nullable MqttTopicAliasMapping topicAliasMapping) {
         final int topicAlias =
                 (topicAliasMapping == null) ? DEFAULT_NO_TOPIC_ALIAS : topicAliasMapping.onPublish(topic);
         return createStateful(packetIdentifier, dup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
@@ -234,7 +233,6 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
             return false;
         }
         final MqttPublish that = (MqttPublish) o;
-
         return that.canEqual(this) && partialEquals(that) && topic.equals(that.topic) &&
                 Objects.equals(payload, that.payload) && (qos == that.qos) && (retain == that.retain) &&
                 (messageExpiryInterval == that.messageExpiryInterval) &&

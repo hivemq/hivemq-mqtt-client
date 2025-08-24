@@ -31,7 +31,8 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable class ImmutableElement<E> implements ImmutableList<E> {
+@Unmodifiable
+class ImmutableElement<E> implements ImmutableList<E> {
 
     @Contract("null -> fail")
     static <E> @NotNull ImmutableList<E> of(final @Nullable E e) {
@@ -119,7 +120,6 @@ import java.util.function.Consumer;
             return false;
         }
         final List<?> that = (List<?>) o;
-
         return (that.size() == 1) && element.equals(that.get(0));
     }
 

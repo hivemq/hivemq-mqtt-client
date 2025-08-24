@@ -55,8 +55,8 @@ import java.util.function.Consumer;
 public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     private static @NotNull CompletableFuture<@NotNull Mqtt5SubAck> handleSubAck(
-            final @NotNull CompletableFuture<@NotNull Mqtt5SubAck> future, final @NotNull MqttSubscribe subscribe) {
-
+            final @NotNull CompletableFuture<@NotNull Mqtt5SubAck> future,
+            final @NotNull MqttSubscribe subscribe) {
         if (subscribe.getSubscriptions().size() == 1) {
             return future;
         }
@@ -78,7 +78,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     private static @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> handleUnsubAck(
             final @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> future,
             final @NotNull MqttUnsubscribe unsubscribe) {
-
         if (unsubscribe.getTopicFilters().size() == 1) {
             return future;
         }
@@ -111,7 +110,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
-
         return delegate.connect(mqttConnect).toCompletionStage().toCompletableFuture();
     }
 
@@ -123,14 +121,13 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
-
         return handleSubAck(delegate.subscribe(mqttSubscribe).toCompletionStage().toCompletableFuture(), mqttSubscribe);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
-
+            final @Nullable Mqtt5Subscribe subscribe,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
         return subscribe(subscribe, callback, false);
     }
 
@@ -139,7 +136,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable Mqtt5Subscribe subscribe,
             final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor) {
-
         return subscribe(subscribe, callback, executor, false);
     }
 
@@ -148,7 +144,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable Mqtt5Subscribe subscribe,
             final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final boolean manualAcknowledgement) {
-
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
 
@@ -162,7 +157,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor,
             final boolean manualAcknowledgement) {
-
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
@@ -179,8 +173,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public void publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
-
+            final @Nullable MqttGlobalPublishFilter filter,
+            final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
         publishes(filter, callback, false);
     }
 
@@ -189,7 +183,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable MqttGlobalPublishFilter filter,
             final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor) {
-
         publishes(filter, callback, executor, false);
     }
 
@@ -198,10 +191,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable MqttGlobalPublishFilter filter,
             final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final boolean manualAcknowledgement) {
-
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
-
         delegate.publishes(filter, manualAcknowledgement).subscribe(new CallbackSubscriber(callback));
     }
 
@@ -211,11 +202,9 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor,
             final boolean manualAcknowledgement) {
-
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
-
         delegate.publishesUnsafe(filter, manualAcknowledgement)
                 .observeOn(Schedulers.from(executor), true)
                 .subscribe(new CallbackSubscriber(callback));
@@ -224,9 +213,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(
             final @Nullable Mqtt5Unsubscribe unsubscribe) {
-
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
-
         return handleUnsubAck(
                 delegate.unsubscribe(mqttUnsubscribe).toCompletionStage().toCompletableFuture(), mqttUnsubscribe);
     }
@@ -239,7 +226,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @Nullable Mqtt5Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
-
         return delegate.publish(mqttPublish).toCompletionStage().toCompletableFuture();
     }
 
@@ -261,7 +247,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull CompletableFuture<Void> disconnect(final @Nullable Mqtt5Disconnect disconnect) {
         final MqttDisconnect mqttDisconnect = MqttChecks.disconnect(disconnect);
-
         return delegate.disconnect(mqttDisconnect).toCompletionStage((Void) null).toCompletableFuture();
     }
 

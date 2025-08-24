@@ -36,8 +36,8 @@ public class MqttDisconnectCompletable extends Completable {
     private final @NotNull MqttDisconnect disconnect;
 
     public MqttDisconnectCompletable(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnect disconnect) {
-
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttDisconnect disconnect) {
         this.clientConfig = clientConfig;
         this.disconnect = disconnect;
     }

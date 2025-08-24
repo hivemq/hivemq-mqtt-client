@@ -288,7 +288,6 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
         public Nested(
                 final @NotNull MqttTransportConfigImpl transportConfig,
                 final @NotNull Function<? super MqttTransportConfigImpl, P> parentConsumer) {
-
             super(transportConfig);
             this.parentConsumer = parentConsumer;
         }
@@ -296,7 +295,6 @@ public abstract class MqttTransportConfigImplBuilder<B extends MqttTransportConf
         Nested(
                 final @NotNull MqttTransportConfigImplBuilder<?> builder,
                 final @NotNull Function<? super MqttTransportConfigImpl, P> parentConsumer) {
-
             super(builder);
             this.parentConsumer = parentConsumer;
         }

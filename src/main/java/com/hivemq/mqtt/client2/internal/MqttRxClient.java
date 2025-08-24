@@ -116,27 +116,26 @@ public class MqttRxClient implements Mqtt5RxClient {
     @Override
     public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
             final @Nullable Mqtt5Subscribe subscribe) {
-
         return subscribePublishes(subscribe, false);
     }
 
     @Override
     public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
-            final @Nullable Mqtt5Subscribe subscribe, final boolean manualAcknowledgement) {
-
+            final @Nullable Mqtt5Subscribe subscribe,
+            final boolean manualAcknowledgement) {
         return subscribePublishes(MqttChecks.subscribe(subscribe), manualAcknowledgement);
     }
 
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
-            final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
-
+            final @NotNull MqttSubscribe subscribe,
+            final boolean manualAcknowledgement) {
         return subscribePublishesUnsafe(subscribe, manualAcknowledgement).observeBothOn(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishesUnsafe(
-            final @NotNull MqttSubscribe subscribe, final boolean manualAcknowledgement) {
-
+            final @NotNull MqttSubscribe subscribe,
+            final boolean manualAcknowledgement) {
         return new MqttSubscribedPublishFlowable(subscribe, clientConfig, manualAcknowledgement);
     }
 
@@ -152,17 +151,16 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @Override
     public @NotNull Flowable<Mqtt5Publish> publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
-
+            final @Nullable MqttGlobalPublishFilter filter,
+            final boolean manualAcknowledgement) {
         Checks.notNull(filter, "Global publish filter");
-
         return publishesUnsafe(filter, manualAcknowledgement).observeOn(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
     @NotNull Flowable<Mqtt5Publish> publishesUnsafe(
-            final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
-
+            final @NotNull MqttGlobalPublishFilter filter,
+            final boolean manualAcknowledgement) {
         return new MqttGlobalIncomingPublishFlowable(filter, clientConfig, manualAcknowledgement);
     }
 
@@ -195,13 +193,12 @@ public class MqttRxClient implements Mqtt5RxClient {
     @Override
     public @NotNull Flowable<Mqtt5PublishResult> publish(final @NotNull Publisher<Mqtt5Publish> publisher) {
         Checks.notNull(publisher, "Publisher");
-
         return publish(publisher, PUBLISH_MAPPER);
     }
 
     public <P> @NotNull Flowable<Mqtt5PublishResult> publish(
-            final @NotNull Publisher<P> publisher, final @NotNull Function<P, MqttPublish> publishMapper) {
-
+            final @NotNull Publisher<P> publisher,
+            final @NotNull Function<P, MqttPublish> publishMapper) {
         final Scheduler applicationScheduler = clientConfig.getExecutorConfig().getApplicationScheduler();
         if (publisher instanceof ScalarSupplier) {
             //noinspection unchecked

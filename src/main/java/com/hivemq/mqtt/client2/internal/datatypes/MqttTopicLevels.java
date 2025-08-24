@@ -32,8 +32,8 @@ import java.util.Arrays;
 public class MqttTopicLevels extends MqttTopicLevel {
 
     public static @NotNull MqttTopicLevels concat(
-            final @NotNull MqttTopicLevel level1, final @NotNull MqttTopicLevel level2) {
-
+            final @NotNull MqttTopicLevel level1,
+            final @NotNull MqttTopicLevel level2) {
         final byte[] array1 = level1.trim().getArray();
         final byte[] array2 = level2.trim().getArray();
         final byte[] array = new byte[array1.length + 1 + array2.length];

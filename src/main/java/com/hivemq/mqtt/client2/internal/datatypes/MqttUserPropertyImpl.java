@@ -52,8 +52,8 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
      * @return the created User Property.
      */
     public static @NotNull MqttUserPropertyImpl of(
-            final @NotNull MqttUtf8StringImpl name, final @NotNull MqttUtf8StringImpl value) {
-
+            final @NotNull MqttUtf8StringImpl name,
+            final @NotNull MqttUtf8StringImpl value) {
         return new MqttUserPropertyImpl(name, value);
     }
 

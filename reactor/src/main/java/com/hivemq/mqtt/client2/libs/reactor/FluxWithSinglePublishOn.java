@@ -34,7 +34,6 @@ class FluxWithSinglePublishOn<F, S> extends FluxWithSingleOperator<F, S, F, S> {
             final @NotNull Scheduler scheduler,
             final boolean delayError,
             final int prefetch) {
-
         super(source);
         this.scheduler = scheduler;
         this.delayError = delayError;

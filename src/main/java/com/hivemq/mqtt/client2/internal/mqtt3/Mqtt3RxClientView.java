@@ -128,14 +128,13 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     @Override
     public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
             final @Nullable Mqtt3Subscribe subscribe) {
-
         return subscribePublishes(subscribe, false);
     }
 
     @Override
     public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
-            final @Nullable Mqtt3Subscribe subscribe, final boolean manualAcknowledgement) {
-
+            final @Nullable Mqtt3Subscribe subscribe,
+            final boolean manualAcknowledgement) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
         return delegate.subscribePublishes(mqttSubscribe, manualAcknowledgement)
@@ -155,8 +154,8 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
 
     @Override
     public @NotNull Flowable<Mqtt3Publish> publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
-
+            final @Nullable MqttGlobalPublishFilter filter,
+            final boolean manualAcknowledgement) {
         Checks.notNull(filter, "Global publish filter");
 
         return delegate.publishes(filter, manualAcknowledgement)

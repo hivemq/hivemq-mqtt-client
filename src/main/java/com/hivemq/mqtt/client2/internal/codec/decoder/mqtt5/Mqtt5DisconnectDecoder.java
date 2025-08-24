@@ -47,9 +47,9 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttDisconnect decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
-            throws MqttDecoderException {
-
+            final int flags,
+            final @NotNull ByteBuf in,
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
         checkFixedHeaderFlags(FLAGS, flags);
 
         Mqtt5DisconnectReasonCode reasonCode = DEFAULT_REASON_CODE;

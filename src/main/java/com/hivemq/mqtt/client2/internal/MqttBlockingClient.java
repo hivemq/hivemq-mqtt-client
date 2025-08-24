@@ -132,10 +132,9 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public @NotNull Publishes publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
-
+            final @Nullable MqttGlobalPublishFilter filter,
+            final boolean manualAcknowledgement) {
         Checks.notNull(filter, "Global publish filter");
-
         return new Publishes(delegate.publishesUnsafe(filter, manualAcknowledgement));
     }
 
@@ -294,7 +293,6 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
                 entry = new Entry();
                 entries.add(entry);
             }
-
             Object result;
             try {
                 entry.latch.await();
@@ -318,9 +316,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         @Override
         public @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @Nullable TimeUnit timeUnit)
                 throws InterruptedException {
-
             Checks.notNull(timeUnit, "Time unit");
-
             final Entry entry;
             synchronized (entries) {
                 if (error != null) {
@@ -333,7 +329,6 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
                 entry = new Entry();
                 entries.add(entry);
             }
-
             Object result;
             try {
                 if (entry.latch.await(timeout, timeUnit)) {

@@ -39,7 +39,6 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
             final @NotNull MqttSubscribe subscribe,
             final @NotNull MqttClientConfig clientConfig,
             final boolean manualAcknowledgement) {
-
         this.subscribe = subscribe;
         this.clientConfig = clientConfig;
         this.manualAcknowledgement = manualAcknowledgement;
@@ -59,7 +58,6 @@ public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publi
     @Override
     protected void subscribeBothActual(
             final @NotNull WithSingleSubscriber<? super Mqtt5Publish, ? super Mqtt5SubAck> subscriber) {
-
         subscribeActual(subscriber);
     }
 }

@@ -45,7 +45,6 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
             final @Nullable String username,
             final @Nullable String password,
             final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs) {
-
         this.protocol = protocol;
         this.address = address;
         this.username = username;
@@ -100,7 +99,6 @@ public class MqttProxyConfigImpl implements MqttProxyConfig {
             return false;
         }
         final MqttProxyConfigImpl that = (MqttProxyConfigImpl) o;
-
         return (protocol == that.protocol) && address.equals(that.address) && Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password) && (handshakeTimeoutMs == that.handshakeTimeoutMs);
     }

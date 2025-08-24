@@ -79,7 +79,6 @@ public class MqttSimpleAuth implements Mqtt5SimpleAuth {
             return false;
         }
         final MqttSimpleAuth that = (MqttSimpleAuth) o;
-
         return Objects.equals(username, that.username) && Objects.equals(password, that.password);
     }
 

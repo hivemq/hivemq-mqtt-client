@@ -152,7 +152,6 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
     static <F, S> void split(
             final @NotNull Flowable<Object> source,
             final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
-
         if (subscriber instanceof WithSingleConditionalSubscriber) {
             source.subscribe(new SplitSubscriber.Conditional<>(
                     (WithSingleConditionalSubscriber<? super F, ? super S>) subscriber));

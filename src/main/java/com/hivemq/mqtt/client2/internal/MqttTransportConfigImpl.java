@@ -56,7 +56,6 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
             final @Nullable MqttProxyConfigImpl proxyConfig,
             final @Range(from = 0, to = Integer.MAX_VALUE) int socketConnectTimeoutMs,
             final @Range(from = 0, to = Integer.MAX_VALUE) int mqttConnectTimeoutMs) {
-
         this.serverAddress = serverAddress;
         this.localAddress = localAddress;
         this.tlsConfig = tlsConfig;
@@ -135,7 +134,6 @@ public class MqttTransportConfigImpl implements MqttTransportConfig {
             return false;
         }
         final MqttTransportConfigImpl that = (MqttTransportConfigImpl) o;
-
         return serverAddress.equals(that.serverAddress) && Objects.equals(localAddress, that.localAddress) &&
                 Objects.equals(tlsConfig, that.tlsConfig) && Objects.equals(webSocketConfig, that.webSocketConfig) &&
                 Objects.equals(proxyConfig, that.proxyConfig) &&

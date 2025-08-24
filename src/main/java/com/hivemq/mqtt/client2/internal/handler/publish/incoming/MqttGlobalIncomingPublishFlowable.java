@@ -37,7 +37,6 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
             final @NotNull MqttGlobalPublishFilter filter,
             final @NotNull MqttClientConfig clientConfig,
             final boolean manualAcknowledgement) {
-
         this.filter = filter;
         this.clientConfig = clientConfig;
         this.manualAcknowledgement = manualAcknowledgement;

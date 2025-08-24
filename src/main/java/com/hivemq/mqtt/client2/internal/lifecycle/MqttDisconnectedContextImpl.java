@@ -36,7 +36,6 @@ public class MqttDisconnectedContextImpl implements Mqtt5DisconnectedContext {
             final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause,
             final @NotNull MqttReconnector reconnector) {
-
         this.clientConfig = clientConfig;
         this.source = source;
         this.cause = cause;

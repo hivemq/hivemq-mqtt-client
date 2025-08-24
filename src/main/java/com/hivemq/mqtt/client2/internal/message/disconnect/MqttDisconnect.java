@@ -54,7 +54,6 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
             final @Nullable MqttUtf8StringImpl serverReference,
             final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(reasonCode, reasonString, userProperties);
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
@@ -106,7 +105,6 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
             return false;
         }
         final MqttDisconnect that = (MqttDisconnect) o;
-
         return partialEquals(that) && (sessionExpiryInterval == that.sessionExpiryInterval) &&
                 Objects.equals(serverReference, that.serverReference);
     }

@@ -54,7 +54,6 @@ public final class MqttVariableByteInteger {
         byte encodedByte;
         int value = 0;
         byte shift = 0;
-
         do {
             if (shift > MAX_SHIFT) {
                 return TOO_LARGE;
@@ -67,11 +66,9 @@ public final class MqttVariableByteInteger {
             value += encodedByteValue << shift;
             shift += VALUE_BITS;
         } while ((encodedByte & CONTINUATION_BIT_MASK) != 0);
-
         if (shift > VALUE_BITS && encodedByte == 0) {
             return NOT_MINIMUM_BYTES;
         }
-
         return value;
     }
 

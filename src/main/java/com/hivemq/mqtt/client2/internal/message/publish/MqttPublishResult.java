@@ -68,7 +68,6 @@ public class MqttPublishResult implements Mqtt5PublishResult {
             return false;
         }
         final MqttPublishResult that = (MqttPublishResult) o;
-
         return that.canEqual(this) && publish.equals(that.publish) && Objects.equals(error, that.error);
     }
 
@@ -93,8 +92,9 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         private final @NotNull MqttPubAck pubAck;
 
         public MqttQos1Result(
-                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubAck pubAck) {
-
+                final @NotNull MqttPublish publish,
+                final @Nullable Throwable error,
+                final @NotNull MqttPubAck pubAck) {
             super(publish, error);
             this.pubAck = pubAck;
         }
@@ -123,7 +123,6 @@ public class MqttPublishResult implements Mqtt5PublishResult {
                 return false;
             }
             final MqttQos1Result that = (MqttQos1Result) o;
-
             return pubAck.equals(that.pubAck);
         }
 
@@ -145,8 +144,9 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         private final @NotNull MqttPubRec pubRec;
 
         public MqttQos2Result(
-                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec) {
-
+                final @NotNull MqttPublish publish,
+                final @Nullable Throwable error,
+                final @NotNull MqttPubRec pubRec) {
             super(publish, error);
             this.pubRec = pubRec;
         }
@@ -175,7 +175,6 @@ public class MqttPublishResult implements Mqtt5PublishResult {
                 return false;
             }
             final MqttQos2Result that = (MqttQos2Result) o;
-
             return pubRec.equals(that.pubRec);
         }
 
@@ -200,7 +199,6 @@ public class MqttPublishResult implements Mqtt5PublishResult {
                 final @NotNull MqttPublish publish,
                 final @NotNull MqttPubRec pubRec,
                 final @NotNull BooleanSupplier acknowledgedCallback) {
-
             super(publish, null, pubRec);
             this.acknowledgedCallback = acknowledgedCallback;
         }
@@ -221,7 +219,6 @@ public class MqttPublishResult implements Mqtt5PublishResult {
                 final @NotNull MqttPubRec pubRec,
                 final @NotNull MqttPubRel pubRel,
                 final @NotNull MqttPubComp pubComp) {
-
             super(publish, null, pubRec);
             this.pubRel = pubRel;
             this.pubComp = pubComp;
@@ -256,7 +253,6 @@ public class MqttPublishResult implements Mqtt5PublishResult {
                 return false;
             }
             final MqttQos2CompleteResult that = (MqttQos2CompleteResult) o;
-
             return pubRel.equals(that.pubRel) && pubComp.equals(that.pubComp);
         }
 

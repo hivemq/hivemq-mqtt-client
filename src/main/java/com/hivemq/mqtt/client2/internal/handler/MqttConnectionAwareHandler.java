@@ -44,7 +44,8 @@ public abstract class MqttConnectionAwareHandler extends ChannelInboundHandlerAd
     }
 
     protected abstract void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent);
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttDisconnectEvent disconnectEvent);
 
     @Override
     public boolean isSharable() {

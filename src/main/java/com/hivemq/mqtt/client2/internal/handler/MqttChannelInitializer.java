@@ -68,7 +68,6 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         ctx.pipeline().remove(this);
-
         ((SocketChannel) ctx.channel()).config()
                 // close not on write error (concurrent write while remote closes the connection), only on read
                 // this ensures that always all bytes are read, e.g. of the DISCONNECT sent before the close
@@ -76,7 +75,6 @@ public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
                 .setKeepAlive(true)
                 .setTcpNoDelay(true)
                 .setConnectTimeoutMillis(clientConfig.getCurrentTransportConfig().getSocketConnectTimeoutMs());
-
         initProxy(ctx.channel());
     }
 

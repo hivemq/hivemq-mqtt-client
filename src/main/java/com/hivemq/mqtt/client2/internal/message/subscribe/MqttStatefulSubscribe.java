@@ -31,8 +31,9 @@ public class MqttStatefulSubscribe extends MqttStatefulMessage.WithId<MqttSubscr
     private final int subscriptionIdentifier;
 
     MqttStatefulSubscribe(
-            final @NotNull MqttSubscribe subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
-
+            final @NotNull MqttSubscribe subscribe,
+            final int packetIdentifier,
+            final int subscriptionIdentifier) {
         super(subscribe, packetIdentifier);
         this.subscriptionIdentifier = subscriptionIdentifier;
     }

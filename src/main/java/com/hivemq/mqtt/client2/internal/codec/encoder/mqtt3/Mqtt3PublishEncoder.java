@@ -62,7 +62,6 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
             final @NotNull MqttEncoderContext context,
             final int encodedLength,
             final int remainingLength) {
-
         final ByteBuffer payload = message.stateless().getRawPayload();
         if (payload.hasRemaining() && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
@@ -84,8 +83,9 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
     }
 
     private void encodeFixedHeader(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int remainingLength) {
-
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int remainingLength) {
         final MqttPublish stateless = message.stateless();
 
         int flags = 0;

@@ -40,8 +40,8 @@ public class Mqtt3DisconnectEncoder extends MqttMessageEncoder<MqttDisconnect> {
 
     @Override
     protected @NotNull ByteBuf encode(
-            final @NotNull MqttDisconnect message, final @NotNull MqttEncoderContext context) {
-
+            final @NotNull MqttDisconnect message,
+            final @NotNull MqttEncoderContext context) {
         return PACKET.retainedDuplicate();
     }
 }

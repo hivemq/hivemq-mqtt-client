@@ -48,9 +48,9 @@ public class Mqtt5UnsubAckDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttUnsubAck decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
-            throws MqttDecoderException {
-
+            final int flags,
+            final @NotNull ByteBuf in,
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
         checkFixedHeaderFlags(FLAGS, flags);
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {

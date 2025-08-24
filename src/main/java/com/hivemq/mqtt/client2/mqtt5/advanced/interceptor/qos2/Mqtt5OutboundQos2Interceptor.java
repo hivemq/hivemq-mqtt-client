@@ -56,7 +56,9 @@ public interface Mqtt5OutboundQos2Interceptor {
      * @param pubRec       the PubRec message sent by the server.
      */
     void onPubRecError(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubRec pubRec);
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Publish publish,
+            @NotNull Mqtt5PubRec pubRec);
 
     /**
      * Called when a server sent a PubComp message for a Publish message with QoS 2.

@@ -50,7 +50,6 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
             final @Nullable ByteBuffer correlationData,
             final @NotNull MqttUserPropertiesImpl userProperties,
             final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long delayInterval) {
-
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
                 correlationData, userProperties, null);
         this.delayInterval = delayInterval;
@@ -90,7 +89,6 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
             return false;
         }
         final MqttWillPublish that = (MqttWillPublish) o;
-
         return delayInterval == that.delayInterval;
     }
 

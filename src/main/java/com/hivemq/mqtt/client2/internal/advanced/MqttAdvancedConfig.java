@@ -64,7 +64,6 @@ public class MqttAdvancedConfig implements Mqtt5AdvancedConfig {
             return false;
         }
         final MqttAdvancedConfig that = (MqttAdvancedConfig) o;
-
         return (validatePayloadFormat == that.validatePayloadFormat) && Objects.equals(interceptors, that.interceptors);
     }
 

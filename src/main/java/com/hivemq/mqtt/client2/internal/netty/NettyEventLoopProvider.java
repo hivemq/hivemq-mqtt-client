@@ -78,7 +78,6 @@ public class NettyEventLoopProvider {
     private NettyEventLoopProvider(
             final @NotNull BiFunction<Integer, Executor, MultithreadEventLoopGroup> eventLoopGroupFactory,
             final @NotNull ChannelFactory<?> channelFactory) {
-
         this.eventLoopGroupFactory = eventLoopGroupFactory;
         this.channelFactory = channelFactory;
     }

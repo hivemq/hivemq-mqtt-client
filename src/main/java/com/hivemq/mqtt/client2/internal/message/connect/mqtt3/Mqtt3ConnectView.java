@@ -61,7 +61,6 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
             final @NotNull MqttConnectRestrictions restrictions,
             final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
-
         return new Mqtt3ConnectView(delegate(keepAlive, cleanSession, restrictions, simpleAuth, willPublish));
     }
 
@@ -142,7 +141,6 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
             return false;
         }
         final Mqtt3ConnectView that = (Mqtt3ConnectView) o;
-
         return delegate.equals(that.delegate);
     }
 

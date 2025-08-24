@@ -29,7 +29,8 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable class ImmutableArray<E> implements ImmutableList<E> {
+@Unmodifiable
+class ImmutableArray<E> implements ImmutableList<E> {
 
     @Contract("null -> fail")
     static <E> @NotNull ImmutableList<E> of(final @Nullable Object @Nullable ... elements) {

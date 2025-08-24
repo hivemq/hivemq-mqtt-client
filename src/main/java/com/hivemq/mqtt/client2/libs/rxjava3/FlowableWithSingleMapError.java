@@ -38,7 +38,6 @@ class FlowableWithSingleMapError<F, S> extends FlowableWithSingleOperator<F, S, 
     FlowableWithSingleMapError(
             final @NotNull FlowableWithSingle<F, S> source,
             final @NotNull Function<? super Throwable, ? extends Throwable> errorMapper) {
-
         super(source);
         this.errorMapper = errorMapper;
     }
@@ -74,7 +73,6 @@ class FlowableWithSingleMapError<F, S> extends FlowableWithSingleOperator<F, S, 
         MapErrorSubscriber(
                 final @NotNull T subscriber,
                 final @NotNull Function<? super Throwable, ? extends Throwable> errorMapper) {
-
             this.subscriber = subscriber;
             this.errorMapper = errorMapper;
         }
@@ -125,7 +123,6 @@ class FlowableWithSingleMapError<F, S> extends FlowableWithSingleOperator<F, S, 
             Conditional(
                     final @NotNull T subscriber,
                     final @NotNull Function<? super Throwable, ? extends Throwable> errorMapper) {
-
                 super(subscriber, errorMapper);
             }
 
@@ -143,7 +140,6 @@ class FlowableWithSingleMapError<F, S> extends FlowableWithSingleOperator<F, S, 
         WithSingleMapErrorSubscriber(
                 final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber,
                 final @NotNull Function<? super Throwable, ? extends Throwable> errorMapper) {
-
             super(subscriber, errorMapper);
         }
 
@@ -159,7 +155,6 @@ class FlowableWithSingleMapError<F, S> extends FlowableWithSingleOperator<F, S, 
             Conditional(
                     final @NotNull WithSingleConditionalSubscriber<? super F, ? super S> subscriber,
                     final @NotNull Function<? super Throwable, ? extends Throwable> errorMapper) {
-
                 super(subscriber, errorMapper);
             }
 

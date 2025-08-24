@@ -75,7 +75,6 @@ public class MqttAckSingleFlowable extends Flowable<Mqtt5PublishResult> {
                 final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber,
                 final @NotNull MqttClientConfig clientConfig,
                 final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
-
             super(clientConfig);
             this.subscriber = subscriber;
             this.outgoingQosHandler = outgoingQosHandler;

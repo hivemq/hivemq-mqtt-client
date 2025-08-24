@@ -54,8 +54,9 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     public static @NotNull MqttStatefulPublish statefulDelegate(
-            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean dup) {
-
+            final @NotNull MqttPublish publish,
+            final int packetIdentifier,
+            final boolean dup) {
         return publish.createStateful(packetIdentifier, dup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
                 MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
@@ -65,7 +66,6 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final @NotNull ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean retain) {
-
         return new Mqtt3PublishView(delegate(topic, payload, qos, retain));
     }
 
@@ -74,7 +74,6 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final @NotNull ByteBuffer payload,
             final @NotNull MqttQos qos,
             final boolean retain) {
-
         return new Mqtt3PublishView(
                 new MqttWillPublish(topic, payload, qos, retain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL));
@@ -152,7 +151,6 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             return false;
         }
         final Mqtt3PublishView that = (Mqtt3PublishView) o;
-
         return delegate.equals(that.delegate);
     }
 

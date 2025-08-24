@@ -73,7 +73,6 @@ public class MqttEnhancedAuth implements Mqtt5EnhancedAuth {
             return false;
         }
         final MqttEnhancedAuth that = (MqttEnhancedAuth) o;
-
         return method.equals(that.method) && Objects.equals(data, that.data);
     }
 

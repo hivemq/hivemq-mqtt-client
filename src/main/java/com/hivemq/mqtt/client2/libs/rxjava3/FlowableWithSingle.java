@@ -76,8 +76,8 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeBothOn(
-            final @NotNull Scheduler scheduler, final boolean delayError) {
-
+            final @NotNull Scheduler scheduler,
+            final boolean delayError) {
         return observeBothOn(scheduler, delayError, bufferSize());
     }
 
@@ -97,8 +97,9 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public final @NotNull FlowableWithSingle<F, S> observeBothOn(
-            final @NotNull Scheduler scheduler, final boolean delayError, final int bufferSize) {
-
+            final @NotNull Scheduler scheduler,
+            final boolean delayError,
+            final int bufferSize) {
         Checks.notNull(scheduler, "Scheduler");
         return new FlowableWithSingleObserveOn<>(this, scheduler, delayError, bufferSize);
     }
@@ -116,7 +117,6 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @SchedulerSupport(SchedulerSupport.NONE)
     public final <SM> @NotNull FlowableWithSingle<F, SM> mapSingle(
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         Checks.notNull(singleMapper, "Single mapper");
         return FlowableWithSingleMap.mapSingle(this, singleMapper);
     }
@@ -138,7 +138,6 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     public final <FM, SM> @NotNull FlowableWithSingle<FM, SM> mapBoth(
             final @NotNull Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         Checks.notNull(flowableMapper, "Flowable mapper");
         Checks.notNull(singleMapper, "Single mapper");
         return FlowableWithSingleMap.mapBoth(this, flowableMapper, singleMapper);
@@ -155,7 +154,6 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull FlowableWithSingle<F, S> mapError(
             final @NotNull Function<? super Throwable, ? extends Throwable> mapper) {
-
         Checks.notNull(mapper, "Mapper");
         return new FlowableWithSingleMapError<>(this, mapper);
     }
@@ -277,8 +275,8 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
     @BackpressureSupport(BackpressureKind.UNBOUNDED_IN)
     @SchedulerSupport(SchedulerSupport.NONE)
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
-            final @NotNull Consumer<? super F> onNext, final @NotNull Consumer<? super Throwable> onError) {
-
+            final @NotNull Consumer<? super F> onNext,
+            final @NotNull Consumer<? super Throwable> onError) {
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
         //noinspection ResultOfMethodCallIgnored
@@ -312,7 +310,6 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
             final @NotNull Consumer<? super F> onNext,
             final @NotNull Consumer<? super Throwable> onError,
             final @NotNull Action onComplete) {
-
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
         //noinspection ResultOfMethodCallIgnored

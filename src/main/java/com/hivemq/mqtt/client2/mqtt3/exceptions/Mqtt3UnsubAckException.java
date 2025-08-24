@@ -29,8 +29,9 @@ public class Mqtt3UnsubAckException extends Mqtt3MessageException {
     private final @NotNull Mqtt3UnsubAck unsubAck;
 
     public Mqtt3UnsubAckException(
-            final @NotNull Mqtt3UnsubAck unsubAck, final @Nullable String message, final @Nullable Throwable cause) {
-
+            final @NotNull Mqtt3UnsubAck unsubAck,
+            final @Nullable String message,
+            final @Nullable Throwable cause) {
         super(message, cause);
         this.unsubAck = unsubAck;
     }

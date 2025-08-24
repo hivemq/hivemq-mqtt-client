@@ -32,17 +32,14 @@ public final class ByteArrayUtil {
             final byte @NotNull [] array2,
             final int start2,
             final int end2) {
-
         final int length1 = end1 - start1;
         final int length2 = end2 - start2;
         if (length1 != length2) {
             return false;
         }
-
         if ((array1 == array2) && (start1 == start2)) {
             return true;
         }
-
         for (int i1 = start1, i2 = start2; i1 < end1; i1++, i2++) {
             if (array1[i1] != array2[i2]) {
                 return false;

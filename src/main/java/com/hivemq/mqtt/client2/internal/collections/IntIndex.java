@@ -56,7 +56,6 @@ public class IntIndex<E> {
                 final @NotNull ToIntFunction<? super E> keyFunction,
                 final int minCapacity,
                 final float nodeThresholdFactor) {
-
             this.keyFunction = keyFunction;
             this.minCapacity = minCapacity;
             this.nodeThresholdFactor = nodeThresholdFactor;

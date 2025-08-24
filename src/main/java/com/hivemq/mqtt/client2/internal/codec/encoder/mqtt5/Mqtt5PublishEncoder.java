@@ -104,7 +104,6 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             final int remainingLength,
             final int propertyLength,
             final int omittedProperties) {
-
         final ByteBuffer payload = message.stateless().getRawPayload();
         if (payload.hasRemaining() && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
@@ -125,15 +124,15 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             final int remainingLength,
             final int propertyLength,
             final int omittedProperties) {
-
         encodeFixedHeader(message, out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
         encodePayload(message, out);
     }
 
     private void encodeFixedHeader(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int remainingLength) {
-
+            final @NotNull MqttStatefulPublish message,
+            final @NotNull ByteBuf out,
+            final int remainingLength) {
         final MqttPublish stateless = message.stateless();
 
         int flags = 0;
@@ -155,7 +154,6 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             final @NotNull ByteBuf out,
             final int propertyLength,
             final int omittedProperties) {
-
         final MqttPublish stateless = message.stateless();
 
         if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || message.isNewTopicAlias()) {
@@ -176,7 +174,6 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             final @NotNull ByteBuf out,
             final int propertyLength,
             final int omittedProperties) {
-
         MqttVariableByteInteger.encode(propertyLength, out);
 
         encodeFixedProperties(message.stateless(), out);
@@ -190,9 +187,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
         }
     }
 
-    final void encodeFixedProperties(
-            final @NotNull MqttPublish publish, final @NotNull ByteBuf out) {
-
+    final void encodeFixedProperties(final @NotNull MqttPublish publish, final @NotNull ByteBuf out) {
         encodeIntProperty(MESSAGE_EXPIRY_INTERVAL, publish.getRawMessageExpiryInterval(), NO_MESSAGE_EXPIRY, out);
         encodeNullableProperty(PAYLOAD_FORMAT_INDICATOR, publish.getRawPayloadFormatIndicator(), out);
         encodeNullableProperty(CONTENT_TYPE, publish.getRawContentType(), out);

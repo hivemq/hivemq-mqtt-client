@@ -166,7 +166,6 @@ public abstract class MqttProxyConfigImplBuilder<B extends MqttProxyConfigImplBu
         Nested(
                 final @Nullable MqttProxyConfigImpl proxyConfig,
                 final @NotNull Function<? super MqttProxyConfigImpl, P> parentConsumer) {
-
             super(proxyConfig);
             this.parentConsumer = parentConsumer;
         }

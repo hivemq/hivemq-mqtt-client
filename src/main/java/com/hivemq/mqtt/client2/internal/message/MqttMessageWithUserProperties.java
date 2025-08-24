@@ -64,8 +64,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
         private final @Nullable MqttUtf8StringImpl reasonString;
 
         WithReason(
-                final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
-
+                final @Nullable MqttUtf8StringImpl reasonString,
+                final @NotNull MqttUserPropertiesImpl userProperties) {
             super(userProperties);
             this.reasonString = reasonString;
         }
@@ -105,7 +105,6 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                     final @NotNull R reasonCode,
                     final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
-
                 super(reasonString, userProperties);
                 this.reasonCode = reasonCode;
             }
@@ -138,7 +137,6 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                         final @NotNull R reasonCode,
                         final @Nullable MqttUtf8StringImpl reasonString,
                         final @NotNull MqttUserPropertiesImpl userProperties) {
-
                     super(reasonCode, reasonString, userProperties);
                     this.packetIdentifier = packetIdentifier;
                 }
@@ -172,7 +170,6 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                     final @NotNull ImmutableList<R> reasonCodes,
                     final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
-
                 super(reasonString, userProperties);
                 this.packetIdentifier = packetIdentifier;
                 this.reasonCodes = reasonCodes;

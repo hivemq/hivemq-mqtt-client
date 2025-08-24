@@ -50,7 +50,6 @@ public class MqttWebSocketInitializer {
             final @NotNull MqttWebSocketConfigImpl webSocketConfig,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
-
         final URI uri;
         try {
             final MqttTransportConfigImpl transportConfig = clientConfig.getCurrentTransportConfig();

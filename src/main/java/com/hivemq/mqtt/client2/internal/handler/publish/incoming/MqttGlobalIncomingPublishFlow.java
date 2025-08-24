@@ -38,7 +38,6 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
             final @NotNull MqttIncomingQosHandler incomingQosHandler,
             final @NotNull MqttGlobalPublishFilter filter,
             final boolean manualAcknowledgement) {
-
         super(subscriber, clientConfig, incomingQosHandler, manualAcknowledgement);
         this.filter = filter;
     }

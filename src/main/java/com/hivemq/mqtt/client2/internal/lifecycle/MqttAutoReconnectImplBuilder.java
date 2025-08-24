@@ -89,7 +89,6 @@ public abstract class MqttAutoReconnectImplBuilder<B extends MqttAutoReconnectIm
         public Nested(
                 final @Nullable MqttAutoReconnectImpl autoReconnect,
                 final @NotNull Function<? super MqttAutoReconnectImpl, P> parentConsumer) {
-
             super(autoReconnect);
             this.parentConsumer = parentConsumer;
         }

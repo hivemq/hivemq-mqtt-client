@@ -53,9 +53,9 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttStatefulPublish decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
-            throws MqttDecoderException {
-
+            final int flags,
+            final @NotNull ByteBuf in,
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
         final boolean dup = (flags & 0b1000) != 0;
         final MqttQos qos = decodePublishQos(flags, dup);
         final boolean retain = (flags & 0b0001) != 0;

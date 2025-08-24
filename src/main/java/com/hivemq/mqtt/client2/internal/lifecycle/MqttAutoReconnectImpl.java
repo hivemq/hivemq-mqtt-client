@@ -42,7 +42,6 @@ public class MqttAutoReconnectImpl implements MqttAutoReconnect {
     MqttAutoReconnectImpl(
             final @Range(from = 1, to = Long.MAX_VALUE) long initialDelayNanos,
             final @Range(from = 0, to = Long.MAX_VALUE) long maxDelayNanos) {
-
         this.initialDelayNanos = initialDelayNanos;
         this.maxDelayNanos = maxDelayNanos;
     }

@@ -60,7 +60,6 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
             final @NotNull ChannelHandlerContext ctx,
             final @NotNull Object msg,
             final @NotNull ChannelPromise promise) {
-
         if (msg instanceof MqttConnect) {
             writeConnect((MqttConnect) msg, promise);
         } else {
@@ -114,7 +113,6 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      */
     private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         cancelTimeout();
-
         if (connAck.getReasonCode().isError()) {
             readConnAckError(ctx, connAck);
         } else if (validateConnAck(ctx, connAck)) {
@@ -160,7 +158,6 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
                             "Must not receive CONNACK with reason code SUCCESS if client side AUTH is pending."));
             return;
         }
-
         state = MqttAuthState.IN_PROGRESS_DONE;
         callMechanismFutureResult(() -> authMechanism.onAuthSuccess(clientConfig, connAck), ctx2 -> {
             state = MqttAuthState.NONE;
@@ -228,10 +225,9 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      */
     @Override
     protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttDisconnectEvent disconnectEvent) {
         super.onDisconnectEvent(ctx, disconnectEvent);
-
         if (state != MqttAuthState.NONE) {
             callMechanism(() -> authMechanism.onAuthError(clientConfig, disconnectEvent.getCause()));
             state = MqttAuthState.NONE;

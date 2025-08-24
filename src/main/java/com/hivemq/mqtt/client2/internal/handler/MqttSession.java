@@ -60,18 +60,15 @@ public class MqttSession {
             final @NotNull MqttClientConnectionConfig connectionConfig,
             final @NotNull ChannelPipeline pipeline,
             final @NotNull EventLoop eventLoop) {
-
         if (hasSession && !connAck.isSessionPresent()) {
             final String message = "Session expired as CONNACK did not contain the session present flag.";
             end(new MqttSessionExpiredException(message, new Mqtt5ConnAckException(connAck, message)));
         }
         hasSession = true;
-
         if (expireFuture != null) {
             expireFuture.cancel(false);
             expireFuture = null;
         }
-
         pipeline.addAfter(MqttDecoder.NAME, MqttSubscriptionHandler.NAME, subscriptionHandler);
         pipeline.addAfter(MqttDecoder.NAME, MqttIncomingQosHandler.NAME, incomingQosHandler);
         pipeline.addAfter(MqttDecoder.NAME, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
@@ -85,9 +82,7 @@ public class MqttSession {
             final @NotNull Throwable cause,
             final @NotNull MqttClientConnectionConfig connectionConfig,
             final @NotNull EventLoop eventLoop) {
-
         final long expiryInterval = connectionConfig.getSessionExpiryInterval();
-
         if (expiryInterval == 0) {
             // execute later to finish any current write before clearing the session state
             eventLoop.execute(

@@ -72,7 +72,6 @@ public class Mqtt3PublishResultView implements Mqtt3PublishResult {
             return false;
         }
         final Mqtt3PublishResultView that = (Mqtt3PublishResultView) o;
-
         return delegate.equals(that.delegate);
     }
 

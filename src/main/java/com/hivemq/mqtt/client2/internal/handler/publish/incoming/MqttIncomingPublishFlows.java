@@ -51,7 +51,6 @@ public class MqttIncomingPublishFlows {
             final @NotNull MqttSubscribe subscribe,
             final int subscriptionIdentifier,
             final @Nullable MqttSubscribedPublishFlow flow) {
-
         final ImmutableList<MqttSubscription> subscriptions = subscribe.getSubscriptions();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < subscriptions.size(); i++) {
@@ -63,7 +62,6 @@ public class MqttIncomingPublishFlows {
             final @NotNull MqttSubscribe subscribe,
             final int subscriptionIdentifier,
             final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
-
         final ImmutableList<MqttSubscription> subscriptions = subscribe.getSubscriptions();
         final boolean countNotMatching = subscriptions.size() > reasonCodes.size();
         for (int i = 0; i < subscriptions.size(); i++) {
@@ -75,7 +73,6 @@ public class MqttIncomingPublishFlows {
     public void unsubscribe(
             final @NotNull MqttUnsubscribe unsubscribe,
             final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes) {
-
         final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getTopicFilters();
         final boolean allSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
@@ -127,7 +124,6 @@ public class MqttIncomingPublishFlows {
     private static void add(
             final @NotNull MqttStatefulPublishWithFlows publishWithFlows,
             final @Nullable HandleList<MqttGlobalIncomingPublishFlow> globalFlows) {
-
         if (globalFlows != null) {
             for (Handle<MqttGlobalIncomingPublishFlow> h = globalFlows.getFirst(); h != null; h = h.getNext()) {
                 publishWithFlows.add(h.getElement());

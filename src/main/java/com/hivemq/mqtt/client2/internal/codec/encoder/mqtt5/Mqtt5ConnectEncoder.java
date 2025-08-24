@@ -54,8 +54,8 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
 
     @Override
     protected @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulConnect message, final @NotNull MqttEncoderContext context) {
-
+            final @NotNull MqttStatefulConnect message,
+            final @NotNull MqttEncoderContext context) {
         int propertyLength = propertyLength(message);
         final int willPropertyLength = willPropertyLength(message);
         final int remainingLengthWithoutProperties = remainingLengthWithoutProperties(message);
@@ -83,15 +83,15 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             final int propertyLength,
             final int willPropertyLength,
             final int omittedProperties) {
-
         final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength, propertyLength, willPropertyLength, omittedProperties);
         return out;
     }
 
     private int remainingLength(
-            final int remainingLengthWithoutProperties, final int propertyLength, final int willPropertyLength) {
-
+            final int remainingLengthWithoutProperties,
+            final int propertyLength,
+            final int willPropertyLength) {
         return remainingLengthWithoutProperties + encodedLengthWithHeader(propertyLength) +
                 ((willPropertyLength == -1) ? 0 : encodedLengthWithHeader(willPropertyLength));
     }
@@ -152,8 +152,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private int propertyLength(
-            final @NotNull MqttStatefulConnect message, final int propertyLength, final int omittedProperties) {
-
+            final @NotNull MqttStatefulConnect message,
+            final int propertyLength,
+            final int omittedProperties) {
         switch (omittedProperties) {
             case 0:
                 return propertyLength;
@@ -189,7 +190,6 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             final int propertyLength,
             final int willPropertyLength,
             final int omittedProperties) {
-
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
         encodePayload(message, out, willPropertyLength);
@@ -205,7 +205,6 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             final @NotNull ByteBuf out,
             final int propertyLength,
             final int omittedProperties) {
-
         final MqttConnect stateless = message.stateless();
 
         MqttUtf8StringImpl.PROTOCOL_NAME.encode(out);
@@ -248,7 +247,6 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             final @NotNull ByteBuf out,
             final int propertyLength,
             final int omittedProperties) {
-
         final MqttConnect stateless = message.stateless();
 
         MqttVariableByteInteger.encode(propertyLength, out);
@@ -282,8 +280,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodePayload(
-            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int willPropertyLength) {
-
+            final @NotNull MqttStatefulConnect message,
+            final @NotNull ByteBuf out,
+            final int willPropertyLength) {
         final MqttConnect stateless = message.stateless();
 
         message.getClientIdentifier().encode(out);
@@ -298,8 +297,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeWillPublish(
-            final @NotNull MqttConnect message, final @NotNull ByteBuf out, final int willPropertyLength) {
-
+            final @NotNull MqttConnect message,
+            final @NotNull ByteBuf out,
+            final int willPropertyLength) {
         final MqttWillPublish willPublish = message.getRawWillPublish();
         if (willPublish != null) {
             MqttVariableByteInteger.encode(willPropertyLength, out);

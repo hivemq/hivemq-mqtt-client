@@ -79,7 +79,6 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
     public @NotNull B addSubscriptions(
             final @Nullable Collection<? extends @Nullable Mqtt5Subscription> subscriptions) {
-
         Checks.notNull(subscriptions, "Subscriptions");
         buildFirstSubscription();
         subscriptionsBuilder.ensureFree(subscriptions.size());

@@ -29,8 +29,9 @@ public class Mqtt3SubAckException extends Mqtt3MessageException {
     private final @NotNull Mqtt3SubAck subAck;
 
     public Mqtt3SubAckException(
-            final @NotNull Mqtt3SubAck subAck, final @Nullable String message, final @Nullable Throwable cause) {
-
+            final @NotNull Mqtt3SubAck subAck,
+            final @Nullable String message,
+            final @Nullable Throwable cause) {
         super(message, cause);
         this.subAck = subAck;
     }

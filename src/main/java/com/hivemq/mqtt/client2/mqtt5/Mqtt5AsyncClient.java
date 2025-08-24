@@ -119,7 +119,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe, Consumer, Executor, boolean)
      */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
+            @NotNull Mqtt5Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt5Publish> callback);
 
     /**
      * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the

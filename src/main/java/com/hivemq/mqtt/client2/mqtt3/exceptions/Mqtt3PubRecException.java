@@ -29,8 +29,9 @@ public class Mqtt3PubRecException extends Mqtt3MessageException {
     private final @NotNull Mqtt3PubRec pubRec;
 
     public Mqtt3PubRecException(
-            final @NotNull Mqtt3PubRec pubRec, final @Nullable String message, final @Nullable Throwable cause) {
-
+            final @NotNull Mqtt3PubRec pubRec,
+            final @Nullable String message,
+            final @Nullable Throwable cause) {
         super(message, cause);
         this.pubRec = pubRec;
     }

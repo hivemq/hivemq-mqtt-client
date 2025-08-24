@@ -109,8 +109,8 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
 
     @Override
     protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttDisconnectEvent disconnectEvent) {
         cancelTimeout();
     }
 

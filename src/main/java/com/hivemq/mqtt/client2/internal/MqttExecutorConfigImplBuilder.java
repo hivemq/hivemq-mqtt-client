@@ -90,7 +90,6 @@ public abstract class MqttExecutorConfigImplBuilder<B extends MqttExecutorConfig
         Nested(
                 final @NotNull MqttExecutorConfigImpl executorConfig,
                 final @NotNull Function<? super MqttExecutorConfigImpl, P> parentConsumer) {
-
             super(executorConfig);
             this.parentConsumer = parentConsumer;
         }

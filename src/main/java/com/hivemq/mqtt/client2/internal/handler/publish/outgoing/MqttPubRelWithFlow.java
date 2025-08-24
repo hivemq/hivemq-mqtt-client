@@ -43,9 +43,7 @@ abstract class MqttPubRelWithFlow extends MqttPubOrRelWithFlow {
 
         private int state;
 
-        MqttQos2IntermediateWithFlow(
-                final @NotNull MqttPubRel pubRel, final @NotNull MqttAckFlow ackFlow) {
-
+        MqttQos2IntermediateWithFlow(final @NotNull MqttPubRel pubRel, final @NotNull MqttAckFlow ackFlow) {
             super(pubRel, ackFlow);
         }
 
@@ -65,7 +63,6 @@ abstract class MqttPubRelWithFlow extends MqttPubOrRelWithFlow {
                 final @NotNull MqttPubRec pubRec,
                 final @NotNull MqttPubRel pubRel,
                 final @NotNull MqttAckFlow ackFlow) {
-
             super(pubRel, ackFlow);
             this.publish = publish;
             this.pubRec = pubRec;

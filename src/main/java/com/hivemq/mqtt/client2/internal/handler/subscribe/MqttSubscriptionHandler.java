@@ -81,7 +81,6 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public MqttSubscriptionHandler(
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
-
         this.clientConfig = clientConfig;
         this.incomingPublishFlows = incomingPublishFlows;
 
@@ -92,8 +91,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     @Override
     public void onSessionStartOrResume(
-            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
-
+            final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull EventLoop eventLoop) {
         subscriptionIdentifierSupported = connectionConfig.isSubscriptionIdentifierSupported();
 
         if (!hasSession || clientConfig.isResubscribeIfSessionPresent()) {
@@ -114,8 +113,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     public void subscribe(
-            final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
-
+            final @NotNull MqttSubscribe subscribe,
+            final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
         flow.getEventLoop().execute(() -> {
             if (flow.init()) {
                 final int subscriptionIdentifier = nextSubscriptionIdentifier++;
@@ -127,8 +126,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     void unsubscribe(
-            final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> flow) {
-
+            final @NotNull MqttUnsubscribe unsubscribe,
+            final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> flow) {
         flow.getEventLoop().execute(() -> {
             if (flow.init()) {
                 queue(new MqttUnsubscribeWithFlow(unsubscribe, flow));
@@ -187,24 +186,22 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     private void writeSubscribe(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
         final int subscriptionIdentifier = subscriptionIdentifierSupported ? subscribeWithFlow.subscriptionIdentifier :
                 MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
         final MqttStatefulSubscribe statefulSubscribe =
                 subscribeWithFlow.subscribe.createStateful(subscribeWithFlow.packetIdentifier, subscriptionIdentifier);
-
         currentPending = subscribeWithFlow;
         ctx.write(statefulSubscribe, ctx.voidPromise());
         currentPending = null;
     }
 
     private void writeUnsubscribe(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow) {
         final MqttStatefulUnsubscribe statefulUnsubscribe =
                 unsubscribeWithFlow.unsubscribe.createStateful(unsubscribeWithFlow.packetIdentifier);
-
         currentPending = unsubscribeWithFlow;
         ctx.write(statefulUnsubscribe, ctx.voidPromise());
         currentPending = null;

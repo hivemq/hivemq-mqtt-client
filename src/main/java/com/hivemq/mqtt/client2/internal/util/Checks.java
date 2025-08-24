@@ -45,21 +45,24 @@ public final class Checks {
 
     @Contract("null, _, _ -> fail")
     public static <S, T extends S> @NotNull T notImplemented(
-            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
-
+            final @Nullable S object,
+            final @NotNull Class<T> type,
+            final @NotNull String name) {
         return notImplementedInternal(notNull(object, name), type, name);
     }
 
     @Contract("null, _, _ -> null")
     public static <S, T extends S> @Nullable T notImplementedOrNull(
-            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
-
+            final @Nullable S object,
+            final @NotNull Class<T> type,
+            final @NotNull String name) {
         return (object == null) ? null : notImplementedInternal(object, type, name);
     }
 
     private static <S, T extends S> @NotNull T notImplementedInternal(
-            final @NotNull S object, final @NotNull Class<T> type, final @NotNull String name) {
-
+            final @NotNull S object,
+            final @NotNull Class<T> type,
+            final @NotNull String name) {
         if (!type.isInstance(object)) {
             throw new IllegalArgumentException(name + " must not be implemented by the user, but was implemented by " +
                     object.getClass().getTypeName() + ".");
@@ -70,8 +73,8 @@ public final class Checks {
 
     @Contract("null, _ -> fail")
     public static <T> @NotNull T @NotNull [] elementsNotNull(
-            final @Nullable T @Nullable [] array, final @NotNull String name) {
-
+            final @Nullable T @Nullable [] array,
+            final @NotNull String name) {
         notNull(array, name);
         for (int i = 0; i < array.length; i++) {
             elementNotNull(array[i], name, i);
@@ -89,8 +92,9 @@ public final class Checks {
     }
 
     public static <S, T extends S> @NotNull ImmutableList<T> elementsNotImplemented(
-            final @NotNull ImmutableList<S> list, final @NotNull Class<T> type, final @NotNull String name) {
-
+            final @NotNull ImmutableList<S> list,
+            final @NotNull Class<T> type,
+            final @NotNull String name) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < list.size(); i++) {
             notImplementedInternal(list.get(i), type, name);

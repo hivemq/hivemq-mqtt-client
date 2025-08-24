@@ -53,7 +53,6 @@ public class Mqtt3ReconnectorView implements Mqtt3Reconnector {
     public @NotNull <T> Mqtt3ReconnectorView reconnectWhen(
             final @Nullable CompletableFuture<T> future,
             final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
-
         delegate.reconnectWhen(future, callback);
         return this;
     }

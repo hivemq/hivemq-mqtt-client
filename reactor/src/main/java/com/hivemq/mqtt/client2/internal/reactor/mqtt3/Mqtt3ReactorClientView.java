@@ -81,14 +81,13 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
     @Override
     public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
             final @NotNull Mqtt3Subscribe subscribe) {
-
         return subscribePublishes(subscribe, false);
     }
 
     @Override
     public @NotNull FluxWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribePublishes(
-            final @NotNull Mqtt3Subscribe subscribe, final boolean manualAcknowledgement) {
-
+            final @NotNull Mqtt3Subscribe subscribe,
+            final boolean manualAcknowledgement) {
         return FluxWithSingle.from(delegate.subscribePublishes(subscribe, manualAcknowledgement));
     }
 
@@ -104,8 +103,8 @@ public class Mqtt3ReactorClientView implements Mqtt3ReactorClient {
 
     @Override
     public @NotNull Flux<Mqtt3Publish> publishes(
-            final @NotNull MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
-
+            final @NotNull MqttGlobalPublishFilter filter,
+            final boolean manualAcknowledgement) {
         return RxJava3Adapter.flowableToFlux(delegate.publishes(filter, manualAcknowledgement));
     }
 

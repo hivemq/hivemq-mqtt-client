@@ -75,7 +75,6 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
             final int remainingLength,
             final int propertyLength,
             final int omittedProperties) {
-
         final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength, propertyLength, omittedProperties);
         return out;
@@ -106,8 +105,9 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
      * @return the remaining length of the MQTT message.
      */
     private int remainingLength(
-            final @NotNull M message, final int remainingLengthWithoutProperties, final int propertyLength) {
-
+            final @NotNull M message,
+            final int remainingLengthWithoutProperties,
+            final int propertyLength) {
         return remainingLengthWithoutProperties + propertyLengthWithHeader(message, propertyLength);
     }
 
@@ -210,8 +210,9 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
 
         @Override
         void encodeOmissibleProperties(
-                final @NotNull M message, final @NotNull ByteBuf out, final int omittedProperties) {
-
+                final @NotNull M message,
+                final @NotNull ByteBuf out,
+                final int omittedProperties) {
             if (omittedProperties == 0) {
                 encodeNullableProperty(REASON_STRING, message.getRawReasonString(), out);
             }
@@ -261,7 +262,6 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
                     final int remainingLength,
                     final int propertyLength,
                     final int omittedProperties) {
-
                 encodeFixedHeader(out, remainingLength);
                 encodeVariableHeader(message, out, propertyLength, omittedProperties);
             }
@@ -276,7 +276,6 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
                     final @NotNull ByteBuf out,
                     final int propertyLength,
                     final int omittedProperties) {
-
                 encodeAdditionalVariableHeader(message, out);
                 final R reasonCode = message.getReasonCode();
                 if (propertyLength == 0) {

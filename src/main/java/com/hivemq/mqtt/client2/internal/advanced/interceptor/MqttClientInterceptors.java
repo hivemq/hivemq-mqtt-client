@@ -43,7 +43,6 @@ public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
             final @Nullable Mqtt5OutboundQos1Interceptor outboundQos1Interceptor,
             final @Nullable Mqtt5InboundQos2Interceptor inboundQos2Interceptor,
             final @Nullable Mqtt5OutboundQos2Interceptor outboundQos2Interceptor) {
-
         this.inboundQos1Interceptor = inboundQos1Interceptor;
         this.outboundQos1Interceptor = outboundQos1Interceptor;
         this.inboundQos2Interceptor = inboundQos2Interceptor;
@@ -84,7 +83,6 @@ public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
             return false;
         }
         final MqttClientInterceptors that = (MqttClientInterceptors) o;
-
         return Objects.equals(inboundQos1Interceptor, that.inboundQos1Interceptor) &&
                 Objects.equals(outboundQos1Interceptor, that.outboundQos1Interceptor) &&
                 Objects.equals(inboundQos2Interceptor, that.inboundQos2Interceptor) &&

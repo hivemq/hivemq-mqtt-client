@@ -44,7 +44,6 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
             final boolean dup,
             final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
-
         super(publish, packetIdentifier);
         this.dup = dup;
         this.topicAlias = topicAlias;

@@ -55,7 +55,6 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      */
     public static <F, S> @NotNull FluxWithSingle<F, S> from(
             final @NotNull PublisherWithSingle<? extends F, ? extends S> source) {
-
         if (source instanceof FluxWithSingle) {
             //noinspection unchecked
             return (FluxWithSingle<F, S>) source;
@@ -96,8 +95,9 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      * @see Flux#publishOn(Scheduler, boolean, int)
      */
     public final @NotNull FluxWithSingle<F, S> publishBothOn(
-            final @NotNull Scheduler scheduler, final boolean delayError, final int prefetch) {
-
+            final @NotNull Scheduler scheduler,
+            final boolean delayError,
+            final int prefetch) {
         Checks.notNull(scheduler, "Scheduler");
         return new FluxWithSinglePublishOn<>(this, scheduler, delayError, prefetch);
     }
@@ -111,7 +111,6 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      */
     public final <SM> @NotNull FluxWithSingle<F, SM> mapSingle(
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         Checks.notNull(singleMapper, "Single mapper");
         return FluxWithSingleMap.mapSingle(this, singleMapper);
     }
@@ -128,7 +127,6 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
     public final <FM, SM> @NotNull FluxWithSingle<FM, SM> mapBoth(
             final @NotNull Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         Checks.notNull(fluxMapper, "Flux mapper");
         Checks.notNull(singleMapper, "Single mapper");
         return FluxWithSingleMap.mapBoth(this, fluxMapper, singleMapper);
@@ -221,8 +219,8 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
      * @see #subscribe(Consumer, Consumer)
      */
     public final @NotNull CompletableFuture<S> subscribeSingleFuture(
-            final @NotNull Consumer<? super F> consumer, final @NotNull Consumer<? super Throwable> errorConsumer) {
-
+            final @NotNull Consumer<? super F> consumer,
+            final @NotNull Consumer<? super Throwable> errorConsumer) {
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
         singleFutureSubscriber.subscribe(consumer, errorConsumer);
@@ -252,7 +250,6 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
             final @NotNull Consumer<? super F> consumer,
             final @NotNull Consumer<? super Throwable> errorConsumer,
             final @NotNull Runnable completeConsumer) {
-
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
         singleFutureSubscriber.subscribe(consumer, errorConsumer, completeConsumer);
@@ -284,7 +281,6 @@ public abstract class FluxWithSingle<F, S> extends Flux<F> implements CorePublis
             final @NotNull Consumer<? super Throwable> errorConsumer,
             final @NotNull Runnable completeConsumer,
             final @NotNull Context initialContext) {
-
         final SingleFutureSubscriber<F, S> singleFutureSubscriber = new SingleFutureSubscriber<>(this);
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
         singleFutureSubscriber.subscribe(consumer, errorConsumer, completeConsumer, initialContext);

@@ -126,7 +126,6 @@ class MqttReAuthHandler extends AbstractMqttAuthHandler {
                             "Must not receive AUTH with reason code SUCCESS if client side AUTH is pending."));
             return;
         }
-
         state = MqttAuthState.IN_PROGRESS_DONE;
         callMechanismFutureResult(() -> authMechanism.onReAuthSuccess(clientConfig, auth), ctx2 -> {
             state = MqttAuthState.NONE;
@@ -164,7 +163,6 @@ class MqttReAuthHandler extends AbstractMqttAuthHandler {
                             "Must not receive AUTH with reason code REAUTHENTICATE if reauth is still pending."));
             return;
         }
-
         final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
         callMechanismFutureResult(() -> authMechanism.onServerReAuth(clientConfig, auth, authBuilder), ctx2 -> {
@@ -185,12 +183,10 @@ class MqttReAuthHandler extends AbstractMqttAuthHandler {
      */
     private void readDisconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnect disconnect) {
         cancelTimeout();
-
         if (state != MqttAuthState.NONE) {
             callMechanism(() -> authMechanism.onReAuthRejected(clientConfig, disconnect));
             state = MqttAuthState.NONE;
         }
-
         ctx.fireChannelRead(disconnect);
     }
 
@@ -202,10 +198,9 @@ class MqttReAuthHandler extends AbstractMqttAuthHandler {
      */
     @Override
     protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttDisconnectEvent disconnectEvent) {
         super.onDisconnectEvent(ctx, disconnectEvent);
-
         if (state != MqttAuthState.NONE) {
             callMechanism(() -> authMechanism.onReAuthError(clientConfig, disconnectEvent.getCause()));
             state = MqttAuthState.NONE;

@@ -29,7 +29,8 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable class ImmutableEmptyList implements ImmutableList<Object> {
+@Unmodifiable
+class ImmutableEmptyList implements ImmutableList<Object> {
 
     private static final @NotNull ImmutableEmptyList INSTANCE = new ImmutableEmptyList();
     private static final @NotNull Object @NotNull [] EMPTY = {};

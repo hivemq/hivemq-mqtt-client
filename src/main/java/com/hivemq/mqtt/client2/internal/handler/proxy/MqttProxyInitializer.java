@@ -35,11 +35,9 @@ public final class MqttProxyInitializer {
             final @NotNull MqttProxyConfigImpl proxyConfig,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
-
         final MqttProxyAdapterHandler proxyAdapterHandler =
                 new MqttProxyAdapterHandler(proxyConfig, clientConfig.getCurrentTransportConfig().getServerAddress(),
                         onSuccess, onError);
-
         channel.pipeline().addLast(MqttProxyAdapterHandler.NAME, proxyAdapterHandler);
     }
 

@@ -37,7 +37,6 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
     public MqttUnsubscribe(
             final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(userProperties);
         this.topicFilters = topicFilters;
     }
@@ -75,7 +74,6 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
             return false;
         }
         final MqttUnsubscribe that = (MqttUnsubscribe) o;
-
         return partialEquals(that) && topicFilters.equals(that.topicFilters);
     }
 

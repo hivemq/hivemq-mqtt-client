@@ -117,7 +117,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor, boolean)
      */
     @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
-            @NotNull Mqtt3Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt3Publish> callback);
+            @NotNull Mqtt3Subscribe subscribe,
+            @NotNull Consumer<@NotNull Mqtt3Publish> callback);
 
     /**
      * Subscribes this client with the given Subscribe message and consumes the incoming Publish messages matching the

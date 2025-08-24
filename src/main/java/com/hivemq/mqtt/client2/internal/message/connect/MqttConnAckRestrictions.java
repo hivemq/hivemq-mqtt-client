@@ -55,7 +55,6 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
             final boolean wildcardSubscriptionSupported,
             final boolean sharedSubscriptionSupported,
             final boolean subscriptionIdentifierSupported) {
-
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
         this.topicAliasMaximum = topicAliasMaximum;
@@ -128,7 +127,6 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
             return false;
         }
         final MqttConnAckRestrictions that = (MqttConnAckRestrictions) o;
-
         return (receiveMaximum == that.receiveMaximum) && (maximumPacketSize == that.maximumPacketSize) &&
                 (topicAliasMaximum == that.topicAliasMaximum) && (maximumQos == that.maximumQos) &&
                 (retainSupported == that.retainSupported) &&

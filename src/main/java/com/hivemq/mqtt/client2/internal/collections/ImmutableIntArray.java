@@ -26,7 +26,8 @@ import java.util.Arrays;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable class ImmutableIntArray implements ImmutableIntList {
+@Unmodifiable
+class ImmutableIntArray implements ImmutableIntList {
 
     private final int @NotNull [] array;
 
@@ -57,7 +58,6 @@ import java.util.Arrays;
             return Arrays.equals(array, ((ImmutableIntArray) o).array);
         }
         final ImmutableIntList that = (ImmutableIntList) o;
-
         if (array.length != that.size()) {
             return false;
         }

@@ -87,7 +87,6 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
             return false;
         }
         final Mqtt3SubscribeView that = (Mqtt3SubscribeView) o;
-
         return delegate.equals(that.delegate);
     }
 

@@ -42,7 +42,6 @@ public class MqttSubscription implements Mqtt5Subscription {
             final boolean noLocal,
             final @NotNull Mqtt5RetainHandling retainHandling,
             final boolean retainAsPublished) {
-
         this.topicFilter = topicFilter;
         this.maxQos = maxQos;
         this.noLocal = noLocal;
@@ -99,7 +98,6 @@ public class MqttSubscription implements Mqtt5Subscription {
             return false;
         }
         final MqttSubscription that = (MqttSubscription) o;
-
         return topicFilter.equals(that.topicFilter) && (maxQos == that.maxQos) && (noLocal == that.noLocal) &&
                 (retainHandling == that.retainHandling) && (retainAsPublished == that.retainAsPublished);
     }

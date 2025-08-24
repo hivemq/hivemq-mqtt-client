@@ -81,7 +81,6 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
             return false;
         }
         final Mqtt3UnsubscribeView that = (Mqtt3UnsubscribeView) o;
-
         return delegate.equals(that.delegate);
     }
 

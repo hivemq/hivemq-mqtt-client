@@ -57,7 +57,6 @@ public class Index<E, K> {
                 final @NotNull Function<? super E, ? extends K> keyFunction,
                 final int minCapacity,
                 final float nodeThresholdFactor) {
-
             this.keyFunction = keyFunction;
             this.minCapacity = minCapacity;
             this.nodeThresholdFactor = nodeThresholdFactor;

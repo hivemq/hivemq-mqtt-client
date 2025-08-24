@@ -75,7 +75,6 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
 
     public @NotNull B addSubscriptions(
             final @Nullable Collection<? extends @Nullable Mqtt3Subscription> subscriptions) {
-
         Checks.notNull(subscriptions, "Subscriptions");
         buildFirstSubscription();
         subscriptionsBuilder.ensureFree(subscriptions.size());

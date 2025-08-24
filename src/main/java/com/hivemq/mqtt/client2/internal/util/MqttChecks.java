@@ -56,8 +56,8 @@ public final class MqttChecks {
 
     @Contract("null, _ -> fail")
     public static @NotNull MqttUtf8StringImpl string(
-            final @Nullable MqttUtf8String string, final @NotNull String name) {
-
+            final @Nullable MqttUtf8String string,
+            final @NotNull String name) {
         return Checks.notImplemented(string, MqttUtf8StringImpl.class, name);
     }
 
@@ -68,8 +68,8 @@ public final class MqttChecks {
 
     @Contract("null, _ -> null")
     public static @Nullable MqttUtf8StringImpl stringOrNull(
-            final @Nullable MqttUtf8String string, final @NotNull String name) {
-
+            final @Nullable MqttUtf8String string,
+            final @NotNull String name) {
         return Checks.notImplementedOrNull(string, MqttUtf8StringImpl.class, name);
     }
 
@@ -96,7 +96,6 @@ public final class MqttChecks {
     @Contract("null -> fail")
     public static @NotNull MqttClientIdentifierImpl clientIdentifier(
             final @Nullable MqttClientIdentifier clientIdentifier) {
-
         return Checks.notImplemented(clientIdentifier, MqttClientIdentifierImpl.class, "Client identifier");
     }
 
@@ -120,8 +119,8 @@ public final class MqttChecks {
     }
 
     private static @NotNull ByteBuffer binaryDataInternal(
-            final @NotNull ByteBuffer binary, final @NotNull String name) {
-
+            final @NotNull ByteBuffer binary,
+            final @NotNull String name) {
         if (!MqttBinaryData.isInRange(binary)) {
             throw new IllegalArgumentException(
                     name + " can not be encoded as binary data. Maximum length is " + MqttBinaryData.MAX_LENGTH +
@@ -148,7 +147,6 @@ public final class MqttChecks {
     @Contract("null -> fail")
     public static @NotNull MqttUserPropertiesImpl userProperties(
             final @Nullable Mqtt5UserProperty @Nullable ... userProperties) {
-
         final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties, "User properties");
         return MqttUserPropertiesImpl.of(
                 Checks.elementsNotImplemented(immutable, MqttUserPropertyImpl.class, "User property"));
@@ -157,7 +155,6 @@ public final class MqttChecks {
     @Contract("null -> fail")
     public static @NotNull MqttUserPropertiesImpl userProperties(
             final @Nullable Collection<@Nullable Mqtt5UserProperty> userProperties) {
-
         final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties, "User properties");
         return MqttUserPropertiesImpl.of(
                 Checks.elementsNotImplemented(immutable, MqttUserPropertyImpl.class, "User property"));
@@ -170,8 +167,8 @@ public final class MqttChecks {
 
     @Contract("null, _ -> fail; _, null -> fail")
     public static @NotNull MqttUserPropertyImpl userProperty(
-            final @Nullable MqttUtf8String name, final @Nullable MqttUtf8String value) {
-
+            final @Nullable MqttUtf8String name,
+            final @Nullable MqttUtf8String value) {
         return MqttUserPropertyImpl.of(
                 MqttChecks.string(name, "User property name"), MqttChecks.string(value, "User property value"));
     }

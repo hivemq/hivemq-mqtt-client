@@ -73,8 +73,9 @@ public class MqttDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull ByteBuf in, final @NotNull List<Object> out) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull ByteBuf in,
+            final @NotNull List<Object> out) {
         if (in.readableBytes() < MIN_FIXED_HEADER_LENGTH) {
             return;
         }

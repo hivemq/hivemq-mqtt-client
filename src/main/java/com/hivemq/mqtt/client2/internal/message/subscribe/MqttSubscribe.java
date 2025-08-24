@@ -36,7 +36,6 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
     public MqttSubscribe(
             final @NotNull ImmutableList<MqttSubscription> subscriptions,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(userProperties);
         this.subscriptions = subscriptions;
     }
@@ -74,7 +73,6 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
             return false;
         }
         final MqttSubscribe that = (MqttSubscribe) o;
-
         return partialEquals(that) && subscriptions.equals(that.subscriptions);
     }
 

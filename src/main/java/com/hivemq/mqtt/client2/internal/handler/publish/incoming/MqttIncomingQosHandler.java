@@ -72,8 +72,8 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
 
     @Override
     public void onSessionStartOrResume(
-            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
-
+            final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull EventLoop eventLoop) {
         receiveMaximum = connectionConfig.getReceiveMaximum();
         connectionIndex++;
         super.onSessionStartOrResume(connectionConfig, eventLoop);
@@ -194,8 +194,8 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean readNewPublishQos1Or2(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
         if (incomingPublishService.onPublishQos1Or2(publishWithFlows, receiveMaximum)) {
             return true;
         }
@@ -207,8 +207,8 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     }
 
     private boolean checkDupFlagSet(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttStatefulPublish publish) {
         if (publish.isDup()) {
             return true;
         }
@@ -242,8 +242,8 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     }
 
     private boolean ack(
-            final @Nullable Object prevMessage, final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
-
+            final @Nullable Object prevMessage,
+            final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
         if (prevMessage != publishWithFlows) {
             if (prevMessage == null) {
                 // session has expired in the meantime

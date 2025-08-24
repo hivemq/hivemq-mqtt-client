@@ -75,7 +75,6 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull MqttConnect connect,
             final @NotNull MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
-
         if (flow.getDisposable().isDisposed()) {
             clientConfig.releaseEventLoop();
             clientConfig.getRawState().set(DISCONNECTED);
@@ -108,7 +107,6 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull MqttConnect connect,
             final @NotNull MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
-
         if (flow.setDone()) {
             reconnect(clientConfig, source, cause, connect, flow.getAttempts() + 1, flow, eventLoop);
         }
@@ -120,7 +118,6 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull Throwable cause,
             final @NotNull MqttConnect connect,
             final @NotNull EventLoop eventLoop) {
-
         reconnect(clientConfig, source, cause, connect, 0, null, eventLoop);
     }
 
@@ -132,12 +129,10 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final int attempts,
             final @Nullable MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
-
         final MqttReconnector reconnector =
                 new MqttReconnector(eventLoop, attempts, connect, clientConfig.getCurrentTransportConfig());
         final MqttDisconnectedContextImpl context =
                 new MqttDisconnectedContextImpl(clientConfig, source, cause, reconnector);
-
         for (final MqttDisconnectedListener<? super MqttDisconnectedContextImpl> disconnectedListener : clientConfig.getDisconnectedListeners()) {
             try {
                 disconnectedListener.onDisconnected(context);
@@ -145,7 +140,6 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                 LOGGER.error("Unexpected exception thrown by disconnected listener.", t);
             }
         }
-
         if (reconnector.isReconnect()) {
             clientConfig.getRawState().set(DISCONNECTED_RECONNECT);
             eventLoop.schedule(() -> {

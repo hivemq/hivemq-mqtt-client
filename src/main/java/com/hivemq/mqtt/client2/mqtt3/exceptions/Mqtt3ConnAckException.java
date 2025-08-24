@@ -29,8 +29,9 @@ public class Mqtt3ConnAckException extends Mqtt3MessageException {
     private final @NotNull Mqtt3ConnAck connAck;
 
     public Mqtt3ConnAckException(
-            final @NotNull Mqtt3ConnAck connAck, final @Nullable String message, final @Nullable Throwable cause) {
-
+            final @NotNull Mqtt3ConnAck connAck,
+            final @Nullable String message,
+            final @Nullable Throwable cause) {
         super(message, cause);
         this.connAck = connAck;
     }

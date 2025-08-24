@@ -39,7 +39,6 @@ public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implement
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingQosHandler incomingQosHandler,
             final boolean manualAcknowledgement) {
-
         super(subscriber, clientConfig, incomingQosHandler, manualAcknowledgement);
         topicFilters = new HandleList<>();
     }

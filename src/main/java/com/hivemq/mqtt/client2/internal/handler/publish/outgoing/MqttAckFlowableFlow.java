@@ -60,7 +60,6 @@ class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable 
             final @NotNull Subscriber<? super MqttPublishResult> subscriber,
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
-
         super(clientConfig);
         this.subscriber = subscriber;
         this.outgoingQosHandler = outgoingQosHandler;

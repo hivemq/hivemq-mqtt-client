@@ -52,7 +52,6 @@ class MqttProxyAdapterHandler extends ChannelDuplexHandler implements FutureList
             final @NotNull InetSocketAddress serverAddress,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
-
         this.proxyConfig = proxyConfig;
         this.serverAddress = serverAddress;
         this.onSuccess = onSuccess;
@@ -65,11 +64,9 @@ class MqttProxyAdapterHandler extends ChannelDuplexHandler implements FutureList
             final @NotNull SocketAddress remoteAddress,
             final @Nullable SocketAddress localAddress,
             final @NotNull ChannelPromise promise) {
-
         final Channel channel = ctx.channel();
         final String username = proxyConfig.getRawUsername();
         final String password = proxyConfig.getRawPassword();
-
         final ProxyHandler proxyHandler;
         switch (proxyConfig.getProtocol()) {
             case SOCKS_4:
@@ -93,13 +90,9 @@ class MqttProxyAdapterHandler extends ChannelDuplexHandler implements FutureList
                 }
                 return;
         }
-
         proxyHandler.setConnectTimeoutMillis(proxyConfig.getHandshakeTimeoutMs());
-
         proxyHandler.connectFuture().addListener(this);
-
         channel.pipeline().addFirst(PROXY_HANDLER_NAME, proxyHandler);
-
         ctx.connect(serverAddress, localAddress, promise);
     }
 

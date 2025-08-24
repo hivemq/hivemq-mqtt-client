@@ -24,7 +24,8 @@ import org.jetbrains.annotations.Unmodifiable;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable class ImmutableIntElement implements ImmutableIntList {
+@Unmodifiable
+class ImmutableIntElement implements ImmutableIntList {
 
     private final int element;
 
@@ -52,7 +53,6 @@ import org.jetbrains.annotations.Unmodifiable;
             return false;
         }
         final ImmutableIntList that = (ImmutableIntList) o;
-
         return (that.size() == 1) && (element == that.get(0));
     }
 

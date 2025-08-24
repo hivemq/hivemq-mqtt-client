@@ -44,7 +44,6 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      */
     public static @NotNull MqttUserPropertiesImpl of(
             final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties) {
-
         return userProperties.isEmpty() ? NO_USER_PROPERTIES : new MqttUserPropertiesImpl(userProperties);
     }
 
@@ -56,7 +55,6 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      */
     public static @NotNull MqttUserPropertiesImpl build(
             final @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder) {
-
         return (userPropertiesBuilder == null) ? NO_USER_PROPERTIES : of(userPropertiesBuilder.build());
     }
 

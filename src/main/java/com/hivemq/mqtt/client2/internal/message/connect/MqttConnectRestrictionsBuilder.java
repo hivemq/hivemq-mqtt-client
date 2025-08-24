@@ -130,7 +130,6 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         public Nested(
                 final @NotNull MqttConnectRestrictions restrictions,
                 final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer) {
-
             super(restrictions);
             this.parentConsumer = parentConsumer;
         }

@@ -121,7 +121,6 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         cancelTimeout();
-
         if (msg instanceof MqttConnAck) {
             readConnAck((MqttConnAck) msg, ctx.channel());
         } else {
@@ -232,8 +231,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     private @NotNull MqttClientConnectionConfig addConnectionConfig(
-            final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
-
+            final @NotNull MqttConnAck connAck,
+            final @NotNull Channel channel) {
         int keepAlive = connAck.getRawServerKeepAlive();
         if (keepAlive == MqttConnAck.KEEP_ALIVE_FROM_CONNECT) {
             keepAlive = connect.getKeepAlive();
@@ -279,10 +278,9 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     @Override
     protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttDisconnectEvent disconnectEvent) {
         super.onDisconnectEvent(ctx, disconnectEvent);
-
         MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
                 connAckFlow, ctx.channel().eventLoop());
     }

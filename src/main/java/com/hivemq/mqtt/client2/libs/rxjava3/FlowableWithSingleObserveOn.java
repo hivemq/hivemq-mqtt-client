@@ -35,7 +35,6 @@ class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperator<F, S,
             final @NotNull Scheduler scheduler,
             final boolean delayError,
             final int bufferSize) {
-
         super(source);
         this.scheduler = scheduler;
         this.delayError = delayError;

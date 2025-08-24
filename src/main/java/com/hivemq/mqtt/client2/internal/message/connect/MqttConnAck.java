@@ -68,7 +68,6 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
             final @Nullable MqttUtf8StringImpl serverReference,
             final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(reasonCode, reasonString, userProperties);
         this.sessionPresent = sessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -166,7 +165,6 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
             return false;
         }
         final MqttConnAck that = (MqttConnAck) o;
-
         return partialEquals(that) && (sessionPresent == that.sessionPresent) &&
                 (sessionExpiryInterval == that.sessionExpiryInterval) && (serverKeepAlive == that.serverKeepAlive) &&
                 Objects.equals(assignedClientIdentifier, that.assignedClientIdentifier) &&

@@ -34,8 +34,8 @@ public class MqttAckFlowable extends Flowable<Mqtt5PublishResult> {
     private final @NotNull Flowable<MqttPublish> publishFlowable;
 
     public MqttAckFlowable(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull Flowable<MqttPublish> publishFlowable) {
-
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull Flowable<MqttPublish> publishFlowable) {
         this.clientConfig = clientConfig;
         this.publishFlowable = publishFlowable;
     }

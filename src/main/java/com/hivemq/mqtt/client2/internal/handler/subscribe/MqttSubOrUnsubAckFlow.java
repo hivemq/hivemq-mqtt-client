@@ -30,8 +30,8 @@ class MqttSubOrUnsubAckFlow<T> extends FlowWithEventLoop implements MqttSubscrip
     private final @NotNull SingleObserver<? super T> observer;
 
     MqttSubOrUnsubAckFlow(
-            final @NotNull SingleObserver<? super T> observer, final @NotNull MqttClientConfig clientConfig) {
-
+            final @NotNull SingleObserver<? super T> observer,
+            final @NotNull MqttClientConfig clientConfig) {
         super(clientConfig);
         this.observer = observer;
     }

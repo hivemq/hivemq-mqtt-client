@@ -68,7 +68,6 @@ public class MqttAckSingle extends Single<Mqtt5PublishResult> {
                 final @NotNull SingleObserver<? super Mqtt5PublishResult> observer,
                 final @NotNull MqttClientConfig clientConfig,
                 final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
-
             super(clientConfig);
             this.observer = observer;
             this.outgoingQosHandler = outgoingQosHandler;

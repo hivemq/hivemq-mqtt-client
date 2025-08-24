@@ -35,7 +35,6 @@ public class MqttConnectedContextImpl implements Mqtt5ConnectedContext {
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttConnect connect,
             final @NotNull MqttConnAck connAck) {
-
         this.clientConfig = clientConfig;
         this.connect = connect;
         this.connAck = connAck;

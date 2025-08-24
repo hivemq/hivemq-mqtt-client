@@ -61,7 +61,6 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
             final int remainingLength,
             final int propertyLength,
             final int omittedProperties) {
-
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
         encodePayload(message, out);
@@ -77,7 +76,6 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
             final @NotNull ByteBuf out,
             final int propertyLength,
             final int omittedProperties) {
-
         out.writeShort(message.getPacketIdentifier());
         encodeProperties(message, out, propertyLength, omittedProperties);
     }
@@ -87,7 +85,6 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
             final @NotNull ByteBuf out,
             final int propertyLength,
             final int omittedProperties) {
-
         MqttVariableByteInteger.encode(propertyLength, out);
         encodeOmissibleProperties(message, out, omittedProperties);
     }

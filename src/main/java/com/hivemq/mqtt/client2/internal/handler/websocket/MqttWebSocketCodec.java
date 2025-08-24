@@ -64,7 +64,6 @@ public class MqttWebSocketCodec extends ChannelDuplexHandler {
             final @NotNull ChannelHandlerContext ctx,
             final @NotNull Object msg,
             final @NotNull ChannelPromise promise) {
-
         if (msg instanceof ByteBuf) {
             ctx.write(new BinaryWebSocketFrame((ByteBuf) msg), promise);
         } else {

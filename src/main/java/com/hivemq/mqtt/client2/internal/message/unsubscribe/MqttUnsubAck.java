@@ -39,7 +39,6 @@ public class MqttUnsubAck extends MqttMessageWithUserProperties.WithReason.WithC
             final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
             final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
 
@@ -62,7 +61,6 @@ public class MqttUnsubAck extends MqttMessageWithUserProperties.WithReason.WithC
             return false;
         }
         final MqttUnsubAck that = (MqttUnsubAck) o;
-
         return partialEquals(that);
     }
 

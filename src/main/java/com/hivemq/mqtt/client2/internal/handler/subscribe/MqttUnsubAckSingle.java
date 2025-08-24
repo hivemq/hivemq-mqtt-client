@@ -33,8 +33,8 @@ public class MqttUnsubAckSingle extends Single<Mqtt5UnsubAck> {
     private final @NotNull MqttClientConfig clientConfig;
 
     public MqttUnsubAckSingle(
-            final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttClientConfig clientConfig) {
-
+            final @NotNull MqttUnsubscribe unsubscribe,
+            final @NotNull MqttClientConfig clientConfig) {
         this.unsubscribe = unsubscribe;
         this.clientConfig = clientConfig;
     }

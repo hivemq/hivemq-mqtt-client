@@ -335,8 +335,10 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     private static boolean matches(
-            final byte @NotNull [] filter1, final int offset1, final byte @NotNull [] filter2, final int offset2) {
-
+            final byte @NotNull [] filter1,
+            final int offset1,
+            final byte @NotNull [] filter2,
+            final int offset2) {
         int i1 = offset1;
         int i2 = offset2;
         while (i1 < filter1.length) {

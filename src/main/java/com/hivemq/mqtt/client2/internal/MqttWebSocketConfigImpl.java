@@ -47,7 +47,6 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
             final @NotNull String subprotocol,
             final @Range(from = 0, to = Integer.MAX_VALUE) int handshakeTimeoutMs,
             final @Unmodifiable @NotNull Map<@NotNull String, @NotNull String> headers) {
-
         this.path = path;
         this.query = query;
         this.subprotocol = subprotocol;
@@ -94,7 +93,6 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
             return false;
         }
         final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
-
         return path.equals(that.path) && query.equals(that.query) && subprotocol.equals(that.subprotocol) &&
                 (handshakeTimeoutMs == that.handshakeTimeoutMs) && headers.equals(that.headers);
     }

@@ -40,7 +40,6 @@ public class MqttPubRec extends MqttMessageWithUserProperties.WithReason.WithCod
             final @NotNull Mqtt5PubRecReasonCode reasonCode,
             final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(packetIdentifier, reasonCode, reasonString, userProperties);
     }
 
@@ -58,7 +57,6 @@ public class MqttPubRec extends MqttMessageWithUserProperties.WithReason.WithCod
             return false;
         }
         final MqttPubRec that = (MqttPubRec) o;
-
         return partialEquals(that);
     }
 

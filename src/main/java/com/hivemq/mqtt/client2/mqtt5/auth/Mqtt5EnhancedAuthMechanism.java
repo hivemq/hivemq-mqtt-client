@@ -89,7 +89,8 @@ public interface Mqtt5EnhancedAuthMechanism {
      * @return a {@link CompletableFuture} succeeding when the required data for auth is added to the builder.
      */
     @NotNull CompletableFuture<Void> onReAuth(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5AuthBuilder authBuilder);
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5AuthBuilder authBuilder);
 
     /**
      * Called when a server reauthenticates a client and the client used this enhanced auth mechanism during
@@ -107,7 +108,6 @@ public interface Mqtt5EnhancedAuthMechanism {
             final @NotNull Mqtt5ClientConfig clientConfig,
             final @NotNull Mqtt5Auth auth,
             final @NotNull Mqtt5AuthBuilder authBuilder) {
-
         return CompletableFuture.completedFuture(false);
     }
 
@@ -122,7 +122,9 @@ public interface Mqtt5EnhancedAuthMechanism {
      *         and when the required data for auth is added to the builder.
      */
     @NotNull CompletableFuture<Boolean> onContinue(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Auth auth, @NotNull Mqtt5AuthBuilder authBuilder);
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Auth auth,
+            @NotNull Mqtt5AuthBuilder authBuilder);
 
     /**
      * Called when a server accepted auth of a client which used this enhanced auth mechanism during connection.
@@ -132,7 +134,8 @@ public interface Mqtt5EnhancedAuthMechanism {
      * @return a {@link CompletableFuture} succeeding with a boolean indicating whether the client accepts the auth.
      */
     @NotNull CompletableFuture<Boolean> onAuthSuccess(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5ConnAck connAck);
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5ConnAck connAck);
 
     /**
      * Called when a server accepted reauth of a client which used this enhanced auth mechanism during connection.
@@ -142,7 +145,8 @@ public interface Mqtt5EnhancedAuthMechanism {
      * @return a {@link CompletableFuture} succeeding with a boolean indicating whether the client accepts the reauth.
      */
     @NotNull CompletableFuture<Boolean> onReAuthSuccess(
-            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Auth auth);
+            @NotNull Mqtt5ClientConfig clientConfig,
+            @NotNull Mqtt5Auth auth);
 
     /**
      * Called when a server rejected auth of a client which used this enhanced auth mechanism during connection.

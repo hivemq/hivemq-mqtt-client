@@ -101,7 +101,8 @@ public interface MqttReconnector {
      *                                       {@link MqttDisconnectedListener#onDisconnected(MqttDisconnectedContext)}.
      */
     <T> @NotNull MqttReconnector reconnectWhen(
-            @NotNull CompletableFuture<T> future, @Nullable BiConsumer<? super T, ? super Throwable> callback);
+            @NotNull CompletableFuture<T> future,
+            @Nullable BiConsumer<? super T, ? super Throwable> callback);
 
     /**
      * @return whether the client will reconnect.

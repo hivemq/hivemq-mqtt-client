@@ -64,7 +64,6 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
             final @Nullable MqttWillPublish willPublish,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(userProperties);
         this.keepAlive = keepAlive;
         this.cleanStart = cleanStart;
@@ -145,8 +144,8 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     }
 
     public @NotNull MqttStatefulConnect createStateful(
-            final @NotNull MqttClientIdentifierImpl clientIdentifier, final @Nullable MqttEnhancedAuth enhancedAuth) {
-
+            final @NotNull MqttClientIdentifierImpl clientIdentifier,
+            final @Nullable MqttEnhancedAuth enhancedAuth) {
         return new MqttStatefulConnect(this, clientIdentifier, enhancedAuth);
     }
 
@@ -175,7 +174,6 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
             return false;
         }
         final MqttConnect that = (MqttConnect) o;
-
         return partialEquals(that) && (keepAlive == that.keepAlive) && (cleanStart == that.cleanStart) &&
                 (sessionExpiryInterval == that.sessionExpiryInterval) && restrictions.equals(that.restrictions) &&
                 Objects.equals(simpleAuth, that.simpleAuth) &&

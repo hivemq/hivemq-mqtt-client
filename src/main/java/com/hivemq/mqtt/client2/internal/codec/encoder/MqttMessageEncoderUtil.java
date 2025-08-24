@@ -75,8 +75,9 @@ public final class MqttMessageEncoderUtil {
     }
 
     public static @NotNull MqttEncodeException maximumPacketSizeExceeded(
-            final @NotNull MqttMessage message, final int encodedLength, final int maxPacketSize) {
-
+            final @NotNull MqttMessage message,
+            final int encodedLength,
+            final int maxPacketSize) {
         return new MqttEncodeException(
                 message.getType() + " exceeded maximum packet size, minimal possible encoded length: " + encodedLength +
                         ", maximum: " + maxPacketSize + ".");

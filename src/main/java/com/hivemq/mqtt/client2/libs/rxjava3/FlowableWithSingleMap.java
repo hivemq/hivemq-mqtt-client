@@ -35,14 +35,12 @@ class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, 
             final @NotNull FlowableWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         return new FlowableWithSingleMap<>(source, flowableMapper, singleMapper);
     }
 
     static <F, S, SM> @NotNull FlowableWithSingleMap<F, S, F, SM> mapSingle(
             final @NotNull FlowableWithSingle<F, S> source,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         return new FlowableWithSingleMap<>(source, null, singleMapper);
     }
 
@@ -53,7 +51,6 @@ class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, 
             final @NotNull FlowableWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         super(source);
         this.flowableMapper = flowableMapper;
         this.singleMapper = singleMapper;
@@ -92,7 +89,6 @@ class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, 
                 final @NotNull T subscriber,
                 final @Nullable Function<? super F, ? extends FM> flowableMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
             this.subscriber = subscriber;
             this.flowableMapper = flowableMapper;
             this.singleMapper = singleMapper;
@@ -171,7 +167,6 @@ class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, 
                     final @NotNull T subscriber,
                     final @Nullable Function<? super F, ? extends FM> flowableMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
                 super(subscriber, flowableMapper, singleMapper);
             }
 
@@ -201,7 +196,6 @@ class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, 
                 final @NotNull WithSingleSubscriber<? super FM, ? super SM> subscriber,
                 final @Nullable Function<? super F, ? extends FM> flowableMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
             super(subscriber, flowableMapper, singleMapper);
         }
 
@@ -217,7 +211,6 @@ class FlowableWithSingleMap<F, S, FM, SM> extends FlowableWithSingleOperator<F, 
                     final @NotNull WithSingleConditionalSubscriber<? super FM, ? super SM> subscriber,
                     final @Nullable Function<? super F, ? extends FM> flowableMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
                 super(subscriber, flowableMapper, singleMapper);
             }
 

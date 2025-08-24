@@ -122,8 +122,8 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
-            final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
-
+            final @Nullable Mqtt3Subscribe subscribe,
+            final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
         return subscribe(subscribe, callback, false);
     }
 
@@ -132,7 +132,6 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable Mqtt3Subscribe subscribe,
             final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final @Nullable Executor executor) {
-
         return subscribe(subscribe, callback, executor, false);
     }
 
@@ -141,7 +140,6 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable Mqtt3Subscribe subscribe,
             final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final boolean manualAcknowledgement) {
-
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
 
@@ -154,7 +152,6 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final @Nullable Executor executor,
             final boolean manualAcknowledgement) {
-
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
@@ -169,8 +166,8 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
 
     @Override
     public void publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
-
+            final @Nullable MqttGlobalPublishFilter filter,
+            final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
         publishes(filter, callback, false);
     }
 
@@ -179,7 +176,6 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable MqttGlobalPublishFilter filter,
             final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final @Nullable Executor executor) {
-
         publishes(filter, callback, executor, false);
     }
 
@@ -188,7 +184,6 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable MqttGlobalPublishFilter filter,
             final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final boolean manualAcknowledgement) {
-
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
 
@@ -201,7 +196,6 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final @Nullable Executor executor,
             final boolean manualAcknowledgement) {
-
         Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");

@@ -37,12 +37,11 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttPingResp decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
-            throws MqttDecoderException {
-
+            final int flags,
+            final @NotNull ByteBuf in,
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
         checkFixedHeaderFlags(FLAGS, flags);
         checkRemainingLength(REMAINING_LENGTH, in.readableBytes());
-
         return MqttPingResp.INSTANCE;
     }
 }

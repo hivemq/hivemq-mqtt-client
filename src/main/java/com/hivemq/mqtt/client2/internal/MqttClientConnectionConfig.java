@@ -87,7 +87,6 @@ public class MqttClientConnectionConfig
             final boolean sharedSubscriptionSupported,
             final boolean subscriptionIdentifierSupported,
             final @NotNull Channel channel) {
-
         this.transportConfig = transportConfig;
         this.keepAlive = (short) keepAlive;
         this.sessionExpiryInterval = (int) sessionExpiryInterval;
@@ -101,7 +100,6 @@ public class MqttClientConnectionConfig
                 (sendTopicAliasMaximum == 0) ? null : new MqttTopicAliasAutoMapping(sendTopicAliasMaximum);
         this.maximumQos = maximumQos;
         this.channel = channel;
-
         int flags = 0;
         if (hasSimpleAuth) {
             flags |= FLAG_HAS_SIMPLE_AUTH;
@@ -161,7 +159,6 @@ public class MqttClientConnectionConfig
 
     public void setSessionExpiryInterval(
             final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE) long sessionExpiryInterval) {
-
         this.sessionExpiryInterval = (int) sessionExpiryInterval;
     }
 

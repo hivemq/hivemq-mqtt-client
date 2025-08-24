@@ -69,7 +69,6 @@ public class MqttEncoder extends ChannelDuplexHandler {
             final @NotNull ChannelHandlerContext ctx,
             final @NotNull Object msg,
             final @NotNull ChannelPromise promise) {
-
         if (msg instanceof MqttMessage) {
             final MqttMessage message = (MqttMessage) msg;
             final int messageType = message.getType().getCode();

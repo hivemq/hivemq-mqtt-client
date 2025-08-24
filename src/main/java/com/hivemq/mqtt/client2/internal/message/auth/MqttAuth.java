@@ -47,7 +47,6 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
             final @Nullable ByteBuffer data,
             final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
-
         super(reasonCode, reasonString, userProperties);
         this.method = method;
         this.data = data;
@@ -88,7 +87,6 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
             return false;
         }
         final MqttAuth that = (MqttAuth) o;
-
         return partialEquals(that) && method.equals(that.method) && Objects.equals(data, that.data);
     }
 

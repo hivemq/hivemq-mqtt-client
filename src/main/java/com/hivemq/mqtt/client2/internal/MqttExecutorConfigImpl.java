@@ -46,7 +46,6 @@ public class MqttExecutorConfigImpl implements MqttExecutorConfig {
             final @Nullable Executor nettyExecutor,
             final @Range(from = 0, to = Integer.MAX_VALUE) int nettyThreads,
             final @NotNull Scheduler applicationScheduler) {
-
         this.nettyExecutor = nettyExecutor;
         this.nettyThreads = nettyThreads;
         this.applicationScheduler = applicationScheduler;
@@ -89,7 +88,6 @@ public class MqttExecutorConfigImpl implements MqttExecutorConfig {
             return false;
         }
         final MqttExecutorConfigImpl that = (MqttExecutorConfigImpl) o;
-
         return Objects.equals(nettyExecutor, that.nettyExecutor) && (nettyThreads == that.nettyThreads) &&
                 applicationScheduler.equals(that.applicationScheduler);
     }

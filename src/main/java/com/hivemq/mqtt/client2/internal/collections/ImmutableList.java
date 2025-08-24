@@ -54,8 +54,10 @@ public interface ImmutableList<E> extends List<E>, RandomAccess {
     @SafeVarargs
     @Contract("null, _, _, _ -> fail; _, null, _, _ -> fail; _, _, null, _ -> fail; _, _, _, null -> fail")
     static <E> @NotNull ImmutableList<E> of(
-            final @Nullable E e1, final @Nullable E e2, final @Nullable E e3, final @Nullable E @Nullable ... others) {
-
+            final @Nullable E e1,
+            final @Nullable E e2,
+            final @Nullable E e3,
+            final @Nullable E @Nullable ... others) {
         Checks.notNull(others, "Immutable list elements");
         final Object[] array = new Object[3 + others.length];
         array[0] = e1;
@@ -90,8 +92,8 @@ public interface ImmutableList<E> extends List<E>, RandomAccess {
 
     @Contract("null, _ -> fail")
     static <E> @NotNull ImmutableList<E> copyOf(
-            final @Nullable Collection<? extends @Nullable E> elements, final @NotNull String name) {
-
+            final @Nullable Collection<? extends @Nullable E> elements,
+            final @NotNull String name) {
         Checks.notNull(elements, name);
         if (elements instanceof ImmutableList) {
             //noinspection unchecked
@@ -374,7 +376,8 @@ public interface ImmutableList<E> extends List<E>, RandomAccess {
         }
 
         public static <E> @Nullable Builder<E> addAll(
-                final @Nullable Builder<E> builder, final @NotNull Collection<? extends @NotNull E> elements) {
+                final @Nullable Builder<E> builder,
+                final @NotNull Collection<? extends @NotNull E> elements) {
             if (elements.isEmpty()) {
                 return builder;
             }

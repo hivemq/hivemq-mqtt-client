@@ -97,7 +97,6 @@ public abstract class MqttClientInterceptorsBuilder<B extends MqttClientIntercep
         public Nested(
                 final @Nullable MqttClientInterceptors interceptors,
                 final @NotNull Function<? super MqttClientInterceptors, P> parentConsumer) {
-
             super(interceptors);
             this.parentConsumer = parentConsumer;
         }

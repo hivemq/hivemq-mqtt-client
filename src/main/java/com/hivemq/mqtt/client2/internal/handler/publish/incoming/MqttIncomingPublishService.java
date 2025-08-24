@@ -52,7 +52,6 @@ class MqttIncomingPublishService {
     MqttIncomingPublishService(
             final @NotNull MqttIncomingQosHandler incomingQosHandler,
             final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
-
         this.incomingQosHandler = incomingQosHandler;
         this.incomingPublishFlows = incomingPublishFlows;
     }

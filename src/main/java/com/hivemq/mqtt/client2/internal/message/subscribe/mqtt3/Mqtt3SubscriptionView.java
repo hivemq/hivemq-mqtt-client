@@ -33,14 +33,14 @@ import org.jetbrains.annotations.Unmodifiable;
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
     private static @NotNull MqttSubscription delegate(
-            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos maxQos) {
-
+            final @NotNull MqttTopicFilterImpl topicFilter,
+            final @NotNull MqttQos maxQos) {
         return new MqttSubscription(topicFilter, maxQos, false, Mqtt5RetainHandling.SEND, false);
     }
 
     static @NotNull Mqtt3SubscriptionView of(
-            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos) {
-
+            final @NotNull MqttTopicFilterImpl topicFilter,
+            final @NotNull MqttQos qos) {
         return new Mqtt3SubscriptionView(delegate(topicFilter, qos));
     }
 
@@ -91,7 +91,6 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
             return false;
         }
         final Mqtt3SubscriptionView that = (Mqtt3SubscriptionView) o;
-
         return delegate.equals(that.delegate);
     }
 

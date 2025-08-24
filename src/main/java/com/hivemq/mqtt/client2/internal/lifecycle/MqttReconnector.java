@@ -57,7 +57,6 @@ public class MqttReconnector implements Mqtt5Reconnector {
             final @Range(from = 0, to = Integer.MAX_VALUE) int attempts,
             final @NotNull MqttConnect connect,
             final @NotNull MqttTransportConfigImpl transportConfig) {
-
         this.eventLoop = eventLoop;
         this.attempts = attempts;
         this.connect = connect;
@@ -79,8 +78,8 @@ public class MqttReconnector implements Mqtt5Reconnector {
 
     @Override
     public <T> @NotNull MqttReconnector reconnectWhen(
-            @Nullable CompletableFuture<T> future, final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
-
+            @Nullable CompletableFuture<T> future,
+            final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
         checkInOnDisconnected("reconnectWhen");
         Checks.notNull(future, "Future");
         this.reconnect = true;

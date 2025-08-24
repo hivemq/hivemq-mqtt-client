@@ -219,7 +219,6 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
             final @NotNull MqttClientConfig.ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners,
             final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> disconnectedListeners) {
-
         return new MqttClientConfig(mqttVersion, identifier, buildTransportConfig(), executorConfig, advancedConfig,
                 connectDefaults, connectedListeners, addAutoReconnect(disconnectedListeners));
     }

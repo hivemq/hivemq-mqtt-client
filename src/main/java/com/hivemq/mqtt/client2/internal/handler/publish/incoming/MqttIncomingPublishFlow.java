@@ -62,7 +62,6 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
             final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingQosHandler incomingQosHandler,
             final boolean manualAcknowledgement) {
-
         super(clientConfig);
         this.subscriber = subscriber;
         incomingPublishService = incomingQosHandler.incomingPublishService;

@@ -35,14 +35,14 @@ import java.util.Optional;
 public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
     private static @NotNull MqttSimpleAuth delegate(
-            final @NotNull MqttUtf8StringImpl username, final @Nullable ByteBuffer password) {
-
+            final @NotNull MqttUtf8StringImpl username,
+            final @Nullable ByteBuffer password) {
         return new MqttSimpleAuth(username, password);
     }
 
     static @NotNull Mqtt3SimpleAuthView of(
-            final @NotNull MqttUtf8StringImpl username, final @Nullable ByteBuffer password) {
-
+            final @NotNull MqttUtf8StringImpl username,
+            final @Nullable ByteBuffer password) {
         return new Mqtt3SimpleAuthView(delegate(username, password));
     }
 
@@ -84,7 +84,6 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
             return false;
         }
         final Mqtt3SimpleAuthView that = (Mqtt3SimpleAuthView) o;
-
         return delegate.equals(that.delegate);
     }
 

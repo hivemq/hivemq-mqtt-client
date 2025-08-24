@@ -32,7 +32,6 @@ public class Mqtt3DisconnectException extends Mqtt3MessageException {
             final @NotNull Mqtt3Disconnect disconnect,
             final @Nullable String message,
             final @Nullable Throwable cause) {
-
         super(message, cause);
         this.disconnect = disconnect;
     }

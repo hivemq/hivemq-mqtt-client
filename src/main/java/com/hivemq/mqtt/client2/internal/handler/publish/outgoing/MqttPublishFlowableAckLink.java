@@ -38,8 +38,8 @@ class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
     private final @NotNull MqttAckFlowableFlow ackFlow;
 
     MqttPublishFlowableAckLink(
-            final @NotNull Flowable<MqttPublish> source, final @NotNull MqttAckFlowableFlow ackFlow) {
-
+            final @NotNull Flowable<MqttPublish> source,
+            final @NotNull MqttAckFlowableFlow ackFlow) {
         this.source = source;
         this.ackFlow = ackFlow;
     }
@@ -75,7 +75,6 @@ class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         AckLinkSubscriber(
                 final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber,
                 final @NotNull MqttAckFlowableFlow ackFlow) {
-
             this.subscriber = subscriber;
             this.ackFlow = ackFlow;
         }

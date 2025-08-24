@@ -90,7 +90,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttConnectedListener<? super MqttConnectedContextImpl>> connectedListeners,
             final @NotNull ImmutableList<MqttDisconnectedListener<? super MqttDisconnectedContextImpl>> disconnectedListeners) {
-
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
         this.transportConfig = transportConfig;
@@ -311,7 +310,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
                 final @Nullable MqttSimpleAuth simpleAuth,
                 final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
                 final @Nullable MqttWillPublish willPublish) {
-
             if ((simpleAuth == null) && (enhancedAuthMechanism == null) && (willPublish == null)) {
                 return EMPTY;
             }
@@ -326,7 +324,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
                 final @Nullable MqttSimpleAuth simpleAuth,
                 final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
                 final @Nullable MqttWillPublish willPublish) {
-
             this.simpleAuth = simpleAuth;
             this.enhancedAuthMechanism = enhancedAuthMechanism;
             this.willPublish = willPublish;

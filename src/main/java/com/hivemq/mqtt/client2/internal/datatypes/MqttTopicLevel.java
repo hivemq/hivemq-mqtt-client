@@ -64,7 +64,6 @@ public class MqttTopicLevel extends ByteArray {
             final byte @Nullable [] prefix,
             final @Nullable MqttTopicLevel topicLevel,
             final boolean multiLevelWildcard) {
-
         int length = 0;
         if (prefix != null) {
             length += prefix.length + 1;

@@ -51,7 +51,6 @@ class MqttWebsocketHandshakeHandler extends ChannelInboundHandlerAdapter {
             final int handshakeTimeoutMs,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
-
         this.handshaker = handshaker;
         this.handshakeTimeoutMs = handshakeTimeoutMs;
         this.onSuccess = onSuccess;
@@ -74,7 +73,6 @@ class MqttWebsocketHandshakeHandler extends ChannelInboundHandlerAdapter {
     private void startHandshake(final @NotNull ChannelHandlerContext ctx) {
         if (!handshakeStarted) {
             handshakeStarted = true;
-
             if (handshakeTimeoutMs > 0) {
                 timeoutFuture = ctx.channel().eventLoop().schedule(() -> {
                     if (setHandshakeDone(ctx)) {
@@ -83,7 +81,6 @@ class MqttWebsocketHandshakeHandler extends ChannelInboundHandlerAdapter {
                     }
                 }, handshakeTimeoutMs, TimeUnit.MILLISECONDS);
             }
-
             handshaker.handshake(ctx.channel(), ctx.voidPromise());
         }
     }

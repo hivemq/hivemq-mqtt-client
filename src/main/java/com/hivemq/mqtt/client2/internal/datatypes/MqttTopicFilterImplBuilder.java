@@ -206,7 +206,6 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
         SharedNested(
                 final @Nullable String shareName,
                 final @NotNull Function<? super MqttSharedTopicFilterImpl, P> parentConsumer) {
-
             super(shareName);
             this.parentConsumer = parentConsumer;
         }
@@ -215,7 +214,6 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
                 final @Nullable String shareName,
                 final @NotNull String baseTopicFilter,
                 final @NotNull Function<? super MqttSharedTopicFilterImpl, P> parentConsumer) {
-
             super(shareName, baseTopicFilter);
             this.parentConsumer = parentConsumer;
         }

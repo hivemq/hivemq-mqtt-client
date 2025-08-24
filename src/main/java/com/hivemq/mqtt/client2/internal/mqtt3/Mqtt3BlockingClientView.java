@@ -111,8 +111,8 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
 
     @Override
     public @NotNull PublishesView publishes(
-            final @Nullable MqttGlobalPublishFilter filter, final boolean manualAcknowledgement) {
-
+            final @Nullable MqttGlobalPublishFilter filter,
+            final boolean manualAcknowledgement) {
         Checks.notNull(filter, "Global publish filter");
 
         return new PublishesView(delegate.publishes(filter, manualAcknowledgement));
@@ -191,9 +191,8 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         }
 
         @Override
-        public @NotNull Optional<Mqtt3Publish> receive(
-                final long timeout, final @Nullable TimeUnit timeUnit) throws InterruptedException {
-
+        public @NotNull Optional<Mqtt3Publish> receive(final long timeout, final @Nullable TimeUnit timeUnit)
+                throws InterruptedException {
             Checks.notNull(timeUnit, "Time unit");
 
             try {

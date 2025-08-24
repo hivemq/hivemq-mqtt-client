@@ -36,13 +36,12 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
             final @NotNull FluxWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         return new FluxWithSingleMap<>(source, fluxMapper, singleMapper);
     }
 
     static <F, S, SM> @NotNull FluxWithSingleMap<F, S, F, SM> mapSingle(
-            final @NotNull FluxWithSingle<F, S> source, final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
+            final @NotNull FluxWithSingle<F, S> source,
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
         return new FluxWithSingleMap<>(source, null, singleMapper);
     }
 
@@ -53,7 +52,6 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
             final @NotNull FluxWithSingle<F, S> source,
             final @Nullable Function<? super F, ? extends FM> fluxMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
         super(source);
         this.fluxMapper = fluxMapper;
         this.singleMapper = singleMapper;
@@ -93,7 +91,6 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
                 final @NotNull T subscriber,
                 final @Nullable Function<? super F, ? extends FM> fluxMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
             this.subscriber = subscriber;
             this.fluxMapper = fluxMapper;
             this.singleMapper = singleMapper;
@@ -178,7 +175,6 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
                     final @NotNull T subscriber,
                     final @Nullable Function<? super F, ? extends FM> fluxMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
                 super(subscriber, fluxMapper, singleMapper);
             }
 
@@ -208,7 +204,6 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
                 final @NotNull CoreWithSingleSubscriber<? super FM, ? super SM> subscriber,
                 final @Nullable Function<? super F, ? extends FM> fluxMapper,
                 final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
             super(subscriber, fluxMapper, singleMapper);
         }
 
@@ -224,7 +219,6 @@ class FluxWithSingleMap<F, S, FM, SM> extends FluxWithSingleOperator<F, S, FM, S
                     final @NotNull WithSingleConditionalSubscriber<? super FM, ? super SM> subscriber,
                     final @Nullable Function<? super F, ? extends FM> fluxMapper,
                     final @NotNull Function<? super S, ? extends SM> singleMapper) {
-
                 super(subscriber, fluxMapper, singleMapper);
             }
 

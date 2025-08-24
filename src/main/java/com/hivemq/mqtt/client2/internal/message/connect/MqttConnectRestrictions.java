@@ -54,7 +54,6 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt3C
             final @Range(from = 0, to = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE) int sendTopicAliasMaximum,
             final boolean requestProblemInformation,
             final boolean requestResponseInformation) {
-
         this.receiveMaximum = receiveMaximum;
         this.sendMaximum = sendMaximum;
         this.maximumPacketSize = maximumPacketSize;
@@ -132,7 +131,6 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt3C
             return false;
         }
         final MqttConnectRestrictions that = (MqttConnectRestrictions) o;
-
         return (receiveMaximum == that.receiveMaximum) && (sendMaximum == that.sendMaximum) &&
                 (maximumPacketSize == that.maximumPacketSize) &&
                 (sendMaximumPacketSize == that.sendMaximumPacketSize) &&

@@ -29,8 +29,9 @@ public class Mqtt3PubAckException extends Mqtt3MessageException {
     private final @NotNull Mqtt3PubAck pubAck;
 
     public Mqtt3PubAckException(
-            final @NotNull Mqtt3PubAck pubAck, final @Nullable String message, final @Nullable Throwable cause) {
-
+            final @NotNull Mqtt3PubAck pubAck,
+            final @Nullable String message,
+            final @Nullable Throwable cause) {
         super(message, cause);
         this.pubAck = pubAck;
     }

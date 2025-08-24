@@ -37,15 +37,14 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     public static final @NotNull Function<Mqtt5SubAck, Mqtt3SubAck> MAPPER = Mqtt3SubAckView::of;
 
     public static @NotNull MqttSubAck delegate(
-            final int packetIdentifier, final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
-
+            final int packetIdentifier,
+            final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
         return new MqttSubAck(
                 packetIdentifier, delegateReturnCodes(returnCodes), null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     private static @NotNull ImmutableList<Mqtt5SubAckReasonCode> delegateReturnCodes(
             final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
-
         final ImmutableList.Builder<Mqtt5SubAckReasonCode> builder = ImmutableList.builder(returnCodes.size());
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < returnCodes.size(); i++) {
@@ -71,7 +70,6 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
 
     private static @NotNull ImmutableList<Mqtt3SubAckReturnCode> viewReasonCodes(
             final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
-
         final ImmutableList.Builder<Mqtt3SubAckReturnCode> builder = ImmutableList.builder(reasonCodes.size());
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < reasonCodes.size(); i++) {
@@ -136,7 +134,6 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
             return false;
         }
         final Mqtt3SubAckView that = (Mqtt3SubAckView) o;
-
         return delegate.equals(that.delegate);
     }
 

@@ -48,7 +48,6 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
             final @NotNull MqttEncoderContext context,
             final int encodedLength,
             final int remainingLength) {
-
         final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength);
         return out;

@@ -185,7 +185,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      */
     @CheckReturnValue
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribePublishes(
-            @NotNull Mqtt5Subscribe subscribe, boolean manualAcknowledgement);
+            @NotNull Mqtt5Subscribe subscribe,
+            boolean manualAcknowledgement);
 
     /**
      * Fluent counterpart of {@link #subscribePublishes(Mqtt5Subscribe, boolean)}.

@@ -142,8 +142,8 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      */
     @Contract("null, _ -> fail; _, null -> fail")
     public static @NotNull MqttSharedTopicFilterImpl of(
-            final @Nullable String shareName, final @Nullable String topicFilter) {
-
+            final @Nullable String shareName,
+            final @Nullable String topicFilter) {
         checkShareName(shareName);
         Checks.notEmpty(topicFilter, "Topic filter");
         checkWellFormed(topicFilter, "Topic filter");
@@ -163,8 +163,8 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      */
     @Contract("null, _ -> fail")
     public static @NotNull MqttSharedTopicFilterImpl of(
-            final @Nullable String shareName, final @NotNull MqttTopicFilterImpl topicFilter) {
-
+            final @Nullable String shareName,
+            final @NotNull MqttTopicFilterImpl topicFilter) {
         checkShareName(shareName);
         final String sharedTopicFilter = sharedTopicFilter(shareName, topicFilter.getTopicFilterString());
         checkLength(sharedTopicFilter, "Shared topic filter");
@@ -212,8 +212,8 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     }
 
     private static @NotNull String sharedTopicFilter(
-            final @NotNull String shareName, final @NotNull String topicFilter) {
-
+            final @NotNull String shareName,
+            final @NotNull String topicFilter) {
         return SHARE_PREFIX + shareName + MqttTopicImpl.TOPIC_LEVEL_SEPARATOR + topicFilter;
     }
 
@@ -225,16 +225,18 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     private int filterCharStart;
 
     private MqttSharedTopicFilterImpl(
-            final byte @NotNull [] binary, final int shareNameByteEnd, final int wildcardFlags) {
-
+            final byte @NotNull [] binary,
+            final int shareNameByteEnd,
+            final int wildcardFlags) {
         super(binary, wildcardFlags);
         this.filterByteStart = shareNameByteEnd + 1;
         filterCharStart = -1;
     }
 
     private MqttSharedTopicFilterImpl(
-            final @NotNull String string, final int shareNameCharEnd, final int wildcardFlags) {
-
+            final @NotNull String string,
+            final int shareNameCharEnd,
+            final int wildcardFlags) {
         super(string, wildcardFlags);
         filterByteStart = -1;
         this.filterCharStart = shareNameCharEnd + 1;

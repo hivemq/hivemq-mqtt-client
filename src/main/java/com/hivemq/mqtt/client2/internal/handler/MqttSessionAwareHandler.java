@@ -30,8 +30,8 @@ public abstract class MqttSessionAwareHandler extends MqttConnectionAwareHandler
     protected boolean hasSession;
 
     public void onSessionStartOrResume(
-            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
-
+            final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull EventLoop eventLoop) {
         hasSession = true;
     }
 
@@ -41,7 +41,8 @@ public abstract class MqttSessionAwareHandler extends MqttConnectionAwareHandler
 
     @Override
     protected void onDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {}
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttDisconnectEvent disconnectEvent) {}
 
     @Override
     public boolean isSharable() {

@@ -23,7 +23,8 @@ import org.jetbrains.annotations.Unmodifiable;
 /**
  * @author Silvio Giebl
  */
-@Unmodifiable class ImmutableEmptyIntList implements ImmutableIntList {
+@Unmodifiable
+class ImmutableEmptyIntList implements ImmutableIntList {
 
     static final @NotNull ImmutableEmptyIntList INSTANCE = new ImmutableEmptyIntList();
 

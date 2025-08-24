@@ -31,8 +31,8 @@ class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
     private final @NotNull AtomicBoolean confirmed = new AtomicBoolean(false);
 
     MqttIncomingPublishConfirmable(
-            final @NotNull MqttIncomingPublishFlow flow, final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
-
+            final @NotNull MqttIncomingPublishFlow flow,
+            final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
         this.flow = flow;
         this.publishWithFlows = publishWithFlows;
     }

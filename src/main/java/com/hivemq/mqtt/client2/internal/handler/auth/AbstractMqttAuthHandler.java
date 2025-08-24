@@ -65,8 +65,8 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     @NotNull MqttAuthState state = MqttAuthState.NONE;
 
     AbstractMqttAuthHandler(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull Mqtt5EnhancedAuthMechanism authMechanism) {
-
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull Mqtt5EnhancedAuthMechanism authMechanism) {
         this.clientConfig = clientConfig;
         this.authMechanism = authMechanism;
     }
@@ -81,7 +81,6 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
      */
     final void readAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         cancelTimeout();
-
         if (validateAuth(ctx, auth)) {
             switch (auth.getReasonCode()) {
                 case CONTINUE_AUTHENTICATION:
@@ -136,7 +135,6 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
                             "if client side AUTH is pending."));
             return;
         }
-
         final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, getMethod());
         state = MqttAuthState.IN_PROGRESS_RESPONSE;
         callMechanismFutureResult(() -> authMechanism.onContinue(clientConfig, auth, authBuilder), ctx2 -> {
@@ -175,7 +173,6 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
             final @NotNull Supplier<@NotNull CompletableFuture<Void>> supplier,
             final @NotNull Consumer<@NotNull ChannelHandlerContext> onSuccess,
             final @NotNull BiConsumer<@NotNull ChannelHandlerContext, @NotNull Throwable> onError) {
-
         if (ctx == null) {
             return;
         }
@@ -201,7 +198,6 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
             final @NotNull Supplier<@NotNull CompletableFuture<Boolean>> supplier,
             final @NotNull Consumer<@NotNull ChannelHandlerContext> onSuccess,
             final @NotNull BiConsumer<@NotNull ChannelHandlerContext, @Nullable Throwable> onError) {
-
         if (ctx == null) {
             return;
         }

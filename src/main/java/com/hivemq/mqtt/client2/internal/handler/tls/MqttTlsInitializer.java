@@ -47,9 +47,7 @@ public final class MqttTlsInitializer {
             final @NotNull MqttTlsConfigImpl tlsConfig,
             final @NotNull Consumer<Channel> onSuccess,
             final @NotNull BiConsumer<Channel, Throwable> onError) {
-
         final InetSocketAddress serverAddress = clientConfig.getCurrentTransportConfig().getServerAddress();
-
         final SslHandler sslHandler;
         try {
             SslContext sslContext = clientConfig.getCurrentSslContext();
@@ -62,26 +60,21 @@ public final class MqttTlsInitializer {
             onError.accept(channel, t);
             return;
         }
-
         sslHandler.setHandshakeTimeoutMillis(tlsConfig.getHandshakeTimeoutMs());
-
         final HostnameVerifier hostnameVerifier = tlsConfig.getRawHostnameVerifier();
         if (hostnameVerifier == null) {
             final SSLParameters sslParameters = sslHandler.engine().getSSLParameters();
             sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
             sslHandler.engine().setSSLParameters(sslParameters);
         }
-
         final MqttTlsAdapterHandler tlsAdapterHandler =
                 new MqttTlsAdapterHandler(sslHandler, serverAddress.getHostString(), hostnameVerifier, onSuccess,
                         onError);
-
         channel.pipeline().addLast(SSL_HANDLER_NAME, sslHandler).addLast(MqttTlsAdapterHandler.NAME, tlsAdapterHandler);
     }
 
     static @NotNull SslContext createSslContext(final @NotNull MqttTlsConfigImpl tlsConfig) throws SSLException {
         final ImmutableList<String> protocols = tlsConfig.getRawProtocols();
-
         return SslContextBuilder.forClient()
                 .trustManager(tlsConfig.getRawTrustManagerFactory())
                 .keyManager(tlsConfig.getRawKeyManagerFactory())
