@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.internal.reactor;
+package com.hivemq.mqtt.client2.reactor.internal;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
 import com.hivemq.mqtt.client2.internal.message.connect.MqttConnect;
@@ -37,7 +37,7 @@ import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5SubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.subscribe.Mqtt5Subscribe;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5UnsubAck;
 import com.hivemq.mqtt.client2.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
-import com.hivemq.mqtt.client2.mqtt5.reactor.Mqtt5ReactorClient;
+import com.hivemq.mqtt.client2.reactor.mqtt5.Mqtt5ReactorClient;
 import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.internal.reactor.mqtt3;
+package com.hivemq.mqtt.client2.reactor.internal.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
 import com.hivemq.mqtt.client2.internal.message.connect.mqtt3.Mqtt3ConnectView;
@@ -34,7 +34,7 @@ import com.hivemq.mqtt.client2.mqtt3.message.subscribe.Mqtt3SubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import com.hivemq.mqtt.client2.mqtt3.reactor.Mqtt3ReactorClient;
+import com.hivemq.mqtt.client2.reactor.mqtt3.Mqtt3ReactorClient;
 import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;

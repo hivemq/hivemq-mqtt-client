@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.hivemq.mqtt.client2.mqtt3.reactor;
+package com.hivemq.mqtt.client2.reactor.mqtt3;
 
 import com.hivemq.mqtt.client2.MqttGlobalPublishFilter;
-import com.hivemq.mqtt.client2.internal.reactor.mqtt3.Mqtt3ReactorClientView;
 import com.hivemq.mqtt.client2.libs.reactor.FluxWithSingle;
 import com.hivemq.mqtt.client2.mqtt3.Mqtt3Client;
 import com.hivemq.mqtt.client2.mqtt3.message.connect.Mqtt3ConnAck;
@@ -31,6 +30,7 @@ import com.hivemq.mqtt.client2.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3UnsubAck;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import com.hivemq.mqtt.client2.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
+import com.hivemq.mqtt.client2.reactor.internal.mqtt3.Mqtt3ReactorClientView;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
