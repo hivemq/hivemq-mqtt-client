@@ -58,5 +58,5 @@ javadocLinks = { id = "io.github.sgtsilvio.gradle.javadoc-links", version = "0.8
 license = { id = "com.github.hierynomus.license", version = "0.16.1" }
 mavenCentralPublishing = { id = "io.github.sgtsilvio.gradle.maven-central-publishing", version = "0.4.1" }
 metadata = { id = "io.github.sgtsilvio.gradle.metadata", version = "0.6.0" }
-shadow = { id = "com.gradleup.shadow", version = "9.0.2" }
+shadow = { id = "com.gradleup.shadow", version = "9.1.0" }
 utf8 = { id = "com.github.sgtsilvio.gradle.utf8", version = "0.1.0" }
