@@ -221,7 +221,9 @@ tasks.shadowJar {
     minimize()
 }
 
-val javaComponent = components["java"] as AdhocComponentWithVariants
+shadow {
+    addShadowVariantIntoJavaComponent = false
+}
 
 /* ******************** publishing ******************** */
 
