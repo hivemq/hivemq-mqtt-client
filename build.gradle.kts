@@ -222,9 +222,6 @@ tasks.shadowJar {
 }
 
 val javaComponent = components["java"] as AdhocComponentWithVariants
-javaComponent.withVariantsFromConfiguration(configurations.shadowRuntimeElements.get()) {
-    skip()
-}
 
 /* ******************** publishing ******************** */
 
