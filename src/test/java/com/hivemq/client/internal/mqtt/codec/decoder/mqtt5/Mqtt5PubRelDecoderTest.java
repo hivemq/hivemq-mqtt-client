@@ -341,13 +341,13 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
         decodeNok(encoded, MALFORMED_PACKET);
     }
 
-    private @NotNull MqttPubRel decodeOk(final @NotNull byte[] encoded) {
+    private @NotNull MqttPubRel decodeOk(final byte @NotNull [] encoded) {
         final MqttPubRel pubRel = decode(encoded);
         assertNotNull(pubRel);
         return pubRel;
     }
 
-    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final byte @NotNull [] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttPubRel pubRel = decode(encoded);
         assertNull(pubRel);
 
@@ -358,7 +358,7 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
         createChannel();
     }
 
-    private @Nullable MqttPubRel decode(final @NotNull byte[] encoded) {
+    private @Nullable MqttPubRel decode(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

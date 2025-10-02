@@ -60,7 +60,6 @@ class ByteBufferUtilTest {
 
     @Test
     void wrap_null_null() {
-        //noinspection ConstantConditions
         assertNull(ByteBufferUtil.wrap(null));
     }
 

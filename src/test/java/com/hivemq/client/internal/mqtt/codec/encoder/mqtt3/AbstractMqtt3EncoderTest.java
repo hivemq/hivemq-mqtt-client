@@ -33,7 +33,7 @@ abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
         super(messageEncoders, connected);
     }
 
-    static @NotNull byte[] bytesOf(final @NotNull MqttWireMessage message) throws MqttException {
+    static byte @NotNull [] bytesOf(final @NotNull MqttWireMessage message) throws MqttException {
         return Bytes.concat(message.getHeader(), message.getPayload());
     }
 }

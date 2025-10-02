@@ -97,7 +97,7 @@ class RxFutureConverterTest {
             subscribeLatch.countDown();
             try {
                 emitLatch.await(1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 // ignore
             }
             if (emitter.isDisposed()) {
@@ -235,7 +235,7 @@ class RxFutureConverterTest {
             subscribeLatch.countDown();
             try {
                 emitLatch.await(1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 // ignore
             }
             if (emitter.isDisposed()) {
@@ -260,7 +260,7 @@ class RxFutureConverterTest {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
-        final Maybe<String> maybe = new Maybe<String>() {
+        final Maybe<String> maybe = new Maybe<>() {
             @Override
             protected void subscribeActual(final @NotNull MaybeObserver<? super String> observer) {
                 subscribeLatch.countDown();
@@ -378,7 +378,7 @@ class RxFutureConverterTest {
             subscribeLatch.countDown();
             try {
                 emitLatch.await(1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 // ignore
             }
             if (emitter.isDisposed()) {
@@ -403,7 +403,7 @@ class RxFutureConverterTest {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
-        final Single<String> single = new Single<String>() {
+        final Single<String> single = new Single<>() {
             @Override
             protected void subscribeActual(final @NotNull SingleObserver<? super String> observer) {
                 subscribeLatch.countDown();
@@ -546,7 +546,7 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.of("test")));
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(new TestMaybeObserver<String>() {
+        maybe.subscribe(new TestMaybeObserver<>() {
             @Override
             public void onSuccess(final @NotNull String s) {
                 assertNotNull(disposable);
@@ -563,7 +563,7 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.empty()));
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(new TestMaybeObserver<String>() {
+        maybe.subscribe(new TestMaybeObserver<>() {
             @Override
             public void onComplete() {
                 assertNotNull(disposable);
@@ -579,12 +579,12 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(CompletableFuture.completedFuture(null));
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(new TestMaybeObserver<String>() {
+        maybe.subscribe(new TestMaybeObserver<>() {
             @Override
             public void onError(final @NotNull Throwable e) {
                 assertNotNull(disposable);
                 assertTrue(disposable.isDisposed());
-                assertTrue(e instanceof NullPointerException);
+                assertInstanceOf(NullPointerException.class, e);
                 counter.incrementAndGet();
             }
         });
@@ -598,7 +598,7 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(new TestMaybeObserver<String>() {
+        maybe.subscribe(new TestMaybeObserver<>() {
             @Override
             public void onError(final @NotNull Throwable e) {
                 assertNotNull(disposable);
@@ -616,7 +616,7 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<>() {
             @Override
             public void onSuccess(final @NotNull String s) {
                 assertNotNull(disposable);
@@ -640,7 +640,7 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<>() {
             @Override
             public void onComplete() {
                 assertNotNull(disposable);
@@ -663,12 +663,12 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<>() {
             @Override
             public void onError(final @NotNull Throwable e) {
                 assertNotNull(disposable);
                 assertTrue(disposable.isDisposed());
-                assertTrue(e instanceof NullPointerException);
+                assertInstanceOf(NullPointerException.class, e);
                 counter.incrementAndGet();
             }
         };
@@ -687,7 +687,7 @@ class RxFutureConverterTest {
         final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<>() {
             @Override
             public void onError(final @NotNull Throwable e) {
                 assertNotNull(disposable);
@@ -711,7 +711,7 @@ class RxFutureConverterTest {
         final Maybe<String> completable = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<>() {
             @Override
             public void onSuccess(final @NotNull String s) {
                 assertNotNull(disposable);
@@ -735,7 +735,7 @@ class RxFutureConverterTest {
         final Single<String> single = RxFutureConverter.toSingle(CompletableFuture.completedFuture("test"));
 
         final AtomicInteger counter = new AtomicInteger();
-        single.subscribe(new TestSingleObserver<String>() {
+        single.subscribe(new TestSingleObserver<>() {
             @Override
             public void onSuccess(final @NotNull String s) {
                 assertNotNull(disposable);
@@ -754,7 +754,7 @@ class RxFutureConverterTest {
         final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        single.subscribe(new TestSingleObserver<String>() {
+        single.subscribe(new TestSingleObserver<>() {
             @Override
             public void onError(final @NotNull Throwable e) {
                 assertNotNull(disposable);
@@ -772,7 +772,7 @@ class RxFutureConverterTest {
         final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
+        final TestSingleObserver<String> observer = new TestSingleObserver<>() {
             @Override
             public void onSuccess(final @NotNull String s) {
                 assertNotNull(disposable);
@@ -796,7 +796,7 @@ class RxFutureConverterTest {
         final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
+        final TestSingleObserver<String> observer = new TestSingleObserver<>() {
             @Override
             public void onError(final @NotNull Throwable e) {
                 assertNotNull(disposable);
@@ -820,7 +820,7 @@ class RxFutureConverterTest {
         final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
+        final TestSingleObserver<String> observer = new TestSingleObserver<>() {
             @Override
             public void onSuccess(final @NotNull String s) {
                 counter.incrementAndGet();

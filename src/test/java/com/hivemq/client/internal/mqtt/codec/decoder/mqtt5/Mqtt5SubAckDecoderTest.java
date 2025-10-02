@@ -75,12 +75,12 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         final ImmutableList<MqttUserPropertyImpl> userProperties = subAck.getUserProperties().asList();
         assertEquals(1, userProperties.size());
-        assertEquals("test", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.getFirst().getName().toString());
+        assertEquals("value", userProperties.getFirst().getValue().toString());
 
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
-        assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.get(0));
+        assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.getFirst());
     }
 
     @Test
@@ -119,7 +119,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
-        assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.get(0));
+        assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.getFirst());
     }
 
     @Test
@@ -212,7 +212,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         final MqttSubAck subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
-        assertEquals(reasonCode, reasonCodes.get(0));
+        assertEquals(reasonCode, reasonCodes.getFirst());
     }
 
     @Test
@@ -287,7 +287,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         final MqttSubAck subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
-        assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.get(0));
+        assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.getFirst());
 
         encoded[5] = (byte) 0xA5; // invalid reason code
         decodeNok(encoded, MALFORMED_PACKET);
@@ -448,13 +448,13 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttSubAck decodeOk(final @NotNull byte[] encoded) {
+    private MqttSubAck decodeOk(final byte @NotNull [] encoded) {
         final MqttSubAck subAck = decode(encoded);
         assertNotNull(subAck);
         return subAck;
     }
 
-    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final byte @NotNull [] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttSubAck subAck = decode(encoded);
         assertNull(subAck);
 
@@ -466,7 +466,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttSubAck decode(final @NotNull byte[] encoded) {
+    private MqttSubAck decode(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

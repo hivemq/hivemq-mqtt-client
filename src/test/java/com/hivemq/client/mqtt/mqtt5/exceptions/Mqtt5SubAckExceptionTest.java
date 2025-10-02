@@ -54,7 +54,7 @@ class Mqtt5SubAckExceptionTest {
         final Mqtt5SubAckException exception = new Mqtt5SubAckException(subAck, "message");
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt5SubAckException);
+        assertInstanceOf(Mqtt5SubAckException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

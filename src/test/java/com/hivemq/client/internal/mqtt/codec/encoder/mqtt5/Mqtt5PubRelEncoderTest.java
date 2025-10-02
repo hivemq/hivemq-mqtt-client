@@ -274,7 +274,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         expected.release();
     }
 
-    private void encode(final @NotNull byte[] expected, final @NotNull MqttPubRel pubRel) {
+    private void encode(final byte @NotNull [] expected, final @NotNull MqttPubRel pubRel) {
         encode(pubRel, expected);
     }
 

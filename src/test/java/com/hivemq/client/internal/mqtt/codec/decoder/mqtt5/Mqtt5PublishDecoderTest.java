@@ -88,7 +88,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertNotNull(publishInternal);
 
-        assertEquals(false, publishInternal.isDup());
+        assertFalse(publishInternal.isDup());
         assertEquals(12, publishInternal.getPacketIdentifier());
         assertEquals(3, publishInternal.getTopicAlias());
 
@@ -102,7 +102,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals("topic", publish.getTopic().toString());
         assertEquals(MqttQos.AT_LEAST_ONCE, publish.getQos());
-        assertEquals(true, publish.isRetain());
+        assertTrue(publish.isRetain());
         assertTrue(publish.getMessageExpiryInterval().isPresent());
         assertEquals(10, publish.getMessageExpiryInterval().getAsLong());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
@@ -116,8 +116,8 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
         final ImmutableList<MqttUserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
-        assertEquals("test", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.getFirst().getName().toString());
+        assertEquals("value", userProperties.getFirst().getValue().toString());
 
         assertTrue(publish.getPayload().isPresent());
         assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
@@ -144,7 +144,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
         final MqttStatefulPublish publishInternal = decodeInternal(encoded);
 
-        assertEquals(false, publishInternal.isDup());
+        assertFalse(publishInternal.isDup());
 
         final ImmutableIntList subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         assertEquals(0, subscriptionIdentifiers.size());
@@ -155,7 +155,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals("topic", publish.getTopic().toString());
         assertEquals(MqttQos.AT_MOST_ONCE, publish.getQos());
-        assertEquals(true, publish.isRetain());
+        assertTrue(publish.isRetain());
         assertFalse(publish.getMessageExpiryInterval().isPresent());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
@@ -510,8 +510,8 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         final MqttPublish publish = decode(encoded);
         final ImmutableList<MqttUserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
-        assertEquals("test", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.getFirst().getName().toString());
+        assertEquals("value", userProperties.getFirst().getValue().toString());
     }
 
     @Test
@@ -1210,12 +1210,12 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttPublish decode(final @NotNull byte[] encoded) {
+    private MqttPublish decode(final byte @NotNull [] encoded) {
         return decodeInternal(encoded).stateless();
     }
 
     @NotNull
-    private MqttStatefulPublish decodeInternal(final @NotNull byte[] encoded) {
+    private MqttStatefulPublish decodeInternal(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -1226,7 +1226,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         return publishInternal;
     }
 
-    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final byte @NotNull [] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

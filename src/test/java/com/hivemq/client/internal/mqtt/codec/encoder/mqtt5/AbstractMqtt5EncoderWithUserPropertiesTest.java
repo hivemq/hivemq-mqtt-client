@@ -44,8 +44,8 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
     private final @NotNull MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
 
     AbstractMqtt5EncoderWithUserPropertiesTest(
-            final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
-
+            final @NotNull MqttMessageEncoders messageEncoders,
+            final boolean connected) {
         super(messageEncoders, connected);
     }
 

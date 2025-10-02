@@ -29,28 +29,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Mqtt3PubRecDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final @NotNull byte[] WELLFORMED_PUBREC_BEGIN = {
+    private static final byte @NotNull [] WELLFORMED_PUBREC_BEGIN = {
             //   type, flags
             0b0101_0000,
             //remaining length
             0b0000_0010
     };
-    private static final @NotNull byte[] MALFORMED_PUBREC_BEGIN_WRONG_FLAGS = {
+    private static final byte @NotNull [] MALFORMED_PUBREC_BEGIN_WRONG_FLAGS = {
             //   type, flags
             0b0101_0100,
             //remaining length
             0b0000_0010
     };
 
-    private static final @NotNull byte[] MALFORMED_PUBREC_BEGIN_TOO_LONG_LENGTH = {
+    private static final byte @NotNull [] MALFORMED_PUBREC_BEGIN_TOO_LONG_LENGTH = {
             //   type, flags
             0b0101_0100,
             //remaining length
             0b0000_0001
     };
-    private static final @NotNull byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
-    private static final @NotNull byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
-    private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
+    private static final byte @NotNull [] ENDING_TOO_LONG_MALFORMED = {0x01};
+    private static final byte @NotNull [] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
+    private static final byte @NotNull [] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3PubRecDecoderTest() {
         super(new MqttMessageDecoders() {{
@@ -73,19 +73,11 @@ class Mqtt3PubRecDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"1", "2"})
     void decode_ERROR_CASES(final int errorcase) throws Exception {
-        final byte[] encoded;
-        switch (errorcase) {
-            case 1:
-                encoded = Bytes.concat(MALFORMED_PUBREC_BEGIN_WRONG_FLAGS, MAX_PACKET_ID);
-                break;
-            case 2:
-                encoded =
-                        Bytes.concat(MALFORMED_PUBREC_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
-                break;
-            default:
-                throw new Exception();
-        }
-
+        final byte[] encoded = switch (errorcase) {
+            case 1 -> Bytes.concat(MALFORMED_PUBREC_BEGIN_WRONG_FLAGS, MAX_PACKET_ID);
+            case 2 -> Bytes.concat(MALFORMED_PUBREC_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
+            default -> throw new Exception();
+        };
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

@@ -84,7 +84,7 @@ class MqttSharedTopicFilterImplTest {
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNotNull(mqtt5TopicFilter);
         assertTrue(mqtt5TopicFilter.isShared());
-        assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
+        assertInstanceOf(MqttSharedTopicFilterImpl.class, mqtt5TopicFilter);
 
         final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
@@ -253,7 +253,7 @@ class MqttSharedTopicFilterImplTest {
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNotNull(mqtt5TopicFilter);
         assertTrue(mqtt5TopicFilter.isShared());
-        assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
+        assertInstanceOf(MqttSharedTopicFilterImpl.class, mqtt5TopicFilter);
 
         final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
@@ -268,7 +268,7 @@ class MqttSharedTopicFilterImplTest {
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNotNull(mqtt5TopicFilter);
         assertTrue(mqtt5TopicFilter.isShared());
-        assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
+        assertInstanceOf(MqttSharedTopicFilterImpl.class, mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
         assertEquals(levels, Arrays.asList("", ""));
 
@@ -285,7 +285,7 @@ class MqttSharedTopicFilterImplTest {
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNotNull(mqtt5TopicFilter);
         assertTrue(mqtt5TopicFilter.isShared());
-        assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
+        assertInstanceOf(MqttSharedTopicFilterImpl.class, mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
         assertEquals(levels, Arrays.asList("abc", "def", "ghi"));
     }
@@ -298,7 +298,7 @@ class MqttSharedTopicFilterImplTest {
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNotNull(mqtt5TopicFilter);
         assertTrue(mqtt5TopicFilter.isShared());
-        assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
+        assertInstanceOf(MqttSharedTopicFilterImpl.class, mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
         assertEquals(levels, Arrays.asList("", "abc", "", "def", "", "", "ghi", ""));
     }

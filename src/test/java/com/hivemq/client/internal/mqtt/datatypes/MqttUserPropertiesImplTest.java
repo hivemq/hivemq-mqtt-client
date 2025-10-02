@@ -48,8 +48,8 @@ class MqttUserPropertiesImplTest {
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(builder);
         final ImmutableList<MqttUserPropertyImpl> userPropertiesList = userProperties.asList();
         assertEquals(1, userPropertiesList.size());
-        assertEquals(name, userPropertiesList.get(0).getName());
-        assertEquals(value, userPropertiesList.get(0).getValue());
+        assertEquals(name, userPropertiesList.getFirst().getName());
+        assertEquals(value, userPropertiesList.getFirst().getValue());
     }
 
     @Test

@@ -30,33 +30,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final @NotNull byte[] WELLFORMED_SUBACK_BEGIN = {
+    private static final byte @NotNull [] WELLFORMED_SUBACK_BEGIN = {
             //   type, flags
             (byte) 0b1001_0000,
             //remaining length
             0b0000_0110
     };
-    private static final @NotNull byte[] MALFORMED_SUBACK_BEGIN_WRONG_FLAGS = {
+    private static final byte @NotNull [] MALFORMED_SUBACK_BEGIN_WRONG_FLAGS = {
             //   type, flags
             (byte) 0b1001_0010,
             //remaining length
             0b0000_0010
     };
-    private static final @NotNull byte[] MALFORMED_SUBACK_BEGIN_TOO_SHORT_LENGTH = {
+    private static final byte @NotNull [] MALFORMED_SUBACK_BEGIN_TOO_SHORT_LENGTH = {
             //   type, flags
             (byte) 0b1001_0010,
             //remaining length
             0b0000_0010
     };
 
-    private static final @NotNull byte[] REASON_CODE_QOS_0 = {0x00};
-    private static final @NotNull byte[] REASON_CODE_QOS_1 = {0x01};
-    private static final @NotNull byte[] REASON_CODE_QOS_2 = {0x02};
-    private static final @NotNull byte[] REASON_CODE_FAILURE = {(byte) 0x80};
-    private static final @NotNull byte[] REASON_CODE_MALFORMED = {0x8, 0x2};
+    private static final byte @NotNull [] REASON_CODE_QOS_0 = {0x00};
+    private static final byte @NotNull [] REASON_CODE_QOS_1 = {0x01};
+    private static final byte @NotNull [] REASON_CODE_QOS_2 = {0x02};
+    private static final byte @NotNull [] REASON_CODE_FAILURE = {(byte) 0x80};
+    private static final byte @NotNull [] REASON_CODE_MALFORMED = {0x8, 0x2};
 
-    private static final @NotNull byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
-    private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
+    private static final byte @NotNull [] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
+    private static final byte @NotNull [] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3SubAckDecoderTest() {
         super(new MqttMessageDecoders() {{
@@ -67,8 +67,10 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_SUCESS(final boolean useMaxPacketId) {
-        final byte[] encoded = Bytes.concat(WELLFORMED_SUBACK_BEGIN, (useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID),
-                REASON_CODE_QOS_0, REASON_CODE_QOS_1, REASON_CODE_QOS_2, REASON_CODE_FAILURE);
+        final byte[] encoded =
+                Bytes.concat(
+                        WELLFORMED_SUBACK_BEGIN, (useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID), REASON_CODE_QOS_0,
+                        REASON_CODE_QOS_1, REASON_CODE_QOS_2, REASON_CODE_FAILURE);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -88,26 +90,22 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"1", "2", "3"})
     void decode_ERROR_CASES(final int errorcase) throws Exception {
-        final byte[] encoded;
-        switch (errorcase) {
-            case 1:
+        final byte[] encoded = switch (errorcase) {
+            case 1 ->
                 //wrong flags
-                encoded = Bytes.concat(MALFORMED_SUBACK_BEGIN_WRONG_FLAGS, MAX_PACKET_ID, REASON_CODE_QOS_0,
-                        REASON_CODE_QOS_1, REASON_CODE_QOS_2, REASON_CODE_FAILURE);
-                break;
-            case 2:
+                    Bytes.concat(
+                            MALFORMED_SUBACK_BEGIN_WRONG_FLAGS, MAX_PACKET_ID, REASON_CODE_QOS_0,
+                            REASON_CODE_QOS_1, REASON_CODE_QOS_2, REASON_CODE_FAILURE);
+            case 2 ->
                 // only 2 remaining length
-                encoded = Bytes.concat(MALFORMED_SUBACK_BEGIN_TOO_SHORT_LENGTH, MIN_PACKET_ID);
-                break;
-            case 3:
+                    Bytes.concat(MALFORMED_SUBACK_BEGIN_TOO_SHORT_LENGTH, MIN_PACKET_ID);
+            case 3 ->
                 // malformed reason code
-                encoded = Bytes.concat(WELLFORMED_SUBACK_BEGIN, MIN_PACKET_ID, REASON_CODE_MALFORMED, REASON_CODE_QOS_1,
-                        REASON_CODE_QOS_2, REASON_CODE_FAILURE);
-                break;
-            default:
-                throw new Exception();
-        }
-
+                    Bytes.concat(
+                            WELLFORMED_SUBACK_BEGIN, MIN_PACKET_ID, REASON_CODE_MALFORMED, REASON_CODE_QOS_1,
+                            REASON_CODE_QOS_2, REASON_CODE_FAILURE);
+            default -> throw new Exception();
+        };
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

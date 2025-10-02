@@ -283,7 +283,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         expected.release();
     }
 
-    private void encode(final @NotNull byte[] expected, final @NotNull MqttPubComp pubComp) {
+    private void encode(final byte @NotNull [] expected, final @NotNull MqttPubComp pubComp) {
         encode(pubComp, expected);
     }
 

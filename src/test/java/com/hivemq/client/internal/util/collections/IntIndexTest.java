@@ -17,7 +17,6 @@
 package com.hivemq.client.internal.util.collections;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -315,36 +314,6 @@ class IntIndexTest {
         assertEquals(0, map.size());
     }
 
-    private static class Entry {
-
-        final int id;
-        final @NotNull String value;
-
-        private Entry(final int id, final @NotNull String value) {
-            this.id = id;
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(final @Nullable Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Entry)) {
-                return false;
-            }
-            final Entry entry = (Entry) o;
-            return (id == entry.id) && value.equals(entry.value);
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * id + value.hashCode();
-        }
-
-        @Override
-        public @NotNull String toString() {
-            return "Entry{" + "id=" + id + ", value='" + value + '\'' + '}';
-        }
+    private record Entry(int id, @NotNull String value) {
     }
 }

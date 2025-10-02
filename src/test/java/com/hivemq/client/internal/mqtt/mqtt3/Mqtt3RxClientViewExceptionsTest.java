@@ -143,7 +143,7 @@ class Mqtt3RxClientViewExceptionsTest {
             @NotNull final Executable executable, @NotNull final Mqtt5MessageException mqtt5MessageException) {
 
         final RuntimeException runtimeException = assertThrows(RuntimeException.class, executable);
-        assertTrue(runtimeException instanceof Mqtt3MessageException);
+        assertInstanceOf(Mqtt3MessageException.class, runtimeException);
         final Mqtt3MessageException mqtt3MessageException = (Mqtt3MessageException) runtimeException;
         assertEquals(mqtt5MessageException.getMqttMessage().getType().getCode(),
                 mqtt3MessageException.getMqttMessage().getType().getCode());

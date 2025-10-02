@@ -693,7 +693,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     }
 
     private void encode(
-            final @NotNull byte[] expected,
+            final byte @NotNull [] expected,
             final @NotNull MqttPublish publish,
             final int packetIdentifier,
             final boolean isDup,
@@ -705,7 +705,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     }
 
     private void encode(
-            final @NotNull byte[] expected,
+            final byte @NotNull [] expected,
             final @NotNull MqttPublish publish,
             final int packetIdentifier,
             final boolean isDup,
@@ -721,7 +721,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         encodeInternal(expected, publishInternal);
     }
 
-    private void encodeInternal(final @NotNull byte[] expected, final @NotNull MqttStatefulPublish publishInternal) {
+    private void encodeInternal(final byte @NotNull [] expected, final @NotNull MqttStatefulPublish publishInternal) {
         encode(publishInternal, expected);
     }
 

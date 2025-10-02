@@ -54,7 +54,7 @@ class Mqtt5ConnAckExceptionTest {
         final Mqtt5ConnAckException exception = new Mqtt5ConnAckException(connAck, "message");
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt5ConnAckException);
+        assertInstanceOf(Mqtt5ConnAckException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

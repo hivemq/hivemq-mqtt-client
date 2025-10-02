@@ -59,7 +59,7 @@ class AsyncRuntimeExceptionTest {
         final TestAsyncRuntimeException exception = new TestAsyncRuntimeException("message");
         assertEquals(0, exception.getStackTrace().length);
         final TestAsyncRuntimeException thrownException =
-                assertThrows(TestAsyncRuntimeException.class, () -> { throw exception; });
+                assertThrows(TestAsyncRuntimeException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 
@@ -68,7 +68,7 @@ class AsyncRuntimeExceptionTest {
         final TestAsyncRuntimeException exception = new TestAsyncRuntimeException("message");
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof TestAsyncRuntimeException);
+        assertInstanceOf(TestAsyncRuntimeException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

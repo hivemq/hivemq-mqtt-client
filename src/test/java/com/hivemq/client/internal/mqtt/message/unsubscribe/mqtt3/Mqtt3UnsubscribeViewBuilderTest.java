@@ -54,7 +54,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_correct_use() {
-
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().addTopicFilter("test").addTopicFilter(MqttTopicFilter.of("topics")).build();
 
@@ -67,7 +66,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_fluent_topic_is_finished_if_addTopicFilter_is_used_mqtttopic() {
-
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().topicFilter("test").addTopicFilter(MqttTopicFilter.of("topics")).build();
 
@@ -80,7 +78,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_fluent_topic_is_finished_if_addTopicFilter_is_used_string() {
-
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().topicFilter("test").addTopicFilter("topics").build();
 
@@ -93,7 +90,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_nested_topic_builder_is_used_with_and_then_addTopicFilter_mqtttopic() {
-
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter()
                 .addLevel("first")
@@ -112,7 +108,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_nested_topic_builder_is_used_and_then_addTopicFilter_string() {
-
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter()
                 .addLevel("first")
@@ -131,7 +126,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_fluent_topic_is_finished_if_addTopicFilter_is_used_second_time_mqtttopic() {
-
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter("test")
                 .addTopicFilter(MqttTopicFilter.of("firstAdd"))
@@ -152,7 +146,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_fluent_topic_is_finished_if_addTopicFilter_is_used_second_time_string() {
-
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter("test")
                 .addTopicFilter("firstAdd")
@@ -173,7 +166,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_fluent_topic_is_finished_if_fluent_addTopicFilter_is_used() {
-
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter("test")
                 .addTopicFilter()
@@ -192,13 +184,12 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void fluent_topic_is_finished_when_building() {
-
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().topicFilter("test").build();
 
         final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(1, unsubscribeTopics.size());
 
-        assertEquals("test", unsubscribeTopics.get(0).toString());
+        assertEquals("test", unsubscribeTopics.getFirst().toString());
     }
 
     @Test
@@ -236,7 +227,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_correct_use() {
-
         final ImmutableList<MqttTopicFilter> topics =
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
@@ -252,7 +242,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_correct_use_collection() {
-
         final ImmutableList<MqttTopicFilter> topics =
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
@@ -268,7 +257,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_correct_use_varargs() {
-
         final MqttTopicFilter[] topics =
                 {MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element")};
 
@@ -284,7 +272,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_correct_use_stream() {
-
         final ImmutableList<String> topics = ImmutableList.of("test", "list", "element");
 
         final Mqtt3Unsubscribe subscribe =
@@ -300,7 +287,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_fluent_topic_is_finished_if_addTopicFilters_is_used() {
-
         final ImmutableList<MqttTopicFilter> topics =
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
@@ -318,7 +304,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_nested_topic_builder_is_used_and_then_addTopicFilters() {
-
         final ImmutableList<MqttTopicFilter> topics =
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
@@ -342,7 +327,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_fluent_topic_is_finished_if_addTopicFilters_is_used_second_time() {
-
         final ImmutableList<MqttTopicFilter> topics =
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
         final ImmutableList<MqttTopicFilter> topics2 = ImmutableList.of(MqttTopicFilter.of("second"));
@@ -369,7 +353,6 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_error_when_topic_object_is_implemented() {
-
         final ImmutableList<MqttTopicFilter> topicFilters =
                 ImmutableList.of(MqttTopicFilter.of("test"), mock(MqttTopicFilter.class));
 

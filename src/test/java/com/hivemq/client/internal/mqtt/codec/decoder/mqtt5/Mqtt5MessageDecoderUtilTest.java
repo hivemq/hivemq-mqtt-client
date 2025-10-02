@@ -27,8 +27,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
 import static com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("NullabilityAnnotations")
 class Mqtt5MessageDecoderUtilTest {
@@ -48,9 +47,9 @@ class Mqtt5MessageDecoderUtilTest {
     @Test
     void booleanOnlyOnce() throws MqttDecoderException {
         in.writeByte(1);
-        assertEquals(true, Mqtt5MessageDecoderUtil.booleanOnlyOnce(false, "name", in));
+        assertTrue(Mqtt5MessageDecoderUtil.booleanOnlyOnce(false, "name", in));
         in.writeByte(0);
-        assertEquals(false, Mqtt5MessageDecoderUtil.booleanOnlyOnce(false, "name", in));
+        assertFalse(Mqtt5MessageDecoderUtil.booleanOnlyOnce(false, "name", in));
     }
 
     @Test
