@@ -745,7 +745,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private static final int PROPERTIES_VALID_LENGTH = 54;
-    private static final @NotNull byte[] PROPERTIES_VALID = {
+    private static final byte @NotNull [] PROPERTIES_VALID = {
             //     reason string
             0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
             //     user properties

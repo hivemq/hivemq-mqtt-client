@@ -52,7 +52,7 @@ class MqttSessionExpiredExceptionTest {
                 new MqttSessionExpiredException("message", new RuntimeException("cause"));
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof MqttSessionExpiredException);
+        assertInstanceOf(MqttSessionExpiredException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

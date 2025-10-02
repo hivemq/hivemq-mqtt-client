@@ -52,12 +52,10 @@ class MqttSslInitializerTest {
 
     @Test
     public void test_createSslEngine_null_values() throws Exception {
-
         final TrustManagerFactory tmf = null;
-
-        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
+        final SSLEngine sslEngine = createSslEngine(
+                embeddedChannel,
                 new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).build());
-
         assertNotNull(sslEngine);
         assertTrue(sslEngine.getUseClientMode());
         assertTrue(sslEngine.getEnabledProtocols().length > 0);
@@ -66,40 +64,30 @@ class MqttSslInitializerTest {
 
     @Test
     public void test_createSslEngine_cipher_suite() throws Exception {
-
         final TrustManagerFactory tmf = null;
-
         final ImmutableList<String> cipherSuite = getFirstSupportedCipherSuite();
-
-        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
+        final SSLEngine sslEngine = createSslEngine(
+                embeddedChannel, new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
                         .cipherSuites(cipherSuite)
                         .build());
-
         assertNotNull(sslEngine);
 
         final String[] enabledCipherSuites = sslEngine.getEnabledCipherSuites();
-
         assertEquals(1, enabledCipherSuites.length);
-        assertEquals(cipherSuite.get(0), enabledCipherSuites[0]);
+        assertEquals(cipherSuite.getFirst(), enabledCipherSuites[0]);
     }
 
     @Test
     public void test_createSslEngine_multiple_cipher_suites() throws Exception {
-
         final TrustManagerFactory tmf = null;
-
         final ImmutableList<String> cipherSuites = getOtherSupportedCipherSuites();
-
-        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
+        final SSLEngine sslEngine = createSslEngine(
+                embeddedChannel, new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
                         .cipherSuites(cipherSuites)
                         .build());
-
         assertNotNull(sslEngine);
 
         final String[] enabledCipherSuites = sslEngine.getEnabledCipherSuites();
-
         assertEquals(2, enabledCipherSuites.length);
         assertEquals(cipherSuites.get(0), enabledCipherSuites[0]);
         assertEquals(cipherSuites.get(1), enabledCipherSuites[1]);
@@ -107,61 +95,50 @@ class MqttSslInitializerTest {
 
     @Test
     public void test_createSslEngine_protocol() throws Exception {
-
         System.out.println(getEnabledProtocols());
-
         final TrustManagerFactory tmf = null;
-
         final ImmutableList<String> protocol = ImmutableList.of("TLSv1");
-
-        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocol).build());
-
+        final SSLEngine sslEngine =
+                createSslEngine(
+                        embeddedChannel, new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
+                                .protocols(protocol)
+                                .build());
         assertNotNull(sslEngine);
 
         final String[] enabledProtocols = sslEngine.getEnabledProtocols();
-
         assertEquals(1, enabledProtocols.length);
-        assertEquals(protocol.get(0), enabledProtocols[0]);
+        assertEquals(protocol.getFirst(), enabledProtocols[0]);
     }
 
     @Test
     public void test_createSslEngine_multiple_protocols() throws Exception {
-
         final TrustManagerFactory tmf = null;
-
         final ImmutableList<String> protocols = ImmutableList.of("TLSv1.1", "TLSv1.2");
-
-        final SSLEngine sslEngine = createSslEngine(embeddedChannel,
-                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocols).build());
-
+        final SSLEngine sslEngine =
+                createSslEngine(
+                        embeddedChannel, new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
+                                .protocols(protocols)
+                                .build());
         assertNotNull(sslEngine);
 
         final String[] enabledProtocols = sslEngine.getEnabledProtocols();
-
         assertEquals(2, enabledProtocols.length);
         assertEquals(protocols.get(0), enabledProtocols[0]);
         assertEquals(protocols.get(1), enabledProtocols[1]);
     }
 
     private @NotNull ImmutableList<String> getFirstSupportedCipherSuite() throws Exception {
-
         final List<String> supportedCipherSuites = getEnabledCipherSuites();
-
         final List<String> valueList = new ArrayList<>();
-        valueList.add(supportedCipherSuites.get(0));
-
+        valueList.add(supportedCipherSuites.getFirst());
         return ImmutableList.copyOf(valueList);
     }
 
     private @NotNull ImmutableList<String> getOtherSupportedCipherSuites() throws Exception {
-
         final List<String> supportedCipherSuites = getEnabledCipherSuites();
-
         final List<String> valueList = new ArrayList<>();
         valueList.add(supportedCipherSuites.get(1));
         valueList.add(supportedCipherSuites.get(2));
-
         return ImmutableList.copyOf(valueList);
     }
 
@@ -181,8 +158,8 @@ class MqttSslInitializerTest {
     }
 
     private static @NotNull SSLEngine createSslEngine(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-
+            final @NotNull Channel channel,
+            final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
         return MqttSslInitializer.createSslContext(sslConfig).newEngine(channel.alloc());
     }
 }

@@ -33,34 +33,34 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final @NotNull byte[] WELLFORMED_CONNACK_BEGIN = {
+    private static final byte @NotNull [] WELLFORMED_CONNACK_BEGIN = {
             //   type, flags
             0b0010_0000,
             //remaining length
             0b0000_0010
     };
-    private static final @NotNull byte[] MALFORMED_CONNACK_BEGIN_WORNG_FLAGS = {
+    private static final byte @NotNull [] MALFORMED_CONNACK_BEGIN_WORNG_FLAGS = {
             //   type, flags
             0b0010_0100,
             //remaining length
             0b0000_0010
     };
-    private static final @NotNull byte[] MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH = {
+    private static final byte @NotNull [] MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH = {
             //   type, flags
             0b0010_0100,
             //remaining length
             0b0000_0011
     };
-    private static final @NotNull byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
-    private static final @NotNull byte[] SESSION_PRESENT_TRUE = {0b0000_0001};
-    private static final @NotNull byte[] SESSION_PRESENT_FALSE = {0b0000_0000};
-    private static final @NotNull byte[] REASON_CODE_SUCCESS = {0x00};
-    private static final @NotNull byte[] REASON_CODE_UNACCEPTED_PROTOCOL_VERSION = {0x01};
-    private static final @NotNull byte[] REASON_CODE_IDENTIFIER_REJECTED = {0x02};
-    private static final @NotNull byte[] REASON_CODE_SERVER_UNAVAILABLE = {0x03};
-    private static final @NotNull byte[] REASON_CODE_SERVER_BAD_USERNAME_OR_PASSWORD = {0x04};
-    private static final @NotNull byte[] REASON_CODE_NOT_AUTHORIZED = {0x05};
-    private static final @NotNull byte[] REASON_CODE_BAD = {0x13};
+    private static final byte @NotNull [] ENDING_TOO_LONG_MALFORMED = {0x01};
+    private static final byte @NotNull [] SESSION_PRESENT_TRUE = {0b0000_0001};
+    private static final byte @NotNull [] SESSION_PRESENT_FALSE = {0b0000_0000};
+    private static final byte @NotNull [] REASON_CODE_SUCCESS = {0x00};
+    private static final byte @NotNull [] REASON_CODE_UNACCEPTED_PROTOCOL_VERSION = {0x01};
+    private static final byte @NotNull [] REASON_CODE_IDENTIFIER_REJECTED = {0x02};
+    private static final byte @NotNull [] REASON_CODE_SERVER_UNAVAILABLE = {0x03};
+    private static final byte @NotNull [] REASON_CODE_SERVER_BAD_USERNAME_OR_PASSWORD = {0x04};
+    private static final byte @NotNull [] REASON_CODE_NOT_AUTHORIZED = {0x05};
+    private static final byte @NotNull [] REASON_CODE_BAD = {0x13};
 
     Mqtt3ConnAckDecoderTest() {
         super(new MqttMessageDecoders() {{
@@ -71,9 +71,9 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_SUCCESS(final boolean sessionPresent) {
-        final byte[] encoded =
-                Bytes.concat(WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
-                        REASON_CODE_SUCCESS);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
+                REASON_CODE_SUCCESS);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -86,9 +86,9 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_WRONG_PROTOCOL(final boolean sessionPresent) {
-        final byte[] encoded =
-                Bytes.concat(WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
-                        REASON_CODE_UNACCEPTED_PROTOCOL_VERSION);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
+                REASON_CODE_UNACCEPTED_PROTOCOL_VERSION);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -106,9 +106,9 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_SERVER_IDENTFIER_REJECTED(final boolean sessionPresent) {
-        final byte[] encoded =
-                Bytes.concat(WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
-                        REASON_CODE_IDENTIFIER_REJECTED);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
+                REASON_CODE_IDENTIFIER_REJECTED);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -126,9 +126,9 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_SERVER_UNAVAILABLE(final boolean sessionPresent) {
-        final byte[] encoded =
-                Bytes.concat(WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
-                        REASON_CODE_SERVER_UNAVAILABLE);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
+                REASON_CODE_SERVER_UNAVAILABLE);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -146,9 +146,9 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_SERVER_BAD_USERNAME_OR_PASSWORD(final boolean sessionPresent) {
-        final byte[] encoded =
-                Bytes.concat(WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
-                        REASON_CODE_SERVER_BAD_USERNAME_OR_PASSWORD);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
+                REASON_CODE_SERVER_BAD_USERNAME_OR_PASSWORD);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -166,9 +166,9 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_NOT_AUTHORIZED(final boolean sessionPresent) {
-        final byte[] encoded =
-                Bytes.concat(WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
-                        REASON_CODE_NOT_AUTHORIZED);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
+                REASON_CODE_NOT_AUTHORIZED);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -186,9 +186,9 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_BAD_RETURNCODE(final boolean sessionPresent) {
-        final byte[] encoded =
-                Bytes.concat(WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
-                        REASON_CODE_BAD);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_CONNACK_BEGIN, sessionPresent ? SESSION_PRESENT_TRUE : SESSION_PRESENT_FALSE,
+                REASON_CODE_BAD);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -199,19 +199,13 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"1", "2"})
     void decode_ERROR_CASES(final int errorcase) throws Exception {
-        final byte[] encoded;
-        switch (errorcase) {
-            case 1:
-                encoded = Bytes.concat(MALFORMED_CONNACK_BEGIN_WORNG_FLAGS, SESSION_PRESENT_FALSE, REASON_CODE_BAD);
-                break;
-            case 2:
-                encoded = Bytes.concat(MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH, SESSION_PRESENT_FALSE, REASON_CODE_BAD,
-                        ENDING_TOO_LONG_MALFORMED);
-                break;
-            default:
-                throw new Exception();
-        }
-
+        final byte[] encoded = switch (errorcase) {
+            case 1 -> Bytes.concat(MALFORMED_CONNACK_BEGIN_WORNG_FLAGS, SESSION_PRESENT_FALSE, REASON_CODE_BAD);
+            case 2 -> Bytes.concat(
+                    MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH, SESSION_PRESENT_FALSE, REASON_CODE_BAD,
+                    ENDING_TOO_LONG_MALFORMED);
+            default -> throw new Exception();
+        };
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

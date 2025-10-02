@@ -785,7 +785,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private final int PROPERTIES_VALID_LENGTH = 71;
-    private final @NotNull byte[] PROPERTIES_VALID = {
+    private final byte @NotNull [] PROPERTIES_VALID = {
             //     session expiry interval
             0x11, 0, 0, 0, 10,
             //     reason string

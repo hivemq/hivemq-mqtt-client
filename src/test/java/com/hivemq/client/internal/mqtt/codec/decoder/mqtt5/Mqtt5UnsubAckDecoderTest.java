@@ -83,11 +83,11 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         final List<MqttUserPropertyImpl> userProperties = unsubAck.getUserProperties().asList();
         assertEquals(1, userProperties.size());
-        assertEquals("name", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("name", userProperties.getFirst().getName().toString());
+        assertEquals("value", userProperties.getFirst().getValue().toString());
 
         assertEquals(1, unsubAck.getReasonCodes().size());
-        assertEquals(SUCCESS, unsubAck.getReasonCodes().get(0));
+        assertEquals(SUCCESS, unsubAck.getReasonCodes().getFirst());
     }
 
     @Test
@@ -191,11 +191,11 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         final List<MqttUserPropertyImpl> userProperties = unsubAck.getUserProperties().asList();
         assertEquals(1, userProperties.size());
-        assertEquals("name", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("name", userProperties.getFirst().getName().toString());
+        assertEquals("value", userProperties.getFirst().getValue().toString());
 
         assertEquals(1, unsubAck.getReasonCodes().size());
-        assertEquals(SUCCESS, unsubAck.getReasonCodes().get(0));
+        assertEquals(SUCCESS, unsubAck.getReasonCodes().getFirst());
     }
 
     @Test
@@ -221,8 +221,8 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertNotNull(unsuback);
         final List<? extends Mqtt5UserProperty> userProperties = unsuback.getUserProperties().asList();
         assertEquals(1, userProperties.size());
-        assertEquals("name", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("name", userProperties.getFirst().getName().toString());
+        assertEquals("value", userProperties.getFirst().getValue().toString());
     }
 
     @Test
@@ -286,7 +286,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("value", userProperties.get(2).getValue().toString());
 
         assertEquals(1, unsubAck.getReasonCodes().size());
-        assertEquals(SUCCESS, unsubAck.getReasonCodes().get(0));
+        assertEquals(SUCCESS, unsubAck.getReasonCodes().getFirst());
     }
 
     @ParameterizedTest
@@ -311,7 +311,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         final Mqtt5UnsubAck unsuback = decodeOk(encoded);
         assertNotNull(unsuback);
         assertEquals(1, unsuback.getReasonCodes().size());
-        assertEquals(reasonCode, unsuback.getReasonCodes().get(0));
+        assertEquals(reasonCode, unsuback.getReasonCodes().getFirst());
     }
 
     @Test
@@ -363,8 +363,8 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         final List<MqttUserPropertyImpl> userProperties = unsubAck.getUserProperties().asList();
         assertEquals(1, userProperties.size());
-        assertEquals("name", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("name", userProperties.getFirst().getName().toString());
+        assertEquals("value", userProperties.getFirst().getValue().toString());
 
         assertEquals(7, unsubAck.getReasonCodes().size());
         assertEquals(SUCCESS, unsubAck.getReasonCodes().get(0));
@@ -547,13 +547,13 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttUnsubAck decodeOk(final @NotNull byte[] encoded) {
+    private MqttUnsubAck decodeOk(final byte @NotNull [] encoded) {
         final MqttUnsubAck unsubAck = decode(encoded);
         assertNotNull(unsubAck);
         return unsubAck;
     }
 
-    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final byte @NotNull [] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttUnsubAck unsubAck = decode(encoded);
         assertNull(unsubAck);
 
@@ -565,7 +565,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttUnsubAck decode(final @NotNull byte[] encoded) {
+    private MqttUnsubAck decode(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

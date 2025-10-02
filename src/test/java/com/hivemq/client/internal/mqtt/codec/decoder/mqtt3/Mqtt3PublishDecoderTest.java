@@ -45,7 +45,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
             final boolean retained,
             final int packetId,
             final byte[] topic,
-            final @NotNull byte[] payload) throws Exception {
+            final byte @NotNull [] payload) throws Exception {
 
         final ByteBuf byteBuf = channel.alloc().buffer();
 

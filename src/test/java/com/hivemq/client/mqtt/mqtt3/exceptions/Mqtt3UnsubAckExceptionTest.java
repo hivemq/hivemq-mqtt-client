@@ -80,7 +80,7 @@ class Mqtt3UnsubAckExceptionTest {
         final Mqtt3UnsubAckException exception = new Mqtt3UnsubAckException("message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt3UnsubAckException);
+        assertInstanceOf(Mqtt3UnsubAckException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

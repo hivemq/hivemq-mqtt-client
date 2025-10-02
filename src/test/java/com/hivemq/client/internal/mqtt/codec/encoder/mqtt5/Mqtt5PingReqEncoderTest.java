@@ -55,5 +55,4 @@ class Mqtt5PingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
         assertArrayEquals(expected, actual);
     }
-
 }

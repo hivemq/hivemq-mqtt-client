@@ -42,9 +42,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class MqttTopicFilterImplTest {
 
-    private static final @NotNull List<Function<String, MqttTopicFilterImpl>> topicFilterFactoryMethods =
-            Arrays.asList(new NamedFunction<>("ByteBuf", MqttTopicFilterImplTest::createFromByteBuf),
-                    new NamedFunction<>("String", MqttTopicFilterImpl::of));
+    private static final @NotNull List<Function<String, MqttTopicFilterImpl>> topicFilterFactoryMethods = Arrays.asList(
+            new NamedFunction<>("ByteBuf", MqttTopicFilterImplTest::createFromByteBuf),
+            new NamedFunction<>("String", MqttTopicFilterImpl::of));
 
     private static @Nullable MqttTopicFilterImpl createFromByteBuf(final @NotNull String string) {
         final ByteBuf byteBuf = Unpooled.buffer();
@@ -107,7 +107,7 @@ class MqttTopicFilterImplTest {
     @MethodSource("validTopicFilterProvider")
     void from(
             final @NotNull Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
-            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String ignored,
             final @NotNull String topicFilterString) {
         final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
         assertNotNull(mqtt5TopicFilter);
@@ -126,7 +126,8 @@ class MqttTopicFilterImplTest {
     }
 
     private static @NotNull Stream<Arguments> misplacedWildcardsTopicFilterProvider() {
-        return Stream.of(Arguments.of("multilevel wildcard not at end", "abc/def/ghi/#/"),
+        return Stream.of(
+                Arguments.of("multilevel wildcard not at end", "abc/def/ghi/#/"),
                 Arguments.of("multilevel wildcard after non separator", "abc/def/ghi#"),
                 Arguments.of("multiple single level wildcards one level", "abc/++/def/ghi"),
                 Arguments.of("single level wildcard after non separator", "abc+/def/ghi"),
@@ -137,7 +138,7 @@ class MqttTopicFilterImplTest {
     @ParameterizedTest
     @MethodSource("misplacedWildcardsTopicFilterProvider")
     void from_byteBufWithMisplacedWildcards_returnsNull(
-            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String ignored,
             final @NotNull String topicFilterString) {
         final MqttTopicFilterImpl mqtt5TopicFilter = createFromByteBuf(topicFilterString);
         assertNull(mqtt5TopicFilter);
@@ -146,9 +147,10 @@ class MqttTopicFilterImplTest {
     @ParameterizedTest
     @MethodSource("misplacedWildcardsTopicFilterProvider")
     void from_stringWithMisplacedWildcards_throws(
-            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String ignored,
             final @NotNull String topicFilterString) {
-        final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
+        final IllegalArgumentException exception = Assertions.assertThrows(
+                IllegalArgumentException.class,
                 () -> MqttTopicFilterImpl.of(topicFilterString));
         assertTrue(
                 exception.getMessage().contains("misplaced wildcard characters"),
@@ -182,8 +184,8 @@ class MqttTopicFilterImplTest {
             testSpecs.add(Arguments.of(method, "contains multi level wildcard", "abc/def/ghi/#", true, true, false));
             testSpecs.add(Arguments.of(method, "contains single level wildcard", "abc/+/def/ghi", true, false, true));
             testSpecs.add(
-                    Arguments.of(method, "contains multi and single level wildcard", "abc/+/def/ghi/#", true, true,
-                            true));
+                    Arguments.of(
+                            method, "contains multi and single level wildcard", "abc/+/def/ghi/#", true, true, true));
         }
         return testSpecs;
     }
@@ -192,7 +194,7 @@ class MqttTopicFilterImplTest {
     @MethodSource("wildcardTopicFilterProvider")
     void containsWildcards(
             final @NotNull Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
-            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String ignored,
             final @NotNull String topicFilterString,
             final boolean containsWildcards,
             final boolean containsMultiLevelWildcard,
@@ -217,7 +219,7 @@ class MqttTopicFilterImplTest {
     @MethodSource("invalidSharedTopicFilterProvider")
     void isShared_false(
             final @NotNull Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
-            @SuppressWarnings("unused") final @NotNull String testDescription,
+            final @NotNull String ignored,
             final @NotNull String topicFilterString) {
         final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
         assertNotNull(mqtt5TopicFilter);
@@ -228,15 +230,7 @@ class MqttTopicFilterImplTest {
     /**
      * Extension of Function&lt;T, R&gt; used to make test results more readable.
      */
-    static class NamedFunction<T, R> implements Function<T, R> {
-
-        private final @NotNull String name;
-        private final @NotNull Function<T, R> function;
-
-        NamedFunction(final @NotNull String name, final @NotNull Function<T, R> function) {
-            this.name = name;
-            this.function = function;
-        }
+    record NamedFunction<T, R>(@NotNull String name, @NotNull Function<T, R> function) implements Function<T, R> {
 
         @Override
         public @Nullable R apply(final @NotNull T t) {

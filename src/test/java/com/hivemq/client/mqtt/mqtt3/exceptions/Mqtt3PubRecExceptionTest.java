@@ -80,7 +80,7 @@ class Mqtt3PubRecExceptionTest {
         final Mqtt3PubRecException exception = new Mqtt3PubRecException("message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt3PubRecException);
+        assertInstanceOf(Mqtt3PubRecException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

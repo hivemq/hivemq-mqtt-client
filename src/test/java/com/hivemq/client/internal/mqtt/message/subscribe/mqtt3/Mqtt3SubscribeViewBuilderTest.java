@@ -49,7 +49,6 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscription_correct_subscription_default_properties() {
-
         final Mqtt3Subscription subscription = Mqtt3Subscription.builder().topicFilter("test").build();
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscription(subscription).build();
@@ -57,15 +56,13 @@ class Mqtt3SubscribeViewBuilderTest {
         final List<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
 
-        final Mqtt3Subscription mqtt3Subscription = subscriptions.get(0);
-
+        final Mqtt3Subscription mqtt3Subscription = subscriptions.getFirst();
         assertEquals("test", mqtt3Subscription.getTopicFilter().toString());
         assertEquals(MqttQos.EXACTLY_ONCE, mqtt3Subscription.getQos());
     }
 
     @Test
     void addSubscription_correct_subscription_custom_properties() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -74,15 +71,13 @@ class Mqtt3SubscribeViewBuilderTest {
         final List<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
 
-        final Mqtt3Subscription mqtt3Subscription = subscriptions.get(0);
-
+        final Mqtt3Subscription mqtt3Subscription = subscriptions.getFirst();
         assertEquals("test", mqtt3Subscription.getTopicFilter().toString());
         assertEquals(MqttQos.AT_LEAST_ONCE, mqtt3Subscription.getQos());
     }
 
     @Test
     void addSubscription_fluent_subscription_is_finished_if_addSubscription_is_used() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -98,7 +93,6 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscription_fluent_subscription_is_finished_if_addSubscription_is_used_second_time() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -112,7 +106,6 @@ class Mqtt3SubscribeViewBuilderTest {
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscription(subscription2).build();
 
         final List<? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
-
         assertEquals(4, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertEquals(subscription, subscriptions.get(1));
@@ -122,7 +115,6 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscription_fluent_subscription_is_finished_if_fluent_addSubscription_is_used() {
-
         final Mqtt3SubscribeBuilder.Complete subscribeBuilder = Mqtt3Subscribe.builder().topicFilter("fluent");
         final Mqtt3Subscribe Mqtt3Subscribe =
                 subscribeBuilder.addSubscription().topicFilter("test").applySubscription().build();
@@ -135,12 +127,11 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void fluent_subscription_is_finished_when_building() {
-
         final Mqtt3Subscribe mqtt3Subscribe = Mqtt3Subscribe.builder().topicFilter("fluent").build();
 
         final List<? extends Mqtt3Subscription> subscriptions = mqtt3Subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
-        assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
+        assertTrue(subscriptions.getFirst().getTopicFilter().toString().contains("fluent"));
     }
 
     @Test
@@ -157,7 +148,6 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscriptions_error_when_subscription_is_implemented() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -171,7 +161,6 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscriptions_correct_use_list() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -187,13 +176,11 @@ class Mqtt3SubscribeViewBuilderTest {
         subscriptions.add(subscription3);
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscriptions(subscriptions).build();
-
         compareSubscriptions(subscriptions, subscribe.getSubscriptions());
     }
 
     @Test
     void addSubscriptions_correct_use_set() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -209,13 +196,11 @@ class Mqtt3SubscribeViewBuilderTest {
         subscriptions.add(subscription3);
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscriptions(subscriptions).build();
-
         compareSubscriptions(subscriptions, subscribe.getSubscriptions());
     }
 
     @Test
     void addSubscriptions_correct_use_map() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -231,13 +216,11 @@ class Mqtt3SubscribeViewBuilderTest {
         subscriptions.put("3", subscription3);
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscriptions(subscriptions.values()).build();
-
         compareSubscriptions(subscriptions.values(), subscribe.getSubscriptions());
     }
 
     @Test
     void addSubscriptions_correct_use_array() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -252,13 +235,11 @@ class Mqtt3SubscribeViewBuilderTest {
         };
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscriptions(subscriptions).build();
-
         compareSubscriptions(subscriptions, subscribe.getSubscriptions());
     }
 
     @Test
     void addSubscriptions_correct_use_stream() {
-
         final List<String> subscriptions = new ArrayList<>();
         subscriptions.add("test");
         subscriptions.add("multiple");
@@ -281,7 +262,6 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscriptions_fluent_subscription_is_finished_if_addSubscriptions_is_used() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -310,7 +290,6 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscriptions_fluent_subscription_is_finished_if_addSubscriptions_is_used_second_time() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -331,18 +310,16 @@ class Mqtt3SubscribeViewBuilderTest {
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscriptions(subscriptions2).build();
 
         final List<? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
-
         assertEquals(5, mqtt3Subscriptions.size());
         assertTrue(mqtt3Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertEquals(subscriptions.get(0), mqtt3Subscriptions.get(1));
         assertEquals(subscriptions.get(1), mqtt3Subscriptions.get(2));
         assertTrue(mqtt3Subscriptions.get(3).getTopicFilter().toString().contains("again_fluent"));
-        assertEquals(subscriptions2.get(0), mqtt3Subscriptions.get(4));
+        assertEquals(subscriptions2.getFirst(), mqtt3Subscriptions.get(4));
     }
 
     @Test
     void addSubscriptions_fluent_subscription_and_addSubscription() {
-
         final Mqtt3Subscription subscription =
                 Mqtt3Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
 
@@ -363,7 +340,6 @@ class Mqtt3SubscribeViewBuilderTest {
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscription(subscription3).build();
 
         final List<? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
-
         assertEquals(5, mqtt3Subscriptions.size());
         assertTrue(mqtt3Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertEquals(subscriptions.get(0), mqtt3Subscriptions.get(1));
@@ -373,10 +349,9 @@ class Mqtt3SubscribeViewBuilderTest {
     }
 
     void compareSubscriptions(
-            final @NotNull Mqtt3Subscription[] expected, final @NotNull List<? extends Mqtt3Subscription> actual) {
-
+            final @NotNull Mqtt3Subscription[] expected,
+            final @NotNull List<? extends Mqtt3Subscription> actual) {
         assertEquals(expected.length, actual.size());
-
         for (final Mqtt3Subscription expectedSubscription : expected) {
             assertTrue(actual.contains(expectedSubscription));
         }
@@ -385,9 +360,7 @@ class Mqtt3SubscribeViewBuilderTest {
     void compareSubscriptions(
             final @NotNull Collection<Mqtt3Subscription> expected,
             final @NotNull List<? extends Mqtt3Subscription> actual) {
-
         assertEquals(expected.size(), actual.size());
-
         for (final Mqtt3Subscription expectedSubscription : expected) {
             assertTrue(actual.contains(expectedSubscription));
         }

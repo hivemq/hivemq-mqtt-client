@@ -80,7 +80,7 @@ class Mqtt3DisconnectExceptionTest {
         final Mqtt3DisconnectException exception = new Mqtt3DisconnectException("message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt3DisconnectException);
+        assertInstanceOf(Mqtt3DisconnectException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

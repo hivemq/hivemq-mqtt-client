@@ -18,7 +18,6 @@ package com.hivemq.client.mqtt;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ class MqttClientSslConfigBuilderTest {
 
     @Test
     void cipherSuites_simple() {
-        final List<String> expectedCipherSuites = Arrays.asList("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305");
+        final List<String> expectedCipherSuites = List.of("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305");
 
         final MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().cipherSuites(expectedCipherSuites).build();
 
@@ -49,7 +48,7 @@ class MqttClientSslConfigBuilderTest {
 
     @Test
     void protocols_simple() {
-        final List<String> expectedProtocols = Arrays.asList("TLSv1.2", "TLSv1.1");
+        final List<String> expectedProtocols = List.of("TLSv1.2", "TLSv1.1");
 
         final MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().protocols(expectedProtocols).build();
 

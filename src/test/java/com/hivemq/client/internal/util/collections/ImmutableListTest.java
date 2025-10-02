@@ -254,7 +254,7 @@ class ImmutableListTest {
     @SuppressWarnings("deprecation")
     void modifyMethods_throwUOE() {
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").add("2"));
-        assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").add(0, "2"));
+        assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").addFirst("2"));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").addAll(ImmutableList.of("2")));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").addAll(0, ImmutableList.of("2")));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").remove("1"));
@@ -290,7 +290,6 @@ class ImmutableListTest {
 
     @ParameterizedTest
     @MethodSource("numberedList")
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     void get(final @NotNull ImmutableList<String> list) {
         assertThrows(IndexOutOfBoundsException.class, () -> list.get(-1));
         for (int i = 0; i < list.size(); i++) {
@@ -536,7 +535,7 @@ class ImmutableListTest {
     void subList_multiple_to_multiple() {
         final ImmutableList<String> subList = ImmutableList.of("1", "2", "3").subList(1, 3);
         assertEquals(ImmutableList.of("2", "3"), subList);
-        assertTrue(subList instanceof ImmutableArray);
+        assertInstanceOf(ImmutableArray.class, subList);
     }
 
     @Test
@@ -570,7 +569,7 @@ class ImmutableListTest {
     void subList_subList_multiple() {
         final ImmutableList<String> subList = ImmutableList.of("x", "1", "2", "3", "x").subList(1, 4).subList(1, 3);
         assertEquals(ImmutableList.of("2", "3"), subList);
-        assertTrue(subList instanceof ImmutableArray);
+        assertInstanceOf(ImmutableArray.class, subList);
     }
 
     @Test

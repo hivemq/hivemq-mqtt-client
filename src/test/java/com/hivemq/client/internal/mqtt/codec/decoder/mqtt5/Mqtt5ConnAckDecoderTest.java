@@ -137,12 +137,12 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         final Mqtt5ConnAckRestrictions restrictions = connAck.getRestrictions();
         assertEquals(100, restrictions.getReceiveMaximum());
         assertEquals(MqttQos.AT_LEAST_ONCE, restrictions.getMaximumQos());
-        assertEquals(false, restrictions.isRetainAvailable());
+        assertFalse(restrictions.isRetainAvailable());
         assertEquals(100, restrictions.getMaximumPacketSize());
         assertEquals(5, restrictions.getTopicAliasMaximum());
-        assertEquals(false, restrictions.isWildcardSubscriptionAvailable());
-        assertEquals(true, restrictions.areSubscriptionIdentifiersAvailable());
-        assertEquals(false, restrictions.isSharedSubscriptionAvailable());
+        assertFalse(restrictions.isWildcardSubscriptionAvailable());
+        assertTrue(restrictions.areSubscriptionIdentifiersAvailable());
+        assertFalse(restrictions.isSharedSubscriptionAvailable());
 
         assertTrue(connAck.getEnhancedAuth().isPresent());
         final Mqtt5EnhancedAuth auth = connAck.getEnhancedAuth().get();
@@ -1857,10 +1857,10 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(0, connAck.getRestrictions().getTopicAliasMaximum());
         assertEquals(65_535, connAck.getRestrictions().getReceiveMaximum());
         assertEquals(MqttQos.EXACTLY_ONCE, connAck.getRestrictions().getMaximumQos());
-        assertEquals(true, connAck.getRestrictions().isRetainAvailable());
-        assertEquals(true, connAck.getRestrictions().isWildcardSubscriptionAvailable());
-        assertEquals(true, connAck.getRestrictions().areSubscriptionIdentifiersAvailable());
-        assertEquals(true, connAck.getRestrictions().isSharedSubscriptionAvailable());
+        assertTrue(connAck.getRestrictions().isRetainAvailable());
+        assertTrue(connAck.getRestrictions().isWildcardSubscriptionAvailable());
+        assertTrue(connAck.getRestrictions().areSubscriptionIdentifiersAvailable());
+        assertTrue(connAck.getRestrictions().isSharedSubscriptionAvailable());
     }
 
     private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
@@ -1874,7 +1874,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private static final byte PROPERTIES_VALID_LENGTH = 119;
-    private static final @NotNull byte[] PROPERTIES_VALID = {
+    private static final byte @NotNull [] PROPERTIES_VALID = {
             //     session expiry interval
             0x11, 0, 0, 0, 10,
             //     receive maximum

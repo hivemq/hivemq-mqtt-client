@@ -88,7 +88,7 @@ class Mqtt3ConnAckExceptionTest {
         final Mqtt3ConnAckException exception = new Mqtt3ConnAckException(connAck, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt3ConnAckException);
+        assertInstanceOf(Mqtt3ConnAckException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

@@ -54,7 +54,7 @@ class Mqtt5PubRecExceptionTest {
         final Mqtt5PubRecException exception = new Mqtt5PubRecException(pubRec, "message");
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt5PubRecException);
+        assertInstanceOf(Mqtt5PubRecException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

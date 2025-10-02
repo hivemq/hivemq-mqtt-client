@@ -70,7 +70,7 @@ public abstract class AbstractMqttEncoderTest {
                         maximumPacketSize, 3, MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
     }
 
-    protected void encode(final @NotNull Object message, final @NotNull byte[] expected) {
+    protected void encode(final @NotNull Object message, final byte @NotNull [] expected) {
         channel.writeOutbound(message);
         final ByteBuf actual = channel.readOutbound();
 

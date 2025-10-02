@@ -65,7 +65,7 @@ class Mqtt5DisconnectExceptionTest {
         final Mqtt5DisconnectException exception = new Mqtt5DisconnectException(disconnect, "message");
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt5DisconnectException);
+        assertInstanceOf(Mqtt5DisconnectException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

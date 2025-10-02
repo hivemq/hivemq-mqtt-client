@@ -35,9 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5UnsubscribeEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = new Mqtt5UnsubscribeEncoder();
-        }}, true);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = new Mqtt5UnsubscribeEncoder();
+                }}, true);
     }
 
     @Test
@@ -167,7 +168,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeUnsubscribe(
-            final @NotNull byte[] expected,
+            final byte @NotNull [] expected,
             final @NotNull MqttUserPropertiesImpl userProperties,
             final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, userProperties);
@@ -178,15 +179,15 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeInternal(
-            final @NotNull byte[] expected, final @NotNull MqttStatefulUnsubscribe unsubscribeInternal) {
+            final byte @NotNull [] expected,
+            final @NotNull MqttStatefulUnsubscribe unsubscribeInternal) {
         encode(unsubscribeInternal, expected);
     }
 
-    @SuppressWarnings("NullabilityAnnotations")
-    private class MaximumPacketBuilder {
+    private static class MaximumPacketBuilder {
 
         private static final String TOPIC = "topic";
-        private StringBuilder reasonStringBuilder;
+
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
         final MqttUtf8StringImpl user = MqttUtf8StringImpl.of("user");
         final MqttUtf8StringImpl property = MqttUtf8StringImpl.of("property");
@@ -205,7 +206,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                     + 8; // bytes to encode "property"
             final int topicFilterBytes = maxPropertyLength % userPropertyBytes;
 
-            reasonStringBuilder = new StringBuilder();
+            final StringBuilder reasonStringBuilder = new StringBuilder();
             for (int i = 0; i < topicFilterBytes; i++) {
                 reasonStringBuilder.append(i);
             }

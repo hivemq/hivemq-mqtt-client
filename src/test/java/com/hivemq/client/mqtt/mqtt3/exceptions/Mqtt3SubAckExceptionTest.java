@@ -88,7 +88,7 @@ class Mqtt3SubAckExceptionTest {
         final Mqtt3SubAckException exception = new Mqtt3SubAckException(subAck, "message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final RuntimeException filledException = AsyncRuntimeException.fillInStackTrace(exception);
-        assertTrue(filledException instanceof Mqtt3SubAckException);
+        assertInstanceOf(Mqtt3SubAckException.class, filledException);
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }

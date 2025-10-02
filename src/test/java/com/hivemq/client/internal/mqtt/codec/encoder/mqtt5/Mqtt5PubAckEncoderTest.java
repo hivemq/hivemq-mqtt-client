@@ -452,7 +452,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         encode(expected, pubAck);
     }
 
-    private void encode(final @NotNull byte[] expected, final @NotNull MqttPubAck pubAck) {
+    private void encode(final byte @NotNull [] expected, final @NotNull MqttPubAck pubAck) {
         encode(pubAck, expected);
     }
 
