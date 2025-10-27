@@ -259,6 +259,19 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
+    public @NotNull CompletableFuture<Void> disconnectGracefully() {
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        delegate.disconnectGracefully().whenComplete((ignored, throwable) -> {
+            if (throwable != null) {
+                future.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
+            } else {
+                future.complete(null);
+            }
+        });
+        return future;
+    }
+
+    @Override
     public @NotNull Mqtt3ClientConfig getConfig() {
         return clientConfig;
     }

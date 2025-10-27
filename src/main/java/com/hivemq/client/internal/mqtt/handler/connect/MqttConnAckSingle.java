@@ -150,11 +150,11 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             }
         }
 
-        if (reconnector.isReconnect()) {
+        if (reconnector.isReconnect() && clientConfig.getRawState().get() != DISCONNECTING_GRACEFULLY) {
             clientConfig.getRawState().set(DISCONNECTED_RECONNECT);
             eventLoop.schedule(() -> {
                 reconnector.getFuture().whenComplete((ignored, throwable) -> {
-                    if (reconnector.isReconnect()) {
+                    if (reconnector.isReconnect() && clientConfig.getRawState().get() != DISCONNECTING_GRACEFULLY) {
                         if (clientConfig.getRawState().compareAndSet(DISCONNECTED_RECONNECT, CONNECTING_RECONNECT)) {
 
                             clientConfig.setCurrentTransportConfig(reconnector.getTransportConfig());

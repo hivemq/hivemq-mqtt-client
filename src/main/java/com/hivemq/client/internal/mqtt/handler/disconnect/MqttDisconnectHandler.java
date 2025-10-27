@@ -30,7 +30,9 @@ import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictions;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
 import com.hivemq.client.internal.rx.CompletableFlow;
+import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
@@ -139,6 +141,14 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         }
     }
 
+    public void disconnectGracefully(final @NotNull CompletableFlow flow) {
+        if (!clientConfig.executeInEventLoop(() -> writeGracefulDisconnect(flow))) {
+            // If no event loop is available, just complete the flow successfully
+            // This handles the case where the client is not connected or in an invalid state
+            flow.onComplete();
+        }
+    }
+
     private void writeDisconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
         final ChannelHandlerContext ctx = this.ctx;
         if ((ctx != null) && (state == null)) {
@@ -146,6 +156,27 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             fireDisconnectEvent(ctx.channel(), new MqttDisconnectEvent.ByUser(disconnect, flow));
         } else {
             flow.onError(MqttClientStateExceptions.notConnected());
+        }
+    }
+
+    private void writeGracefulDisconnect(final @NotNull CompletableFlow flow) {
+        // Set the client state to DISCONNECTING_GRACEFULLY to prevent reconnection
+        clientConfig.getRawState().set(MqttClientState.DISCONNECTING_GRACEFULLY);
+
+        final ChannelHandlerContext ctx = this.ctx;
+        if (ctx != null) {
+            // If we have an active connection, send a disconnect message
+            if (state == null) {
+                state = STATE_CLOSED;
+                final MqttDisconnect disconnect = new MqttDisconnectBuilder.Default().build();
+                fireDisconnectEvent(ctx.channel(), new MqttDisconnectEvent.ByUser(disconnect, flow));
+            } else {
+                // If already disconnected, just complete the flow
+                flow.onComplete();
+            }
+        } else {
+            // No active connection, just complete the flow
+            flow.onComplete();
         }
     }
 
