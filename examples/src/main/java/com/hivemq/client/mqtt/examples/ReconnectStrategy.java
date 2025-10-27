@@ -35,7 +35,8 @@ public class ReconnectStrategy {
     public static void main(final String[] args) throws InterruptedException {
 //        defaultReconnect();
 //        customizedReconnect();
-        completelyCustom();
+//        completelyCustom();
+        gracefulDisconnectExample();
     }
 
     public static void defaultReconnect() {
@@ -108,5 +109,53 @@ public class ReconnectStrategy {
             }
             return new byte[] {1, 2, 3};
         });
+    }
+
+    /**
+     * Demonstrates graceful disconnect functionality.
+     * This example shows how to use disconnectGracefully() to cleanly shut down
+     * a client even when automatic reconnection is enabled and the client is
+     * in a reconnecting state.
+     */
+    public static void gracefulDisconnectExample() throws InterruptedException {
+        System.out.println("=== Graceful Disconnect Example ===");
+
+        final Mqtt5BlockingClient client = Mqtt5Client.builder()
+                .serverHost("broker.hivemq.com")
+                .automaticReconnect()
+                    .initialDelay(1, TimeUnit.SECONDS)
+                    .maxDelay(2, TimeUnit.SECONDS)
+                    .applyAutomaticReconnect()
+                .addConnectedListener(context -> System.out.println("Connected: " + LocalTime.now()))
+                .addDisconnectedListener(context -> System.out.println("Disconnected: " + LocalTime.now() +
+                    " (Source: " + context.getSource() + ")"))
+                .buildBlocking();
+
+        try {
+            // Connect the client
+            System.out.println("Connecting...");
+            client.connect();
+            System.out.println("Connected successfully!");
+
+            // Simulate network issues by turning off network (in real scenario)
+            System.out.println("Simulating network issues...");
+            System.out.println("Client state: " + client.getState());
+
+            // Wait a bit to let reconnection attempts start
+            TimeUnit.SECONDS.sleep(3);
+            System.out.println("Client state after network issues: " + client.getState());
+
+            // Now demonstrate graceful disconnect
+            System.out.println("Calling disconnectGracefully()...");
+            client.disconnectGracefully();
+            System.out.println("Graceful disconnect completed!");
+            System.out.println("Final client state: " + client.getState());
+
+        } catch (final Exception e) {
+            System.err.println("Error during graceful disconnect example: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("=== End Graceful Disconnect Example ===");
     }
 }
