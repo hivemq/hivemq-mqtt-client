@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttReAuthCompletable;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectCompletable;
+import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectGracefulCompletable;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttGlobalIncomingPublishFlowable;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlowable;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckFlowable;
@@ -258,6 +259,10 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @NotNull Completable disconnectUnsafe(final @NotNull MqttDisconnect disconnect) {
         return new MqttDisconnectCompletable(clientConfig, disconnect);
+    }
+
+    @NotNull Completable disconnectGracefullyUnsafe() {
+        return new MqttDisconnectGracefulCompletable(clientConfig);
     }
 
     @Override

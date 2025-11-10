@@ -271,6 +271,11 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
+    public @NotNull CompletableFuture<Void> disconnectGracefully() {
+        return RxFutureConverter.toFuture(delegate.disconnectGracefullyUnsafe());
+    }
+
+    @Override
     public @NotNull MqttClientConfig getConfig() {
         return delegate.getConfig();
     }

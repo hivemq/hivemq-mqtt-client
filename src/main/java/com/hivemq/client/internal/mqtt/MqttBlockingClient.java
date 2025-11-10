@@ -202,6 +202,15 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
+    public void disconnectGracefully() {
+        try {
+            delegate.disconnectGracefullyUnsafe().blockingAwait();
+        } catch (final RuntimeException e) {
+            throw AsyncRuntimeException.fillInStackTrace(e);
+        }
+    }
+
+    @Override
     public @NotNull MqttClientConfig getConfig() {
         return delegate.getConfig();
     }
