@@ -41,6 +41,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
     @Nullable MqttTopicImpl topic;
     @Nullable ByteBuffer payload;
+    @Nullable Object localContext;
     @NotNull MqttQos qos = Mqtt3PublishView.DEFAULT_QOS;
     boolean retain;
 
@@ -51,6 +52,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         topic = delegate.getTopic();
         payload = delegate.getRawPayload();
         qos = delegate.getQos();
+        localContext = delegate.getLocalContext();
         retain = delegate.isRetain();
     }
 
@@ -80,6 +82,11 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         return self();
     }
 
+    public @NotNull B localContext(@Nullable final Object localContext) {
+        this.localContext = localContext;
+        return self();
+    }
+
     private static abstract class Base<B extends Base<B>> extends Mqtt3PublishViewBuilder<B> {
 
         Base() {}
@@ -100,7 +107,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         public @NotNull Mqtt3PublishView build() {
             Checks.notNull(topic, "Topic");
-            return Mqtt3PublishView.of(topic, payload, qos, retain);
+            return Mqtt3PublishView.of(topic, payload, qos, retain, localContext);
         }
     }
 
