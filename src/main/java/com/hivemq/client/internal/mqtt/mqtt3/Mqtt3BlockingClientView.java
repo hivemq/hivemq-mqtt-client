@@ -154,6 +154,15 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
+    public void disconnectGracefully() {
+        try {
+            delegate.disconnectGracefully();
+        } catch (final RuntimeException e) {
+            throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
+        }
+    }
+
+    @Override
     public @NotNull Mqtt3ClientConfig getConfig() {
         return clientConfig;
     }

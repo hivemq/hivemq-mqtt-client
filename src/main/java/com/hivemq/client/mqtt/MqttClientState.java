@@ -68,7 +68,14 @@ public enum MqttClientState {
      * This means the client was {@link #DISCONNECTED_RECONNECT}, a Connect message is sent, but the ConnAck message is
      * not received yet.
      */
-    CONNECTING_RECONNECT;
+    CONNECTING_RECONNECT,
+    /**
+     * The client is gracefully disconnecting, canceling any ongoing reconnection attempts.
+     * <p>
+     * This state is used when {@code disconnectGracefully()} is called to ensure the client
+     * transitions to a clean {@link #DISCONNECTED} state.
+     */
+    DISCONNECTING_GRACEFULLY;
 
     private static final @NotNull EnumSet<MqttClientState> CONNECTED_OR_RECONNECT =
             EnumSet.of(CONNECTED, DISCONNECTED_RECONNECT, CONNECTING_RECONNECT);
