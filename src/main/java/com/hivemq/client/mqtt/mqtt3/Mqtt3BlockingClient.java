@@ -163,6 +163,21 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      */
     void disconnect();
 
+    /**
+     * Gracefully disconnects the client, canceling any ongoing reconnection attempts.
+     * <p>
+     * This method can be called from any client state and will ensure the client
+     * transitions to a clean {@link com.hivemq.client.mqtt.MqttClientState#DISCONNECTED DISCONNECTED} state.
+     * Unlike the regular {@link #disconnect()} method, this will not throw an exception
+     * when the client is in a reconnecting state.
+     * <p>
+     * This is particularly useful when automatic reconnection is enabled and you need
+     * to cleanly shut down the client regardless of its current connection state.
+     *
+     * @since 1.4.0
+     */
+    void disconnectGracefully();
+
     @Override
     @CheckReturnValue
     default @NotNull Mqtt3BlockingClient toBlocking() {
