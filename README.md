@@ -70,7 +70,7 @@ backpressure support.
 ](https://github.com/bmwcarit) &nbsp;&nbsp; [
 <img src="https://github.com/bmwcarit/joynr/raw/master/graphics/joynr-logo.png" alt="joynr" height="60px"/>
 ](https://github.com/bmwcarit/joynr) &nbsp;&nbsp; [
-<img src="https://www.openhab.org/openhab-logo.png" alt="openHAB" height="60px"/>
+<img src="https://www.openhab.org/openhab-logo-square.svg" alt="openHAB" height="60px"/>
 ](https://www.openhab.org/) &nbsp;&nbsp; [
 <img src="https://eclipse.org/ditto/images/ditto.svg" alt="Eclipse Ditto" height="60px"/>
 ](https://github.com/eclipse/ditto) &nbsp;&nbsp; [
