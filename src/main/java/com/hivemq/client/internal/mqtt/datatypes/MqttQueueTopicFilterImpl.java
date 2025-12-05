@@ -164,6 +164,9 @@ public class MqttQueueTopicFilterImpl extends MqttTopicFilterImpl implements Mqt
     }
 
     private int getFilterCharStart() {
+        if (filterCharStart == -1) {
+            return QUEUE_PREFIX_LENGTH;
+        }
         return filterCharStart;
     }
 

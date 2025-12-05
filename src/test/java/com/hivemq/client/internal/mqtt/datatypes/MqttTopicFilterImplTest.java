@@ -227,6 +227,71 @@ class MqttTopicFilterImplTest {
         assertFalse(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
     }
 
+    private static @NotNull List<Arguments> invalidQueueTopicFilterProvider() {
+        final List<Arguments> testSpecs = new LinkedList<>();
+        // Test cases where the string should NOT be recognized as a queue topic
+        testSpecs.add(Arguments.of("$q without slash is NOT queue topic", "$qabc/def"));
+        testSpecs.add(Arguments.of("just $q does not define a queue topic", "$q"));
+        return testSpecs;
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidQueueTopicFilterProvider")
+    void isQueue_false_notRecognizedAsQueue(
+            final @NotNull String description,
+            final @NotNull String topicFilterString) {
+        // These should be treated as regular topic filters, not queue topics
+        for (final Function<String, MqttTopicFilterImpl> method : topicFilterFactoryMethods) {
+            final MqttTopicFilterImpl mqtt5TopicFilter = method.apply(topicFilterString);
+            assertNotNull(mqtt5TopicFilter, description + " with " + method);
+            assertFalse(mqtt5TopicFilter instanceof MqttQueueTopicFilterImpl, description + " with " + method);
+        }
+    }
+
+    @Test
+    void isQueue_false_emptyTopicFilter_byteBuf_returnsNull() {
+        // "$q/" has no topic filter after the prefix, should return null for ByteBuf
+        final MqttTopicFilterImpl mqtt5TopicFilter = createFromByteBuf("$q/");
+        assertNull(mqtt5TopicFilter, "$q/ without topic filter should return null from ByteBuf");
+    }
+
+    @Test
+    void isQueue_false_emptyTopicFilter_string_throws() {
+        // "$q/" has no topic filter after the prefix, should throw for String
+        final IllegalArgumentException exception = Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> MqttTopicFilterImpl.of("$q/"));
+        assertTrue(exception.getMessage().contains("must be at least one character long"),
+                "IllegalArgumentException must give hint that topic filter must not be empty");
+    }
+
+    private static @NotNull List<Arguments> validQueueTopicFilterProvider() {
+        final List<Arguments> testSpecs = new LinkedList<>();
+        for (final Function<String, MqttTopicFilterImpl> method : topicFilterFactoryMethods) {
+            testSpecs.add(Arguments.of(method, "simple queue topic", "$q/abc/def"));
+            testSpecs.add(Arguments.of(method, "queue topic with wildcard", "$q/abc/+/def"));
+            testSpecs.add(Arguments.of(method, "queue topic with multi-level wildcard", "$q/abc/def/#"));
+            testSpecs.add(Arguments.of(method, "queue topic with single char", "$q/a"));
+        }
+        return testSpecs;
+    }
+
+    @ParameterizedTest
+    @MethodSource("validQueueTopicFilterProvider")
+    void isQueue_true(
+            final @NotNull Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
+            final @NotNull String ignored,
+            final @NotNull String topicFilterString) {
+        final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
+        assertNotNull(mqtt5TopicFilter);
+        assertInstanceOf(MqttQueueTopicFilterImpl.class, mqtt5TopicFilter);
+
+        final MqttQueueTopicFilterImpl queueTopicFilter = (MqttQueueTopicFilterImpl) mqtt5TopicFilter;
+        // Extract the topic filter part (everything after "$q/")
+        final String expectedTopicFilter = topicFilterString.substring(3); // Remove "$q/"
+        assertEquals(expectedTopicFilter, queueTopicFilter.getTopicFilter().toString());
+    }
+
     /**
      * Extension of Function&lt;T, R&gt; used to make test results more readable.
      */
