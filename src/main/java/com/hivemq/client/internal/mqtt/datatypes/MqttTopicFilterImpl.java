@@ -60,6 +60,9 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         if (MqttSharedTopicFilterImpl.isShared(string)) {
             return MqttSharedTopicFilterImpl.ofInternal(string);
         }
+        if (MqttQueueTopicFilterImpl.isQueue(string)) {
+            return MqttQueueTopicFilterImpl.ofInternal(string);
+        }
         final int wildcardFlags = validateWildcards(string, 0);
         return new MqttTopicFilterImpl(string, wildcardFlags);
     }
@@ -85,6 +88,16 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     /**
+     * Creates a Topic Filter of the given Queue Topic Filter.
+     *
+     * @param queueTopicFilter the Queue Topic Filter.
+     * @return the created Topic Filter.
+     */
+    public static @NotNull MqttTopicFilterImpl of(final @NotNull MqttQueueTopicFilterImpl queueTopicFilter) {
+        return new MqttTopicFilterImpl(queueTopicFilter.getTopicFilterString(), queueTopicFilter.wildcardFlags);
+    }
+
+    /**
      * Validates and creates a Topic Filter of the given byte array with UTF-8 encoded data.
      *
      * @param binary the byte array with the UTF-8 encoded data.
@@ -96,6 +109,9 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         }
         if (MqttSharedTopicFilterImpl.isShared(binary)) {
             return MqttSharedTopicFilterImpl.ofInternal(binary);
+        }
+        if (MqttQueueTopicFilterImpl.isQueue(binary)) {
+            return MqttQueueTopicFilterImpl.ofInternal(binary);
         }
         final int wildcardFlags = validateWildcards(binary, 0);
         if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
