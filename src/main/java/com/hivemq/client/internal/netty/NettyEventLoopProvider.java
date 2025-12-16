@@ -90,9 +90,10 @@ public class NettyEventLoopProvider {
         if (entry == null) {
             final MultithreadEventLoopGroup eventLoopGroup;
             if (executor == null) {
+                final boolean useDaemonThreads = true;
                 eventLoopGroup = eventLoopGroupFactory.apply(
                         threadCount, new ThreadPerTaskExecutor(
-                                new DefaultThreadFactory("com.hivemq.client.mqtt", Thread.MAX_PRIORITY)));
+                                new DefaultThreadFactory("com.hivemq.client.mqtt", useDaemonThreads, Thread.MAX_PRIORITY)));
 
             } else if (executor instanceof MultithreadEventLoopGroup) {
                 eventLoopGroup = (MultithreadEventLoopGroup) executor;
