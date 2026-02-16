@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.license)
     alias(libs.plugins.mavenCentralPublishing)
     alias(libs.plugins.metadata)
+    alias(libs.plugins.oci)
     alias(libs.plugins.shadow)
     alias(libs.plugins.utf8)
 }
@@ -134,6 +135,14 @@ dependencies {
 
 /* ******************** integration Tests ******************** */
 
+oci {
+    registries {
+        dockerHub {
+            optionalCredentials()
+        }
+    }
+}
+
 sourceSets.create("integrationTest") {
     compileClasspath += sourceSets.main.get().output
     runtimeClasspath += sourceSets.main.get().output
@@ -147,7 +156,13 @@ val integrationTestRuntimeOnly: Configuration by configurations.getting {
 }
 
 dependencies {
-    integrationTestImplementation(libs.hivemq.testcontainer.junit5)
+    integrationTestImplementation(platform(libs.junit.bom))
+    integrationTestImplementation(libs.junit.jupiter)
+    integrationTestRuntimeOnly(libs.junit.platform.launcher)
+    integrationTestImplementation(libs.gradleOci.junitJupiter)
+    integrationTestImplementation(libs.testcontainers)
+    integrationTestImplementation(libs.testcontainers.hivemq)
+    integrationTestImplementation(libs.testcontainers.junitJupiter)
     integrationTestImplementation(libs.hivemq.extensionSdk)
     integrationTestImplementation(libs.awaitility)
 }
@@ -159,6 +174,15 @@ val integrationTest by tasks.registering(Test::class) {
     testClassesDirs = sourceSets["integrationTest"].output.classesDirs
     classpath = sourceSets["integrationTest"].runtimeClasspath
     shouldRunAfter(tasks.test)
+}
+
+oci.of(integrationTest) {
+    imageDependencies {
+        runtime("hivemq:hivemq-ce:latest") { isChanging = true }
+    }
+    val linuxAmd64 = platformSelector(platform("linux", "amd64"))
+    val linuxArm64v8 = platformSelector(platform("linux", "arm64", "v8"))
+    platformSelector = if (System.getenv("CI_RUN") != null) linuxAmd64 else linuxAmd64.and(linuxArm64v8)
 }
 
 tasks.check { dependsOn(integrationTest) }
