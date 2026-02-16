@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.client.restrictions;
 
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -68,7 +69,6 @@ public class Mqtt3SendMaximumIT {
 
     @Test
     void mqtt3_sendMaximum_applied() throws InterruptedException {
-
         final Mqtt3Client publisher = Mqtt3Client.builder().serverPort(hivemq.getMqttPort()).build();
         publisher.toBlocking().connectWith().restrictions().sendMaximum(RECEIVE_MAXIMUM).applyRestrictions().send();
 
@@ -81,8 +81,7 @@ public class Mqtt3SendMaximumIT {
         for (int i = 0; i < 12; i++) {
             publisher.toAsync().publishWith().topic("test").qos(MqttQos.AT_LEAST_ONCE).send();
         }
-
-        await().until(() -> publishes.size() == RECEIVE_MAXIMUM);
+        await().untilAsserted(() -> assertEquals(RECEIVE_MAXIMUM, publishes.size()));
 
         TimeUnit.SECONDS.sleep(2);
 
@@ -102,7 +101,6 @@ public class Mqtt3SendMaximumIT {
         public void extensionStop(
                 final @NotNull ExtensionStopInput extensionStopInput,
                 final @NotNull ExtensionStopOutput extensionStopOutput) {
-
         }
     }
 
@@ -110,7 +108,8 @@ public class Mqtt3SendMaximumIT {
 
         @Override
         public void initialize(
-                final @NotNull InitializerInput initializerInput, final @NotNull ClientContext clientContext) {
+                final @NotNull InitializerInput initializerInput,
+                final @NotNull ClientContext clientContext) {
             clientContext.addPubackOutboundInterceptor(new NoPubackInterceptorHandler());
         }
     }
@@ -124,5 +123,4 @@ public class Mqtt3SendMaximumIT {
             pubackOutboundOutput.async(Duration.ofHours(1));
         }
     }
-
 }
