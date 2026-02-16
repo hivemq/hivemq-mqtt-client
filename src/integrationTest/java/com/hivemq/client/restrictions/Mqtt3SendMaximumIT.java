@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.client.restrictions;
 
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -33,11 +34,13 @@ import com.hivemq.extension.sdk.api.parameter.ExtensionStopInput;
 import com.hivemq.extension.sdk.api.parameter.ExtensionStopOutput;
 import com.hivemq.extension.sdk.api.services.Services;
 import com.hivemq.extension.sdk.api.services.intializer.ClientInitializer;
-import com.hivemq.testcontainer.core.HiveMQExtension;
-import com.hivemq.testcontainer.junit5.HiveMQTestContainerExtension;
+import io.github.sgtsilvio.gradle.oci.junit.jupiter.OciImages;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.testcontainers.hivemq.HiveMQContainer;
+import org.testcontainers.hivemq.HiveMQExtension;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
@@ -50,6 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Yannick Weber
  */
+@Testcontainers
 public class Mqtt3SendMaximumIT {
 
     public static final int RECEIVE_MAXIMUM = 10;
@@ -61,14 +65,13 @@ public class Mqtt3SendMaximumIT {
             .mainClass(NoPubackExtension.class)
             .build();
 
-    @RegisterExtension
-    public final @NotNull HiveMQTestContainerExtension hivemq =
-            new HiveMQTestContainerExtension().withExtension(NO_PUBACK_EXTENSION)
-                    .withHiveMQConfig(MountableFile.forClasspathResource("/config.xml"));
+    @Container
+    private final @NotNull HiveMQContainer hivemq = new HiveMQContainer(OciImages.getImageName("hivemq/hivemq-ce")) //
+            .withExtension(NO_PUBACK_EXTENSION) //
+            .withHiveMQConfig(MountableFile.forClasspathResource("/config.xml"));
 
     @Test
     void mqtt3_sendMaximum_applied() throws InterruptedException {
-
         final Mqtt3Client publisher = Mqtt3Client.builder().serverPort(hivemq.getMqttPort()).build();
         publisher.toBlocking().connectWith().restrictions().sendMaximum(RECEIVE_MAXIMUM).applyRestrictions().send();
 
@@ -81,8 +84,7 @@ public class Mqtt3SendMaximumIT {
         for (int i = 0; i < 12; i++) {
             publisher.toAsync().publishWith().topic("test").qos(MqttQos.AT_LEAST_ONCE).send();
         }
-
-        await().until(() -> publishes.size() == RECEIVE_MAXIMUM);
+        await().untilAsserted(() -> assertEquals(RECEIVE_MAXIMUM, publishes.size()));
 
         TimeUnit.SECONDS.sleep(2);
 
@@ -102,7 +104,6 @@ public class Mqtt3SendMaximumIT {
         public void extensionStop(
                 final @NotNull ExtensionStopInput extensionStopInput,
                 final @NotNull ExtensionStopOutput extensionStopOutput) {
-
         }
     }
 
@@ -110,7 +111,8 @@ public class Mqtt3SendMaximumIT {
 
         @Override
         public void initialize(
-                final @NotNull InitializerInput initializerInput, final @NotNull ClientContext clientContext) {
+                final @NotNull InitializerInput initializerInput,
+                final @NotNull ClientContext clientContext) {
             clientContext.addPubackOutboundInterceptor(new NoPubackInterceptorHandler());
         }
     }
@@ -124,5 +126,4 @@ public class Mqtt3SendMaximumIT {
             pubackOutboundOutput.async(Duration.ofHours(1));
         }
     }
-
 }

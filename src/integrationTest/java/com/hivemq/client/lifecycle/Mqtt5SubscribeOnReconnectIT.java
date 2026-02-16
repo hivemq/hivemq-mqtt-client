@@ -21,13 +21,15 @@ import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.hivemq.testcontainer.junit5.HiveMQTestContainerExtension;
+import io.github.sgtsilvio.gradle.oci.junit.jupiter.OciImages;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.testcontainers.hivemq.HiveMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -37,11 +39,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.awaitility.Awaitility.await;
 
 @Disabled("Need a way to delete the client subscription from the session to properly test the re-subscribe feature")
+@Testcontainers
 public class Mqtt5SubscribeOnReconnectIT {
 
-    @RegisterExtension
-    public final @NotNull HiveMQTestContainerExtension hivemq =
-            new HiveMQTestContainerExtension().withHiveMQConfig(MountableFile.forClasspathResource("/config.xml"));
+    @Container
+    private final @NotNull HiveMQContainer hivemq = new HiveMQContainer(OciImages.getImageName("hivemq/hivemq-ce")) //
+            .withHiveMQConfig(MountableFile.forClasspathResource("/config.xml"));
 
     private final @NotNull AtomicBoolean reconnect = new AtomicBoolean(true);
 

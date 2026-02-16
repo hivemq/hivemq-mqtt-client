@@ -3,12 +3,12 @@ awaitility = "4.3.0"
 bouncycastle = "1.83"
 dagger = "2.42"
 equalsverifier = "4.3.1"
+gradleOci-junitJupiter = "0.8.0"
 guava = "33.5.0-jre"
 hivemq-extensionSdk = "4.7.2"
-hivemq-testcontainer-junit5 = "2.0.0"
 jctools = "2.1.2"
 jetbrains-annotations = "26.0.2-1"
-junit-jupiter = "6.0.2"
+junit-jupiter = "6.0.3"
 mockito = "5.21.0"
 netty = "4.1.131.Final"
 paho = "1.2.5"
@@ -18,6 +18,7 @@ reactor = "3.8.3"
 reactor-adapter = "3.6.0"
 rxjava = "2.2.21"
 slf4j = "1.7.36"
+testcontainers = "2.0.3"
 
 [libraries]
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
@@ -26,9 +27,9 @@ bouncycastle-prov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = 
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 equalsverifier = { module = "nl.jqno.equalsverifier:equalsverifier", version.ref = "equalsverifier" }
+gradleOci-junitJupiter = { module = "io.github.sgtsilvio:gradle-oci-junit-jupiter", version.ref = "gradleOci-junitJupiter" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 hivemq-extensionSdk = { module = "com.hivemq:hivemq-extension-sdk", version.ref = "hivemq-extensionSdk" }
-hivemq-testcontainer-junit5 = { module = "com.hivemq:hivemq-testcontainer-junit5", version.ref = "hivemq-testcontainer-junit5" }
 jctools = { module = "org.jctools:jctools-core", version.ref = "jctools" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-jupiter" }
@@ -51,6 +52,9 @@ reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "react
 rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-hivemq = { module = "org.testcontainers:testcontainers-hivemq", version.ref = "testcontainers" }
+testcontainers-junitJupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
 
 [plugins]
 bnd = { id = "biz.aQute.bnd.builder", version = "6.4.0" }
@@ -58,5 +62,6 @@ javadocLinks = { id = "io.github.sgtsilvio.gradle.javadoc-links", version = "0.9
 license = { id = "com.github.hierynomus.license", version = "0.16.1" }
 mavenCentralPublishing = { id = "io.github.sgtsilvio.gradle.maven-central-publishing", version = "0.4.1" }
 metadata = { id = "io.github.sgtsilvio.gradle.metadata", version = "0.6.0" }
+oci = { id = "io.github.sgtsilvio.gradle.oci", version = "0.24.0" }
 shadow = { id = "com.gradleup.shadow", version = "9.3.1" }
 utf8 = { id = "com.github.sgtsilvio.gradle.utf8", version = "0.1.0" }
