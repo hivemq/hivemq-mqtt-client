@@ -23,6 +23,7 @@ import com.hivemq.client.mqtt.datatypes.MqttTopic;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3Message;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -76,6 +77,12 @@ public interface Mqtt3Publish extends Mqtt3Message {
      * @return whether this Publish message is a retained message.
      */
     boolean isRetain();
+
+    /**
+     * @return the optional context of this Publish message. This data is never propagated and kept
+     * locally for correlation.
+     */
+    @Nullable Object localContext();
 
     /**
      * Acknowledges this Publish message.
