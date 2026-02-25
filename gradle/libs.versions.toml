@@ -2,7 +2,7 @@
 awaitility = "4.3.0"
 bouncycastle = "1.83"
 dagger = "2.42"
-equalsverifier = "4.4"
+equalsverifier = "4.4.1"
 gradleOci-junitJupiter = "0.8.0"
 guava = "33.5.0-jre"
 hivemq-extensionSdk = "4.7.2"
