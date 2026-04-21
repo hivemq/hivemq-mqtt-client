@@ -18,7 +18,7 @@ reactor = "3.8.5"
 reactor-adapter = "3.6.0"
 rxjava = "2.2.21"
 slf4j = "1.7.36"
-testcontainers = "2.0.4"
+testcontainers = "2.0.5"
 
 [libraries]
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
