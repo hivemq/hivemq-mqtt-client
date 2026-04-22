@@ -20,10 +20,15 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
+          cache: gradle
           distribution: temurin
           java-version: |
             8
             21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6
+        with:
+          cache-disabled: true
       - name: Check
         run: ./gradlew check javadoc
       - name: Publish Test Report
