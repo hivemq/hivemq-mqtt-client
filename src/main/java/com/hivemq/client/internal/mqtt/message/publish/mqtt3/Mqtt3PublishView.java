@@ -48,10 +48,11 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final @NotNull MqttTopicImpl topic,
             final @Nullable ByteBuffer payload,
             final @NotNull MqttQos qos,
-            final boolean retain) {
+            final boolean retain,
+            final @Nullable Object localContext) {
 
         return new MqttPublish(topic, payload, qos, retain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, null);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, null, localContext);
     }
 
     public static @NotNull MqttStatefulPublish statefulDelegate(
@@ -65,9 +66,10 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final @NotNull MqttTopicImpl topic,
             final @Nullable ByteBuffer payload,
             final @NotNull MqttQos qos,
-            final boolean retain) {
+            final boolean retain,
+            final @Nullable Object localContext) {
 
-        return new Mqtt3PublishView(delegate(topic, payload, qos, retain));
+        return new Mqtt3PublishView(delegate(topic, payload, qos, retain, localContext));
     }
 
     static @NotNull Mqtt3PublishView willOf(
@@ -122,6 +124,11 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     public @NotNull MqttPublish getDelegate() {
         return delegate;
+    }
+
+    @Override
+    public Object localContext() {
+        return delegate.getLocalContext();
     }
 
     @Override
