@@ -16,7 +16,7 @@ pmd = "5.8.1"
 reactiveStreams = "1.0.4"
 reactor = "3.8.6"
 reactor-adapter = "3.6.0"
-rxjava = "2.2.21"
+rxjava = "3.1.12"
 slf4j = "1.7.36"
 testcontainers = "2.0.5"
 
@@ -49,7 +49,7 @@ reactiveStreams = { module = "org.reactivestreams:reactive-streams", version.ref
 reactor = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
 reactor-adapter = { module = "io.projectreactor.addons:reactor-adapter", version.ref = "reactor-adapter" }
 reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "reactor" }
-rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
+rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }

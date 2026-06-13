@@ -23,7 +23,6 @@ import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttGlobalIncomi
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlowable;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckFlowable;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckSingle;
-import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckSingleFlowable;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubAckSingle;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttUnsubAckSingle;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -49,12 +48,11 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import com.hivemq.client.rx.FlowableWithSingle;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.functions.Function;
-import io.reactivex.internal.fuseable.ScalarCallable;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -214,20 +212,6 @@ public class MqttRxClient implements Mqtt5RxClient {
             final @NotNull Flowable<P> publishFlowable, final @NotNull Function<P, MqttPublish> publishMapper) {
 
         final Scheduler applicationScheduler = clientConfig.getExecutorConfig().getApplicationScheduler();
-        if (publishFlowable instanceof ScalarCallable) {
-            //noinspection unchecked
-            final P publish = ((ScalarCallable<P>) publishFlowable).call();
-            if (publish == null) {
-                return Flowable.empty();
-            }
-            final MqttPublish mqttPublish;
-            try {
-                mqttPublish = publishMapper.apply(publish);
-            } catch (final Throwable t) {
-                return Flowable.error(t);
-            }
-            return new MqttAckSingleFlowable(clientConfig, mqttPublish).observeOn(applicationScheduler, true);
-        }
         return new MqttAckFlowable(
                 clientConfig, publishFlowable.subscribeOn(applicationScheduler).map(publishMapper)).observeOn(
                 applicationScheduler, true);
