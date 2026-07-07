@@ -52,7 +52,7 @@ allprojects {
     plugins.withId("java") {
         java {
             toolchain {
-                languageVersion = JavaLanguageVersion.of(21)
+                languageVersion = JavaLanguageVersion.of(25)
             }
         }
         tasks.compileJava {
