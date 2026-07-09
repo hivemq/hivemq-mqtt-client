@@ -22,8 +22,5 @@ javaPlatform {
 
 dependencies {
     api(rootProject)
-}
-
-configurations.runtime {
-    extendsFrom(rootProject.configurations["proxyImplementation"])
+    "runtime"(libs.netty.handler.proxy)
 }

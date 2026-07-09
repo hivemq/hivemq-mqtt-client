@@ -20,8 +20,5 @@ javaPlatform {
 
 dependencies {
     api(rootProject)
-}
-
-configurations.runtime {
-    extendsFrom(rootProject.configurations["epollImplementation"])
+    "runtime"(variantOf(libs.netty.transport.native.epoll) { classifier("linux-x86_64") })
 }

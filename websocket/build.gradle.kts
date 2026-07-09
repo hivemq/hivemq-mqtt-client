@@ -20,8 +20,5 @@ javaPlatform {
 
 dependencies {
     api(rootProject)
-}
-
-configurations.runtime {
-    extendsFrom(rootProject.configurations["websocketImplementation"])
+    "runtime"(libs.netty.codec.http)
 }

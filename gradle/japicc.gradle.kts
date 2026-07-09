@@ -1,4 +1,4 @@
-import java.net.URL
+import java.net.URI
 import java.nio.charset.StandardCharsets
 
 val japiccDownload = tasks.register("japiccDownload") {
@@ -6,7 +6,7 @@ val japiccDownload = tasks.register("japiccDownload") {
     description = "Downloads the Java API Compliance Checker"
 
     val japiccVersion = "2.4"
-    val workingDir = buildDir.resolve("japicc")
+    val workingDir = layout.buildDirectory.dir("japicc").get().asFile
     val archive = workingDir.resolve("japi-compliance-checker-$japiccVersion.zip")
     val bin by extra(workingDir.resolve("japi-compliance-checker-$japiccVersion"))
 
@@ -19,7 +19,7 @@ val japiccDownload = tasks.register("japiccDownload") {
         archive.delete()
         bin.delete()
         val url = "https://github.com/lvc/japi-compliance-checker/archive/$japiccVersion.zip"
-        URL(url).openStream().use { input -> archive.outputStream().use { output -> input.copyTo(output) } }
+        URI(url).toURL().openStream().use { input -> archive.outputStream().use { output -> input.copyTo(output) } }
         copy {
             from(zipTree(archive))
             into(workingDir)
@@ -42,9 +42,9 @@ allprojects {
                 group = "japicc"
                 description = "Lists interfaces that must not be implemented by library users"
 
-                val workingDir = buildDir.resolve("japicc")
+                val workingDir = layout.buildDirectory.dir("japicc").get().asFile
                 val nonImplFile by extra(workingDir.resolve("non-impl"))
-                val sourceSet by extra(project.the<JavaPluginConvention>().sourceSets["main"].java.filterNot {
+                val sourceSet by extra(project.the<SourceSetContainer>()["main"].java.filterNot {
                     it.path.matches(Regex(".*/internal/.*"))
                 })
 
@@ -119,7 +119,7 @@ allprojects {
                                     generics = generics.replace(" ", "")
                                     qualifiedName += generics
                                 }
-                                writer.appendln(qualifiedName)
+                                writer.appendLine(qualifiedName)
                             }
                             index = end + 1
                         }
@@ -133,7 +133,7 @@ allprojects {
                     group = "japicc"
                     description = "Downloads the previous version of ${publication.artifactId}"
 
-                    val workingDir = buildDir.resolve("japicc")
+                    val workingDir = layout.buildDirectory.dir("japicc").get().asFile
                     val groupId = publication.groupId
                     val artifactId = publication.artifactId
                     val version = publication.version
@@ -151,7 +151,7 @@ allprojects {
                     doLast {
                         prevJar.delete()
                         val path = groupId.replace(".", "/") + "/$artifactId/$prevVersion/$prevJarName"
-                        URL("${repositories.mavenCentral().url}$path").openStream()
+                        URI("${repositories.mavenCentral().url}$path").toURL().openStream()
                                 .use { input -> prevJar.outputStream().use { output -> input.copyTo(output) } }
                     }
                 }
@@ -160,7 +160,7 @@ allprojects {
                     group = "japicc"
                     description = "Runs binary and source incompatibility check for ${publication.artifactId}"
 
-                    val workingDir = buildDir.resolve("japicc")
+                    val workingDir = layout.buildDirectory.dir("japicc").get().asFile
                     val artifactId = publication.artifactId
                     val version = publication.version
                     val prevVersion: String by project.extra

@@ -57,7 +57,7 @@ testcontainers-hivemq = { module = "org.testcontainers:testcontainers-hivemq", v
 testcontainers-junitJupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
 
 [plugins]
-bnd = { id = "biz.aQute.bnd.builder", version = "6.4.0" }
+bnd = { id = "biz.aQute.bnd.builder", version = "7.3.0" }
 javadocLinks = { id = "io.github.sgtsilvio.gradle.javadoc-links", version = "0.10.0" }
 license = { id = "com.github.hierynomus.license", version = "0.16.1" }
 mavenCentralPublishing = { id = "io.github.sgtsilvio.gradle.maven-central-publishing", version = "0.5.0" }
