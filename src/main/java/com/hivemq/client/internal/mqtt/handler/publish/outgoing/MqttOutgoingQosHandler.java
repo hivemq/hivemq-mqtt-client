@@ -60,7 +60,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
-import org.jctools.queues.SpscUnboundedArrayQueue;
+import org.jctools.queues.atomic.SpscUnboundedAtomicArrayQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscription;
@@ -89,7 +89,10 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private final @NotNull MqttPublishFlowables publishFlowables;
 
     // valid for session
-    private final @NotNull SpscUnboundedArrayQueue<MqttPublishWithFlow> queue = new SpscUnboundedArrayQueue<>(32);
+    // TODO once the minimum is Java 11+, switch to jctools-core-jdk11's
+    //  org.jctools.queues.varhandle.SpscUnboundedVarHandleArrayQueue (VarHandle, faster than this variant).
+    private final @NotNull SpscUnboundedAtomicArrayQueue<MqttPublishWithFlow> queue =
+            new SpscUnboundedAtomicArrayQueue<>(32);
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
     private final @NotNull NodeList<MqttPubOrRelWithFlow> pending = new NodeList<>();
     private final @NotNull Ranges packetIdentifiers = new Ranges(1, 0);
