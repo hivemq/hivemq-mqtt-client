@@ -4,7 +4,7 @@
 
 # HiveMQ MQTT Client
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
+[![Maven Central](https://maven-badges.sml.io/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://central.sonatype.com/artifact/com.hivemq/hivemq-mqtt-client)
 [![javadoc](https://javadoc.io/badge2/com.hivemq/hivemq-mqtt-client/javadoc.svg)](https://javadoc.io/doc/com.hivemq/hivemq-mqtt-client)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/hivemq/hivemq-mqtt-client/.github/workflows/check.yml?branch=master)](https://img.shields.io/github/actions/workflow/status/hivemq/hivemq-mqtt-client/.github/workflows/check.yml?branch=master)
 
@@ -66,7 +66,7 @@ backpressure support.
 ## Users
 
 [
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/300px-BMW.svg.png" alt="BMW CarIT" height="60px"/>
+<img src="https://avatars.githubusercontent.com/u/192228?s=200&v=4" alt="BMW CarIT" height="60px"/>
 ](https://github.com/bmwcarit) &nbsp;&nbsp; [
 <img src="https://github.com/bmwcarit/joynr/raw/master/graphics/joynr-logo.png" alt="joynr" height="60px"/>
 ](https://github.com/bmwcarit/joynr) &nbsp;&nbsp; [
