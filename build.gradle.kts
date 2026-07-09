@@ -119,6 +119,9 @@ allprojects {
             maxHeapSize = "1g"
             maxParallelForks = 1.coerceAtLeast(Runtime.getRuntime().availableProcessors() / 2)
             jvmArgs("-XX:+UseParallelGC")
+            // Netty uses sun.misc.Unsafe and native libraries; silence the Java 24+ warnings.
+            // See https://netty.io/wiki/java-24-and-sun.misc.unsafe.html
+            jvmArgs("--sun-misc-unsafe-memory-access=allow", "--enable-native-access=ALL-UNNAMED")
         }
     }
 }
@@ -174,6 +177,9 @@ val integrationTest by tasks.registering(Test::class) {
     testClassesDirs = sourceSets["integrationTest"].output.classesDirs
     classpath = sourceSets["integrationTest"].runtimeClasspath
     shouldRunAfter(tasks.test)
+    // Netty uses sun.misc.Unsafe and native libraries; silence the Java 24+ warnings.
+    // See https://netty.io/wiki/java-24-and-sun.misc.unsafe.html
+    jvmArgs("--sun-misc-unsafe-memory-access=allow", "--enable-native-access=ALL-UNNAMED")
 }
 
 oci.of(integrationTest) {
