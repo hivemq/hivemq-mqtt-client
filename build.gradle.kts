@@ -241,6 +241,13 @@ tasks.shadowJar {
     relocate("dagger", "${shadePrefix}dagger")
     exclude("META-INF/com.google.dagger_dagger.version")
     relocate("javax.inject", "${shadePrefix}javax.inject")
+    // Drops the relocated org.jetbrains:annotations kotlin_module
+    // (META-INF/annotations.shadow.kotlin_module) from the shaded jar and silences the
+    // shadow 9.5.0+ DuplicatesStrategy=EXCLUDE warning it triggers. Safe to remove: the file
+    // only describes the shaded-internal org.jetbrains.annotations package (nothing compiles
+    // Kotlin against it) and those annotation types carry no top-level/internal/multifile
+    // declarations, so no Kotlin compiler or runtime ever reads it.
+    exclude("META-INF/*.kotlin_module")
 
     minimize()
 }
