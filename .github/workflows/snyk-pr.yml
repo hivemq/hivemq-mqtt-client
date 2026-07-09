@@ -28,8 +28,7 @@ jobs:
           distribution: temurin
           java-version: |
             8
-            11
-            21
+            25
 
       - name: Check for new issues
         uses: hivemq/hivemq-snyk-composite-action@1c18f39e10e7b1d35fa121b91b99c0445b7a4a56 # v2
