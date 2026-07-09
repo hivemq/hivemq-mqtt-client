@@ -151,6 +151,12 @@ sourceSets.create("integrationTest") {
     runtimeClasspath += sourceSets.main.get().output
 }
 
+tasks.named<JavaCompile>("compileIntegrationTestJava") {
+    // The integration tests bundle a HiveMQ extension that is loaded inside the HiveMQ CE container (Java 21).
+    // Compile to Java 21 bytecode so the container can load it, independent of the (Java 25) build toolchain.
+    options.release.set(21)
+}
+
 val integrationTestImplementation: Configuration by configurations.getting {
     extendsFrom(configurations.testImplementation.get())
 }
