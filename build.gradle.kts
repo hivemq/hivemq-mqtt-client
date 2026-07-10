@@ -82,9 +82,9 @@ dependencies {
     implementation(libs.netty.handler)
     implementation(libs.netty.transport)
     implementation(libs.jctools)
-    implementation(libs.jetbrains.annotations)
     implementation(libs.dagger)
 
+    compileOnlyApi(libs.jetbrains.annotations)
     compileOnly(libs.slf4j.api)
 
     annotationProcessor(libs.dagger.compiler)
@@ -133,6 +133,9 @@ dependencies {
     testImplementation(libs.bouncycastle.pkix)
     testImplementation(libs.bouncycastle.prov)
     testImplementation(libs.paho.client)
+    // EqualsVerifier reflects on @NotNull/@Nullable at runtime; compileOnlyApi is compile-only,
+    // so the annotations must be added to the test runtime classpath explicitly.
+    testRuntimeOnly(libs.jetbrains.annotations)
     testRuntimeOnly(libs.slf4j.simple)
 }
 
@@ -249,17 +252,9 @@ tasks.shadowJar {
     relocate("META-INF/native/libnetty", "META-INF/native/lib${shadeFilePrefix}netty")
     exclude("META-INF/io.netty.versions.properties")
     relocate("org.jctools", "${shadePrefix}org.jctools")
-    relocate("org.jetbrains", "${shadePrefix}org.jetbrains")
     relocate("dagger", "${shadePrefix}dagger")
     exclude("META-INF/com.google.dagger_dagger.version")
     relocate("javax.inject", "${shadePrefix}javax.inject")
-    // Drops the relocated org.jetbrains:annotations kotlin_module
-    // (META-INF/annotations.shadow.kotlin_module) from the shaded jar and silences the
-    // shadow 9.5.0+ DuplicatesStrategy=EXCLUDE warning it triggers. Safe to remove: the file
-    // only describes the shaded-internal org.jetbrains.annotations package (nothing compiles
-    // Kotlin against it) and those annotation types carry no top-level/internal/multifile
-    // declarations, so no Kotlin compiler or runtime ever reads it.
-    exclude("META-INF/*.kotlin_module")
 
     minimize()
 }

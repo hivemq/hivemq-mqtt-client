@@ -19,7 +19,8 @@ dependencies {
     api(libs.reactor)
 
     implementation(libs.reactor.adapter)
-    implementation(libs.jetbrains.annotations)
+
+    compileOnlyApi(libs.jetbrains.annotations)
 }
 
 /* ******************** test ******************** */
