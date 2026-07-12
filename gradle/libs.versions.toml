@@ -1,6 +1,6 @@
 [versions]
 awaitility = "4.3.0"
-bouncycastle = "1.84"
+bouncycastle = "1.85"
 dagger = "2.42"
 equalsverifier = "4.5"
 gradleOci-junitJupiter = "0.8.0"
