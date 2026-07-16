@@ -5,11 +5,11 @@ plugins {
     pmd
     alias(libs.plugins.bnd)
     alias(libs.plugins.javadocLinks)
-    alias(libs.plugins.license)
     alias(libs.plugins.mavenCentralPublishing)
     alias(libs.plugins.metadata)
     alias(libs.plugins.oci)
     alias(libs.plugins.shadow)
+    alias(libs.plugins.spotless)
     alias(libs.plugins.utf8)
 }
 
@@ -342,10 +342,20 @@ tasks.named("publishShadedPublicationToMavenCentralStagingRepository") {
 /* ******************** checks ******************** */
 
 allprojects {
-    plugins.apply("com.github.hierynomus.license")
-    license {
-        header = rootDir.resolve("HEADER")
-        mapping("java", "SLASHSTAR_STYLE")
+    plugins.apply("com.diffplug.spotless")
+    plugins.withId("java") {
+        spotless {
+            java {
+                licenseHeaderFile(rootDir.resolve("HEADER"))
+                endWithNewline()
+            }
+            format("xml") {
+                target("src/**/*.xml")
+                licenseHeaderFile(rootDir.resolve("HEADER_XML"), "<[a-zA-Z]")
+                    .skipLinesMatching("^<\\?xml.*\\?>$")
+                endWithNewline()
+            }
+        }
     }
 }
 
