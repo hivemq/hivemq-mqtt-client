@@ -43,8 +43,7 @@ class Mqtt5PubRecExceptionTest {
         final Mqtt5PubRec pubRec = mock(Mqtt5PubRec.class);
         final Mqtt5PubRecException exception = new Mqtt5PubRecException(pubRec, "message");
         assertEquals(0, exception.getStackTrace().length);
-        final Mqtt5PubRecException thrownException =
-                assertThrows(Mqtt5PubRecException.class, () -> { throw exception; });
+        final Mqtt5PubRecException thrownException = assertThrows(Mqtt5PubRecException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 
@@ -58,5 +57,4 @@ class Mqtt5PubRecExceptionTest {
         assertTrue(filledException.getStackTrace().length > 0);
         assertEquals("fillInStackTrace_newStackTrace", filledException.getStackTrace()[0].getMethodName());
     }
-
 }

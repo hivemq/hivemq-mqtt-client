@@ -70,7 +70,6 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         final MqttPubRec pubRec = decodeOk(encoded);
-
         assertEquals(SUCCESS, pubRec.getReasonCode());
         assertTrue(pubRec.getReasonString().isPresent());
         assertEquals("success", pubRec.getReasonString().get().toString());

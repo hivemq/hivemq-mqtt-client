@@ -85,7 +85,6 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         final MqttStatefulPublish publishInternal = decodeInternal(encoded);
-
         assertNotNull(publishInternal);
 
         assertFalse(publishInternal.isDup());
@@ -97,7 +96,6 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(123, subscriptionIdentifiers.get(0));
 
         final MqttPublish publish = publishInternal.stateless();
-
         assertNotNull(publish);
 
         assertEquals("topic", publish.getTopic().toString());
@@ -143,14 +141,12 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         final MqttStatefulPublish publishInternal = decodeInternal(encoded);
-
         assertFalse(publishInternal.isDup());
 
         final ImmutableIntList subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         assertEquals(0, subscriptionIdentifiers.size());
 
         final MqttPublish publish = publishInternal.stateless();
-
         assertNotNull(publish);
 
         assertEquals("topic", publish.getTopic().toString());

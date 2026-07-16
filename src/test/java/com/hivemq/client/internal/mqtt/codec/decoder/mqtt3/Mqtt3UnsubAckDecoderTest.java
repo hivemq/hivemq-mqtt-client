@@ -30,21 +30,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
     private static final byte @NotNull [] WELLFORMED_UNSUBACK_BEGIN = {
-            //   type, flags
+            // type, flags
             (byte) 0b1011_0000,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
     private static final byte @NotNull [] MALFORMED_UNSUBACK_BEGIN_WRONG_FLAGS = {
-            //   type, flags
+            // type, flags
             (byte) 0b1011_0100,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
     private static final byte @NotNull [] MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH = {
-            //   type, flags
+            // type, flags
             (byte) 0b1011_0000,
-            //remaining length
+            // remaining length
             0b0000_0011
     };
 

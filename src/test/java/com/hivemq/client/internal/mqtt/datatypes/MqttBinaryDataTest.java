@@ -110,5 +110,4 @@ class MqttBinaryDataTest {
         random.nextBytes(binary);
         assertEquals(2 + binary.length, MqttBinaryData.encodedLength(binary));
     }
-
 }

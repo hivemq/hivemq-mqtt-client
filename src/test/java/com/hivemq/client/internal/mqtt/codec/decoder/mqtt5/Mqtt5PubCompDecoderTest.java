@@ -74,7 +74,6 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final MqttPubComp pubComp = channel.readInbound();
-
         assertNotNull(pubComp);
 
         assertEquals(5, pubComp.getPacketIdentifier());
@@ -104,7 +103,6 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final MqttPubComp pubComp = channel.readInbound();
-
         assertNotNull(pubComp);
 
         assertEquals(5, pubComp.getPacketIdentifier());
@@ -129,7 +127,6 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final MqttPubComp pubComp = channel.readInbound();
-
         assertNotNull(pubComp);
 
         assertEquals(5, pubComp.getPacketIdentifier());
@@ -169,11 +166,9 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final MqttPubComp pubComp = channel.readInbound();
-
         assertNull(pubComp);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
-
         assertNull(disconnect);
     }
 
@@ -188,11 +183,9 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final MqttPubComp pubComp = channel.readInbound();
-
         assertNull(pubComp);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
-
         assertNull(disconnect);
     }
 
@@ -506,7 +499,6 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final MqttPubComp pubComp = channel.readInbound();
-
         assertNotNull(pubComp);
 
         assertEquals(5, pubComp.getPacketIdentifier());
@@ -746,9 +738,9 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
     private static final int PROPERTIES_VALID_LENGTH = 54;
     private static final byte @NotNull [] PROPERTIES_VALID = {
-            //     reason string
+            // reason string
             0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-            //     user properties
+            // user properties
             0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
             0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
             0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'

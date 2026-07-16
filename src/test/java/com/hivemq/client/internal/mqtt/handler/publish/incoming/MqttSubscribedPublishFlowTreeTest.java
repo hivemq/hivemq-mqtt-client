@@ -101,7 +101,6 @@ class MqttSubscribedPublishFlowTreeTest extends MqttSubscribedPublishFlowsTest {
             final @NotNull String topic1,
             final @NotNull String topic2,
             final @NotNull String topic3) {
-
         final MqttSubscription subscription1 = new MqttSubscriptionBuilder.Default().topicFilter(filter1).build();
         final MqttSubscription subscription2 = new MqttSubscriptionBuilder.Default().topicFilter(filter2).build();
         final MqttSubscription subscription3 = new MqttSubscriptionBuilder.Default().topicFilter(filter3).build();
@@ -117,13 +116,15 @@ class MqttSubscribedPublishFlowTreeTest extends MqttSubscribedPublishFlowsTest {
         assertTrue(publishWithFlows1.subscriptionFound);
         final MqttStatefulPublishWithFlows publishWithFlows2 = newPublishWithFlows(topic2);
         flows.findMatching(publishWithFlows2);
-        assertTrue(publishWithFlows1.subscriptionFound);
+        assertTrue(publishWithFlows2.subscriptionFound);
         final MqttStatefulPublishWithFlows publishWithFlows3 = newPublishWithFlows(topic3);
         flows.findMatching(publishWithFlows3);
-        assertTrue(publishWithFlows1.subscriptionFound);
+        assertTrue(publishWithFlows3.subscriptionFound);
 
-        assertEquals(ImmutableMap.of(1, ImmutableList.of(subscription1), 2, ImmutableList.of(subscription2), 3,
-                ImmutableList.of(subscription3)), flows.getSubscriptions());
+        assertEquals(
+                ImmutableMap.of(
+                        1, ImmutableList.of(subscription1), 2, ImmutableList.of(subscription2), 3,
+                        ImmutableList.of(subscription3)), flows.getSubscriptions());
 
         switch (compactOperation) {
             case "unsubscribe":

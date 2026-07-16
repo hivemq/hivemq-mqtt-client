@@ -31,21 +31,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
     private static final byte @NotNull [] WELLFORMED_SUBACK_BEGIN = {
-            //   type, flags
+            // type, flags
             (byte) 0b1001_0000,
-            //remaining length
+            // remaining length
             0b0000_0110
     };
     private static final byte @NotNull [] MALFORMED_SUBACK_BEGIN_WRONG_FLAGS = {
-            //   type, flags
+            // type, flags
             (byte) 0b1001_0010,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
     private static final byte @NotNull [] MALFORMED_SUBACK_BEGIN_TOO_SHORT_LENGTH = {
-            //   type, flags
+            // type, flags
             (byte) 0b1001_0010,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
 
@@ -67,10 +67,9 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_SUCESS(final boolean useMaxPacketId) {
-        final byte[] encoded =
-                Bytes.concat(
-                        WELLFORMED_SUBACK_BEGIN, (useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID), REASON_CODE_QOS_0,
-                        REASON_CODE_QOS_1, REASON_CODE_QOS_2, REASON_CODE_FAILURE);
+        final byte[] encoded = Bytes.concat(
+                WELLFORMED_SUBACK_BEGIN, (useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID), REASON_CODE_QOS_0,
+                REASON_CODE_QOS_1, REASON_CODE_QOS_2, REASON_CODE_FAILURE);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

@@ -40,9 +40,10 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubRelEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBREL.getCode()] = new Mqtt5PubRelEncoder();
-        }}, true);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt5MessageType.PUBREL.getCode()] = new Mqtt5PubRelEncoder();
+                }}, true);
     }
 
     @Test

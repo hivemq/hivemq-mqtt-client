@@ -42,9 +42,10 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubAckEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PUBACK.getCode()] = new Mqtt5PubAckEncoder();
-        }}, true);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt5MessageType.PUBACK.getCode()] = new Mqtt5PubAckEncoder();
+                }}, true);
     }
 
     @Test
@@ -312,8 +313,10 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
         final MqttUserPropertiesImpl maxUserProperties = maxPacket.getMaxPossibleUserProperties();
 
-        final ByteBuf expected = Unpooled.buffer(MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
-                MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
+        final ByteBuf expected =
+                Unpooled.buffer(
+                        MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
+                        MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
 
         // fixed header
         // type, reserved
@@ -337,7 +340,8 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         maxUserProperties.encode(expected);
 
         final MqttUtf8StringImpl reasonString = getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 10);
-        final MqttPubAck pubAck = new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString,
+        final MqttPubAck pubAck = new MqttPubAck(
+                1, Mqtt5PubAckReasonCode.SUCCESS, reasonString,
                 maxPacket.getMaxPossibleUserProperties());
 
         encode(expected.array(), pubAck);
@@ -353,8 +357,10 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final int reasonStringTooLong = (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes) + 1;
         final MqttUtf8StringImpl reasonString = getPaddedUtf8String(reasonStringTooLong);
 
-        final ByteBuf expected = Unpooled.buffer(MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
-                MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
+        final ByteBuf expected =
+                Unpooled.buffer(
+                        MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
+                        MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
 
         // fixed header
         // type, reserved

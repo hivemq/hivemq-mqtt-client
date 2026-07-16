@@ -74,9 +74,9 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         final MqttUnsubAck unsubAck = decodeOk(encoded);
-
-        //0x0102 = 258
+        // 0x0102 = 258
         assertEquals(258, unsubAck.getPacketIdentifier());
+
         final Optional<MqttUtf8String> reasonString = unsubAck.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
@@ -546,8 +546,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         decodeOk(encoded);
     }
 
-    @NotNull
-    private MqttUnsubAck decodeOk(final byte @NotNull [] encoded) {
+    private @NotNull MqttUnsubAck decodeOk(final byte @NotNull [] encoded) {
         final MqttUnsubAck unsubAck = decode(encoded);
         assertNotNull(unsubAck);
         return unsubAck;
@@ -564,13 +563,11 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         createChannel();
     }
 
-    @Nullable
-    private MqttUnsubAck decode(final byte @NotNull [] encoded) {
+    private @Nullable MqttUnsubAck decode(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
 
         return channel.readInbound();
     }
-
 }

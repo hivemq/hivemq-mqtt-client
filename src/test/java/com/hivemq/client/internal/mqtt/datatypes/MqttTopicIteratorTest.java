@@ -258,7 +258,9 @@ class MqttTopicIteratorTest {
             "test/+/topic/#, test/+/topic2, 6", "test/+/topic2/#, test/+/topic, 6", "test/topic/+, test/topic/abc, 10"
     })
     void forwardWhileEqual_notFullyEqual(
-            final @NotNull String topicFilter, final @NotNull String topicLevels, final int branchIndex) {
+            final @NotNull String topicFilter,
+            final @NotNull String topicLevels,
+            final int branchIndex) {
 
         final MqttTopicIterator topicIterator = MqttTopicIterator.of(MqttTopicFilterImpl.of(topicFilter));
         topicIterator.next();

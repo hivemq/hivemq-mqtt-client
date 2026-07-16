@@ -107,7 +107,6 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final MqttConnAck connAck = channel.readInbound();
-
         assertNotNull(connAck);
 
         assertTrue(connAck.isSessionPresent());
@@ -169,7 +168,6 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final MqttConnAck connAck = channel.readInbound();
-
         assertNotNull(connAck);
 
         assertFalse(connAck.isSessionPresent());
@@ -228,11 +226,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final Mqtt5ConnAck connAck = channel.readInbound();
-
         assertNull(connAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
-
         assertNull(disconnect);
     }
 
@@ -247,11 +243,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
         final Mqtt5ConnAck connAck = channel.readInbound();
-
         assertNull(connAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
-
         assertNull(disconnect);
     }
 
@@ -434,10 +428,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final Mqtt5ConnAck connAck = channel.readInbound();
-
         assertNotNull(connAck);
         assertEquals(reasonCode, connAck.getReasonCode());
-
     }
 
     @Test

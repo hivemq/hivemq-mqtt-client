@@ -23,7 +23,6 @@ import com.hivemq.client.internal.mqtt.message.connect.MqttStatefulConnect;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,9 +38,10 @@ import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3ConnectEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.CONNECT.getCode()] = new Mqtt3ConnectEncoder();
-        }}, false);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt3MessageType.CONNECT.getCode()] = new Mqtt3ConnectEncoder();
+                }}, false);
     }
 
     @CsvSource({
@@ -59,8 +59,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
             final @Nullable String willMessage,
             final @Nullable String willTopic,
             final @Nullable Integer willQos,
-            final @Nullable Boolean willRetained) throws MqttException {
-
+            final @Nullable Boolean willRetained) throws Exception {
         final boolean hasAuth = isNotBlank(userName) && isNotBlank(password);
         final boolean hasWill =
                 isNotBlank(willMessage) && isNotBlank(willTopic) && (willQos != null) && (willRetained != null);

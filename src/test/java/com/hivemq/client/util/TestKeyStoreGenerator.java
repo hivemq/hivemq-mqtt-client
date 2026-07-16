@@ -97,7 +97,7 @@ public class TestKeyStoreGenerator {
         return x509Certificate;
     }
 
-    private KeyPair generateKeyPair() throws NoSuchProviderException, NoSuchAlgorithmException {
+    private KeyPair generateKeyPair() throws Exception {
         final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", "BC");
         keyPairGenerator.initialize(2048, new SecureRandom());
         return keyPairGenerator.generateKeyPair();
@@ -114,5 +114,4 @@ public class TestKeyStoreGenerator {
 
         return new BcRSAContentSignerBuilder(signatureAlgorithmId, digestAlgorithmId).build(privateKey);
     }
-
 }

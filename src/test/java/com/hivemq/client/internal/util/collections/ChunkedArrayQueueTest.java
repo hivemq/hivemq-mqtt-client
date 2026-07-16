@@ -69,5 +69,4 @@ class ChunkedArrayQueueTest {
         assertEquals(0, queue.size());
         assertTrue(queue.isEmpty());
     }
-
 }

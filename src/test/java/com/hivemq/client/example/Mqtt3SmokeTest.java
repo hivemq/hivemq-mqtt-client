@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +60,7 @@ class Mqtt3SmokeTest {
     }
 
     @BeforeEach
-    void subscribe() throws InterruptedException {
+    void subscribe() throws Exception {
         final CountDownLatch subscribedLatch = new CountDownLatch(1);
         receivedLatch = new CountDownLatch(1);
         subscribeInstance.subscribeTo(topic, qos, count, subscribedLatch)
@@ -70,7 +70,7 @@ class Mqtt3SmokeTest {
     }
 
     @AfterEach
-    void check() throws InterruptedException {
+    void check() throws Exception {
         assertTrue(receivedLatch.await(10, TimeUnit.SECONDS));
         assertEquals(count, publishInstance.getPublishedCount());
         assertEquals(count, subscribeInstance.getReceivedCount());
@@ -85,23 +85,20 @@ class Mqtt3SmokeTest {
 
     @Test
     @Disabled("test.mosquitto.org down")
-    void mqttOverTls() throws IOException, URISyntaxException {
-        final TrustManagerFactory trustManagerFactory = KeyStoreUtil.trustManagerFromKeystore(
-                new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
-
+    void mqttOverTls() throws Exception {
+        final TrustManagerFactory trustManagerFactory =
+                KeyStoreUtil.trustManagerFromKeystore(resourceFile(TRUSTSTORE_PATH), TRUSTSTORE_PASS);
         publishInstance = new Mqtt3ClientExample(server, 8883, true, trustManagerFactory, null, null);
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
     @Disabled("test.mosquitto.org down")
-    void mqttOverTlsWithClientCert() throws IOException, URISyntaxException {
-        final TrustManagerFactory trustManagerFactory = KeyStoreUtil.trustManagerFromKeystore(
-                new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
-        final KeyManagerFactory keyManagerFactory = KeyStoreUtil.keyManagerFromKeystore(
-                new File(getClass().getClassLoader().getResource(KEYSTORE_PATH).toURI()), KEYSTORE_PASS,
-                PRIVATE_KEY_PASS);
-
+    void mqttOverTlsWithClientCert() throws Exception {
+        final TrustManagerFactory trustManagerFactory =
+                KeyStoreUtil.trustManagerFromKeystore(resourceFile(TRUSTSTORE_PATH), TRUSTSTORE_PASS);
+        final KeyManagerFactory keyManagerFactory =
+                KeyStoreUtil.keyManagerFromKeystore(resourceFile(KEYSTORE_PATH), KEYSTORE_PASS, PRIVATE_KEY_PASS);
         publishInstance = new Mqtt3ClientExample(server, 8884, true, trustManagerFactory, keyManagerFactory, null);
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
@@ -120,4 +117,8 @@ class Mqtt3SmokeTest {
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
+    private File resourceFile(final String path) throws Exception {
+        final URL resource = Objects.requireNonNull(getClass().getClassLoader().getResource(path));
+        return new File(resource.toURI());
+    }
 }

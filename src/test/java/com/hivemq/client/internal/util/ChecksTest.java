@@ -96,7 +96,8 @@ class ChecksTest {
     @Test
     void notImplementedOrNull_otherImpl() {
         final Interface o = new OtherImpl();
-        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        final IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
                 () -> Checks.notImplementedOrNull(o, Impl.class, "test-name"));
         assertEquals(
                 "test-name must not be implemented by the user, but was implemented by com.hivemq.client.internal.util.ChecksTest$OtherImpl.",
@@ -152,7 +153,8 @@ class ChecksTest {
     @Test
     void elementsNotImplemented_otherImpl() {
         final ImmutableList<Interface> o = ImmutableList.of(new Impl(), new OtherImpl());
-        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        final IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
                 () -> Checks.elementsNotImplemented(o, Impl.class, "test-name"));
         assertEquals(
                 "test-name must not be implemented by the user, but was implemented by com.hivemq.client.internal.util.ChecksTest$OtherImpl.",
@@ -170,8 +172,10 @@ class ChecksTest {
     void unsignedShort_false(final int value) {
         final IllegalArgumentException exception =
                 assertThrows(IllegalArgumentException.class, () -> Checks.unsignedShort(value, "test-name"));
-        assertEquals("test-name must not exceed the value range of unsigned short [0, " +
-                UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was " + value + ".", exception.getMessage());
+        assertEquals(
+                "test-name must not exceed the value range of unsigned short [0, " +
+                        UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was " + value + ".",
+                exception.getMessage());
     }
 
     @ParameterizedTest
@@ -192,8 +196,10 @@ class ChecksTest {
     void unsignedShortNotZero_false(final int value) {
         final IllegalArgumentException exception =
                 assertThrows(IllegalArgumentException.class, () -> Checks.unsignedShortNotZero(value, "test-name"));
-        assertEquals("test-name must not exceed the value range of unsigned short [0, " +
-                UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was " + value + ".", exception.getMessage());
+        assertEquals(
+                "test-name must not exceed the value range of unsigned short [0, " +
+                        UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was " + value + ".",
+                exception.getMessage());
     }
 
     @ParameterizedTest
@@ -207,8 +213,9 @@ class ChecksTest {
     void unsignedInt_false(final long value) {
         final IllegalArgumentException exception =
                 assertThrows(IllegalArgumentException.class, () -> Checks.unsignedInt(value, "test-name"));
-        assertEquals("test-name must not exceed the value range of unsigned int [0, " +
-                UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE + "], but was " + value + ".", exception.getMessage());
+        assertEquals(
+                "test-name must not exceed the value range of unsigned int [0, " +
+                        UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE + "], but was " + value + ".", exception.getMessage());
     }
 
     @ParameterizedTest
@@ -229,7 +236,8 @@ class ChecksTest {
     void index_tooBig(final int value) {
         final IndexOutOfBoundsException exception =
                 assertThrows(IndexOutOfBoundsException.class, () -> Checks.index(value, 10));
-        assertEquals("Index must not be greater than or equal to the size (10), but was " + value + ".",
+        assertEquals(
+                "Index must not be greater than or equal to the size (10), but was " + value + ".",
                 exception.getMessage());
     }
 
@@ -251,7 +259,8 @@ class ChecksTest {
     void cursorIndex_tooBig(final int value) {
         final IndexOutOfBoundsException exception =
                 assertThrows(IndexOutOfBoundsException.class, () -> Checks.cursorIndex(value, 10));
-        assertEquals("Cursor index must not be greater than the size (10), but was " + value + ".",
+        assertEquals(
+                "Cursor index must not be greater than the size (10), but was " + value + ".",
                 exception.getMessage());
     }
 
@@ -273,7 +282,8 @@ class ChecksTest {
     void indexRange_tooBig(final int end) {
         final IndexOutOfBoundsException exception =
                 assertThrows(IndexOutOfBoundsException.class, () -> Checks.indexRange(0, end, 10));
-        assertEquals("End index must not be greater than or equal to the size (10), but was " + end + ".",
+        assertEquals(
+                "End index must not be greater than or equal to the size (10), but was " + end + ".",
                 exception.getMessage());
     }
 
@@ -282,7 +292,8 @@ class ChecksTest {
     void indexRange_startBiggerThanEnd(final int start, final int end) {
         final IndexOutOfBoundsException exception =
                 assertThrows(IndexOutOfBoundsException.class, () -> Checks.indexRange(start, end, 10));
-        assertEquals("Start index must not be greater than the end index, but " + start + " > " + end + ".",
+        assertEquals(
+                "Start index must not be greater than the end index, but " + start + " > " + end + ".",
                 exception.getMessage());
     }
 

@@ -30,21 +30,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt3PubCompDecoderTest extends AbstractMqtt3DecoderTest {
 
     private static final byte @NotNull [] WELLFORMED_PUBCOMP_BEGIN = {
-            //   type, flags
+            // type, flags
             0b0111_0000,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
     private static final byte @NotNull [] MALFORMED_PUBCOMP_BEGIN_WRONG_FLAGS = {
-            //   type, flags
+            // type, flags
             0b0111_0100,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
     private static final byte @NotNull [] MALFORMED_PUBCOMP_BEGIN_TOO_LONG_LENGTH = {
-            //   type, flags
+            // type, flags
             0b0111_0100,
-            //remaining length
+            // remaining length
             0b0000_0011
     };
     private static final byte @NotNull [] ENDING_TOO_LONG_MALFORMED = {0x01};

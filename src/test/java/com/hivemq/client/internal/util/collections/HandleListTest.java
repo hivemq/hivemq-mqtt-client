@@ -80,5 +80,4 @@ class HandleListTest {
         assertEquals(size, counter);
         assertTrue(list.isEmpty());
     }
-
 }

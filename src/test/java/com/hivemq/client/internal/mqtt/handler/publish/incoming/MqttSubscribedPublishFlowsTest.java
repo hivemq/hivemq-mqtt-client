@@ -25,6 +25,7 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder
 import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,6 +36,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -49,8 +51,9 @@ abstract class MqttSubscribedPublishFlowsTest {
     public static class CsvToArray extends SimpleArgumentConverter {
 
         @Override
-        protected @NotNull Object convert(final @NotNull Object source, final @NotNull Class<?> targetType)
+        protected @NotNull Object convert(final @Nullable Object source, final @NotNull Class<?> targetType)
                 throws ArgumentConversionException {
+            Objects.requireNonNull(source);
             final String s = (String) source;
             return s.split("\\s*;\\s*");
         }
@@ -116,7 +119,6 @@ abstract class MqttSubscribedPublishFlowsTest {
             final @NotNull String topic,
             @ConvertWith(CsvToArray.class) final String @NotNull [] matchingTopicFilters,
             final boolean acknowledge) {
-
         for (int i = 0; i < matchingTopicFilters.length; i++) {
             final MqttSubscription subscription =
                     new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilters[i]).build();
@@ -142,7 +144,6 @@ abstract class MqttSubscribedPublishFlowsTest {
     void subscribe_nonMatchingTopicFilters_doNotMatch(
             final @NotNull String topic,
             @ConvertWith(CsvToArray.class) final String @NotNull [] notMatchingTopicFilters) {
-
         for (int i = 0; i < notMatchingTopicFilters.length; i++) {
             final MqttSubscription subscription =
                     new MqttSubscriptionBuilder.Default().topicFilter(notMatchingTopicFilters[i]).build();
@@ -166,7 +167,6 @@ abstract class MqttSubscribedPublishFlowsTest {
     void subscribe_nonMatchingTopicFilters_doNotMatch_noFlow(
             final @NotNull String topic,
             @ConvertWith(CsvToArray.class) final String @NotNull [] notMatchingTopicFilters) {
-
         for (int i = 0; i < notMatchingTopicFilters.length; i++) {
             final MqttSubscription subscription =
                     new MqttSubscriptionBuilder.Default().topicFilter(notMatchingTopicFilters[i]).build();
@@ -182,8 +182,8 @@ abstract class MqttSubscribedPublishFlowsTest {
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
     void unsubscribe_matchingTopicFilters_doNoLongerMatch(
-            final @NotNull String topic, final @NotNull String matchingTopicFilter) {
-
+            final @NotNull String topic,
+            final @NotNull String matchingTopicFilter) {
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscription subscription1 =
@@ -208,8 +208,8 @@ abstract class MqttSubscribedPublishFlowsTest {
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
     void unsubscribe_matchingTopicFilters_doNoLongerMatch_noFlow(
-            final @NotNull String topic, final @NotNull String matchingTopicFilter) {
-
+            final @NotNull String topic,
+            final @NotNull String matchingTopicFilter) {
         final MqttSubscription subscription1 =
                 new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build();
         final MqttSubscription subscription2 =
@@ -230,8 +230,8 @@ abstract class MqttSubscribedPublishFlowsTest {
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
     void unsubscribe_matchingTopicFilters_notAcknowledged_doStillMatch(
-            final @NotNull String topic, final @NotNull String matchingTopicFilter) {
-
+            final @NotNull String topic,
+            final @NotNull String matchingTopicFilter) {
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscription subscription1 =
@@ -254,8 +254,8 @@ abstract class MqttSubscribedPublishFlowsTest {
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
     void unsubscribe_matchingTopicFilters_notAcknowledged_doStillMatch_noFlow(
-            final @NotNull String topic, final @NotNull String matchingTopicFilter) {
-
+            final @NotNull String topic,
+            final @NotNull String matchingTopicFilter) {
         final MqttSubscription subscription1 =
                 new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build();
         final MqttSubscription subscription2 =
@@ -277,7 +277,6 @@ abstract class MqttSubscribedPublishFlowsTest {
             final @NotNull String topic,
             final @NotNull String matchingTopicFilter,
             final @NotNull String notMatchingTopicFilter) {
-
         final MqttSubscribedPublishFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscribedPublishFlow flow2 = mockSubscriptionFlow(notMatchingTopicFilter);
         final MqttSubscription subscription1 =
@@ -306,7 +305,6 @@ abstract class MqttSubscribedPublishFlowsTest {
             final @NotNull String topic,
             final @NotNull String matchingTopicFilter,
             final @NotNull String notMatchingTopicFilter) {
-
         final MqttSubscription subscription1 =
                 new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build();
         final MqttSubscription subscription2 =
@@ -409,7 +407,8 @@ abstract class MqttSubscribedPublishFlowsTest {
                 new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter2).build();
         flows.subscribe(subscription1, 1, flow);
         flows.subscribe(subscription2, 2, flow);
-        assertEquals(ImmutableSet.of(subscription1.getTopicFilter(), subscription2.getTopicFilter()),
+        assertEquals(
+                ImmutableSet.of(subscription1.getTopicFilter(), subscription2.getTopicFilter()),
                 toSet(flow.getTopicFilters()));
 
         flows.suback(subscription1.getTopicFilter(), 1, true);
@@ -438,7 +437,6 @@ abstract class MqttSubscribedPublishFlowsTest {
             final @NotNull String matchingTopicFilter,
             final @NotNull String topic2,
             final @NotNull String matchingTopicFilter2) {
-
         final MqttSubscription subscription1 =
                 new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build();
         final MqttSubscription subscription2 =
@@ -485,8 +483,8 @@ abstract class MqttSubscribedPublishFlowsTest {
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
     void suback_error_doesNotUnsubscribe_noFlow(
-            final @NotNull String topic, final @NotNull String matchingTopicFilter) {
-
+            final @NotNull String topic,
+            final @NotNull String matchingTopicFilter) {
         final MqttSubscription subscription =
                 new MqttSubscriptionBuilder.Default().topicFilter(matchingTopicFilter).build();
         flows.subscribe(subscription, 1, null);
@@ -507,7 +505,6 @@ abstract class MqttSubscribedPublishFlowsTest {
             final @NotNull String filter1,
             final @NotNull String filter2,
             final @NotNull String filter3) {
-
         final MqttSubscription subscription1 = new MqttSubscriptionBuilder.Default().topicFilter(filter1).build();
         final MqttSubscription subscription2 = new MqttSubscriptionBuilder.Default().topicFilter(filter2).build();
         final MqttSubscription subscription3 = new MqttSubscriptionBuilder.Default().topicFilter(filter3).build();
@@ -741,13 +738,6 @@ abstract class MqttSubscribedPublishFlowsTest {
         assertFalse(publishWithFlows7.subscriptionFound);
     }
 
-    static @NotNull MqttStatefulPublishWithFlows newPublishWithFlows(final @NotNull String topic) {
-        return new MqttStatefulPublishWithFlows(new MqttPublishBuilder.Default().topic(topic)
-                .build()
-                .createStateful(1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
-                        MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS));
-    }
-
     @Test
     void getSubscriptions() {
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
@@ -771,8 +761,7 @@ abstract class MqttSubscribedPublishFlowsTest {
         }
         // check if sorted in reverse order
         final AtomicInteger atomicInteger = new AtomicInteger(subscriptions.size());
-        allSubscriptions.forEach(
-                (subscriptionId, subscriptionsForId) -> assertEquals(atomicInteger.decrementAndGet(), subscriptionId));
+        allSubscriptions.forEach((subscriptionId, _) -> assertEquals(atomicInteger.decrementAndGet(), subscriptionId));
     }
 
     @Test
@@ -802,8 +791,14 @@ abstract class MqttSubscribedPublishFlowsTest {
         }
         // check if sorted in reverse order
         final AtomicInteger atomicInteger = new AtomicInteger(subscriptions.size());
-        allSubscriptions.forEach(
-                (subscriptionId, subscriptionsForId) -> assertEquals(atomicInteger.addAndGet(-2), subscriptionId));
+        allSubscriptions.forEach((subscriptionId, _) -> assertEquals(atomicInteger.addAndGet(-2), subscriptionId));
+    }
+
+    static @NotNull MqttStatefulPublishWithFlows newPublishWithFlows(final @NotNull String topic) {
+        return new MqttStatefulPublishWithFlows(
+                new MqttPublishBuilder.Default().topic(topic).build().createStateful(
+                        1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
+                        MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS));
     }
 
     private static @NotNull MqttSubscribedPublishFlow mockSubscriptionFlow(final @NotNull String name) {

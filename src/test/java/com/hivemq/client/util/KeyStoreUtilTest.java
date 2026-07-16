@@ -79,5 +79,4 @@ class KeyStoreUtilTest {
         final File store = new TestKeyStoreGenerator().generateKeyStore("fun", "JKS", "pw", "pk");
         assertThrows(SSLException.class, () -> KeyStoreUtil.trustManagerFromKeystore(store, "wrong"));
     }
-
 }

@@ -59,7 +59,6 @@ public class FluxWithSingleItem<F, S> extends FluxWithSingle<F, S> {
                 final @NotNull CoreWithSingleSubscriber<? super F, ? super S> subscriber,
                 final @NotNull S single,
                 final int index) {
-
             this.subscriber = subscriber;
             this.single = single;
             this.index = index;

@@ -314,6 +314,5 @@ class IntIndexTest {
         assertEquals(0, map.size());
     }
 
-    private record Entry(int id, @NotNull String value) {
-    }
+    private record Entry(int id, @NotNull String value) {}
 }

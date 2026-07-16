@@ -65,5 +65,4 @@ class MqttUserPropertyImplTest {
     public void test_equals() {
         EqualsVerifier.forClass(MqttUserPropertyImpl.class).suppress(Warning.STRICT_INHERITANCE).verify();
     }
-
 }

@@ -20,19 +20,19 @@ import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubComp;
 import com.hivemq.client.internal.mqtt.message.publish.pubcomp.mqtt3.Mqtt3PubCompView;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
 
 class Mqtt3PubCompEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubCompEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PUBCOMP.getCode()] = new Mqtt3PubCompEncoder();
-        }}, true);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt3MessageType.PUBCOMP.getCode()] = new Mqtt3PubCompEncoder();
+                }}, true);
     }
 
     @Test
-    void matchesPaho() throws MqttException {
+    void matchesPaho() throws Exception {
         final int id = 42;
         final MqttPubComp beeMessage = Mqtt3PubCompView.delegate(id);
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttPubComp pahoMessage =

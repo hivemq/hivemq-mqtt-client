@@ -70,7 +70,7 @@ class Mqtt3DisconnectExceptionTest {
         final Mqtt3DisconnectException exception = new Mqtt3DisconnectException("message", cause);
         assertEquals(0, exception.getStackTrace().length);
         final Mqtt3DisconnectException thrownException =
-                assertThrows(Mqtt3DisconnectException.class, () -> { throw exception; });
+                assertThrows(Mqtt3DisconnectException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

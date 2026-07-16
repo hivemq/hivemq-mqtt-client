@@ -43,8 +43,7 @@ class Mqtt5PubAckExceptionTest {
         final Mqtt5PubAck pubAck = mock(Mqtt5PubAck.class);
         final Mqtt5PubAckException exception = new Mqtt5PubAckException(pubAck, "message");
         assertEquals(0, exception.getStackTrace().length);
-        final Mqtt5PubAckException thrownException =
-                assertThrows(Mqtt5PubAckException.class, () -> { throw exception; });
+        final Mqtt5PubAckException thrownException = assertThrows(Mqtt5PubAckException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

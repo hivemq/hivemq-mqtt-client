@@ -42,10 +42,9 @@ class Mqtt5ClientMessageDecodersTest {
         final Mqtt5DisconnectDecoder disconnectDecoder = new Mqtt5DisconnectDecoder();
         final Mqtt5AuthDecoder authDecoder = new Mqtt5AuthDecoder();
 
-        final Mqtt5ClientMessageDecoders clientMessageDecoders =
-                new Mqtt5ClientMessageDecoders(connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder,
-                        pubRelDecoder, pubCompDecoder, subAckDecoder, unsubAckDecoder, pingRespDecoder,
-                        disconnectDecoder, authDecoder);
+        final Mqtt5ClientMessageDecoders clientMessageDecoders = new Mqtt5ClientMessageDecoders(
+                connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder, pubRelDecoder, pubCompDecoder,
+                subAckDecoder, unsubAckDecoder, pingRespDecoder, disconnectDecoder, authDecoder);
 
         assertNull(clientMessageDecoders.get(-1));
         assertNull(clientMessageDecoders.get(0));
@@ -66,5 +65,4 @@ class Mqtt5ClientMessageDecodersTest {
         assertSame(authDecoder, clientMessageDecoders.get(15));
         assertNull(clientMessageDecoders.get(16));
     }
-
 }

@@ -30,9 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 class Mqtt5PingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5PingReqEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt5MessageType.PINGREQ.getCode()] = createPingReqEncoder();
-        }}, true);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt5MessageType.PINGREQ.getCode()] = createPingReqEncoder();
+                }}, true);
     }
 
     @Test

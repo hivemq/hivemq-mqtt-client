@@ -144,5 +144,4 @@ class MqttCommonReasonCodeTest {
     void test_getCode_wildcardSubscriptionNotSupported() {
         assertEquals(0xA2, MqttCommonReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED.getCode());
     }
-
 }

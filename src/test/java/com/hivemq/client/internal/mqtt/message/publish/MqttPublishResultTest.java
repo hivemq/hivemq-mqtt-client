@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt.message.publish;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,7 +28,6 @@ class MqttPublishResultTest {
     @Test
     void equals() {
         EqualsVerifier.forClass(MqttPublishResult.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("publish")
                 .withRedefinedSubclass(MqttPublishResult.MqttQos1Result.class)
                 .verify();
@@ -38,7 +36,6 @@ class MqttPublishResultTest {
     @Test
     void qos1Result_equals() {
         EqualsVerifier.forClass(MqttPublishResult.MqttQos1Result.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("publish", "pubAck")
                 .withRedefinedSuperclass()
                 .suppress(Warning.STRICT_INHERITANCE)
@@ -48,7 +45,6 @@ class MqttPublishResultTest {
     @Test
     void qos2Result_equals() {
         EqualsVerifier.forClass(MqttPublishResult.MqttQos2Result.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("publish", "pubRec")
                 .withRedefinedSuperclass()
                 .withRedefinedSubclass(MqttPublishResult.MqttQos2CompleteResult.class)
@@ -58,7 +54,6 @@ class MqttPublishResultTest {
     @Test
     void qos2IntermediateResult_equals() {
         EqualsVerifier.forClass(MqttPublishResult.MqttQos2IntermediateResult.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("publish", "pubRec")
                 .withIgnoredFields("acknowledgedCallback")
                 .suppress(Warning.STRICT_INHERITANCE)
@@ -68,7 +63,6 @@ class MqttPublishResultTest {
     @Test
     void qos2CompleteResult_equals() {
         EqualsVerifier.forClass(MqttPublishResult.MqttQos2CompleteResult.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("publish", "pubRec", "pubRel", "pubComp")
                 .withRedefinedSuperclass()
                 .suppress(Warning.STRICT_INHERITANCE)

@@ -24,12 +24,10 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,13 +40,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class MqttSslInitializerTest {
 
-    @SuppressWarnings("NullabilityAnnotations")
-    private EmbeddedChannel embeddedChannel;
-
-    @BeforeEach
-    public void before() {
-        embeddedChannel = new EmbeddedChannel();
-    }
+    private final @NotNull EmbeddedChannel embeddedChannel = new EmbeddedChannel();
 
     @Test
     public void test_createSslEngine_null_values() throws Exception {
@@ -159,7 +151,7 @@ class MqttSslInitializerTest {
 
     private static @NotNull SSLEngine createSslEngine(
             final @NotNull Channel channel,
-            final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
+            final @NotNull MqttClientSslConfigImpl sslConfig) throws Exception {
         return MqttSslInitializer.createSslContext(sslConfig).newEngine(channel.alloc());
     }
 }

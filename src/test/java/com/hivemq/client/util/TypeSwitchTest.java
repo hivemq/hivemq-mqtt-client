@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TypeSwitchTest {
 
     @Test
+    @SuppressWarnings("AssertBetweenInconvertibleTypes")
     void never_alwaysSame() {
         final TypeSwitch<Interface> never1 = TypeSwitch.never();
         final TypeSwitch<String> never2 = TypeSwitch.never();
@@ -38,7 +39,7 @@ class TypeSwitchTest {
     void when_true() {
         final Interface i = new Impl1();
         final AtomicInteger counter = new AtomicInteger();
-        TypeSwitch.when(i).is(Impl1.class, impl1 -> counter.incrementAndGet());
+        TypeSwitch.when(i).is(Impl1.class, _ -> counter.incrementAndGet());
         assertEquals(1, counter.get());
     }
 
@@ -46,7 +47,7 @@ class TypeSwitchTest {
     void when_false() {
         final Interface i = new Impl2();
         final AtomicInteger counter = new AtomicInteger();
-        TypeSwitch.when(i).is(Impl1.class, impl1 -> counter.incrementAndGet());
+        TypeSwitch.when(i).is(Impl1.class, _ -> counter.incrementAndGet());
         assertEquals(0, counter.get());
     }
 
@@ -54,7 +55,7 @@ class TypeSwitchTest {
     void when_true_false() {
         final Interface i = new Impl1();
         final AtomicInteger counter = new AtomicInteger();
-        TypeSwitch.when(i).is(Impl1.class, impl1 -> counter.incrementAndGet()).is(Impl2.class, impl2 -> fail());
+        TypeSwitch.when(i).is(Impl1.class, _ -> counter.incrementAndGet()).is(Impl2.class, _ -> fail());
         assertEquals(1, counter.get());
     }
 
@@ -62,7 +63,7 @@ class TypeSwitchTest {
     void when_false_true() {
         final Interface i = new Impl1();
         final AtomicInteger counter = new AtomicInteger();
-        TypeSwitch.when(i).is(Impl2.class, impl2 -> fail()).is(Impl1.class, impl1 -> counter.incrementAndGet());
+        TypeSwitch.when(i).is(Impl2.class, _ -> fail()).is(Impl1.class, _ -> counter.incrementAndGet());
         assertEquals(1, counter.get());
     }
 

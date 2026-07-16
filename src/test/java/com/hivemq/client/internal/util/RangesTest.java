@@ -98,5 +98,4 @@ class RangesTest {
         }
         assertEquals(count, ranges.resize(5));
     }
-
 }

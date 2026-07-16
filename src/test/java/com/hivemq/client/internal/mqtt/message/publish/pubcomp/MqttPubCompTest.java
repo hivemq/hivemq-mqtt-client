@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt.message.publish.pubcomp;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,7 +28,6 @@ class MqttPubCompTest {
     @Test
     void equals() {
         EqualsVerifier.forClass(MqttPubComp.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("reasonCode", "userProperties")
                 .withIgnoredFields("packetIdentifier")
                 .suppress(Warning.STRICT_INHERITANCE)

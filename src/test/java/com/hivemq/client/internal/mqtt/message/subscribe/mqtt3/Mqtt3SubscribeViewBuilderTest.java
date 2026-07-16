@@ -33,9 +33,11 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Michael Walter
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 class Mqtt3SubscribeViewBuilderTest {
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addSubscription_error_when_subscription_is_null() {
         assertThrows(NullPointerException.class, () -> Mqtt3Subscribe.builder().addSubscription(null));
     }
@@ -135,6 +137,7 @@ class Mqtt3SubscribeViewBuilderTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addSubscriptions_error_when_subscriptions_is_null() {
         assertThrows(
                 NullPointerException.class,

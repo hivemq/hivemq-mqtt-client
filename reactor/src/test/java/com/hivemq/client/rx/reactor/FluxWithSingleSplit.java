@@ -34,8 +34,9 @@ public class FluxWithSingleSplit<U, F, S> extends FluxWithSingle<F, S> {
     private final @NotNull Class<S> singleClass;
 
     public FluxWithSingleSplit(
-            final @NotNull Flux<U> source, final @NotNull Class<F> flowableClass, final @NotNull Class<S> singleClass) {
-
+            final @NotNull Flux<U> source,
+            final @NotNull Class<F> flowableClass,
+            final @NotNull Class<S> singleClass) {
         this.source = source;
         this.flowableClass = flowableClass;
         this.singleClass = singleClass;
@@ -62,7 +63,6 @@ public class FluxWithSingleSplit<U, F, S> extends FluxWithSingle<F, S> {
                 final @NotNull Subscriber<? super F> subscriber,
                 final @NotNull Class<F> flowableClass,
                 final @NotNull Class<S> singleClass) {
-
             this.subscriber = subscriber;
             this.flowableClass = flowableClass;
             this.singleClass = singleClass;

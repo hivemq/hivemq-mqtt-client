@@ -185,7 +185,8 @@ class MqttTopicFilterImplTest {
             testSpecs.add(Arguments.of(method, "contains single level wildcard", "abc/+/def/ghi", true, false, true));
             testSpecs.add(
                     Arguments.of(
-                            method, "contains multi and single level wildcard", "abc/+/def/ghi/#", true, true, true));
+                            method, "contains multi and single level wildcard", "abc/+/def/ghi/#", true, true,
+                            true));
         }
         return testSpecs;
     }

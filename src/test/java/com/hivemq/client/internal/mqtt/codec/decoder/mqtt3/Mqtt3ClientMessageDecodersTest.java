@@ -38,8 +38,9 @@ class Mqtt3ClientMessageDecodersTest {
         final MqttPingRespDecoder pingRespDecoder = AbstractMqttDecoderTest.createPingRespDecoder();
 
         final Mqtt3ClientMessageDecoders clientMessageDecoders =
-                new Mqtt3ClientMessageDecoders(connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder,
-                        pubRelDecoder, pubCompDecoder, subAckDecoder, unsubAckDecoder, pingRespDecoder);
+                new Mqtt3ClientMessageDecoders(
+                        connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder, pubRelDecoder, pubCompDecoder,
+                        subAckDecoder, unsubAckDecoder, pingRespDecoder);
 
         assertNull(clientMessageDecoders.get(-1));
         assertNull(clientMessageDecoders.get(0));
@@ -59,5 +60,4 @@ class Mqtt3ClientMessageDecodersTest {
         assertNull(clientMessageDecoders.get(14));
         assertNull(clientMessageDecoders.get(15));
     }
-
 }

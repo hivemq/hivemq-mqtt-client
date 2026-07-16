@@ -55,5 +55,4 @@ class MqttPropertyTest {
         assertEquals(0x29, MqttProperty.SUBSCRIPTION_IDENTIFIERS_AVAILABLE);
         assertEquals(0x2A, MqttProperty.SHARED_SUBSCRIPTION_AVAILABLE);
     }
-
 }

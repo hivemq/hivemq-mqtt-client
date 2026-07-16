@@ -179,8 +179,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttConnect connect =
                 new MqttConnect(
-                        10, true, 10, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
-                        userProperties);
+                        10, true, 10, restrictions, simpleAuth, enhancedAuthProvider, willPublish, userProperties);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, enhancedAuth);
 
         encode(expected, connectWrapper);

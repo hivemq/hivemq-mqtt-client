@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt.message.disconnect;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,7 +28,6 @@ class MqttDisconnectTest {
     @Test
     void equals() {
         EqualsVerifier.forClass(MqttDisconnect.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("reasonCode", "userProperties")
                 .suppress(Warning.STRICT_INHERITANCE)
                 .verify();

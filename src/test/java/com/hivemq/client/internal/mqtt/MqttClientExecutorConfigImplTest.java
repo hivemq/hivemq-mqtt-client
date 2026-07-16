@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,7 +28,6 @@ class MqttClientExecutorConfigImplTest {
     @Test
     void equals() {
         EqualsVerifier.forClass(MqttClientExecutorConfigImpl.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("applicationScheduler")
                 .suppress(Warning.STRICT_INHERITANCE)
                 .verify();

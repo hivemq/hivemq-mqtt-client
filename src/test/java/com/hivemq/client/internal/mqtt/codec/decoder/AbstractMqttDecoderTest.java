@@ -48,8 +48,7 @@ public abstract class AbstractMqttDecoderTest {
 
     protected final @NotNull ChannelHandler disconnectHandler = new ChannelInboundHandlerAdapter() {
         @Override
-        public void userEventTriggered(
-                final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
+        public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
 
             if (evt instanceof MqttDisconnectEvent) {
                 if (mqttVersion == MqttVersion.MQTT_3_1_1) {
@@ -108,10 +107,10 @@ public abstract class AbstractMqttDecoderTest {
     private void createChannel(final boolean validatePayloadFormat) {
         final MqttClientAdvancedConfig advancedConfig =
                 new MqttClientAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
-        final MqttClientConfig clientConfig =
-                new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"),
-                        MqttClientTransportConfigImpl.DEFAULT, MqttClientExecutorConfigImpl.DEFAULT, advancedConfig,
-                        MqttClientConfig.ConnectDefaults.of(null, null, null), ImmutableList.of(), ImmutableList.of());
+        final MqttClientConfig clientConfig = new MqttClientConfig(
+                MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), MqttClientTransportConfigImpl.DEFAULT,
+                MqttClientExecutorConfigImpl.DEFAULT, advancedConfig,
+                MqttClientConfig.ConnectDefaults.of(null, null, null), ImmutableList.of(), ImmutableList.of());
 
         channel = new EmbeddedChannel();
         channel.pipeline().addLast(new MqttDecoder(decoders, clientConfig, connect)).addLast(disconnectHandler);

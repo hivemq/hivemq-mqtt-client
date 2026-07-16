@@ -19,7 +19,6 @@ package com.hivemq.client.internal.mqtt.codec.encoder.mqtt3;
 import com.google.common.primitives.Bytes;
 import com.hivemq.client.internal.mqtt.codec.encoder.AbstractMqttEncoderTest;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoders;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +32,7 @@ abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
         super(messageEncoders, connected);
     }
 
-    static byte @NotNull [] bytesOf(final @NotNull MqttWireMessage message) throws MqttException {
+    static byte @NotNull [] bytesOf(final @NotNull MqttWireMessage message) throws Exception {
         return Bytes.concat(message.getHeader(), message.getPayload());
     }
 }

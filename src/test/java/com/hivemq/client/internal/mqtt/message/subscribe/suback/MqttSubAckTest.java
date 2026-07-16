@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt.message.subscribe.suback;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,7 +28,6 @@ class MqttSubAckTest {
     @Test
     void equals() {
         EqualsVerifier.forClass(MqttSubAck.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("reasonCodes", "userProperties")
                 .withIgnoredFields("packetIdentifier")
                 .suppress(Warning.STRICT_INHERITANCE)

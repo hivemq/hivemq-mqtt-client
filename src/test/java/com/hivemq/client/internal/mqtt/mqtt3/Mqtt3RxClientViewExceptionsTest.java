@@ -48,17 +48,14 @@ import static org.mockito.BDDMockito.*;
 /**
  * @author David Katz
  */
-@SuppressWarnings("NullabilityAnnotations")
 class Mqtt3RxClientViewExceptionsTest {
 
-    private MqttRxClient mqtt5Client;
-    private Mqtt3RxClientView mqtt3Client;
+    private final @NotNull MqttRxClient mqtt5Client = mock(MqttRxClient.class);
+    private final @NotNull Mqtt3RxClientView mqtt3Client = new Mqtt3RxClientView(mqtt5Client);
 
     @BeforeEach
     void setUp() {
-        mqtt5Client = mock(MqttRxClient.class);
         when(mqtt5Client.getConfig()).thenReturn(mock(MqttClientConfig.class));
-        mqtt3Client = new Mqtt3RxClientView(mqtt5Client);
     }
 
     @Test
@@ -80,7 +77,8 @@ class Mqtt3RxClientViewExceptionsTest {
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).ignoreElement().blockingAwait(),
+        assertMqtt3Exception(
+                () -> mqtt3Client.subscribe(subscribe).ignoreElement().blockingAwait(),
                 mqtt5MessageException);
     }
 
@@ -89,7 +87,8 @@ class Mqtt3RxClientViewExceptionsTest {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.subscribePublishes(any(), anyBoolean())).willReturn(
-                new FlowableWithSingleSplit<>(Flowable.error(mqtt5MessageException), Mqtt5Publish.class,
+                new FlowableWithSingleSplit<>(
+                        Flowable.error(mqtt5MessageException), Mqtt5Publish.class,
                         Mqtt5SubAck.class));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
@@ -140,14 +139,14 @@ class Mqtt3RxClientViewExceptionsTest {
     }
 
     private void assertMqtt3Exception(
-            @NotNull final Executable executable, @NotNull final Mqtt5MessageException mqtt5MessageException) {
-
+            @NotNull final Executable executable,
+            @NotNull final Mqtt5MessageException mqtt5MessageException) {
         final RuntimeException runtimeException = assertThrows(RuntimeException.class, executable);
         assertInstanceOf(Mqtt3MessageException.class, runtimeException);
         final Mqtt3MessageException mqtt3MessageException = (Mqtt3MessageException) runtimeException;
-        assertEquals(mqtt5MessageException.getMqttMessage().getType().getCode(),
+        assertEquals(
+                mqtt5MessageException.getMqttMessage().getType().getCode(),
                 mqtt3MessageException.getMqttMessage().getType().getCode());
         assertEquals(mqtt5MessageException.getMessage(), mqtt3MessageException.getMessage());
     }
-
 }

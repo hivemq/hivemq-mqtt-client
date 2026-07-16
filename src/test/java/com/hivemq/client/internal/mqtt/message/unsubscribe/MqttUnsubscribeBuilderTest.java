@@ -35,15 +35,16 @@ import static org.mockito.Mockito.mock;
 class MqttUnsubscribeBuilderTest {
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilter_error_when_topic_string_is_null() {
-        final String topic = null;
-        assertThrows(NullPointerException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilter(topic));
+        assertThrows(NullPointerException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilter((String) null));
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilter_error_when_mqtt_topic_is_null() {
-        final MqttTopicFilter topic = null;
-        assertThrows(NullPointerException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilter(topic));
+        assertThrows(
+                NullPointerException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilter((MqttTopicFilter) null));
     }
 
     @Test
@@ -185,6 +186,7 @@ class MqttUnsubscribeBuilderTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilters_error_when_collection_is_null() {
         assertThrows(
                 NullPointerException.class,
@@ -192,12 +194,14 @@ class MqttUnsubscribeBuilderTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilters_error_when_varargs_is_null() {
         assertThrows(
                 NullPointerException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilters((MqttTopicFilter[]) null));
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilters_error_when_stream_is_null() {
         assertThrows(
                 NullPointerException.class,

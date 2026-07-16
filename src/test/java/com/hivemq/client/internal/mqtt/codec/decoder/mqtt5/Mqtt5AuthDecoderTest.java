@@ -80,10 +80,11 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, auth.getReasonCode());
         assertEquals("GS2-KRB5", auth.getMethod().toString());
         assertTrue(auth.getData().isPresent());
-        assertEquals(ByteBuffer.wrap(new byte[]{
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4,
-                5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-        }), auth.getData().get());
+        assertEquals(
+                ByteBuffer.wrap(new byte[]{
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1,
+                        2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                }), auth.getData().get());
         assertTrue(auth.getReasonString().isPresent());
         assertEquals("continue", auth.getReasonString().get().toString());
 

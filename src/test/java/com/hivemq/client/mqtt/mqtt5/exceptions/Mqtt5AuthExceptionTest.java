@@ -43,7 +43,7 @@ class Mqtt5AuthExceptionTest {
         final Mqtt5Auth auth = mock(Mqtt5Auth.class);
         final Mqtt5AuthException exception = new Mqtt5AuthException(auth, "message");
         assertEquals(0, exception.getStackTrace().length);
-        final Mqtt5AuthException thrownException = assertThrows(Mqtt5AuthException.class, () -> { throw exception; });
+        final Mqtt5AuthException thrownException = assertThrows(Mqtt5AuthException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

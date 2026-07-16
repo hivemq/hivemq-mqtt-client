@@ -19,19 +19,19 @@ package com.hivemq.client.internal.mqtt.codec.encoder.mqtt3;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client.internal.mqtt.message.ping.MqttPingReq;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
 
 class Mqtt3PingReqEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PingReqEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PINGREQ.getCode()] = createPingReqEncoder();
-        }}, true);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt3MessageType.PINGREQ.getCode()] = createPingReqEncoder();
+                }}, true);
     }
 
     @Test
-    void encode() throws MqttException {
+    void encode() throws Exception {
         final MqttPingReq beePing = MqttPingReq.INSTANCE;
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttPingReq pahoPing =
                 new org.eclipse.paho.client.mqttv3.internal.wire.MqttPingReq();

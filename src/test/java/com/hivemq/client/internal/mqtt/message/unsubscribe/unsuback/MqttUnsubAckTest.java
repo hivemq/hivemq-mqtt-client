@@ -39,7 +39,6 @@ class MqttUnsubAckTest {
     @Test
     void equals() {
         EqualsVerifier.forClass(MqttUnsubAck.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("reasonCodes", "userProperties")
                 .withIgnoredFields("packetIdentifier")
                 .suppress(Warning.STRICT_INHERITANCE)
@@ -68,7 +67,8 @@ class MqttUnsubAckTest {
     @Test
     void constructor_reasonCodesMultiple() {
         final ImmutableList<Mqtt5UnsubAckReasonCode> multipleReasonCodes =
-                ImmutableList.of(Mqtt5UnsubAckReasonCode.NO_SUBSCRIPTIONS_EXISTED,
+                ImmutableList.of(
+                        Mqtt5UnsubAckReasonCode.NO_SUBSCRIPTIONS_EXISTED,
                         Mqtt5UnsubAckReasonCode.NOT_AUTHORIZED);
         final Mqtt5UnsubAck mqtt5UnsubAck = new MqttUnsubAck(1, multipleReasonCodes, reasonString, NO_USER_PROPERTIES);
         assertEquals(multipleReasonCodes, mqtt5UnsubAck.getReasonCodes());

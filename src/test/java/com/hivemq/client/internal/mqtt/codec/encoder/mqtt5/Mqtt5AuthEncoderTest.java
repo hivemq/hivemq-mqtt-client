@@ -92,10 +92,9 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUtf8StringImpl test2 = MqttUtf8StringImpl.of("test2");
         final MqttUtf8StringImpl value = MqttUtf8StringImpl.of("value");
         final MqttUtf8StringImpl value2 = MqttUtf8StringImpl.of("value2");
-        final MqttUserPropertiesImpl userProperties =
-                MqttUserPropertiesImpl.of(ImmutableList.of(
-                        new MqttUserPropertyImpl(test, value), new MqttUserPropertyImpl(test, value2),
-                        new MqttUserPropertyImpl(test2, value)));
+        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(ImmutableList.of(
+                new MqttUserPropertyImpl(test, value), new MqttUserPropertyImpl(test, value2),
+                new MqttUserPropertyImpl(test2, value)));
 
         final MqttUtf8StringImpl method = MqttUtf8StringImpl.of("GS2-KRB5");
         final MqttAuth auth =

@@ -39,61 +39,9 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         }});
     }
 
-    private @NotNull ByteBuf createWellformedPublish(
-            final boolean dup,
-            final int qos,
-            final boolean retained,
-            final int packetId,
-            final byte[] topic,
-            final byte @NotNull [] payload) throws Exception {
-
-        final ByteBuf byteBuf = channel.alloc().buffer();
-
-        final int topicLength = topic.length;
-
-        final int remainingLength;
-        if (qos == 0) {
-            remainingLength = 2 + topicLength + payload.length;
-        } else {
-            remainingLength = 2 + 2 + topicLength + payload.length;
-        }
-
-        if (topicLength > 1 << 7) {
-            throw new Exception("Topic is too long");
-        }
-
-        if (remainingLength > 1024) {
-            throw new Exception(); // too avoid numbers which must be represented with a variable byte integer. (Of course the limit could be much greater than 1024)
-        }
-        byte fixedHeaderFirstByte = WELLFORMED_PUBLISH_BEGIN;
-        //set dup bit
-        if (dup) {
-            fixedHeaderFirstByte = (byte) (fixedHeaderFirstByte | DUP_BIT);
-        }
-        //set qos
-        fixedHeaderFirstByte = (byte) (fixedHeaderFirstByte | (qos << 1));
-        //set retained
-        if (retained) {
-            fixedHeaderFirstByte = (byte) (fixedHeaderFirstByte | RETAIN_BIT);
-        }
-        byteBuf.writeByte(fixedHeaderFirstByte);
-
-        final byte fixedHeaderSecondByte = (byte) remainingLength;
-        byteBuf.writeByte(fixedHeaderSecondByte);
-        byteBuf.writeShort(topicLength);
-        byteBuf.writeBytes(topic);
-
-        if (qos != 0) {
-            byteBuf.writeShort(packetId);
-        }
-
-        byteBuf.writeBytes(payload);
-        return byteBuf;
-    }
-
     @ParameterizedTest
     @CsvSource({
-            "true, false , 0", "false, false , 0", //all qos=0 combination
+            "true, false , 0", "false, false , 0", // all qos=0 combinations
             "true, true, 1", "true, false , 1", "false, true , 1", "false, false , 1", "true, true, 2",
             "true, false , 2", "false, true , 2", "false, false , 2"
     })
@@ -102,7 +50,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final String payload = "Hallo World!";
         final int packetId = 1;
 
-        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, 1, topic.getBytes(), payload.getBytes());
+        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, topic.getBytes(), payload.getBytes());
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
@@ -121,7 +69,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true, false , 0", "false, false , 0", //all qos=0 combination
+            "true, false , 0", "false, false , 0", // all qos=0 combinations
             "true, true, 1", "true, false , 1", "false, true , 1", "false, false , 1", "true, true, 2",
             "true, false , 2", "false, true , 2", "false, false , 2"
     })
@@ -130,7 +78,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final String payload = "";
         final int packetId = 1;
 
-        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, 1, topic.getBytes(), payload.getBytes());
+        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, topic.getBytes(), payload.getBytes());
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
@@ -148,7 +96,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true, false , 0", "false, false , 0", //all qos=0 combination
+            "true, false , 0", "false, false , 0", // all qos=0 combinations
             "true, true, 1", "true, false , 1", "false, true , 1", "false, false , 1", "true, true, 2",
             "true, false , 2", "false, true , 2", "false, false , 2"
     })
@@ -157,7 +105,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final String payload = "test";
         final int packetId = 1;
 
-        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, 1, topic.getBytes(), payload.getBytes());
+        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, topic.getBytes(), payload.getBytes());
         byteBuf.writeBytes("not readable".getBytes());
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
@@ -176,12 +124,12 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     @ParameterizedTest
     @ValueSource(ints = {0x2b, 0x23})
-        //the wildcards 0x2b: + and 0x21: # must not be in topic
+        // the wildcards 0x2b: + and 0x23: # must not be in topic
     void decode_INVALID_TOPIC(final int invalidLetter) throws Exception {
         final byte[] topic = "beispieltopic".getBytes();
         topic[3] = (byte) invalidLetter;
         final String payload = "example";
-        final ByteBuf byteBuf = createWellformedPublish(false, 1, false, 1, topic, payload.getBytes());
+        final ByteBuf byteBuf = createWellformedPublish(false, 1, false, topic, payload.getBytes());
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNull(publishInternal);
@@ -190,7 +138,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true, true", "true, false", "false, true", "false, false", //all qos=0 combination
+            "true, true", "true, false", "false, true", "false, false", // all qos=0 combinations
             "true, true", "true, false", "false, true", "false, false", "true, true", "true, false", "false, true",
             "false, false"
     })
@@ -198,11 +146,61 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final String topic = "Hello/World/Topic";
         final String payload = "Hallo World!";
         final int qos = 3;
-        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, 1, topic.getBytes(), payload.getBytes());
+        final ByteBuf byteBuf = createWellformedPublish(isDup, qos, retained, topic.getBytes(), payload.getBytes());
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNull(publishInternal);
         assertFalse(channel.isOpen());
     }
 
+    private @NotNull ByteBuf createWellformedPublish(
+            final boolean dup,
+            final int qos,
+            final boolean retained,
+            final byte[] topic,
+            final byte @NotNull [] payload) throws Exception {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+
+        final int topicLength = topic.length;
+
+        final int remainingLength;
+        if (qos == 0) {
+            remainingLength = 2 + topicLength + payload.length;
+        } else {
+            remainingLength = 2 + 2 + topicLength + payload.length;
+        }
+
+        if (topicLength > 1 << 7) {
+            throw new Exception("Topic is too long");
+        }
+
+        if (remainingLength > 1024) {
+            // to avoid numbers which must be represented with a variable byte integer. (Of course the limit could be much greater than 1024)
+            throw new Exception();
+        }
+        byte fixedHeaderFirstByte = WELLFORMED_PUBLISH_BEGIN;
+        // set dup bit
+        if (dup) {
+            fixedHeaderFirstByte = (byte) (fixedHeaderFirstByte | DUP_BIT);
+        }
+        // set qos
+        fixedHeaderFirstByte = (byte) (fixedHeaderFirstByte | (qos << 1));
+        // set retained
+        if (retained) {
+            fixedHeaderFirstByte = (byte) (fixedHeaderFirstByte | RETAIN_BIT);
+        }
+        byteBuf.writeByte(fixedHeaderFirstByte);
+
+        final byte fixedHeaderSecondByte = (byte) remainingLength;
+        byteBuf.writeByte(fixedHeaderSecondByte);
+        byteBuf.writeShort(topicLength);
+        byteBuf.writeBytes(topic);
+
+        if (qos != 0) {
+            byteBuf.writeShort(1);
+        }
+
+        byteBuf.writeBytes(payload);
+        return byteBuf;
+    }
 }

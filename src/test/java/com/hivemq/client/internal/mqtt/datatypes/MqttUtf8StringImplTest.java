@@ -315,8 +315,9 @@ class MqttUtf8StringImplTest {
         assertEquals(0, MqttUtf8StringImpl.of("test").compareTo(MqttUtf8StringImpl.of("test")));
         assertEquals(0, MqttUtf8StringImpl.of("test").compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})));
         assertEquals(0, MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'}).compareTo(MqttUtf8StringImpl.of("test")));
-        assertEquals(0, MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})
-                .compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})));
+        assertEquals(
+                0, MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})
+                        .compareTo(MqttUtf8StringImpl.of(new byte[]{'t', 'e', 's', 't'})));
 
         assertTrue(MqttUtf8StringImpl.of("test").compareTo(MqttUtf8StringImpl.of("test2")) < 0);
         assertTrue(MqttUtf8StringImpl.of("test2").compareTo(MqttUtf8StringImpl.of("test")) > 0);

@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author David Katz
  * @author Christian Hoff
  */
-@SuppressWarnings("NullabilityAnnotations")
+@SuppressWarnings({"NullabilityAnnotations", "SameParameterValue"})
 class Mqtt3ClientExample {
 
     private final TrustManagerFactory trustManagerFactory;
@@ -76,15 +76,17 @@ class Mqtt3ClientExample {
     }
 
     Completable subscribeTo(
-            final String topic, final MqttQos qos, final int countToPublish, final CountDownLatch subscribedLatch) {
-
+            final String topic,
+            final MqttQos qos,
+            final int countToPublish,
+            final CountDownLatch subscribedLatch) {
         final Mqtt3RxClient client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
         final Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(10).build();
         // define what to do on connect, this does not connect yet
         final Single<Mqtt3ConnAck> connectScenario =
-                client.connect(connectMessage).doOnSuccess(connAck -> System.out.println("connected subscriber"));
+                client.connect(connectMessage).doOnSuccess(_ -> System.out.println("connected subscriber"));
 
         // create a SUBSCRIBE message for the topic with QoS
         final Mqtt3Subscribe subscribeMessage = Mqtt3Subscribe.builder()
@@ -92,19 +94,21 @@ class Mqtt3ClientExample {
                 .build();
         // define what to do with the publishes that match the subscription. This does not subscribe until rxJava's subscribe is called
         // NOTE: you can also subscribe without the stream, and then handle the incoming publishes on client.allPublishes()
-        final Flowable<Mqtt3Publish> subscribeScenario = client.subscribeStream(subscribeMessage).doOnSingle(subAck -> {
-            subscribedLatch.countDown();
-            System.out.println("subscribed to " + topic + ": return codes: " + subAck.getReturnCodes());
-        }).doOnNext(publish -> {
-            if (publish.getPayload().isPresent()) {
-                final int receivedCount = this.receivedCount.incrementAndGet();
-                final String message = new String(publish.getPayloadAsBytes());
-                System.out.println("received message with payload '" + message + "' on topic '" + publish.getTopic() +
-                        "' received count: " + receivedCount);
-            } else {
-                System.out.println("received message without payload on topic '" + publish.getTopic() + "'");
-            }
-        });
+        final Flowable<Mqtt3Publish> subscribeScenario =
+                client.subscribePublishes(subscribeMessage).doOnSingle(subAck -> {
+                    subscribedLatch.countDown();
+                    System.out.println("subscribed to " + topic + ": return codes: " + subAck.getReturnCodes());
+                }).doOnNext(publish -> {
+                    if (publish.getPayload().isPresent()) {
+                        final int receivedCount = this.receivedCount.incrementAndGet();
+                        final String message = new String(publish.getPayloadAsBytes());
+                        System.out.println(
+                                "received message with payload '" + message + "' on topic '" + publish.getTopic() +
+                                        "' received count: " + receivedCount);
+                    } else {
+                        System.out.println("received message without payload on topic '" + publish.getTopic() + "'");
+                    }
+                });
 
         // define what to do when we disconnect, this does not disconnect yet
         final Completable disconnectScenario =
@@ -130,7 +134,7 @@ class Mqtt3ClientExample {
         final Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(10).build();
         // define what to do on connect, this does not connect yet
         final Single<Mqtt3ConnAck> connectScenario =
-                client.connect(connectMessage).doOnSuccess(connAck -> System.out.println("connected publisher"));
+                client.connect(connectMessage).doOnSuccess(_ -> System.out.println("connected publisher"));
 
         // create a stub publish and a counter
         final Mqtt3PublishBuilder.Complete publishMessageBuilder = Mqtt3Publish.builder().topic(topic).qos(qos);
@@ -161,22 +165,20 @@ class Mqtt3ClientExample {
         return connectScenario.ignoreElement().andThen(publishScenario).ignoreElements().andThen(disconnectScenario);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private Mqtt3RxClient getClient() {
-        final MqttClientBuilder mqttClientBuilder =
+        final MqttClientBuilder builder =
                 MqttClient.builder().identifier(UUID.randomUUID().toString()).serverHost(server).serverPort(port);
-
         if (usesSsl) {
-            mqttClientBuilder.sslConfig(MqttClientSslConfig.builder()
+            builder.sslConfig(MqttClientSslConfig.builder()
                     .keyManagerFactory(keyManagerFactory)
                     .trustManagerFactory(trustManagerFactory)
                     .build());
         }
-
         if (isNotUsingMqttPort(port)) {
-            mqttClientBuilder.webSocketConfig(MqttWebSocketConfig.builder().serverPath(serverPath).build());
+            builder.webSocketConfig(MqttWebSocketConfig.builder().serverPath(serverPath).build());
         }
-
-        return mqttClientBuilder.useMqttVersion3().buildRx();
+        return builder.useMqttVersion3().buildRx();
     }
 
     int getReceivedCount() {

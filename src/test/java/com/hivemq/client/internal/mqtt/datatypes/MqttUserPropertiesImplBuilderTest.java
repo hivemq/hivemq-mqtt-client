@@ -35,6 +35,7 @@ import static org.mockito.Mockito.mock;
 class MqttUserPropertiesImplBuilderTest {
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addAll_error_when_list_is_null() {
         assertThrows(
                 NullPointerException.class,
@@ -43,7 +44,6 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_error_when_one_element_is_custom_implementation() {
-
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.of("key", "value");
 
         final List<Mqtt5UserProperty> userProperties = new ArrayList<>();
@@ -81,7 +81,6 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_correct_use_and_correct_order_list() {
-
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.of("key", "value");
         final Mqtt5UserProperty userProperty2 = Mqtt5UserProperty.of("key2", "value2");
         final Mqtt5UserProperty userProperty3 = Mqtt5UserProperty.of("key3", "value3");
@@ -100,7 +99,6 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_correct_use_and_correct_order_map() {
-
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.of("key", "value");
         final Mqtt5UserProperty userProperty2 = Mqtt5UserProperty.of("key2", "value2");
         final Mqtt5UserProperty userProperty3 = Mqtt5UserProperty.of("key3", "value3");
@@ -119,7 +117,6 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_correct_use_and_correct_order_set() {
-
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.of("key", "value");
         final Mqtt5UserProperty userProperty2 = Mqtt5UserProperty.of("key2", "value2");
         final Mqtt5UserProperty userProperty3 = Mqtt5UserProperty.of("key3", "value3");
@@ -138,7 +135,6 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_correct_use_and_correct_order_array() {
-
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.of("key", "value");
         final Mqtt5UserProperty userProperty2 = Mqtt5UserProperty.of("key2", "value2");
         final Mqtt5UserProperty userProperty3 = Mqtt5UserProperty.of("key3", "value3");
@@ -154,7 +150,6 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_correct_use_and_correct_order_stream() {
-
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.of("key", "value");
         final Mqtt5UserProperty userProperty2 = Mqtt5UserProperty.of("key2", "value2");
         final Mqtt5UserProperty userProperty3 = Mqtt5UserProperty.of("key3", "value3");
@@ -173,7 +168,6 @@ class MqttUserPropertiesImplBuilderTest {
 
     @Test
     void addAll_correct_use_and_correct_order_immutable_list() {
-
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.of("key", "value");
         final Mqtt5UserProperty userProperty2 = Mqtt5UserProperty.of("key2", "value2");
         final Mqtt5UserProperty userProperty3 = Mqtt5UserProperty.of("key3", "value3");
@@ -191,8 +185,8 @@ class MqttUserPropertiesImplBuilderTest {
     }
 
     void compareProperties(
-            final @NotNull Mqtt5UserProperty[] expected, final @NotNull List<? extends Mqtt5UserProperty> actual) {
-
+            final @NotNull Mqtt5UserProperty[] expected,
+            final @NotNull List<? extends Mqtt5UserProperty> actual) {
         assertEquals(expected.length, actual.size());
 
         for (int i = 0; i < expected.length; i++) {

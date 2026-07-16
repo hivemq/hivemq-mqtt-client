@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt.message.auth;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,9 +27,6 @@ class MqttSimpleAuthTest {
 
     @Test
     void equals() {
-        EqualsVerifier.forClass(MqttSimpleAuth.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
-                .suppress(Warning.STRICT_INHERITANCE)
-                .verify();
+        EqualsVerifier.forClass(MqttSimpleAuth.class).suppress(Warning.STRICT_INHERITANCE).verify();
     }
 }

@@ -188,9 +188,10 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
         private static final String TOPIC = "topic";
 
+        private final MqttUtf8StringImpl user = MqttUtf8StringImpl.of("user");
+        private final MqttUtf8StringImpl property = MqttUtf8StringImpl.of("property");
+
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
-        final MqttUtf8StringImpl user = MqttUtf8StringImpl.of("user");
-        final MqttUtf8StringImpl property = MqttUtf8StringImpl.of("property");
 
         MaximumPacketBuilder build() {
             final int maxPropertyLength = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
@@ -204,12 +205,6 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                     + 4 // bytes to encode "user"
                     + 2 // value length
                     + 8; // bytes to encode "property"
-            final int topicFilterBytes = maxPropertyLength % userPropertyBytes;
-
-            final StringBuilder reasonStringBuilder = new StringBuilder();
-            for (int i = 0; i < topicFilterBytes; i++) {
-                reasonStringBuilder.append(i);
-            }
 
             final int numberOfUserProperties = maxPropertyLength / userPropertyBytes;
             userPropertiesBuilder = ImmutableList.builder();

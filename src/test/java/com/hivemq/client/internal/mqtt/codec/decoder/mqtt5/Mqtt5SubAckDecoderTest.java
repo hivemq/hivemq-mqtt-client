@@ -106,7 +106,6 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         final MqttSubAck subAck = decodeOk(encoded);
-
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
 
@@ -447,8 +446,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         decodeNok(encoded, MALFORMED_PACKET);
     }
 
-    @NotNull
-    private MqttSubAck decodeOk(final byte @NotNull [] encoded) {
+    private @NotNull MqttSubAck decodeOk(final byte @NotNull [] encoded) {
         final MqttSubAck subAck = decode(encoded);
         assertNotNull(subAck);
         return subAck;
@@ -465,8 +463,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         createChannel();
     }
 
-    @Nullable
-    private MqttSubAck decode(final byte @NotNull [] encoded) {
+    private @Nullable MqttSubAck decode(final byte @NotNull [] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

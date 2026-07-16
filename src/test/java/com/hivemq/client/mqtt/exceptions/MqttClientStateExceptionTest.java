@@ -39,7 +39,7 @@ class MqttClientStateExceptionTest {
         final MqttClientStateException exception = new MqttClientStateException("message");
         assertEquals(0, exception.getStackTrace().length);
         final MqttClientStateException thrownException =
-                assertThrows(MqttClientStateException.class, () -> { throw exception; });
+                assertThrows(MqttClientStateException.class, () -> {throw exception;});
         assertEquals(0, thrownException.getStackTrace().length);
     }
 

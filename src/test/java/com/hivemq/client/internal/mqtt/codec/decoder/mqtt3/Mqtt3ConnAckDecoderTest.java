@@ -34,21 +34,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
 
     private static final byte @NotNull [] WELLFORMED_CONNACK_BEGIN = {
-            //   type, flags
+            // type, flags
             0b0010_0000,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
     private static final byte @NotNull [] MALFORMED_CONNACK_BEGIN_WORNG_FLAGS = {
-            //   type, flags
+            // type, flags
             0b0010_0100,
-            //remaining length
+            // remaining length
             0b0000_0010
     };
     private static final byte @NotNull [] MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH = {
-            //   type, flags
+            // type, flags
             0b0010_0100,
-            //remaining length
+            // remaining length
             0b0000_0011
     };
     private static final byte @NotNull [] ENDING_TOO_LONG_MALFORMED = {0x01};

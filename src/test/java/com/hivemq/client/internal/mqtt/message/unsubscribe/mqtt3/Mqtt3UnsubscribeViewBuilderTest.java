@@ -35,20 +35,22 @@ import static org.mockito.Mockito.mock;
 class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilter_error_when_topic_string_is_null() {
-        final String topic = null;
-        assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilter(topic));
+        assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilter((String) null));
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilter_error_when_mqtt_topic_is_null() {
-        final MqttTopicFilter topic = null;
-        assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilter(topic));
+        assertThrows(
+                NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilter((MqttTopicFilter) null));
     }
 
     @Test
     void addTopicFilter_error_when_topic_object_is_implemented() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> Mqtt3Unsubscribe.builder().addTopicFilter(mock(MqttTopicFilter.class)));
     }
 
@@ -193,20 +195,25 @@ class Mqtt3UnsubscribeViewBuilderTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilters_error_when_collection_is_null() {
-        assertThrows(NullPointerException.class,
+        assertThrows(
+                NullPointerException.class,
                 () -> Mqtt3Unsubscribe.builder().addTopicFilters((ArrayList<MqttTopicFilter>) null));
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilters_error_when_varargs_is_null() {
         assertThrows(
                 NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters((MqttTopicFilter[]) null));
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void addTopicFilters_error_when_stream_is_null() {
-        assertThrows(NullPointerException.class,
+        assertThrows(
+                NullPointerException.class,
                 () -> Mqtt3Unsubscribe.builder().addTopicFilters((Stream<MqttTopicFilter>) null));
     }
 

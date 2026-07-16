@@ -90,5 +90,4 @@ class MqttClientIdentifierImplTest {
         assertNotNull(mqtt5ClientIdentifier);
         assertFalse(mqtt5ClientIdentifier.mustBeAllowedByServer());
     }
-
 }

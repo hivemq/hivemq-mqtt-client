@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
+@SuppressWarnings("ConstantValue")
 class ImmutableListTest {
 
     private static @NotNull Stream<ImmutableList<String>> numberedList() {
@@ -262,30 +263,34 @@ class ImmutableListTest {
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").removeAll(ImmutableList.of("1")));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").removeIf(s -> s.equals("1")));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").retainAll(ImmutableList.of("1")));
-        assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").replaceAll(s -> "2"));
+        assertThrows(UnsupportedOperationException.class, () -> Collections.fill(ImmutableList.of("1"), "2"));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").set(1, "2"));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").sort(String::compareTo));
         assertThrows(UnsupportedOperationException.class, () -> ImmutableList.of("1").clear());
-        assertThrows(UnsupportedOperationException.class, () -> {
-            final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").iterator();
-            iterator.next();
-            iterator.remove();
-        });
-        assertThrows(UnsupportedOperationException.class, () -> {
-            final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").listIterator();
-            iterator.next();
-            iterator.remove();
-        });
-        assertThrows(UnsupportedOperationException.class, () -> {
-            final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").listIterator();
-            iterator.next();
-            iterator.add("2");
-        });
-        assertThrows(UnsupportedOperationException.class, () -> {
-            final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").listIterator();
-            iterator.next();
-            iterator.set("2");
-        });
+        assertThrows(
+                UnsupportedOperationException.class, () -> {
+                    final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").iterator();
+                    iterator.next();
+                    iterator.remove();
+                });
+        assertThrows(
+                UnsupportedOperationException.class, () -> {
+                    final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").listIterator();
+                    iterator.next();
+                    iterator.remove();
+                });
+        assertThrows(
+                UnsupportedOperationException.class, () -> {
+                    final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").listIterator();
+                    iterator.next();
+                    iterator.add("2");
+                });
+        assertThrows(
+                UnsupportedOperationException.class, () -> {
+                    final ImmutableList.ImmutableListIterator<String> iterator = ImmutableList.of("1").listIterator();
+                    iterator.next();
+                    iterator.set("2");
+                });
     }
 
     @ParameterizedTest
@@ -384,7 +389,7 @@ class ImmutableListTest {
 
     @ParameterizedTest
     @MethodSource("numberedList")
-    @SuppressWarnings("CollectionAddedToSelf")
+    @SuppressWarnings({"CollectionAddedToSelf", "SuspiciousMethodCalls"})
     void containsAll(final @NotNull ImmutableList<String> list) {
         assertTrue(list.containsAll(list));
         assertTrue(list.containsAll(ImmutableList.of()));
@@ -476,7 +481,7 @@ class ImmutableListTest {
         final AtomicInteger atomicInteger = new AtomicInteger();
         iterator.forEachRemaining(s -> assertEquals("" + atomicInteger.getAndIncrement(), s));
         assertEquals(list.size(), atomicInteger.get());
-        iterator.forEachRemaining(s -> atomicInteger.getAndIncrement());
+        iterator.forEachRemaining(_ -> atomicInteger.getAndIncrement());
         assertEquals(list.size(), atomicInteger.get());
     }
 
@@ -490,7 +495,7 @@ class ImmutableListTest {
         }
         iterator.forEachRemaining(s -> assertEquals("" + atomicInteger.getAndIncrement(), s));
         assertEquals(list.size(), atomicInteger.get());
-        iterator.forEachRemaining(s -> atomicInteger.getAndIncrement());
+        iterator.forEachRemaining(_ -> atomicInteger.getAndIncrement());
         assertEquals(list.size(), atomicInteger.get());
     }
 

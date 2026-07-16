@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
+@SuppressWarnings("CallToPrintStackTrace")
 class RxFutureConverterTest {
 
     @Test
@@ -50,11 +51,11 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_completable() throws InterruptedException {
+    void toFuture_completable() throws Exception {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Completable completable = Completable.create(emitter -> {
-            emitLatch.await(1, TimeUnit.SECONDS);
+            assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
             emitter.onComplete();
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -68,11 +69,11 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_completable_error() throws InterruptedException {
+    void toFuture_completable_error() throws Exception {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Completable completable = Completable.create(emitter -> {
-            emitLatch.await(1, TimeUnit.SECONDS);
+            assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
             emitter.onError(new Exception("test"));
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -89,16 +90,15 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_completable_cancel() throws InterruptedException {
+    void toFuture_completable_cancel() throws Exception {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Completable completable = Completable.create(emitter -> {
             subscribeLatch.countDown();
             try {
-                emitLatch.await(1, TimeUnit.SECONDS);
-            } catch (final InterruptedException e) {
-                // ignore
+                assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
+            } catch (final InterruptedException ignored) {
             }
             if (emitter.isDisposed()) {
                 completedLatch.countDown();
@@ -118,7 +118,7 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_completable_cancel_before_onSubscribe() throws InterruptedException {
+    void toFuture_completable_cancel_before_onSubscribe() throws Exception {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
@@ -137,7 +137,7 @@ class RxFutureConverterTest {
                     assertTrue(disposable.isDisposed());
                     completedLatch.countDown();
                 });
-                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.setUncaughtExceptionHandler((_, e) -> e.printStackTrace());
                 thread.start();
             }
         };
@@ -155,7 +155,7 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_maybe_immediate() throws ExecutionException, InterruptedException {
+    void toFuture_maybe_immediate() throws Exception {
         final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(Maybe.just("maybe"));
         assertTrue(future.isDone());
         final Optional<String> optional = future.get();
@@ -165,7 +165,7 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_maybe_immediate_empty() throws ExecutionException, InterruptedException {
+    void toFuture_maybe_immediate_empty() throws Exception {
         final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(Maybe.empty());
         assertTrue(future.isDone());
         final Optional<String> optional = future.get();
@@ -184,11 +184,11 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_maybe() throws InterruptedException, ExecutionException {
+    void toFuture_maybe() throws Exception {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Maybe<String> maybe = Maybe.<String>create(emitter -> {
-            emitLatch.await(1, TimeUnit.SECONDS);
+            assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
             emitter.onSuccess("maybe");
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -206,11 +206,11 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_maybe_empty() throws InterruptedException, ExecutionException {
+    void toFuture_maybe_empty() throws Exception {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Maybe<String> maybe = Maybe.<String>create(emitter -> {
-            emitLatch.await(1, TimeUnit.SECONDS);
+            assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
             emitter.onComplete();
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -227,16 +227,15 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_maybe_cancel() throws InterruptedException {
+    void toFuture_maybe_cancel() throws Exception {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Maybe<String> completable = Maybe.<String>create(emitter -> {
             subscribeLatch.countDown();
             try {
-                emitLatch.await(1, TimeUnit.SECONDS);
-            } catch (final InterruptedException e) {
-                // ignore
+                assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
+            } catch (final InterruptedException ignored) {
             }
             if (emitter.isDisposed()) {
                 completedLatch.countDown();
@@ -256,7 +255,7 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_maybe_cancel_before_onSubscribe() throws InterruptedException {
+    void toFuture_maybe_cancel_before_onSubscribe() throws Exception {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
@@ -275,7 +274,7 @@ class RxFutureConverterTest {
                     assertTrue(disposable.isDisposed());
                     completedLatch.countDown();
                 });
-                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.setUncaughtExceptionHandler((_, e) -> e.printStackTrace());
                 thread.start();
             }
         };
@@ -293,11 +292,11 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_maybe_error() throws InterruptedException {
+    void toFuture_maybe_error() throws Exception {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Maybe<String> maybe = Maybe.<String>create(emitter -> {
-            emitLatch.await(1, TimeUnit.SECONDS);
+            assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
             emitter.onError(new Exception("test"));
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -314,7 +313,7 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_single_immediate() throws ExecutionException, InterruptedException {
+    void toFuture_single_immediate() throws Exception {
         final CompletableFuture<String> future = RxFutureConverter.toFuture(Single.just("single"));
         assertTrue(future.isDone());
         assertEquals("single", future.get());
@@ -330,11 +329,11 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_single() throws InterruptedException, ExecutionException {
+    void toFuture_single() throws Exception {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Single<String> single = Single.<String>create(emitter -> {
-            emitLatch.await(1, TimeUnit.SECONDS);
+            assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
             emitter.onSuccess("single");
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -349,11 +348,11 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_single_error() throws InterruptedException {
+    void toFuture_single_error() throws Exception {
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Single<String> single = Single.<String>create(emitter -> {
-            emitLatch.await(1, TimeUnit.SECONDS);
+            assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
             emitter.onError(new Exception("test"));
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
@@ -370,16 +369,15 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_single_cancel() throws InterruptedException {
+    void toFuture_single_cancel() throws Exception {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch emitLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
         final Single<String> completable = Single.<String>create(emitter -> {
             subscribeLatch.countDown();
             try {
-                emitLatch.await(1, TimeUnit.SECONDS);
-            } catch (final InterruptedException e) {
-                // ignore
+                assertTrue(emitLatch.await(1, TimeUnit.SECONDS));
+            } catch (final InterruptedException ignored) {
             }
             if (emitter.isDisposed()) {
                 completedLatch.countDown();
@@ -399,7 +397,7 @@ class RxFutureConverterTest {
     }
 
     @Test
-    void toFuture_single_cancel_before_onSubscribe() throws InterruptedException {
+    void toFuture_single_cancel_before_onSubscribe() throws Exception {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completedLatch = new CountDownLatch(1);
@@ -418,7 +416,7 @@ class RxFutureConverterTest {
                     assertTrue(disposable.isDisposed());
                     completedLatch.countDown();
                 });
-                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.setUncaughtExceptionHandler((_, e) -> e.printStackTrace());
                 thread.start();
             }
         };

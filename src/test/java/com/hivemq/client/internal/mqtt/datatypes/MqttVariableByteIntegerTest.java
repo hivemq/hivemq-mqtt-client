@@ -199,5 +199,4 @@ class MqttVariableByteIntegerTest {
             assertEquals(4, MqttVariableByteInteger.encodedLength(i));
         }
     }
-
 }

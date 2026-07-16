@@ -45,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
+@SuppressWarnings("CallToPrintStackTrace")
 class FluxWithSingleTest {
 
     private static @NotNull Stream<FluxWithSingle<String, StringBuilder>> singleNext3() {
@@ -223,25 +224,20 @@ class FluxWithSingleTest {
 
         final AtomicInteger counter = new AtomicInteger();
         fluxWithSingle //
-                .doOnSingle(stringBuilder -> {
+                .doOnSingle(_ -> {
                     assertEquals(1, counter.incrementAndGet());
                     assertNotEquals("test_thread", Thread.currentThread().getName());
-                })
-                .doOnSingle(stringBuilder -> {
+                }).doOnSingle(_ -> {
                     assertEquals(2, counter.incrementAndGet());
                     assertNotEquals("test_thread", Thread.currentThread().getName());
-                })
-                .publishBothOn(Schedulers.fromExecutor(executorService))
-                .doOnSingle(stringBuilder -> {
+                }).publishBothOn(Schedulers.fromExecutor(executorService)).doOnSingle(_ -> {
                     assertEquals(3, counter.incrementAndGet());
                     assertEquals("test_thread", Thread.currentThread().getName());
-                })
-                .mapBoth(String::length, stringBuilder -> (double) stringBuilder.toString().length())
-                .doOnSingle(stringBuilder -> {
+                }).mapBoth(String::length, stringBuilder -> (double) stringBuilder.toString().length()) //
+                .doOnSingle(_ -> {
                     assertEquals(4, counter.incrementAndGet());
                     assertEquals("test_thread", Thread.currentThread().getName());
-                })
-                .blockLast();
+                }).blockLast();
         assertEquals(4, counter.get());
 
         executorService.shutdown();
@@ -292,9 +288,7 @@ class FluxWithSingleTest {
 
     @MethodSource("singleNext3")
     @ParameterizedTest
-    void subscribeBoth(final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle)
-            throws InterruptedException {
-
+    void subscribeBoth(final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle) throws Exception {
         final CountDownLatch latch = new CountDownLatch(6);
         final WithSingleSubscriber<String, StringBuilder> subscriber = new CoreWithSingleSubscriber<>() {
             @Override
@@ -331,9 +325,7 @@ class FluxWithSingleTest {
 
     @MethodSource("singleNext3")
     @ParameterizedTest
-    void subscribeBoth_strict(final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle)
-            throws InterruptedException {
-
+    void subscribeBoth_strict(final @NotNull FluxWithSingle<String, StringBuilder> fluxWithSingle) throws Exception {
         final CountDownLatch latch = new CountDownLatch(6);
         final WithSingleSubscriber<String, StringBuilder> subscriber = new WithSingleSubscriber<>() {
             @Override
@@ -370,7 +362,7 @@ class FluxWithSingleTest {
 
     @ValueSource(ints = {0, 1, 2, 3, 4})
     @ParameterizedTest
-    void subscribeSingleFuture_immediate(final int args) throws ExecutionException, InterruptedException {
+    void subscribeSingleFuture_immediate(final int args) throws Exception {
         final Flux<? extends CharSequence> flux =
                 Flux.fromIterable(Arrays.asList(new StringBuilder("single"), "next0", "next1", "next2"));
         final FluxWithSingle<String, StringBuilder> fluxWithSingle =
@@ -401,9 +393,7 @@ class FluxWithSingleTest {
 
     @ValueSource(ints = {0, 1, 2, 3, 4})
     @ParameterizedTest
-    void subscribeSingleFuture_immediate_single_in_between(final int args)
-            throws ExecutionException, InterruptedException {
-
+    void subscribeSingleFuture_immediate_single_in_between(final int args) throws Exception {
         final Flux<? extends CharSequence> flux =
                 Flux.fromIterable(Arrays.asList("next0", "next1", new StringBuilder("single"), "next2"));
         final FluxWithSingle<String, StringBuilder> fluxWithSingle =
@@ -496,10 +486,10 @@ class FluxWithSingleTest {
 
     @ValueSource(ints = {0, 1, 2, 3, 4})
     @ParameterizedTest
-    void subscribeSingleFuture(final int args) throws InterruptedException {
+    void subscribeSingleFuture(final int args) throws Exception {
         final Flux<? extends CharSequence> flux =
                 Flux.fromIterable(Arrays.asList(new StringBuilder("single"), "next0", "next1", "next2"))
-                        .zipWith(Flux.interval(Duration.ofMillis(10), Duration.ofMillis(10)), (o, aLong) -> o);
+                        .zipWith(Flux.interval(Duration.ofMillis(10), Duration.ofMillis(10)), (o, _) -> o);
         final FluxWithSingle<String, StringBuilder> fluxWithSingle =
                 new FluxWithSingleSplit<>(flux, String.class, StringBuilder.class);
 
@@ -531,10 +521,10 @@ class FluxWithSingleTest {
 
     @ValueSource(ints = {0, 1, 2, 3, 4})
     @ParameterizedTest
-    void subscribeSingleFuture_single_in_between(final int args) throws InterruptedException {
+    void subscribeSingleFuture_single_in_between(final int args) throws Exception {
         final Flux<? extends CharSequence> flux =
                 Flux.fromIterable(Arrays.asList("next0", "next1", new StringBuilder("single"), "next2"))
-                        .zipWith(Flux.interval(Duration.ofMillis(10), Duration.ofMillis(10)), (o, aLong) -> o);
+                        .zipWith(Flux.interval(Duration.ofMillis(10), Duration.ofMillis(10)), (o, _) -> o);
         final FluxWithSingle<String, StringBuilder> fluxWithSingle =
                 new FluxWithSingleSplit<>(flux, String.class, StringBuilder.class);
 
@@ -566,9 +556,9 @@ class FluxWithSingleTest {
 
     @ValueSource(ints = {0, 1, 2, 3, 4})
     @ParameterizedTest
-    void subscribeSingleFuture_no_single(final int args) throws InterruptedException {
+    void subscribeSingleFuture_no_single(final int args) throws Exception {
         final Flux<? extends CharSequence> flux = Flux.fromIterable(Arrays.asList("next0", "next1", "next2"))
-                .zipWith(Flux.interval(Duration.ofMillis(10), Duration.ofMillis(10)), (o, aLong) -> o);
+                .zipWith(Flux.interval(Duration.ofMillis(10), Duration.ofMillis(10)), (o, _) -> o);
         final FluxWithSingle<String, StringBuilder> fluxWithSingle =
                 new FluxWithSingleSplit<>(flux, String.class, StringBuilder.class);
 
@@ -604,7 +594,7 @@ class FluxWithSingleTest {
 
     @ValueSource(ints = {2, 3, 4})
     @ParameterizedTest
-    void subscribeSingleFuture_error(final int args) throws InterruptedException {
+    void subscribeSingleFuture_error(final int args) throws Exception {
         final Flux<? extends CharSequence> flux =
                 Flux.<CharSequence>error(new Exception("test")).delaySequence(Duration.ofMillis(10));
         final FluxWithSingle<String, StringBuilder> fluxWithSingle =
@@ -641,7 +631,7 @@ class FluxWithSingleTest {
     }
 
     @Test
-    void subscribeSingleFuture_cancel() throws InterruptedException {
+    void subscribeSingleFuture_cancel() throws Exception {
         final CountDownLatch subscribeLatch = new CountDownLatch(1);
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completeLatch = new CountDownLatch(1);
@@ -671,7 +661,7 @@ class FluxWithSingleTest {
     }
 
     @Test
-    void subscribeSingleFuture_cancel_after_single() throws InterruptedException {
+    void subscribeSingleFuture_cancel_after_single() throws Exception {
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completeLatch = new CountDownLatch(1);
         final Flux<? extends CharSequence> flux = Flux.<CharSequence>create(
@@ -700,7 +690,7 @@ class FluxWithSingleTest {
     }
 
     @Test
-    void subscribeSingleFuture_cancel_after_next() throws InterruptedException {
+    void subscribeSingleFuture_cancel_after_next() throws Exception {
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completeLatch = new CountDownLatch(1);
         final Flux<? extends CharSequence> flux = Flux.<CharSequence>create(
@@ -721,7 +711,7 @@ class FluxWithSingleTest {
 
         final CountDownLatch onNextLatch = new CountDownLatch(1);
         final CompletableFuture<StringBuilder> future =
-                fluxWithSingle.subscribeSingleFuture(s -> onNextLatch.countDown());
+                fluxWithSingle.subscribeSingleFuture(_ -> onNextLatch.countDown());
         assertTimeout(Duration.ofMillis(100), () -> assertEquals("single", future.get().toString()));
         assertTrue(onNextLatch.await(100, TimeUnit.MILLISECONDS));
         future.cancel(false);
@@ -733,7 +723,7 @@ class FluxWithSingleTest {
     }
 
     @Test
-    void subscribeSingleFuture_cancel_before_onSubscribe() throws InterruptedException {
+    void subscribeSingleFuture_cancel_before_onSubscribe() throws Exception {
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final CountDownLatch completeLatch = new CountDownLatch(1);
         final Flux<? extends CharSequence> flux = new Flux<>() {
@@ -750,7 +740,7 @@ class FluxWithSingleTest {
                     assertTrue(subscription.cancelled);
                     completeLatch.countDown();
                 });
-                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.setUncaughtExceptionHandler((_, e) -> e.printStackTrace());
                 thread.start();
             }
         };
@@ -768,7 +758,7 @@ class FluxWithSingleTest {
     }
 
     @Test
-    void subscribeSingleFuture_cancel_subscription() throws InterruptedException {
+    void subscribeSingleFuture_cancel_subscription() throws Exception {
         final CountDownLatch cancelLatch = new CountDownLatch(1);
         final Flux<? extends CharSequence> flux = new Flux<>() {
             @Override
@@ -779,7 +769,7 @@ class FluxWithSingleTest {
                     assertTrue(subscription.cancelled);
                     cancelLatch.countDown();
                 });
-                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.setUncaughtExceptionHandler((_, e) -> e.printStackTrace());
                 thread.start();
             }
         };
@@ -828,7 +818,7 @@ class FluxWithSingleTest {
                         assertEquals("next" + onNextCounter.get(), s);
                         onNextCounter.incrementAndGet();
                         latch.countDown();
-                    }, throwable -> {
+                    }, _ -> {
                         onErrorCounter.incrementAndGet();
                         latch.countDown();
                     });
@@ -837,7 +827,7 @@ class FluxWithSingleTest {
                         assertEquals("next" + onNextCounter.get(), s);
                         onNextCounter.incrementAndGet();
                         latch.countDown();
-                    }, throwable -> {
+                    }, _ -> {
                         onErrorCounter.incrementAndGet();
                         latch.countDown();
                     }, () -> {
@@ -878,7 +868,6 @@ class FluxWithSingleTest {
             final @NotNull AtomicInteger onNextCounter,
             final @NotNull AtomicInteger onErrorCounter,
             final @NotNull AtomicInteger onCompleteCounter) {
-
         return subscribeSingleFuture(
                 args, fluxWithSingle, onNextCounter, onErrorCounter, onCompleteCounter, new CountDownLatch(0));
     }
@@ -889,7 +878,7 @@ class FluxWithSingleTest {
         final AtomicInteger count = new AtomicInteger(1);
         fluxWithSingle.doOnSingle(stringBuilder -> assertEquals("single", stringBuilder.toString()))
                 .mapBoth(s -> s, stringBuilder -> stringBuilder)
-                .doOnSingle(stringBuilder -> {})
+                .doOnSingle(_ -> {})
                 .mapBoth(s -> s, stringBuilder -> stringBuilder)
                 .filter(string -> !string.equals("next0"))
                 .doOnNext(string -> assertEquals("next" + count.getAndIncrement(), string))
@@ -899,8 +888,8 @@ class FluxWithSingleTest {
 
     private static class TestSubscription implements Subscription {
 
-        volatile boolean cancelled;
         final @NotNull AtomicLong requested = new AtomicLong();
+        volatile boolean cancelled;
 
         @Override
         public void request(final long n) {

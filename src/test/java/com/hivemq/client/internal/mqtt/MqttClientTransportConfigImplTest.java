@@ -18,12 +18,10 @@ package com.hivemq.client.internal.mqtt;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @author Silvio Giebl
@@ -31,7 +29,7 @@ import java.security.NoSuchAlgorithmException;
 class MqttClientTransportConfigImplTest {
 
     @Test
-    void equals() throws NoSuchAlgorithmException {
+    void equals() throws Exception {
         final KeyManagerFactory kmf1 = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         final KeyManagerFactory kmf2 = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         final TrustManagerFactory tmf1 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -39,7 +37,6 @@ class MqttClientTransportConfigImplTest {
 
         EqualsVerifier.forClass(MqttClientTransportConfigImpl.class)
                 .suppress(Warning.STRICT_INHERITANCE)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("serverAddress")
                 .withPrefabValues(KeyManagerFactory.class, kmf1, kmf2)
                 .withPrefabValues(TrustManagerFactory.class, tmf1, tmf2)

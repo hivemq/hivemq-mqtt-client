@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt.message.connect;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,9 +27,6 @@ class MqttConnectRestrictionsTest {
 
     @Test
     void equals() {
-        EqualsVerifier.forClass(MqttConnectRestrictions.class)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
-                .suppress(Warning.STRICT_INHERITANCE)
-                .verify();
+        EqualsVerifier.forClass(MqttConnectRestrictions.class).suppress(Warning.STRICT_INHERITANCE).verify();
     }
 }

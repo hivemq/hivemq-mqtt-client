@@ -64,5 +64,4 @@ class MqttQosTest {
     public void test_fromCode_negative() {
         assertNull(MqttQos.fromCode(-1));
     }
-
 }

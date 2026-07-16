@@ -76,11 +76,11 @@ public class FlowableWithSingleSplit<U, F, S> extends FlowableWithSingle<F, S> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void onNext(final @NotNull U u) {
             assert subscription != null;
             if (singleClass.isInstance(u)) {
                 if (subscriber instanceof WithSingleSubscriber) {
-                    //noinspection unchecked
                     ((WithSingleSubscriber<F, S>) subscriber).onSingle(singleClass.cast(u));
                 }
                 subscription.request(1);

@@ -20,7 +20,6 @@ import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.mqtt3.Mqtt3PubRelView;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttPubRec;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttPublish;
@@ -29,13 +28,14 @@ import org.junit.jupiter.api.Test;
 class Mqtt3PubRelEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubRelEncoderTest() {
-        super(new MqttMessageEncoders() {{
-            encoders[Mqtt3MessageType.PUBREL.getCode()] = new Mqtt3PubRelEncoder();
-        }}, true);
+        super(
+                new MqttMessageEncoders() {{
+                    encoders[Mqtt3MessageType.PUBREL.getCode()] = new Mqtt3PubRelEncoder();
+                }}, true);
     }
 
     @Test
-    void matchesPaho() throws MqttException {
+    void matchesPaho() throws Exception {
         final int id = 42;
         final MqttPubRel beePubRel = Mqtt3PubRelView.delegate(id);
         final MqttPublish pahoPublish = new MqttPublish("some/topic/string", new MqttMessage(new byte[]{42}));

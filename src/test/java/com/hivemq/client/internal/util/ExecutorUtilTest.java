@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ExecutorUtilTest {
 
     @Test
-    void execute() throws InterruptedException {
+    void execute() throws Exception {
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         final CountDownLatch latch = new CountDownLatch(1);
         try {
@@ -44,7 +44,7 @@ class ExecutorUtilTest {
     }
 
     @Test
-    void execute_isShutdown() throws InterruptedException {
+    void execute_isShutdown() throws Exception {
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.shutdown();
         final CountDownLatch latch = new CountDownLatch(1);

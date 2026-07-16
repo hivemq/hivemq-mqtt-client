@@ -18,7 +18,6 @@ package com.hivemq.client.internal.mqtt;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,7 +29,6 @@ class MqttProxyConfigImplTest {
     void equals() {
         EqualsVerifier.forClass(MqttProxyConfigImpl.class)
                 .suppress(Warning.STRICT_INHERITANCE)
-                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
                 .withNonnullFields("protocol", "address")
                 .verify();
     }
