@@ -130,6 +130,7 @@ dependencies {
     testImplementation(libs.equalsverifier)
     testImplementation(libs.mockito)
     testImplementation(libs.guava)
+    testImplementation(platform(libs.bouncycastle.bom))
     testImplementation(libs.bouncycastle.pkix)
     testImplementation(libs.bouncycastle.prov)
     testImplementation(libs.paho.client)
