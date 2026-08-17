@@ -18,6 +18,7 @@ package com.hivemq.client.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientConfig;
+import com.hivemq.client.mqtt.mqtt3.advanced.Mqtt3ClientAdvancedConfig;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,12 @@ public interface Mqtt3ClientConfig extends MqttClientConfig {
 
     @Override
     @NotNull Optional<Mqtt3ClientConnectionConfig> getConnectionConfig();
+
+    /**
+     * @return the advanced configuration of the client.
+     * @since 1.4
+     */
+    @NotNull Mqtt3ClientAdvancedConfig getAdvancedConfig();
 
     /**
      * Returns the optional simple authentication and/or authorization related data of the client.

@@ -17,7 +17,8 @@
 package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.internal.mqtt.*;
-import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import com.hivemq.client.internal.mqtt.advanced.mqtt3.Mqtt3ClientAdvancedConfigView;
+import com.hivemq.client.internal.mqtt.advanced.mqtt3.Mqtt3ClientAdvancedConfigViewBuilder;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
@@ -27,6 +28,7 @@ import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBui
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientBuilder;
+import com.hivemq.client.mqtt.mqtt3.advanced.Mqtt3ClientAdvancedConfig;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxClientViewBuilder>
         implements Mqtt3ClientBuilder {
 
+    private @NotNull Mqtt3ClientAdvancedConfigView advancedConfig = Mqtt3ClientAdvancedConfigView.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable MqttWillPublish willPublish;
 
@@ -45,6 +48,18 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
 
     public Mqtt3RxClientViewBuilder(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
         super(clientBuilder);
+    }
+
+    @Override
+    public @NotNull Mqtt3RxClientViewBuilder advancedConfig(final @NotNull Mqtt3ClientAdvancedConfig advancedConfig) {
+        this.advancedConfig =
+                Checks.notImplemented(advancedConfig, Mqtt3ClientAdvancedConfigView.class, "Advanced config");
+        return this;
+    }
+
+    @Override
+    public Mqtt3ClientAdvancedConfigViewBuilder.@NotNull Nested<Mqtt3RxClientViewBuilder> advancedConfig() {
+        return new Mqtt3ClientAdvancedConfigViewBuilder.Nested<>(advancedConfig, this::advancedConfig);
     }
 
     @Override
@@ -109,7 +124,8 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     }
 
     private @NotNull MqttClientConfig buildClientConfig() {
-        return buildClientConfig(MqttVersion.MQTT_3_1_1, MqttClientAdvancedConfig.DEFAULT,
+        return buildClientConfig(
+                MqttVersion.MQTT_3_1_1, advancedConfig.getDelegate(),
                 MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish));
     }
 }

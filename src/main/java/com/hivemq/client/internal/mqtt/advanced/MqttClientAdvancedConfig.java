@@ -28,20 +28,25 @@ import java.util.Objects;
  */
 public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
 
-    public static final @NotNull MqttClientAdvancedConfig DEFAULT = new MqttClientAdvancedConfig(false, false, null);
+    static final int DEFAULT_MAX_CONCURRENT_PUBLISHES = Integer.MAX_VALUE;
+    public static final @NotNull MqttClientAdvancedConfig DEFAULT =
+            new MqttClientAdvancedConfig(false, false, null, DEFAULT_MAX_CONCURRENT_PUBLISHES);
 
     private final boolean allowServerReAuth;
     private final boolean validatePayloadFormat;
     private final @Nullable MqttClientInterceptors interceptors;
+    private final int maxConcurrentPublishes;
 
     MqttClientAdvancedConfig(
             final boolean allowServerReAuth,
             final boolean validatePayloadFormat,
-            final @Nullable MqttClientInterceptors interceptors) {
+            final @Nullable MqttClientInterceptors interceptors,
+            final int maxConcurrentPublishes) {
 
         this.allowServerReAuth = allowServerReAuth;
         this.validatePayloadFormat = validatePayloadFormat;
         this.interceptors = interceptors;
+        this.maxConcurrentPublishes = maxConcurrentPublishes;
     }
 
     @Override
@@ -60,6 +65,11 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
     }
 
     @Override
+    public int maxConcurrentPublishes() {
+        return maxConcurrentPublishes;
+    }
+
+    @Override
     public MqttClientAdvancedConfigBuilder.@NotNull Default extend() {
         return new MqttClientAdvancedConfigBuilder.Default(this);
     }
@@ -75,7 +85,8 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
         final MqttClientAdvancedConfig that = (MqttClientAdvancedConfig) o;
 
         return (allowServerReAuth == that.allowServerReAuth) && (validatePayloadFormat == that.validatePayloadFormat) &&
-                Objects.equals(interceptors, that.interceptors);
+                Objects.equals(interceptors, that.interceptors) &&
+                (maxConcurrentPublishes == that.maxConcurrentPublishes);
     }
 
     @Override
@@ -83,6 +94,7 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
         int result = Boolean.hashCode(allowServerReAuth);
         result = 31 * result + Boolean.hashCode(validatePayloadFormat);
         result = 31 * result + Objects.hashCode(interceptors);
+        result = 31 * result + Integer.hashCode(maxConcurrentPublishes);
         return result;
     }
 }

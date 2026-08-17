@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
@@ -74,6 +75,8 @@ class MqttOutgoingQosHandlerTest {
             // route every flow's event loop to the channel's, so the run() scheduled by onNext executes
             // deterministically via runPendingTasks() on the same single thread
             when(clientConfig.acquireEventLoop()).thenReturn(channel.eventLoop());
+            // onSessionStartOrResume reads maxConcurrentPublishes from the advanced config
+            when(clientConfig.getAdvancedConfig()).thenReturn(MqttClientAdvancedConfig.DEFAULT);
 
             final MqttOutgoingQosHandler handler = new MqttOutgoingQosHandler(clientConfig);
             channel.pipeline().addLast(MqttOutgoingQosHandler.NAME, handler);

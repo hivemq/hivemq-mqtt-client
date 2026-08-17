@@ -19,6 +19,8 @@ package com.hivemq.client.mqtt.mqtt3;
 import com.hivemq.client.annotations.CheckReturnValue;
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientBuilderBase;
+import com.hivemq.client.mqtt.mqtt3.advanced.Mqtt3ClientAdvancedConfig;
+import com.hivemq.client.mqtt.mqtt3.advanced.Mqtt3ClientAdvancedConfigBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
@@ -34,6 +36,29 @@ import org.jetbrains.annotations.Nullable;
  */
 @DoNotImplement
 public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBuilder> {
+
+    /**
+     * Sets the {@link Mqtt3ClientConfig#getAdvancedConfig() advanced configuration}.
+     *
+     * @param advancedConfig the advanced configuration.
+     * @return the builder.
+     * @since 1.4
+     */
+    @CheckReturnValue
+    @NotNull Mqtt3ClientBuilder advancedConfig(@NotNull Mqtt3ClientAdvancedConfig advancedConfig);
+
+    /**
+     * Fluent counterpart of {@link #advancedConfig(Mqtt3ClientAdvancedConfig)}.
+     * <p>
+     * Calling {@link Mqtt3ClientAdvancedConfigBuilder.Nested#applyAdvancedConfig()} on the returned builder has the
+     * effect of extending the current advanced configuration.
+     *
+     * @return the fluent builder for the advanced configuration.
+     * @see #advancedConfig(Mqtt3ClientAdvancedConfig)
+     * @since 1.4
+     */
+    @CheckReturnValue
+    Mqtt3ClientAdvancedConfigBuilder.@NotNull Nested<? extends Mqtt3ClientBuilder> advancedConfig();
 
     /**
      * Sets the optional {@link Mqtt3ClientConfig#getSimpleAuth() simple authentication and/or authorization related

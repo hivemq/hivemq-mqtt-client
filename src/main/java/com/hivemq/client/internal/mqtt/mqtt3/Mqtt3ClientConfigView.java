@@ -18,6 +18,7 @@ package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.advanced.mqtt3.Mqtt3ClientAdvancedConfigView;
 import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
@@ -32,6 +33,7 @@ import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
+import com.hivemq.client.mqtt.mqtt3.advanced.Mqtt3ClientAdvancedConfig;
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
@@ -69,6 +71,11 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     @Override
     public @NotNull MqttClientExecutorConfig getExecutorConfig() {
         return delegate.getExecutorConfig();
+    }
+
+    @Override
+    public @NotNull Mqtt3ClientAdvancedConfig getAdvancedConfig() {
+        return Mqtt3ClientAdvancedConfigView.of(delegate.getAdvancedConfig());
     }
 
     @Override

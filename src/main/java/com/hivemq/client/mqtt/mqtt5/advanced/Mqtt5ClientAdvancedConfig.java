@@ -59,6 +59,11 @@ public interface Mqtt5ClientAdvancedConfig {
     @Nullable Mqtt5ClientInterceptors getInterceptors();
 
     /**
+     * @return the maximum number of publish sources that are processed concurrently.
+     */
+    int maxConcurrentPublishes();
+
+    /**
      * Creates a builder for extending this advanced configuration.
      *
      * @return the created builder.

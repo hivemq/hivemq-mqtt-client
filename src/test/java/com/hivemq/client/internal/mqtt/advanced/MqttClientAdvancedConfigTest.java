@@ -20,6 +20,9 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 /**
  * @author Silvio Giebl
  */
@@ -28,5 +31,27 @@ class MqttClientAdvancedConfigTest {
     @Test
     void equals() {
         EqualsVerifier.forClass(MqttClientAdvancedConfig.class).suppress(Warning.STRICT_INHERITANCE).verify();
+    }
+
+    @Test
+    void maxConcurrentPublishes_defaultsToUnlimited() {
+        assertEquals(Integer.MAX_VALUE, MqttClientAdvancedConfig.DEFAULT.maxConcurrentPublishes());
+        assertEquals(Integer.MAX_VALUE,
+                new MqttClientAdvancedConfigBuilder.Default().build().maxConcurrentPublishes());
+    }
+
+    @Test
+    void maxConcurrentPublishes_isKeptByBuilder() {
+        final MqttClientAdvancedConfig advancedConfig =
+                new MqttClientAdvancedConfigBuilder.Default().maxConcurrentPublishes(1024).build();
+        assertEquals(1024, advancedConfig.maxConcurrentPublishes());
+        assertEquals(1024, advancedConfig.extend().build().maxConcurrentPublishes());
+    }
+
+    @Test
+    void maxConcurrentPublishes_mustBeAtLeast1() {
+        final MqttClientAdvancedConfigBuilder.Default builder = new MqttClientAdvancedConfigBuilder.Default();
+        assertThrows(IllegalArgumentException.class, () -> builder.maxConcurrentPublishes(0));
+        assertThrows(IllegalArgumentException.class, () -> builder.maxConcurrentPublishes(-1));
     }
 }

@@ -72,4 +72,15 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
      */
     @CheckReturnValue
     Mqtt5ClientInterceptorsBuilder.@NotNull Nested<? extends B> interceptors();
+
+    /**
+     * Sets the {@link Mqtt5ClientAdvancedConfig#maxConcurrentPublishes() maximum number of publish sources that are
+     * processed concurrently}.
+     *
+     * @param maxConcurrentPublishes the maximum number of publish sources that are processed concurrently. Must be at
+     *                               least 1.
+     * @return the builder.
+     */
+    @CheckReturnValue
+    @NotNull B maxConcurrentPublishes(int maxConcurrentPublishes);
 }

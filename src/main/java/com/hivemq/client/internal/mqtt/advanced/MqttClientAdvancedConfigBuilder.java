@@ -34,6 +34,7 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
     private boolean allowServerReAuth;
     private boolean validatePayloadFormat;
     private @Nullable MqttClientInterceptors interceptors;
+    private int maxConcurrentPublishes = MqttClientAdvancedConfig.DEFAULT_MAX_CONCURRENT_PUBLISHES;
 
     MqttClientAdvancedConfigBuilder() {}
 
@@ -41,6 +42,7 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
         allowServerReAuth = advancedConfig.isAllowServerReAuth();
         validatePayloadFormat = advancedConfig.isValidatePayloadFormat();
         interceptors = advancedConfig.getInterceptors();
+        maxConcurrentPublishes = advancedConfig.maxConcurrentPublishes();
     }
 
     abstract @NotNull B self();
@@ -64,8 +66,15 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
         return new MqttClientInterceptorsBuilder.Nested<>(interceptors, this::interceptors);
     }
 
+    public @NotNull B maxConcurrentPublishes(final int maxConcurrentPublishes) {
+        this.maxConcurrentPublishes =
+                (int) Checks.range(maxConcurrentPublishes, 1, Integer.MAX_VALUE, "Maximum concurrent publishes");
+        return self();
+    }
+
     public @NotNull MqttClientAdvancedConfig build() {
-        return new MqttClientAdvancedConfig(allowServerReAuth, validatePayloadFormat, interceptors);
+        return new MqttClientAdvancedConfig(
+                allowServerReAuth, validatePayloadFormat, interceptors, maxConcurrentPublishes);
     }
 
     public static class Default extends MqttClientAdvancedConfigBuilder<Default>
