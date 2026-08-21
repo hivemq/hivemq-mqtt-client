@@ -82,7 +82,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttOutgoingQosHandler.class);
     private static final IntIndex.@NotNull Spec<MqttPubOrRelWithFlow> INDEX_SPEC =
             new IntIndex.Spec<>(x -> x.packetIdentifier);
-    private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64; // TODO configurable
+    private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = Integer.MAX_VALUE; // TODO configurable
     private static final boolean QOS_2_COMPLETE_RESULT = false; // TODO configurable
 
     private final @NotNull MqttClientConfig clientConfig;
