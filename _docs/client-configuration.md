@@ -41,6 +41,78 @@ MqttClient.builder()
 | `addConnectedListener` | Adds a listener that is notified when the client is connected | none |
 | `addDisconnectedListener` | Adds a listener that is notified when the client is disconnected | none |
 
+## Automatic reconnect
+
+Automatic reconnect is disabled by default. Enable the default strategy on the client builder:
+
+```java
+Mqtt5Client client = Mqtt5Client.builder()
+        .serverHost("broker.hivemq.com")
+        .automaticReconnectWithDefaultConfig()
+        .build();
+```
+
+The default strategy uses exponential backoff: 1 second initial delay, doubled after each failed attempt, capped at 2 minutes, plus a random delay of ±25%.
+
+You can customize the delays:
+
+```java
+Mqtt5Client client = Mqtt5Client.builder()
+        .serverHost("broker.hivemq.com")
+        .automaticReconnect()
+            .initialDelay(500, TimeUnit.MILLISECONDS)
+            .maxDelay(3, TimeUnit.MINUTES)
+            .applyAutomaticReconnect()
+        .build();
+```
+
+`Mqtt3Client.builder()` has the same methods.
+
+{% capture admonition_content %}
+[HiveMQ MQTT Client Features: Reconnect Handling](https://www.hivemq.com/blog/hivemq-mqtt-client-features-reconnect-handling/){:target="_blank"}
+{% endcapture %}{% include admonition.html type="tip" title="Additional Resources" content=admonition_content %}
+
+### Stopping reconnect
+
+`disconnect()` can only be called when the client is connected. While the client is connecting or reconnecting, `disconnect()` throws `MqttClientStateException` and automatic reconnect keeps running.
+
+To stop reconnecting, add a disconnected listener that cancels reconnect. You can add this listener in addition to automatic reconnect; you do not need to reimplement the backoff. This works for MQTT 3 and MQTT 5.
+
+```java
+final AtomicBoolean stopReconnect = new AtomicBoolean(false);
+final Mqtt5Client client = Mqtt5Client.builder()
+        .automaticReconnectWithDefaultConfig()
+        .addDisconnectedListener(context -> {
+            if (stopReconnect.get()) {
+                context.getReconnector().reconnect(false);
+            }
+        })
+        .build();
+
+// when you want to disconnect for good
+stopReconnect.set(true);
+client.toAsync().disconnect();
+```
+
+The same pattern works with `Mqtt3Client`:
+
+```java
+final AtomicBoolean stopReconnect = new AtomicBoolean(false);
+final Mqtt3Client client = Mqtt3Client.builder()
+        .automaticReconnectWithDefaultConfig()
+        .addDisconnectedListener(context -> {
+            if (stopReconnect.get()) {
+                context.getReconnector().reconnect(false);
+            }
+        })
+        .build();
+
+stopReconnect.set(true);
+client.toAsync().disconnect();
+```
+
+If the client is not connected (`disconnect()` would throw), still set `stopReconnect` to `true`. The disconnected listener runs after a failed connect or reconnect attempt and cancels further retries.
+
 ---
 
 You can not build an instance of `MqttClient` directly, but a version specific `Mqtt5Client` or `Mqtt3Client`.
