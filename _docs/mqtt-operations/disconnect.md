@@ -12,6 +12,12 @@ This will use the default parameters as defined in the MQTT specification or rea
 client.disconnect();
 ```
 
+{% capture admonition_content %}
+`disconnect()` can only be called when the client is connected. If automatic reconnect is enabled and the client is currently connecting or reconnecting, `disconnect()` throws `MqttClientStateException` and reconnect continues.
+
+To cancel reconnect, add a disconnected listener that calls `context.getReconnector().reconnect(false)`. See [Stopping reconnect](/docs/client-configuration/#stopping-reconnect). This applies to MQTT 3 and MQTT 5.
+{% endcapture %}{% include admonition.html type="note" title="Stopping reconnect" content=admonition_content %}
+
 The return type depends on the used MQTT version and API flavour.
 
 {% capture tab_content %}
