@@ -64,5 +64,5 @@ mavenCentralPublishing = { id = "io.github.sgtsilvio.gradle.maven-central-publis
 metadata = { id = "io.github.sgtsilvio.gradle.metadata", version = "0.7.0" }
 oci = { id = "io.github.sgtsilvio.gradle.oci", version = "0.30.0" }
 shadow = { id = "com.gradleup.shadow", version = "9.6.1" }
-spotless = { id = "com.diffplug.spotless", version = "8.10.1" }
+spotless = { id = "com.diffplug.spotless", version = "8.10.2" }
 utf8 = { id = "com.github.sgtsilvio.gradle.utf8", version = "0.1.0" }
