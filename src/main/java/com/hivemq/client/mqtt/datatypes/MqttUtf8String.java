@@ -75,4 +75,12 @@ public interface MqttUtf8String extends Comparable<MqttUtf8String> {
      * @return the UTF-8 encoded read-only byte buffer.
      */
     @NotNull ByteBuffer toByteBuffer();
+
+    /**
+     * Returns the decoded representation as a Java string.
+     *
+     * @return the decoded Java string.
+     */
+    @Override
+    @NotNull String toString();
 }
