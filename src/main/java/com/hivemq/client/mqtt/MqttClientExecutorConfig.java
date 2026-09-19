@@ -18,8 +18,8 @@ package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImplBuilder;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.schedulers.Schedulers ;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

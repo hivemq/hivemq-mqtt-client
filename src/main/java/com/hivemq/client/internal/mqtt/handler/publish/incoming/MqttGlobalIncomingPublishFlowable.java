@@ -21,7 +21,7 @@ import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubscriptionHandler
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 
