@@ -4,12 +4,12 @@ bouncycastle = "1.86.1"
 dagger = "2.42"
 equalsverifier = "4.5.2"
 gradleOci-junitJupiter = "0.8.0"
-guava = "33.7.1-jre"
+guava = "33.7.2-jre"
 hivemq-extensionSdk = "4.7.2"
 jctools = "4.0.7"
 jetbrains-annotations = "26.1.0"
 junit-jupiter = "6.1.3"
-mockito = "5.23.0"
+mockito = "5.24.0"
 netty = "4.1.138.Final"
 paho = "1.2.5"
 pmd = "5.8.1"
@@ -64,5 +64,5 @@ mavenCentralPublishing = { id = "io.github.sgtsilvio.gradle.maven-central-publis
 metadata = { id = "io.github.sgtsilvio.gradle.metadata", version = "0.7.0" }
 oci = { id = "io.github.sgtsilvio.gradle.oci", version = "0.30.0" }
 shadow = { id = "com.gradleup.shadow", version = "9.6.1" }
-spotless = { id = "com.diffplug.spotless", version = "8.10.2" }
+spotless = { id = "com.diffplug.spotless", version = "8.10.3" }
 utf8 = { id = "com.github.sgtsilvio.gradle.utf8", version = "0.1.0" }
