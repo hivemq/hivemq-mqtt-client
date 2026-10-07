@@ -21,7 +21,7 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import io.reactivex.functions.Function;
+import io.reactivex.rxjava3.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

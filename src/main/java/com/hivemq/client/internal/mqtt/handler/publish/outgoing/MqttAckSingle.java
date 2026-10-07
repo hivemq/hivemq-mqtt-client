@@ -23,11 +23,11 @@ import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.internal.disposables.EmptyDisposable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
