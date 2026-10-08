@@ -60,8 +60,15 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      *
      * @param connect the Connect message sent to the broker.
      * @return the ConnAck message if it does not contain an Error Code (connected successfully).
+     * @throws com.hivemq.client.mqtt.exceptions.ConnectionFailedException   if an error occurs before the Connect
+     *                                                                       message could be sent.
+     * @throws com.hivemq.client.mqtt.exceptions.ConnectionClosedException   if the connection is closed after the
+     *                                                                       Connect message has been sent but before a
+     *                                                                       ConnAck message has been received
      * @throws com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException wrapping the ConnAck message if it contains
      *                                                                       an Error Code.
+     * @throws com.hivemq.client.mqtt.exceptions.MqttClientStateException    if the client is already connecting or
+     *                                                                       connected
      */
     @NotNull Mqtt5ConnAck connect(@NotNull Mqtt5Connect connect);
 
@@ -153,10 +160,20 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @param publish the Publish message sent to the broker.
      * @return the {@link Mqtt5PublishResult} if the Publish message was successfully published (no acknowledgement
      *         message contains an Error Code, {@link Mqtt5PublishResult#getError()} will always be absent).
-     * @throws com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException wrapping the corresponding PubAck message if
-     *                                                                      it contains an Error Code.
-     * @throws com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubRecException wrapping the corresponding PubRec message if
-     *                                                                      it contains an Error Code.
+     * @throws com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException  for QoS 1 if the PubAck message contained
+     *                                                                       an error code (the PubAck message is
+     *                                                                       contained in the exception)
+     * @throws com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubRecException  for QoS 2 if the PubRec message contained
+     *                                                                       an error code (the PubRec message is
+     *                                                                       contained in the exception)
+     * @throws com.hivemq.client.mqtt.exceptions.ConnectionClosedException   for QoS 0 if the connection was closed
+     *                                                                       during writing the message to the
+     *                                                                       transport
+     * @throws com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException if the session expired before the message
+     *                                                                       has been acknowledged completely
+     * @throws com.hivemq.client.mqtt.exceptions.MqttEncodeException         if the maximum packet size was exceeded
+     * @throws com.hivemq.client.mqtt.exceptions.MqttClientStateException    if the client is not connected and also not
+     *                                                                       reconnecting
      */
     @NotNull Mqtt5PublishResult publish(@NotNull Mqtt5Publish publish);
 
