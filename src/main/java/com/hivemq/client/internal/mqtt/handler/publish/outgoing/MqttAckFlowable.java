@@ -21,8 +21,8 @@ import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import io.reactivex.Flowable;
-import io.reactivex.internal.subscriptions.EmptySubscription;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 
