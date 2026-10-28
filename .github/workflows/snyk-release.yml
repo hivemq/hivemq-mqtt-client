@@ -23,13 +23,12 @@ jobs:
             8
             25
 
-      - name: Setup Snyk
-        uses: snyk/actions/setup@9adf32b1121593767fc3c057af55b55db032dc04 # v1
-
       - name: Run Snyk monitor
-        run: >
-          snyk monitor --configuration-matching=^runtimeClasspath$ --target-reference=${{ github.ref_name }}
-          --org=hivemq-releases --project-name=hivemq-mqtt-client --remote-repo-url=hivemq-mqtt-client
-          --project-lifecycle=production -d hivemq-mqtt-client
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        uses: hivemq/hivemq-snyk-composite-action@278fb241e6462620b4efcddaef783d7f60174c93 # v3
+        with:
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          org: hivemq-releases
+          project-name: hivemq-mqtt-client
+          remote-repo-url: hivemq-mqtt-client
+          project-lifecycle: production
+          path: hivemq-mqtt-client
