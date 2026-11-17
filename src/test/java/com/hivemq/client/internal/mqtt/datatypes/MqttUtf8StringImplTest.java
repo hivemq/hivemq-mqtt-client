@@ -17,6 +17,7 @@
 package com.hivemq.client.internal.mqtt.datatypes;
 
 import com.google.common.base.Utf8;
+import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -37,6 +39,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Silvio Giebl
  */
 class MqttUtf8StringImplTest {
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "mqtt", "\uD55C\uAE00", "\uD83D\uDE80"})
+    void toString_returnsDecodedJavaString(final @NotNull String value) {
+        final MqttUtf8String fromString = MqttUtf8String.of(value);
+        final MqttUtf8String fromBinary = MqttUtf8StringImpl.of(value.getBytes(StandardCharsets.UTF_8));
+
+        assertNotNull(fromBinary);
+        assertEquals(value, fromString.toString());
+        assertEquals(value, fromBinary.toString());
+    }
 
     private static @NotNull Iterable<Arguments> stringWithGivenLengthProvider(final int length) {
         final List<Arguments> arguments = new ArrayList<>();
