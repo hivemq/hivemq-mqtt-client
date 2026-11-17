@@ -173,6 +173,8 @@ dependencies {
     integrationTestImplementation(libs.junit.jupiter)
     integrationTestRuntimeOnly(libs.junit.platform.launcher)
     integrationTestImplementation(libs.gradleOci.junitJupiter)
+    // reactor-netty (from gradle-oci-junit-jupiter) pulls older Netty modules; the epoll native library must match unix-common
+    integrationTestImplementation(platform(libs.netty.bom))
     integrationTestImplementation(libs.testcontainers)
     integrationTestImplementation(libs.testcontainers.hivemq)
     integrationTestImplementation(libs.testcontainers.junitJupiter)
