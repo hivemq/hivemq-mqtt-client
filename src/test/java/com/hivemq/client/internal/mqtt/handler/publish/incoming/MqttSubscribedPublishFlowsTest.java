@@ -23,6 +23,7 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 import com.hivemq.client.internal.util.collections.HandleList;
+import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,6 +70,57 @@ abstract class MqttSubscribedPublishFlowsTest {
     @BeforeEach
     void setUp() {
         flows = flowsSupplier.get();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"#, A, 1", "#, A, 2", "#, A, 99", "#, B, 2", "+, A, 1", "+, A, 2", "+, A, 99", "+, B, 2"})
+    void findMatching_subscriptionIdentifier_deliversOnlyToMatchingSubscription(
+            final @NotNull String wildcard, final @NotNull String topic, final int subscriptionIdentifier) {
+
+        final MqttSubscribedPublishFlow wildcardFlow = mockSubscriptionFlow(wildcard);
+        final MqttSubscribedPublishFlow exactFlow = mockSubscriptionFlow("A");
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter(wildcard).build(), 1, wildcardFlow);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter("A").build(), 2, exactFlow);
+
+        final MqttStatefulPublishWithFlows publishWithFlows =
+                newPublishWithFlows(topic, ImmutableIntList.of(subscriptionIdentifier));
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        if ((subscriptionIdentifier == 99) || topic.equals("B")) {
+            assertTrue(publishWithFlows.isEmpty());
+        } else {
+            assertEquals(1, publishWithFlows.size());
+            assertEquals(ImmutableSet.of((subscriptionIdentifier == 1) ? wildcardFlow : exactFlow),
+                    toSet(publishWithFlows));
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1, 2", "2, 1"})
+    void findMatching_subscriptionIdentifiers_deliversToBothSubscriptions(final int first, final int second) {
+        final MqttSubscribedPublishFlow wildcardFlow = mockSubscriptionFlow("#");
+        final MqttSubscribedPublishFlow exactFlow = mockSubscriptionFlow("A");
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter("#").build(), 1, wildcardFlow);
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter("A").build(), 2, exactFlow);
+
+        final MqttStatefulPublishWithFlows publishWithFlows =
+                newPublishWithFlows("A", ImmutableIntList.of(first, second));
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertEquals(2, publishWithFlows.size());
+        assertEquals(ImmutableSet.of(wildcardFlow, exactFlow), toSet(publishWithFlows));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1", "99"})
+    void findMatching_subscriptionIdentifier_noFlow(final int subscriptionIdentifier) {
+        flows.subscribe(new MqttSubscriptionBuilder.Default().topicFilter("A").build(), 1, null);
+
+        final MqttStatefulPublishWithFlows publishWithFlows =
+                newPublishWithFlows("A", ImmutableIntList.of(subscriptionIdentifier));
+        flows.findMatching(publishWithFlows);
+        assertTrue(publishWithFlows.subscriptionFound);
+        assertTrue(publishWithFlows.isEmpty());
     }
 
     @ParameterizedTest
@@ -795,10 +847,15 @@ abstract class MqttSubscribedPublishFlowsTest {
     }
 
     static @NotNull MqttStatefulPublishWithFlows newPublishWithFlows(final @NotNull String topic) {
+        return newPublishWithFlows(topic, MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+    }
+
+    static @NotNull MqttStatefulPublishWithFlows newPublishWithFlows(
+            final @NotNull String topic, final @NotNull ImmutableIntList subscriptionIdentifiers) {
+
         return new MqttStatefulPublishWithFlows(
                 new MqttPublishBuilder.Default().topic(topic).build().createStateful(
-                        1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
-                        MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS));
+                        1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS, subscriptionIdentifiers));
     }
 
     private static @NotNull MqttSubscribedPublishFlow mockSubscriptionFlow(final @NotNull String name) {

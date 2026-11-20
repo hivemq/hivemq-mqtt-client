@@ -23,6 +23,7 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttTopicLevel;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicLevels;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.util.collections.HandleList.Handle;
+import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import com.hivemq.client.internal.util.collections.Index;
 import com.hivemq.client.internal.util.collections.NodeList;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -367,9 +368,19 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
             if (entries != null) {
                 flows.subscriptionFound = true;
+                final ImmutableIntList subscriptionIdentifiers = flows.publish.getSubscriptionIdentifiers();
                 for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
                     if (entry.flow != null) {
-                        flows.add(entry.flow);
+                        if (subscriptionIdentifiers.isEmpty()) {
+                            flows.add(entry.flow);
+                        } else {
+                            for (int i = 0; i < subscriptionIdentifiers.size(); i++) {
+                                if (subscriptionIdentifiers.get(i) == entry.subscriptionIdentifier) {
+                                    flows.add(entry.flow);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
